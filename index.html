@@ -4061,6 +4061,204 @@ input[type="time"].slp-input { min-width: 0; text-align: start; }
 }
 body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none; }
 
+/* Backup reminder on the home screen. */
+.backup-reminder { margin: 0 0 var(--space-6); flex-wrap: wrap; align-items: center; }
+.backup-reminder.hidden { display: none; }
+.backup-reminder > span { flex: 1; min-width: 60%; }
+.backup-reminder strong { display: block; color: var(--color-text); }
+.backup-reminder__actions { display: flex; align-items: center; gap: var(--space-4); width: 100%; }
+/* Settings: the Back up row gets an accent dot when a backup is due. */
+#exportLibraryBtn.needs-attention .slp-row__icon-tile { box-shadow: 0 0 0 2px var(--danger); }
+#exportLibraryBtn.needs-attention #backupStatusText { color: var(--danger); font-weight: var(--font-weight-semibold); }
+
+/* Desktop: header buttons stay compact, but every one keeps a 44px touch/click area through an
+   invisible extension (phones already get real 44px boxes above). */
+@media (min-width: 901px) {
+  .slp-btn--icon, .slp-btn--fab { position: relative; }
+  .slp-btn--icon::after, .slp-btn--fab::after { content: ""; position: absolute; inset: -7px; }
+}
+
+/* ============ Swipe-to-add on song rows ============ */
+.song-item.swipeable { position: relative; overflow: hidden; }
+.song-item.swipeable > .slp-row { position: relative; z-index: 1; touch-action: pan-y; }
+.song-item.swipeable > .slp-row.swiping { user-select: none; -webkit-user-select: none; cursor: grabbing; }
+.swipe-action {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  background: var(--accent);
+  color: #fff;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-bold);
+  opacity: 0;
+  transition: filter 120ms ease;
+}
+.swipe-action.armed { filter: brightness(1.12); }
+.swipe-action svg { width: var(--icon-xl); height: var(--icon-xl); }
+
+/* ============ Folder accordion (Categories / Lists on the home screen) ============ */
+.folder-row--accordion { cursor: pointer; padding-block: var(--space-1); padding-inline-start: var(--space-3); }
+.folder-expand-btn,
+.folder-expand-spacer { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; }
+.folder-expand-btn { border: none; border-radius: var(--radius-md); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.folder-expand-btn svg { width: var(--icon-lg); height: var(--icon-lg); transition: transform 160ms ease; }
+.folder-expand-btn[aria-expanded="true"] svg { transform: rotate(90deg); }
+.folder-open-btn { display: flex; align-items: center; min-height: 44px; padding: 0; border: none; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.folder-child-row { padding-inline-start: calc(var(--space-3) + 44px); background: var(--color-card-2); }
+
+/* Event templates + song links */
+.gig-template-chips { margin-top: var(--space-4); }
+.gig-template-hint { margin: var(--space-4) 0 0; }
+.slp-chip[aria-pressed="true"] { background: var(--accent-soft-2); color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+#gigTemplateGroup[hidden] { display: none; }
+.song-links { margin-top: var(--space-4); }
+.song-links[hidden] { display: none; }
+.song-links-input { min-height: 64px; resize: vertical; }
+#gigTemplateGroup { margin-top: var(--space-8); }
+
+/* ============ Chords and transposition ============ */
+.song-document .cp { display: inline-block; vertical-align: baseline; text-align: start; }
+/* Everyday chords: a small tinted chip above the word. The lyric page stays a light "paper"
+   in every app theme, so the chip uses fixed light-surface colors (its own blue, not the UI
+   accent, so a chord is never mistaken for a button). */
+.song-document .cp-chord {
+  display: block;
+  width: fit-content;
+  margin-bottom: 0.16em;
+  padding: 0 0.5em;
+  border-radius: 0.42em;
+  background: #E6F1FB;
+  color: #0C447C;
+  font-family: var(--font-family);
+  font-size: 0.64em;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.3;
+  white-space: nowrap;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+.song-document .cp-lyric { display: block; }
+.song-document .cp-off { display: none; }
+.song-key-was, #songKeyWas { color: var(--color-text-secondary); font-size: var(--text-xs); font-weight: var(--font-weight-regular); }
+.song-chip--icon { padding-inline: var(--space-5); }
+.song-chip--icon[hidden] { display: none; }
+.slp-badge--key.transposed { background: var(--accent); color: #fff; }
+.transpose-value { color: var(--color-text); font-size: var(--text-lg); font-weight: var(--font-weight-bold); font-variant-numeric: tabular-nums; }
+.transpose-value--current { color: var(--accent); }
+#songKey #songKeyWas[hidden] { display: none; }
+
+/* ============ Performance mode ============
+   Fixed dark palette on purpose: it is a stage screen, not a theme. Chords are bold amber and
+   larger than in the everyday view; sections become tags; the toolbar can be tapped away. */
+.perf-view {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  background: #0E1116;
+  color: #F2F2EE;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.perf-view.hidden { display: none; }
+body.perf-open { overflow: hidden; }
+.perf-bar {
+  flex-shrink: 0;
+  display: grid;
+  gap: 4px;
+  padding: 8px 12px 6px;
+  border-bottom: 1px solid #232A33;
+  background: #151A21;
+  transition: margin-top 200ms ease, opacity 200ms ease;
+}
+.perf-view.bar-hidden .perf-bar { margin-top: -140px; opacity: 0; pointer-events: none; }
+.perf-bar__row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.perf-bar__row--tools { justify-content: flex-start; flex-wrap: wrap; gap: 6px; }
+.perf-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: #232A33;
+  color: #F2F2EE;
+  cursor: pointer;
+}
+.perf-btn svg { width: 20px; height: 20px; }
+.perf-btn[aria-pressed="true"] { background: #FFC857; color: #0E1116; }
+.perf-key { display: flex; align-items: center; gap: 8px; }
+.perf-key__pill {
+  padding: 5px 16px;
+  border-radius: 999px;
+  background: #FFC857;
+  color: #0E1116;
+  font-size: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.perf-key__pill small { font-size: 12px; font-weight: 400; opacity: 0.75; }
+.perf-chip {
+  min-height: 44px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: #232A33;
+  color: #D7DDE6;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.perf-chip[aria-pressed="true"] { background: #FFC857; color: #0E1116; }
+.perf-group { display: inline-flex; align-items: center; gap: 6px; }
+.perf-group[hidden] { display: none; }
+.perf-speed { min-width: 64px; text-align: center; color: #8FA3B8; font-size: 12px; }
+.perf-awake { display: inline-flex; align-items: center; gap: 4px; margin-inline-start: auto; color: #8FA3B8; font-size: 12px; }
+.perf-awake[hidden] { display: none; }
+.perf-awake svg { width: 14px; height: 14px; }
+.perf-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 22px 65vh; -webkit-overflow-scrolling: touch; }
+.perf-title { margin-bottom: 8px; color: #8FA3B8; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; }
+.perf-view .song-document { min-height: 0; margin-top: 0; color: #F2F2EE; line-height: 1.5; }
+.perf-view .song-document h2 { color: #F2F2EE; }
+.perf-view .cp-chord {
+  display: block;
+  width: fit-content;
+  margin-bottom: 0.08em;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: #FFC857;
+  font-size: 0.9em;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.perf-view .cp { margin-inline-end: 0.12em; }
+.perf-section {
+  display: inline-block;
+  min-height: 0 !important;
+  margin: 0.9em 0 0.35em !important;
+  padding: 2px 10px;
+  border-radius: 4px;
+  background: #8FA3B8;
+  color: #0E1116;
+  font-family: var(--font-family);
+  font-size: 13px !important;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+}
+.perf-view .line-disclosure-content { color: #D7DDE6; }
+.perf-view .line-disclosure-actions { display: none; }
+.perf-view .line-disclosure-toggle { color: #FFC857; }
+
+.song-document .cp-word, .perf-doc .cp-word { white-space: nowrap; }
+.cp-word > .cp { margin-inline-end: 0; }
+
 }
 
 </style>
@@ -4084,6 +4282,15 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
             </button>
           </div>
         </header>
+
+        <div id="backupReminder" class="slp-info-banner backup-reminder hidden">
+          <i data-lucide="shield-alert"></i>
+          <span><strong>Back up your songs</strong><span id="backupReminderText"></span></span>
+          <div class="backup-reminder__actions">
+            <button id="backupNowBtn" class="slp-btn slp-btn--soft" type="button">Back up now</button>
+            <button id="backupLaterBtn" class="slp-link-btn" type="button">Later</button>
+          </div>
+        </div>
 
         <div id="librarySearchWrap" class="slp-search-bar hidden">
           <button id="librarySearchScopeBtn" class="slp-scope-dropdown" type="button" aria-haspopup="listbox" aria-expanded="false">
@@ -4453,12 +4660,14 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
             </button>
             <h1 id="songTitle" class="slp-header__title" dir="auto">Song</h1>
             <div class="slp-header__actions">
+              <button id="songPerformanceBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Performance mode" title="Performance mode"><i data-lucide="maximize-2"></i></button>
               <button id="songAppearanceBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Appearance"><span class="appearance-glyph" aria-hidden="true">Aa</span></button>
               <button id="songMoreBtn" class="slp-btn slp-btn--icon" type="button" aria-label="More"><i data-lucide="more-horizontal"></i></button>
             </div>
           </header>
           <div class="slp-chip-row song-chip-row">
-            <button id="songKey" class="slp-chip song-chip" type="button" aria-label="Change key"><i data-lucide="music-2"></i><span>No key</span></button>
+            <button id="songKey" class="slp-chip song-chip" type="button" aria-label="Change key"><i data-lucide="music-2"></i><span>No key</span><small id="songKeyWas" hidden></small></button>
+            <button id="songTransposeBtn" class="slp-chip song-chip song-chip--icon" type="button" aria-label="Transpose" aria-haspopup="dialog" aria-pressed="false"><i data-lucide="arrow-up-down"></i></button>
             <button id="songCategoryBtn" class="slp-chip song-chip" type="button" aria-label="Change folders"><i data-lucide="folder"></i><span>Unfiled</span></button>
             <a id="songPracticeLink" class="slp-chip song-chip hidden" href="#" target="_blank" rel="noopener noreferrer" aria-label="Practice"><i data-lucide="headphones"></i><span>Practice</span></a>
             <button id="songDetailsViewCollapse" class="slp-chip song-chip" type="button" aria-expanded="false" aria-controls="songDetailsViewPanel"><span>Details</span><svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -4466,6 +4675,7 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
           <div id="songDetailsViewPanel" class="slp-collapse__panel" hidden>
             <div class="slp-details-row"><button id="songArtist" class="slp-details-row__link" type="button" dir="auto"></button></div>
             <div id="songSecondaryMeta" class="slp-details-grid"></div>
+            <div id="songLinks" class="slp-chip-row song-links" aria-label="Song links" hidden></div>
             <div id="songEdited" class="slp-timestamp"></div>
           </div>
 
@@ -4477,6 +4687,7 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
             <button id="makeHeadingBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert header" title="Header">H</button>
             <button id="insertDisclosureBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert note" title="Note"><i data-lucide="sticky-note"></i></button>
             <button id="insertImageBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert photo" title="Photo"><i data-lucide="image-plus"></i></button>
+            <button id="insertChordBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert chord" title="Chord"><i data-lucide="music"></i></button>
             <button id="undoBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Undo" title="Undo"><i data-lucide="undo-2"></i></button>
             <button id="redoBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Redo" title="Redo"><i data-lucide="redo-2"></i></button>
             <button id="finishWritingBtn" class="slp-link-btn slp-link-btn--accent" type="button">Done</button>
@@ -4654,6 +4865,12 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
           <label class="slp-field-label" for="songSourceUrlInput">SOURCE URL (OPTIONAL)</label>
           <input id="songSourceUrlInput" class="slp-input" type="url" dir="ltr" placeholder="https://..." />
         </section>
+        <section class="slp-form-section" aria-label="Links">
+          <label class="slp-field-label" for="songAudioLinksInput">AUDIO LINKS (OPTIONAL)</label>
+          <textarea id="songAudioLinksInput" class="slp-input song-links-input" rows="2" dir="ltr" placeholder="One link per line: Spotify, YouTube Music, a voice memo..."></textarea>
+          <label class="slp-field-label" for="songVideoLinksInput">VIDEO LINKS (OPTIONAL)</label>
+          <textarea id="songVideoLinksInput" class="slp-input song-links-input" rows="2" dir="ltr" placeholder="One link per line: YouTube, Vimeo..."></textarea>
+        </section>
         <section id="songDeleteZone" class="slp-form-section" aria-label="Delete">
           <button id="deleteSongBtn" class="danger-button" type="button"><i data-lucide="trash-2"></i> Delete</button>
         </section>
@@ -4692,6 +4909,16 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
             <button type="button" class="slp-chip" data-gig-type="Private Event"><span>Private</span></button>
             <button type="button" class="slp-chip" data-gig-type="Corporate Event"><span>Corporate</span></button>
             <button type="button" class="slp-chip" data-gig-type="Kumzitz"><span>Kumzitz</span></button>
+          </div>
+          <div id="gigTemplateGroup">
+            <span class="slp-field-label">START FROM</span>
+            <div class="slp-chip-row gig-template-chips" role="group" aria-label="Starting structure">
+              <button type="button" class="slp-chip" data-gig-template="blank" aria-pressed="true"><span>Blank</span></button>
+              <button type="button" class="slp-chip" data-gig-template="wedding" aria-pressed="false"><span>Wedding</span></button>
+              <button type="button" class="slp-chip" data-gig-template="barmitzvah" aria-pressed="false"><span>Bar Mitzvah</span></button>
+              <button type="button" class="slp-chip" data-gig-template="concert" aria-pressed="false"><span>Concert</span></button>
+            </div>
+            <p id="gigTemplateHint" class="slp-subtitle gig-template-hint">An empty event. Add sections as you go.</p>
           </div>
           <label class="slp-field-label" for="gigNameInput">EVENT NAME</label>
           <input id="gigNameInput" class="slp-input" type="text" dir="auto" placeholder="Cohen Wedding" autocomplete="off">
@@ -4841,6 +5068,24 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
       </section>
     </section>
 
+    <section id="transposePopover" class="popover appearance-popover hidden" hidden aria-label="Transpose">
+      <div class="appearance-popover__title">Transpose</div>
+      <div class="slp-setting slp-setting--inline"><span class="slp-setting__title">Original key</span><span id="transposeDefaultKey" class="transpose-value">—</span></div>
+      <div class="slp-setting slp-setting--inline"><span class="slp-setting__title">Current key</span><span id="transposeCurrentKey" class="transpose-value transpose-value--current">—</span></div>
+      <div class="slp-setting slp-setting--inline">
+        <span class="slp-setting__title">Shift</span>
+        <div class="slp-stepper">
+          <button id="transposeDownBtn" type="button" aria-label="Down one semitone"><i data-lucide="minus"></i></button>
+          <output id="transposeSteps">0</output>
+          <button id="transposeUpBtn" type="button" aria-label="Up one semitone"><i data-lucide="plus"></i></button>
+        </div>
+      </div>
+      <div class="slp-setting">
+        <button id="transposeResetBtn" class="slp-btn slp-btn--soft" type="button">Back to original key</button>
+        <p id="transposeHint" class="import-note"></p>
+      </div>
+    </section>
+
     <section id="appearancePopover" class="popover appearance-popover hidden" hidden aria-label="Lyrics appearance">
       <div class="appearance-popover__title">Lyrics appearance</div>
       <div class="slp-setting slp-setting--inline">
@@ -4862,6 +5107,10 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
       <label class="slp-setting slp-setting--inline" for="headingBoldToggle">
         <span class="slp-setting__title">Bold headings</span>
         <input id="headingBoldToggle" class="slp-switch" type="checkbox" role="switch" checked />
+      </label>
+      <label class="slp-setting slp-setting--inline" for="showChordsToggle">
+        <span class="slp-setting__title">Show chords</span>
+        <input id="showChordsToggle" class="slp-switch" type="checkbox" role="switch" checked />
       </label>
       <div class="slp-setting">
         <span class="slp-setting__title">Typeface</span>
@@ -4913,7 +5162,7 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
         </button>
         <button id="exportLibraryBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="download"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Export backup</span><span class="slp-row__subtitle">Save all folders, songs, and lyrics</span></span>
+          <span class="slp-row__body"><span class="slp-row__title">Back up now</span><span id="backupStatusText" class="slp-row__subtitle">Save all folders, songs, and lyrics</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         <button id="importLibraryBtn" class="slp-row" type="button">
@@ -4941,7 +5190,7 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
         </button>
         <div class="slp-info-banner"><i data-lucide="shield-check"></i><span><strong>Automatic sync is not connected yet</strong><span>A hosted app and private provider sign-in are required before background syncing can be enabled safely.</span></span></div>
       </section>
-      <div class="slp-info-banner"><i data-lucide="hard-drive"></i><span>Your library is saved on this device. Exporting a backup protects it if the browser data is cleared.</span></div>
+      <div class="slp-info-banner"><i data-lucide="hard-drive"></i><span id="storageStatusText">Your library is saved on this device. Exporting a backup protects it if the browser data is cleared.</span></div>
       </div>
       <div id="appearanceSettingsView" class="appearance-settings-view hidden">
         <header class="slp-header">
@@ -5043,6 +5292,37 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
           <button id="cancelAppearanceBtn" class="slp-btn slp-btn--ghost" type="button">Cancel</button>
           <button id="saveAppearanceBtn" class="slp-btn slp-btn--primary" type="button">Save</button>
         </div>
+      </div>
+    </section>
+
+    <section id="performanceView" class="perf-view hidden" hidden role="dialog" aria-modal="true" aria-label="Performance mode">
+      <header id="perfBar" class="perf-bar">
+        <div class="perf-bar__row">
+          <button id="perfCloseBtn" class="perf-btn" type="button" aria-label="Exit performance mode"><i data-lucide="x"></i></button>
+          <div class="perf-key" role="group" aria-label="Key">
+            <button id="perfKeyDownBtn" class="perf-btn" type="button" aria-label="Down one semitone"><i data-lucide="minus"></i></button>
+            <span id="perfKeyPill" class="perf-key__pill">No key</span>
+            <button id="perfKeyUpBtn" class="perf-btn" type="button" aria-label="Up one semitone"><i data-lucide="plus"></i></button>
+          </div>
+          <button id="perfScrollBtn" class="perf-btn" type="button" aria-label="Start auto-scroll" aria-pressed="false"><i data-lucide="play"></i></button>
+        </div>
+        <div class="perf-bar__row perf-bar__row--tools">
+          <button id="perfSimplifyBtn" class="perf-chip" type="button" aria-pressed="false">Simple chords</button>
+          <span class="perf-group">
+            <button id="perfSmallerBtn" class="perf-chip" type="button" aria-label="Smaller text">A−</button>
+            <button id="perfLargerBtn" class="perf-chip" type="button" aria-label="Larger text">A+</button>
+          </span>
+          <span id="perfSpeedGroup" class="perf-group" hidden>
+            <button id="perfSlowerBtn" class="perf-chip" type="button" aria-label="Scroll slower">Slower</button>
+            <output id="perfSpeedOut" class="perf-speed">Speed 4</output>
+            <button id="perfFasterBtn" class="perf-chip" type="button" aria-label="Scroll faster">Faster</button>
+          </span>
+          <span id="perfAwake" class="perf-awake" hidden><i data-lucide="sun"></i>Screen stays on</span>
+        </div>
+      </header>
+      <div id="perfScroll" class="perf-scroll">
+        <div id="perfTitle" class="perf-title"></div>
+        <div id="perfDoc" class="perf-doc song-document" dir="auto"></div>
       </div>
     </section>
 
@@ -5322,7 +5602,7 @@ const STARTER_SONGS = [
 
 const els = Object.fromEntries(
   [
-    "app", "librarySearchBtn", "settingsBtn", "libraryScreenTitle", "primaryNav", "appSongsNavBtn", "appEventsNavBtn", "appNotesNavBtn", "appToolsNavBtn", "songLibraryContent", "notesWorkspace", "gigsWorkspace",
+    "app", "librarySearchBtn", "backupReminder", "backupReminderText", "backupNowBtn", "backupLaterBtn", "backupStatusText", "storageStatusText", "settingsBtn", "libraryScreenTitle", "primaryNav", "appSongsNavBtn", "appEventsNavBtn", "appNotesNavBtn", "appToolsNavBtn", "songLibraryContent", "notesWorkspace", "gigsWorkspace",
     "toolsWorkspace", "toolsHub", "toolsGrid", "toolsSettingsBtn", "toolView", "backFromToolBtn", "toolTitle", "toolBody", "toolTransport", "toolTransportBtn", "gigsHomeHeader", "gigSearchBtn", "newGigBtn", "gigSearchWrap", "gigSearchInput", "closeGigSearchBtn", "gigsToolbar", "gigListViewBtn", "gigCalendarViewBtn", "gigSortWrap", "gigSortSelect", "gigListView", "gigList", "gigListEmpty", "gigCalendarView", "previousGigMonthBtn", "nextGigMonthBtn", "gigTodayBtn", "gigCalendarMonth", "gigCalendarGrid", "selectedGigDateTitle", "selectedGigDateCount", "selectedGigDateList",
     "gigDetailView", "backToGigsBtn", "gigDetailTitle", "editGigBtn", "shareGigBtn", "gigPlanSearchBtn", "arrangeGigBtn", "gigStructureEditBtn", "gigDetailsCollapse", "gigDetailsPanel", "gigDetailsFields", "gigDetailsSummary", "gigScheduleSummary", "gigLocationSummary", "gigCustomerSummary", "gigMusicTeamSummary", "gigNotesSummary", "gigPlanSearchWrap", "gigPlanSearchScope", "gigPlanSearchInput", "closeGigPlanSearchBtn", "addGigSectionBtn", "addFirstGigSectionBtn", "gigSectionList", "gigKeyFilterBar", "gigKeyFilterLabel", "clearGigKeyFilterBtn", "gigBuilderEmpty",
     "gigFormSheet", "gigForm", "gigFormTitle", "cancelGigFormBtn", "gigDateInput", "gigEventTypeInput", "gigChuppahInput", "gigNameInput", "gigStartTimeInput", "gigEndTimeInput", "gigVenueInput", "gigAddressInput", "gigClientInput", "gigContactInput", "gigAgentInput", "gigBandInput", "gigDirectorInput", "gigChoirInput", "gigNotesInput", "saveGigBtn",
@@ -5338,7 +5618,7 @@ const els = Object.fromEntries(
     "artistSection", "artistCount", "artistList", "songsSection", "subfolderSection", "subfolderCount", "subfolderList", "attachedNotesSection", "attachedNoteCount", "attachedNoteList", "songSortSelect", "sortMenuBtn", "sortMenuLabel", "songList", "songEmptyState",
     "editSubfoldersBtn", "newSubfolderBtn",
     "songReader", "backToFolderBtn", "songTitle", "songAppearanceBtn", "songMoreBtn",
-    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeLink", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
+    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeLink", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
     "insertDisclosureBtn", "textFormatMenu", "boldTextBtn", "underlineTextBtn", "clearTextFormatBtn", "insertImageBtn", "undoBtn", "redoBtn", "finishWritingBtn",
     "imageToolbar", "imageWidthInput", "imageWidthOutput", "imageAlignLeftBtn", "imageAlignCenterBtn",
     "imageAlignRightBtn", "deleteImageBtn", "finishImageBtn",
@@ -5347,7 +5627,7 @@ const els = Object.fromEntries(
     "songTitleInput", "songTitleEnglishInput", "songTitleHebrewInput", "songTitleYiddishInput", "songAlternateTitlesInput",
     "songArtistInput", "songArtistHebrewInput", "songFeaturedArtistInput", "songComposerInput", "songLyricistInput", "songAlbumInput",
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
-    "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songSourceUrlInput",
+    "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songSourceUrlInput", "songAudioLinksInput", "songVideoLinksInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
     "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "appearancePopover", "decreaseFontBtn",
@@ -5452,6 +5732,10 @@ let folderSongPickerFolderId = null;
 let noteFolderEditMode = false;
 let noteEditMode = false;
 let songEditMode = false;
+let songAddToId = null;
+// Declared before its first use below: a const read earlier than its line throws.
+const EXPANDED_FOLDERS_KEY = "slp-expanded-folders";
+const expandedFolderIds = loadExpandedFolders();
 // Setlist key filter: view-only, per event, never saved (see gigKeyFilterFor).
 let gigKeyFilter = "";
 let gigKeyFilterFor = "";
@@ -5543,7 +5827,7 @@ function createInitialState() {
     gigNavigation: {},
     appearanceMode: "system",
     accentTheme: "teal",
-    lyricPrefs: { fontSize: 34, headingScale: 1.15, headingBold: true, font: "system", theme: "paper", alignment: "auto" },
+    lyricPrefs: { fontSize: 34, headingScale: 1.15, headingBold: true, showChords: true, font: "system", theme: "paper", alignment: "auto" },
     notePrefs: { fontSize: 18, font: "system", theme: "paper" }
   });
 }
@@ -5831,6 +6115,7 @@ function normalizeState(raw) {
       fontSize: clamp(Number(raw.lyricPrefs?.fontSize) || 34, 18, 64),
       headingScale: clamp(Number(raw.lyricPrefs?.headingScale) || 1.15, 1, 1.5),
       headingBold: raw.lyricPrefs?.headingBold !== false,
+      showChords: raw.lyricPrefs?.showChords !== false,
       font: ["system", "serif", "rounded", "verdana", "arial", "georgia", "tahoma"].includes(raw.lyricPrefs?.font) ? raw.lyricPrefs.font : "system",
       theme: ["paper", "plain", "blue", "green", "lavender", "blush", "gray"].includes(raw.lyricPrefs?.theme) ? raw.lyricPrefs.theme : "paper",
       alignment: ["auto", "left", "center", "right"].includes(raw.lyricPrefs?.alignment) ? raw.lyricPrefs.alignment : "auto"
@@ -5918,6 +6203,9 @@ function normalizeSong(song) {
     bpm: Number(song.bpm) > 0 ? Number(song.bpm) : "",
     language: song.language || "",
     sourceUrl: song.sourceUrl || "",
+    transpose: clamp(Math.round(Number(song.transpose) || 0), -11, 11),
+    audioLinks: normalizeUrlList(song.audioLinks),
+    videoLinks: normalizeUrlList(song.videoLinks),
     alternateOfId: song.alternateOfId || null,
     key: song.key || song.myKey || "",
     timeSignature: String(song.timeSignature || "").trim(),
@@ -6042,6 +6330,19 @@ function writeStorage(key, value) {
     return false;
   }
 }
+
+
+// A list of web links (from an array or text with one link per line/space), keeping only
+// http(s) addresses, without duplicates.
+function normalizeUrlList(value) {
+  const items = Array.isArray(value) ? value : String(value || "").split(/[\s,]+/);
+  const seen = new Set();
+  return items.map((item) => String(item || "").trim()).filter((item) => {
+    if (!/^https?:\/\/\S+$/i.test(item) || seen.has(item)) return false;
+    seen.add(item);
+    return true;
+  });
+}
 // Lyric pictures live in IndexedDB as Blobs, not inside the song record.
 //
 // The whole library serializes into one localStorage record (repertoire-studio-v4,
@@ -6128,6 +6429,8 @@ function blobToDataUrl(blob) {
 function serializeDocumentHtml(editor) {
   const clone = editor.cloneNode(true);
   clone.querySelectorAll("img[data-image-ref]").forEach((image) => image.removeAttribute("src"));
+  // Chords drawn above words are a display; storage keeps the raw [Am] tokens.
+  undecorateChords(clone);
   return clone.innerHTML;
 }
 
@@ -6218,6 +6521,37 @@ async function restoreBackupImages(images) {
   }
   return restored;
 }
+
+function listImageIds() {
+  return imageStoreRequest("readonly", (store) => store.getAllKeys());
+}
+
+function deleteImageBlob(id) {
+  return imageStoreRequest("readwrite", (store) => store.delete(id));
+}
+
+// Pictures removed from a song stay in the store (they may still be in an undo step), so
+// clear out the ones no song refers to any more. Runs once at launch, before anything can
+// be undone. It only runs when the library loaded with songs in it: an empty library plus
+// stored pictures more likely means the library failed to load than that the pictures are junk.
+async function cleanUnusedImages() {
+  if (!imageStoreAvailable() || !state.songs.length) return 0;
+  const inUse = new Set(state.songs.flatMap(songImageRefs));
+  let removed = 0;
+  for (const id of await listImageIds()) {
+    if (inUse.has(id)) continue;
+    try {
+      await deleteImageBlob(id);
+      const url = imageUrlCache.get(id);
+      if (url) URL.revokeObjectURL(url);
+      imageUrlCache.delete(id);
+      removed += 1;
+    } catch {
+      // Leave it for the next launch.
+    }
+  }
+  return removed;
+}
 const LIBRARY_SCOPE_LABELS = { all: "Everything", artist: "Artist", key: "Key", lyrics: "Lyrics", composer: "Composer", style: "Style · Genre" };
 
 function setLibrarySearchScope(value) {
@@ -6294,6 +6628,7 @@ function renderLibrary() {
   els.toolsWorkspace.classList.toggle("hidden", !isTools);
   els.librarySearchBtn.classList.toggle("hidden", isGigs || isTools);
   if (isGigs || isTools) return;
+  updateBackupReminder();
   if (isNotes) return;
   const rawQuery = els.librarySearchInput.value.trim();
   const query = rawQuery.toLocaleLowerCase();
@@ -6345,9 +6680,12 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
 
   roots.forEach((folder) => {
     const count = countSongsInTree(folder.id);
-    const row = document.createElement(editMode ? "div" : "button");
-    if (!editMode) row.type = "button";
-    row.className = `slp-row ${editMode ? "slp-row--editable folder-row" : ""}`;
+    const row = document.createElement("div");
+    // Browsing rows (not edit mode) split into two zones: the leading chevron opens and closes
+    // the folder's subfolders in place; everything else opens the folder.
+    const subfolders = editMode || query ? [] : childFolders(folder.id);
+    const expanded = subfolders.length > 0 && expandedFolderIds.has(folder.id);
+    row.className = `slp-row ${editMode ? "slp-row--editable folder-row" : "folder-row--accordion"}`;
     row.dataset.folderId = folder.id;
     row.innerHTML = editMode ? `
       <button class="slp-row__drag-handle folder-grip" type="button" aria-label="Move ${escapeAttribute(folder.name)}" title="Drag to move"><i data-lucide="grip-vertical"></i></button>
@@ -6356,9 +6694,11 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
       <button class="slp-btn slp-btn--icon rename-folder-btn" type="button" aria-label="Rename ${escapeAttribute(folder.name)}"><i data-lucide="pencil"></i></button>
       <button class="slp-btn slp-btn--icon delete-folder-btn danger-icon" type="button" aria-label="Delete ${escapeAttribute(folder.name)}"><i data-lucide="trash-2"></i></button>
     ` : `
-      <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(folder.name)}</span></span>
+      ${subfolders.length
+        ? `<button class="folder-expand-btn" type="button" aria-expanded="${expanded}" aria-label="${expanded ? "Hide" : "Show"} subfolders of ${escapeAttribute(folder.name)}"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
+        : `<span class="folder-expand-spacer"></span>`}
+      <button class="slp-row__body folder-open-btn" type="button"><span class="slp-row__title" dir="auto">${escapeHtml(folder.name)}</span></button>
       <span class="slp-row__count">${count}</span>
-      <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     `;
 
     if (editMode) {
@@ -6366,9 +6706,29 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
       row.querySelector(".delete-folder-btn").addEventListener("click", () => requestDeleteFolder(folder.id));
       wireFolderDrag(row, folder.id);
     } else {
-      row.addEventListener("click", () => openFolder(folder.id));
+      row.addEventListener("click", (event) => {
+        if (!event.target.closest(".folder-expand-btn")) openFolder(folder.id);
+      });
+      row.querySelector(".folder-expand-btn")?.addEventListener("click", () => {
+        if (expandedFolderIds.has(folder.id)) expandedFolderIds.delete(folder.id);
+        else expandedFolderIds.add(folder.id);
+        saveExpandedFolders();
+        renderLibrary();
+        refreshIcons();
+      });
     }
     listEl.append(row);
+    if (expanded) {
+      subfolders.forEach((child) => {
+        const childRow = document.createElement("button");
+        childRow.type = "button";
+        childRow.className = "slp-row folder-child-row";
+        childRow.dataset.folderId = child.id;
+        childRow.innerHTML = `<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(child.name)}</span></span><span class="slp-row__count">${countSongsInTree(child.id)}</span>`;
+        childRow.addEventListener("click", () => openFolder(child.id));
+        listEl.append(childRow);
+      });
+    }
   });
 
   if (editMode) {
@@ -6665,7 +7025,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
       item.innerHTML = `
         <div class="slp-row ${selectedSongId === song.id ? "selected" : ""}" role="button" tabindex="0" aria-label="Open ${escapeAttribute(visibleTitle)}">
           <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></span>
-          ${song.key ? `<button class="slp-badge--key" type="button" data-song-key="${escapeAttribute(song.key)}" aria-label="Show songs in ${escapeAttribute(song.key)}">${escapeHtml(song.key)}</button>` : ""}
+          ${song.key ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(song.key)}" aria-label="Show songs in ${escapeAttribute(song.key)}${songTranspose(song) ? `, sung in ${escapeAttribute(songCurrentKey(song))}` : ""}">${escapeHtml(songCurrentKey(song))}</button>` : ""}
           <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
       `;
@@ -6676,6 +7036,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
         if (event.target !== row) return;
         if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openSong(song.id); }
       });
+      wireSwipeAction(item, row, { label: "Add to", icon: "folder-plus", onTrigger: () => openSongAddTo(song.id) });
       els.songList.append(item);
       return;
     }
@@ -6690,7 +7051,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
           <button class="song-title-button" type="button"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></button>
           ${song.artist ? `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(song.artist)}">${escapeHtml(song.artist)}</button>` : ""}
         </div>
-        ${song.key ? `<button class="slp-badge--key" type="button" data-song-key="${escapeAttribute(song.key)}" aria-label="Show songs in ${escapeAttribute(song.key)}">${escapeHtml(song.key)}</button>` : ""}
+        ${song.key ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(song.key)}" aria-label="Show songs in ${escapeAttribute(song.key)}${songTranspose(song) ? `, sung in ${escapeAttribute(songCurrentKey(song))}` : ""}">${escapeHtml(songCurrentKey(song))}</button>` : ""}
       </div>
       ${expanded && !songReorderMode ? `<div class="song-details">
         <span><strong>Folders:</strong> ${escapeHtml(folders || "Unfiled")}</span>
@@ -6717,6 +7078,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
         if (event.target !== row) return;
         if (event.key === "Enter" || event.key === " ") { event.preventDefault(); togglePreview(); }
       });
+      wireSwipeAction(item, row, { label: "Add to", icon: "folder-plus", onTrigger: () => openSongAddTo(song.id) });
     }
     els.songList.append(item);
   });
@@ -6735,16 +7097,27 @@ function renderSong() {
   els.songTitle.textContent = song.title;
   els.songArtist.textContent = song.artist || "Unknown artist";
   els.songArtist.disabled = !song.artist;
-  const keyLabel = compactKeyLabel(song.key) || "No key";
-  els.songKey.querySelector("span").textContent = keyLabel;
+  const shift = songTranspose(song);
+  const currentKey = songCurrentKey(song);
+  els.songKey.querySelector("span").textContent = compactKeyLabel(currentKey) || "No key";
+  els.songKeyWas.hidden = !(shift && song.key);
+  els.songKeyWas.textContent = shift && song.key ? `was ${compactKeyLabel(song.key)}` : "";
   els.songKey.classList.toggle("missing", !song.key);
-  els.songKey.setAttribute("aria-label", song.key ? `Key ${fullKeyLabel(song.key)}. Change key` : "Set the key");
+  els.songKey.setAttribute("aria-label", song.key
+    ? `Key ${fullKeyLabel(currentKey)}${shift ? `, transposed from ${fullKeyLabel(song.key)}` : ""}. Change key`
+    : "Set the key");
+  // Transposing needs something to move: a key, or chords in the lyrics.
+  els.songTransposeBtn.hidden = !(song.key || songHasChords(song));
+  els.songTransposeBtn.setAttribute("aria-pressed", String(shift !== 0));
+  els.songTransposeBtn.setAttribute("aria-label", shift ? `Transposed ${transposeLabel(shift)}. Change transposition` : "Transpose");
+  if (elementIsVisible(els.transposePopover)) refreshTransposePanel(song);
   els.songEdited.textContent = `Updated ${formatDateTime(song.updatedAt)}`;
   renderSongSecondaryMeta(song);
   const practiceUrl = safeExternalUrl(song.sourceUrl);
   els.songPracticeLink.classList.toggle("hidden", !practiceUrl);
   els.songPracticeLink.href = practiceUrl || "#";
   renderSongCategoryButton(song);
+  renderSongLinks(song);
   applyLyricPrefs();
   renderDocument(song);
 }
@@ -6773,6 +7146,20 @@ function renderSongSecondaryMeta(song) {
 
 // One button standing in for where the song lives: the first folder, "+N" when there
 // are more. Tapping it opens the Add-to sheet, so it is a control, not just a label.
+// Audio and video links open in a new tab; only http(s) addresses are ever linked.
+function renderSongLinks(song) {
+  const links = [
+    ...song.audioLinks.map((url) => ({ url, icon: "headphones", kind: "Audio" })),
+    ...song.videoLinks.map((url) => ({ url, icon: "video", kind: "Video" }))
+  ].filter((link) => safeExternalUrl(link.url));
+  els.songLinks.hidden = !links.length;
+  els.songLinks.innerHTML = links.map(({ url, icon, kind }) => {
+    let host = url;
+    try { host = new URL(url).hostname.replace(/^www\./, ""); } catch { /* keep the raw address */ }
+    return `<a class="slp-chip slp-chip--link" href="${escapeAttribute(safeExternalUrl(url))}" target="_blank" rel="noopener noreferrer" aria-label="${kind} link, ${escapeAttribute(host)}"><i data-lucide="${icon}"></i><span>${escapeHtml(host)}</span></a>`;
+  }).join("");
+}
+
 function renderSongCategoryButton(song) {
   const names = song.folderIds.map((id) => folderById(id)?.name).filter(Boolean);
   const label = names.length ? `${names[0]}${names.length > 1 ? ` +${names.length - 1}` : ""}` : "Unfiled";
@@ -6807,6 +7194,7 @@ function renderDocument(song) {
     editor.dataset.songId = song.id;
     normalizeDocumentImages(editor);
     hydrateDocumentImages(editor);
+    if (!songEditMode) applyChordDisplay(editor, song);
     selectedImageFigure = null;
     els.imageToolbar.classList.add("hidden");
   }
@@ -6825,8 +7213,7 @@ function normalizeDocumentImages(editor) {
   });
 }
 
-function applyDocumentDirections(song) {
-  const editor = els.songDocument;
+function applyDocumentDirections(song, editor = els.songDocument) {
   const fallback = song.direction === "auto" ? "auto" : song.direction;
   editor.dir = fallback;
   editor.lang = resolvedDocumentDirection(song) === "rtl" ? "he" : "en";
@@ -6878,6 +7265,24 @@ function backToFolder() {
   mobileView = "folder";
   hideWritingToolbar();
   render();
+}
+
+
+// Which folders are open on the home screen (a per-device view preference).
+function loadExpandedFolders() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(EXPANDED_FOLDERS_KEY) || "[]"));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveExpandedFolders() {
+  try {
+    localStorage.setItem(EXPANDED_FOLDERS_KEY, JSON.stringify([...expandedFolderIds]));
+  } catch {
+    // Folders simply start closed next time.
+  }
 }
 function openFolderDialog(id = null, requestedParentId = null, explicitKind = null) {
   folderDialogId = id;
@@ -7010,6 +7415,8 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   els.songStatusInput.value = song.status;
   els.songDirectionInput.value = song.direction;
   els.songSourceUrlInput.value = song.sourceUrl;
+  els.songAudioLinksInput.value = song.audioLinks.join("\n");
+  els.songVideoLinksInput.value = song.videoLinks.join("\n");
   els.quickLocationForm.classList.add("hidden");
   els.songDeleteZone.hidden = isNew;
   renderSongFolderChoices(song);
@@ -7299,6 +7706,8 @@ function saveSongInfo() {
   song.status = els.songStatusInput.value;
   song.direction = els.songDirectionInput.value;
   song.sourceUrl = els.songSourceUrlInput.value.trim();
+  song.audioLinks = normalizeUrlList(els.songAudioLinksInput.value);
+  song.videoLinks = normalizeUrlList(els.songVideoLinksInput.value);
   song.folderIds = [...els.songFolderChoices.querySelectorAll("input:checked")].map((input) => input.value);
   song.updatedAt = new Date().toISOString();
   commitSongInfoFolders();
@@ -7583,6 +7992,7 @@ function applySelectedTextFormat(command, value = null) {
 // text (or Done) moves between the two states. The dock and selection popover
 // only exist while editing.
 function setSongEditMode(editing) {
+  const wasEditing = songEditMode;
   songEditMode = editing;
   els.songDocument.contentEditable = String(editing);
   els.writingToolbar.classList.toggle("hidden", !editing);
@@ -7592,9 +8002,12 @@ function setSongEditMode(editing) {
   }
   updateWritingToolbarPosition();
   if (editing) refreshIcons();
+  // Back to viewing: draw the chords above the words again (edit mode shows the raw [Am] text).
+  if (wasEditing && !editing) rerenderSongDocument();
 }
 
 function beginSongEdit(event) {
+  showRawSongDocument();
   setSongEditMode(true);
   els.songDocument.focus();
   // Put the caret where the tap landed instead of at the start of the document.
@@ -7792,6 +8205,7 @@ function applyLyricPrefs() {
   els.fontSizeOutput.textContent = prefs.fontSize;
   els.headingSizeOutput.textContent = `${Math.round(prefs.headingScale * 100)}%`;
   els.headingBoldToggle.checked = prefs.headingBold;
+  els.showChordsToggle.checked = prefs.showChords !== false;
   document.querySelectorAll("[data-lyric-font]").forEach((button) => button.classList.toggle("selected", button.dataset.lyricFont === prefs.font));
   document.querySelectorAll("[data-theme]").forEach((button) => button.classList.toggle("selected", button.dataset.theme === prefs.theme));
   const notePrefs = state.notePrefs || { fontSize: 18, font: prefs.font, theme: prefs.theme };
@@ -7801,9 +8215,12 @@ function applyLyricPrefs() {
   els.notesWorkspace.style.setProperty("--note-size", `${notePrefs.fontSize}px`);
 }
 
-function openSongAddTo() {
-  const song = currentSong();
+// Opens the Add-to sheet for a given song (swipe on a list row) or, from a click handler or
+// the lyrics screen, for the song that is open.
+function openSongAddTo(songId = null) {
+  const song = typeof songId === "string" ? state.songs.find((item) => item.id === songId) : currentSong();
   if (!song) return;
+  songAddToId = song.id;
   els.songAddToTitle.textContent = `Add “${song.title}” to`;
   renderSongAddToChoices(song);
   showOverlay(els.songAddToSheet);
@@ -7887,7 +8304,7 @@ function applySongEventChoices(song, container) {
 }
 
 function saveSongAddTo() {
-  const song = currentSong();
+  const song = state.songs.find((item) => item.id === songAddToId) || currentSong();
   if (!song) return closeOverlays();
   song.folderIds = [...els.songAddToChoices.querySelectorAll('input[data-add-to-kind="folder"]:checked')].map((input) => input.value);
   applySongEventChoices(song, els.songAddToChoices);
@@ -8087,6 +8504,7 @@ function showSongMenu() {
   const song = currentSong();
   if (!song) return;
   showActionMenu([
+    { icon: "maximize-2", label: "Performance mode", action: openPerformanceMode },
     { icon: "folder-plus", label: "Add to folder or event", action: openSongAddTo },
     { icon: "pencil", label: "Song details & folders", action: () => openSongInfo(false) },
     { icon: "share-2", label: "Share lyrics", action: shareCurrentSong },
@@ -8183,7 +8601,8 @@ function duplicateCurrentSong() {
 async function exportLibrary() {
   const payload = backupPayload(await collectBackupImages());
   downloadText(`song-list-pro-backup-${new Date().toISOString().slice(0, 10)}.json`, payload, "application/json");
-  showToast("Backup exported");
+  recordBackupMade();
+  showToast("Backup saved. Keep the file somewhere safe, like iCloud or email.");
 }
 
 function backupPayload(images = {}) {
@@ -8198,6 +8617,7 @@ async function shareCloudBackup(provider) {
     if (!navigator.canShare || navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({ title: "Song List Pro backup", text: `Save this backup in ${provider}.`, files: [file] });
+        recordBackupMade();
         showToast(`Backup sent to the share menu for ${provider}`);
         return;
       } catch (error) {
@@ -8207,6 +8627,461 @@ async function shareCloudBackup(provider) {
   }
   await exportLibrary();
   showToast(`Backup downloaded. Move it into ${provider}.`);
+}
+// Chords and transposition.
+//
+// Chords live inside the lyrics as [Am]-style tokens (ChordPro): "[Am]Modeh Ani [F]Lefanecha".
+// The stored text is always the ORIGINAL key. Transposing never rewrites it: each song keeps a
+// shift (song.transpose, in semitones) and the screen shows the chords and key moved by that
+// amount, next to the key the song started in, so "current key" and "default key" cannot be
+// confused (docs/PRODUCT_UX_DIRECTION.md, "Key Display").
+//
+// While a song is viewed, tokens are drawn as chord-over-word pairs. While it is edited (and
+// whenever it is saved) the raw tokens are what exist, so nothing here can leak into storage.
+
+const CHORD_TOKEN_SOURCE = String.raw`\[([A-G](?:#|b|♯|♭)?(?:maj|min|dim|aug|sus|add|m|M|\+|°|ø|-)?(?:\d{1,2})?(?:(?:sus|add|b|#|maj|♭|♯)\d{0,2})*(?:\/[A-G](?:#|b|♯|♭)?)?)\]`;
+const SHARP_NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const FLAT_NOTE_NAMES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+// Key names as the key picker spells them, so a transposed key still matches filters.
+const KEY_NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+const FLAT_MAJOR_ROOTS = new Set(["F", "Bb", "Eb", "Ab", "C#"]);
+const FLAT_MINOR_ROOTS = new Set(["D", "G", "C", "F", "Bb", "Eb"]);
+
+function chordTokenPattern() {
+  return new RegExp(CHORD_TOKEN_SOURCE, "g");
+}
+
+function isChordSymbol(text) {
+  return new RegExp(`^${CHORD_TOKEN_SOURCE}$`).test(`[${text}]`);
+}
+
+function noteIndexOf(note) {
+  const base = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[note[0]];
+  const accidental = /[#♯]/.test(note[1] || "") ? 1 : /[b♭]/.test(note[1] || "") ? -1 : 0;
+  return (base + accidental + 12) % 12;
+}
+
+function transposeNote(note, steps, useFlats) {
+  return (useFlats ? FLAT_NOTE_NAMES : SHARP_NOTE_NAMES)[(noteIndexOf(note) + steps + 1200) % 12];
+}
+
+// "Am7" -> "Bm7", "C/E" -> "D/F#". Only the root and a slash bass note move; the quality stays.
+function transposeChord(chord, steps, useFlats = false) {
+  if (!steps) return chord;
+  const match = /^([A-G][#b♯♭]?)(.*)$/.exec(chord);
+  if (!match) return chord;
+  let [, root, rest] = match;
+  let bass = "";
+  const slash = rest.lastIndexOf("/");
+  if (slash >= 0) {
+    bass = rest.slice(slash + 1);
+    rest = rest.slice(0, slash);
+  }
+  return `${transposeNote(root, steps, useFlats)}${rest}${bass ? `/${transposeNote(bass, steps, useFlats)}` : ""}`;
+}
+
+function parseKey(key) {
+  const match = /^([A-G][#b]?)(.*)$/.exec(String(key || "").trim());
+  return match ? { root: match[1], suffix: match[2] } : null;
+}
+
+function transposeKey(key, steps) {
+  const parsed = parseKey(key);
+  if (!parsed || !steps) return String(key || "");
+  return `${KEY_NOTE_NAMES[(noteIndexOf(parsed.root) + steps + 1200) % 12]}${parsed.suffix}`;
+}
+
+// Whether chords in this key are conventionally spelled with flats (F, B♭, Dm, Gm...).
+function keyPrefersFlats(key) {
+  const parsed = parseKey(key);
+  if (!parsed) return null;
+  const root = KEY_NOTE_NAMES[noteIndexOf(parsed.root)];
+  return /^m(?!aj)/.test(parsed.suffix.trim()) ? FLAT_MINOR_ROOTS.has(root) : FLAT_MAJOR_ROOTS.has(root);
+}
+
+function songTranspose(song) {
+  return clamp(Math.round(Number(song?.transpose) || 0), -11, 11);
+}
+
+function songCurrentKey(song) {
+  return song?.key ? transposeKey(song.key, songTranspose(song)) : "";
+}
+
+function songHasChords(song) {
+  return chordTokenPattern().test(String(song?.documentHtml || ""));
+}
+
+function transposeLabel(steps) {
+  return steps === 0 ? "Original key" : `${steps > 0 ? "+" : "−"}${Math.abs(steps)} semitone${Math.abs(steps) === 1 ? "" : "s"}`;
+}
+
+// Draw the chord tokens in the (already rendered) lyrics as a chord above the word it sits
+// on, moved by the song's shift; or, with chords hidden, keep them in the DOM out of sight.
+// Either way each token remembers its original text so undecorateChords can restore it.
+function applyChordDisplay(editor, song, options = {}) {
+  if (!songHasChords(song) || !globalThis.document?.createTreeWalker) return;
+  const steps = songTranspose(song);
+  const show = state.lyricPrefs.showChords !== false;
+  const flats = keyPrefersFlats(songCurrentKey(song)) ?? false;
+  const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) {
+    if (!walker.currentNode.parentElement?.closest(".line-disclosure")) nodes.push(walker.currentNode);
+  }
+  nodes.forEach((node) => {
+    const text = node.nodeValue;
+    const pattern = chordTokenPattern();
+    if (!pattern.test(text)) return;
+    pattern.lastIndex = 0;
+    const fragment = document.createDocumentFragment();
+    let last = 0;
+    let match;
+    while ((match = pattern.exec(text))) {
+      const before = text.slice(last, match.index);
+      // A chord in the middle of a word ("lefa[C]necha") keeps the letters before it with the
+      // pair, so the line can never break inside the word.
+      const fragmentBefore = show ? /\S+$/.exec(before)?.[0] || "" : "";
+      if (before.length > fragmentBefore.length) fragment.append(before.slice(0, before.length - fragmentBefore.length));
+      const chord = match[1];
+      if (!show) {
+        const off = document.createElement("span");
+        off.className = "cp-off";
+        off.dataset.chord = chord;
+        off.hidden = true;
+        fragment.append(off);
+        last = pattern.lastIndex;
+        continue;
+      }
+      // The chord sits over the word that follows it (up to the next chord or space).
+      const following = /^[^\s[]+/.exec(text.slice(pattern.lastIndex))?.[0] || "";
+      const pair = document.createElement("span");
+      pair.className = "cp";
+      pair.dataset.chord = chord;
+      if (!following) pair.dataset.empty = "1";
+      const chordEl = document.createElement("span");
+      chordEl.className = "cp-chord";
+      const shown = transposeChord(chord, steps, flats);
+      chordEl.textContent = options.simplify ? simplifyChord(shown) : shown;
+      const lyricEl = document.createElement("span");
+      lyricEl.className = "cp-lyric";
+      lyricEl.textContent = following || "\u00a0";
+      pair.append(chordEl, lyricEl);
+      if (fragmentBefore) {
+        const word = document.createElement("span");
+        word.className = "cp-word";
+        word.append(fragmentBefore, pair);
+        fragment.append(word);
+      } else {
+        fragment.append(pair);
+      }
+      last = pattern.lastIndex + following.length;
+      pattern.lastIndex = last;
+    }
+    if (last < text.length) fragment.append(text.slice(last));
+    node.replaceWith(fragment);
+  });
+}
+
+// The exact inverse of applyChordDisplay, used whenever lyrics are saved or edited.
+function undecorateChords(root) {
+  root.querySelectorAll(".cp-word").forEach((word) => word.replaceWith(...word.childNodes));
+  root.querySelectorAll(".cp").forEach((pair) => {
+    const word = pair.dataset.empty ? "" : pair.querySelector(".cp-lyric")?.textContent || "";
+    pair.replaceWith(document.createTextNode(`[${pair.dataset.chord}]${word}`));
+  });
+  root.querySelectorAll(".cp-off").forEach((off) => off.replaceWith(document.createTextNode(`[${off.dataset.chord}]`)));
+  root.normalize();
+}
+
+// Put the open song's lyrics back on screen from storage, with chords drawn (used after Done).
+function rerenderSongDocument() {
+  const song = currentSong();
+  if (!song || songEditMode) return;
+  const editor = els.songDocument;
+  editor.innerHTML = song.documentHtml || "";
+  normalizeDocumentImages(editor);
+  hydrateDocumentImages(editor);
+  applyChordDisplay(editor, song);
+  applyDocumentDirections(song);
+}
+
+// Editing works on the raw text so a chord is just typed characters in the original key.
+function showRawSongDocument() {
+  const song = currentSong();
+  if (!song) return;
+  const editor = els.songDocument;
+  if (!editor.querySelector(".cp, .cp-off")) return;
+  editor.innerHTML = song.documentHtml || "";
+  normalizeDocumentImages(editor);
+  hydrateDocumentImages(editor);
+  applyDocumentDirections(song);
+  if (songTranspose(song)) showToast(`Editing chords in the original key${song.key ? ` (${song.key})` : ""}`);
+}
+
+function insertChordToken() {
+  els.songDocument.focus();
+  restoreEditorSelection();
+  pushUndoSnapshot();
+  document.execCommand("insertText", false, "[]");
+  globalThis.getSelection?.()?.modify?.("move", "backward", "character");
+  syncSongDocument();
+}
+
+// ---------- Transpose panel ----------
+
+function openTransposePanel() {
+  const song = currentSong();
+  if (!song) return;
+  setElementVisible(els.appearancePopover, false);
+  setElementVisible(els.actionMenu, false);
+  const opening = !elementIsVisible(els.transposePopover);
+  if (opening) {
+    refreshTransposePanel(song);
+    positionFloatingMenu(els.transposePopover, els.songTransposeBtn);
+  }
+  setElementVisible(els.transposePopover, opening);
+  refreshIcons();
+}
+
+function refreshTransposePanel(song = currentSong()) {
+  if (!song) return;
+  const steps = songTranspose(song);
+  els.transposeDefaultKey.textContent = song.key ? compactKeyLabel(song.key) : "Not set";
+  els.transposeCurrentKey.textContent = song.key ? compactKeyLabel(songCurrentKey(song)) : "—";
+  els.transposeSteps.textContent = steps === 0 ? "0" : `${steps > 0 ? "+" : "−"}${Math.abs(steps)}`;
+  els.transposeResetBtn.disabled = steps === 0;
+  els.transposeHint.textContent = songHasChords(song)
+    ? "Chords and the key move together. The lyrics' saved chords stay in the original key."
+    : song.key ? "This song has no chords yet; only its key moves." : "Set a key on the song to see the new key.";
+}
+
+function changeTranspose(delta) {
+  const song = currentSong();
+  if (!song) return;
+  song.transpose = delta === null ? 0 : clamp(songTranspose(song) + delta, -11, 11);
+  persist();
+  renderSong();
+  refreshTransposePanel(song);
+  refreshIcons();
+}
+// Performance mode: a dark, high-contrast, full-screen view of one song for the stage.
+//
+// It draws the same lyrics and chords as the lyrics page (read-only, from the saved text) with
+// bigger amber chords, section tags, a key stepper, optional auto-scroll and simplified chords,
+// and asks the screen to stay awake. Nothing here edits the song except the key shift, which is
+// the song's ordinary transpose setting.
+
+const PERF_PREFS_KEY = "slp-perf-prefs";
+const PERF_SPEEDS = [12, 20, 30, 42, 56, 72, 90, 112, 140, 170]; // pixels per second, speed 1-10
+const PERF_SECTION_LABEL = /^\[?\s*((?:pre-?\s?)?(?:intro|verse|chorus|bridge|tag|outro|interlude|solo|refrain|coda|instrumental|hook|ending|turnaround)[^\]]{0,24}?)\s*\]?:?$/i;
+
+let performanceActive = false;
+let perfPrefs = loadPerfPrefs();
+let perfWakeLock = null;
+let perfScrolling = false;
+let perfFrame = 0;
+let perfPointer = null;
+
+function loadPerfPrefs() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PERF_PREFS_KEY) || "{}");
+    return { simplify: saved.simplify === true, speed: clamp(Math.round(Number(saved.speed) || 4), 1, 10) };
+  } catch {
+    return { simplify: false, speed: 4 };
+  }
+}
+
+function savePerfPrefs() {
+  try {
+    localStorage.setItem(PERF_PREFS_KEY, JSON.stringify(perfPrefs));
+  } catch {
+    // Settings simply reset next time.
+  }
+}
+
+// Am7 -> Am, Cmaj7 -> C, Dsus4 -> D, G/B -> G, Bdim -> Bdim. Just the root and whether it is
+// minor (or diminished), for a singer who only needs the basic shape.
+function simplifyChord(chord) {
+  const match = /^([A-G][#b♯♭]?)(.*)$/.exec(chord);
+  if (!match) return chord;
+  const [, root, rest] = match;
+  const quality = rest.split("/")[0];
+  if (/^(dim|°|ø)/.test(quality)) return `${root}dim`;
+  if (/^m(?!aj)/.test(quality) || /^min/.test(quality) || /^-/.test(quality)) return `${root}m`;
+  return root;
+}
+
+// Section lines ("[Verse]", "Chorus:", or a heading) become small tags you can find at a glance.
+function tagSectionLabels(root) {
+  [...root.children].forEach((line) => {
+    if (line.tagName === "FIGURE" || line.querySelector(".cp, .line-disclosure")) return;
+    const text = line.textContent.trim();
+    const label = line.tagName === "H2" ? text : PERF_SECTION_LABEL.exec(text)?.[1];
+    if (!label) return;
+    line.textContent = label.replace(/\s+/g, " ").toUpperCase();
+    line.className = "perf-section";
+  });
+}
+
+function renderPerformanceDocument() {
+  const song = currentSong();
+  if (!song) return;
+  const prefs = state.lyricPrefs;
+  const view = els.performanceView;
+  view.className = `perf-view font-${prefs.font}`;
+  view.style.setProperty("--lyric-size", `${prefs.fontSize}px`);
+  view.style.setProperty("--heading-scale", prefs.headingScale);
+  view.style.setProperty("--heading-weight", prefs.headingBold ? "700" : "500");
+  const scroll = els.perfScroll.scrollTop;
+  els.perfDoc.innerHTML = song.documentHtml || "";
+  els.perfDoc.querySelectorAll("[contenteditable]").forEach((node) => node.setAttribute("contenteditable", "false"));
+  normalizeDocumentImages(els.perfDoc);
+  hydrateDocumentImages(els.perfDoc);
+  applyChordDisplay(els.perfDoc, song, { simplify: perfPrefs.simplify });
+  tagSectionLabels(els.perfDoc);
+  applyDocumentDirections(song, els.perfDoc);
+  els.perfDoc.style.textAlign = prefs.alignment === "auto" ? "" : prefs.alignment;
+  els.perfScroll.scrollTop = scroll;
+
+  els.perfTitle.textContent = [song.title, song.artist].filter(Boolean).join(" · ");
+  const shift = songTranspose(song);
+  const key = songCurrentKey(song);
+  els.perfKeyPill.innerHTML = key
+    ? `${escapeHtml(compactKeyLabel(key))}${shift ? ` <small>was ${escapeHtml(compactKeyLabel(song.key))}</small>` : ""}`
+    : (shift ? escapeHtml(transposeLabel(shift)) : "No key");
+  els.perfSimplifyBtn.setAttribute("aria-pressed", String(perfPrefs.simplify));
+  els.perfSpeedOut.textContent = `Speed ${perfPrefs.speed}`;
+}
+
+async function requestPerformanceWakeLock() {
+  try {
+    if (!globalThis.navigator?.wakeLock) return;
+    perfWakeLock = await navigator.wakeLock.request("screen");
+    els.perfAwake.hidden = false;
+    perfWakeLock.addEventListener("release", () => { els.perfAwake.hidden = true; });
+  } catch {
+    els.perfAwake.hidden = true;
+  }
+}
+
+function openPerformanceMode() {
+  if (!currentSong()) return;
+  closeOverlays();
+  performanceActive = true;
+  els.performanceView.hidden = false;
+  els.performanceView.classList.remove("hidden");
+  document.body.classList.add("perf-open");
+  els.perfScroll.scrollTop = 0;
+  renderPerformanceDocument();
+  refreshIcons();
+  requestPerformanceWakeLock();
+  els.perfCloseBtn.focus();
+}
+
+function closePerformanceMode() {
+  if (!performanceActive) return;
+  performanceActive = false;
+  stopPerformanceScroll();
+  els.performanceView.hidden = true;
+  els.performanceView.classList.add("hidden");
+  document.body.classList.remove("perf-open");
+  perfWakeLock?.release?.().catch?.(() => {});
+  perfWakeLock = null;
+  els.perfAwake.hidden = true;
+  // The lyrics page may have shifted keys while we were away.
+  renderSong();
+}
+
+function startPerformanceScroll() {
+  perfScrolling = true;
+  els.perfScrollBtn.setAttribute("aria-pressed", "true");
+  els.perfScrollBtn.setAttribute("aria-label", "Pause auto-scroll");
+  els.perfScrollBtn.innerHTML = '<i data-lucide="pause"></i>';
+  els.perfSpeedGroup.hidden = false;
+  refreshIcons();
+  let position = els.perfScroll.scrollTop;
+  let last = performance.now();
+  const tick = (now) => {
+    if (!perfScrolling) return;
+    // Keep our own running position: some browsers round scrollTop, which would stall slow speeds.
+    position += PERF_SPEEDS[perfPrefs.speed - 1] * ((now - last) / 1000);
+    last = now;
+    els.perfScroll.scrollTop = position;
+    if (els.perfScroll.scrollTop + els.perfScroll.clientHeight >= els.perfScroll.scrollHeight - 1) {
+      stopPerformanceScroll();
+      return;
+    }
+    perfFrame = requestAnimationFrame(tick);
+  };
+  perfFrame = requestAnimationFrame(tick);
+}
+
+function stopPerformanceScroll() {
+  perfScrolling = false;
+  cancelAnimationFrame(perfFrame);
+  if (!els.perfScrollBtn) return;
+  els.perfScrollBtn.setAttribute("aria-pressed", "false");
+  els.perfScrollBtn.setAttribute("aria-label", "Start auto-scroll");
+  els.perfScrollBtn.innerHTML = '<i data-lucide="play"></i>';
+  els.perfSpeedGroup.hidden = true;
+  refreshIcons();
+}
+
+function pagePerformanceScroll(direction) {
+  const reduced = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  els.perfScroll.scrollBy({ top: direction * els.perfScroll.clientHeight * 0.85, behavior: reduced ? "auto" : "smooth" });
+}
+
+function initPerformanceUi() {
+  els.songPerformanceBtn.addEventListener("click", openPerformanceMode);
+  els.perfCloseBtn.addEventListener("click", closePerformanceMode);
+  els.perfKeyDownBtn.addEventListener("click", () => { changeTranspose(-1); renderPerformanceDocument(); });
+  els.perfKeyUpBtn.addEventListener("click", () => { changeTranspose(1); renderPerformanceDocument(); });
+  els.perfScrollBtn.addEventListener("click", () => (perfScrolling ? stopPerformanceScroll() : startPerformanceScroll()));
+  els.perfSimplifyBtn.addEventListener("click", () => {
+    perfPrefs.simplify = !perfPrefs.simplify;
+    savePerfPrefs();
+    renderPerformanceDocument();
+  });
+  const adjustSize = (delta) => {
+    state.lyricPrefs.fontSize = clamp(state.lyricPrefs.fontSize + delta, 18, 64);
+    persist();
+    renderPerformanceDocument();
+  };
+  els.perfSmallerBtn.addEventListener("click", () => adjustSize(-2));
+  els.perfLargerBtn.addEventListener("click", () => adjustSize(2));
+  const adjustSpeed = (delta) => {
+    perfPrefs.speed = clamp(perfPrefs.speed + delta, 1, 10);
+    savePerfPrefs();
+    els.perfSpeedOut.textContent = `Speed ${perfPrefs.speed}`;
+  };
+  els.perfSlowerBtn.addEventListener("click", () => adjustSpeed(-1));
+  els.perfFasterBtn.addEventListener("click", () => adjustSpeed(1));
+
+  // Tap the top of the lyrics to page up, the bottom to page down, the middle to hide or show
+  // the toolbar. Anything that moves or lingers is a scroll or a press, not a tap.
+  els.perfScroll.addEventListener("pointerdown", (event) => {
+    perfPointer = { x: event.clientX, y: event.clientY, at: performance.now() };
+    if (perfScrolling) stopPerformanceScroll();
+  });
+  els.perfScroll.addEventListener("pointerup", (event) => {
+    const start = perfPointer;
+    perfPointer = null;
+    if (!start || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 10 || performance.now() - start.at > 450) return;
+    if (event.target.closest("button, a, .line-disclosure")) return;
+    const bounds = els.perfScroll.getBoundingClientRect();
+    const share = (event.clientY - bounds.top) / bounds.height;
+    if (share < 0.3) pagePerformanceScroll(-1);
+    else if (share > 0.7) pagePerformanceScroll(1);
+    else els.performanceView.classList.toggle("bar-hidden");
+  });
+  els.perfDoc.addEventListener("click", (event) => {
+    if (event.target.closest(".line-disclosure")) handleLineDisclosureClick(event, els.perfDoc, () => {});
+  });
+  document.addEventListener("visibilitychange", () => {
+    // The browser drops a wake lock when the page is hidden; ask again on return.
+    if (performanceActive && document.visibilityState === "visible" && (!perfWakeLock || perfWakeLock.released)) requestPerformanceWakeLock();
+  });
 }
 function applyAppAppearance() {
   const mode = state.appearanceMode || "system";
@@ -8235,6 +9110,7 @@ function showSettingsMain(title = "Settings & Backup") {
   els.appearanceSettingsView.classList.add("hidden");
   els.settingsTitle.textContent = title;
   appearanceDraft = null;
+  refreshBackupStatus();
 }
 
 function openAppearanceSettings() {
@@ -8372,6 +9248,94 @@ function printSongIndex() {
   if (!popup) return showToast("Please allow the print window");
   popup.document.write(`<!doctype html><html><head><title>Song List Pro Index</title><style>body{font-family:system-ui;padding:30px;color:#1d2525}h1{font-size:24px}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:9px;border-bottom:1px solid #ddd;font-size:13px}th{font-size:11px;text-transform:uppercase;color:#667}</style></head><body><h1>Song List Pro</h1><p>${state.songs.length} songs</p><table><thead><tr><th>Song</th><th>Artist</th><th>Key</th><th>Folders</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=()=>window.print()<\/script></body></html>`);
   popup.document.close();
+}
+
+
+// ---------- Backup reminders ----------
+// Songs live only in this browser's storage, so a backup file is the only safety net. The
+// app keeps a small per-device note of when one was last made (not part of backups) and
+// nudges when it has been a while. Nothing is ever uploaded.
+const BACKUP_META_KEY = "slp-backup-meta";
+const BACKUP_FIRST_REMINDER_DAYS = 2;
+const BACKUP_REPEAT_DAYS = 7;
+const BACKUP_SNOOZE_DAYS = 3;
+const DAY_MS = 86400000;
+
+function loadBackupMeta() {
+  try {
+    const meta = JSON.parse(localStorage.getItem(BACKUP_META_KEY) || "{}");
+    if (!meta.firstSeenAt) {
+      meta.firstSeenAt = Date.now();
+      saveBackupMeta(meta);
+    }
+    return meta;
+  } catch {
+    return { firstSeenAt: Date.now() };
+  }
+}
+
+function saveBackupMeta(meta) {
+  try {
+    localStorage.setItem(BACKUP_META_KEY, JSON.stringify(meta));
+  } catch {
+    // The reminder just starts over next time.
+  }
+}
+
+function recordBackupMade() {
+  const meta = loadBackupMeta();
+  meta.lastBackupAt = Date.now();
+  meta.snoozedUntil = 0;
+  saveBackupMeta(meta);
+  updateBackupReminder();
+  refreshBackupStatus();
+}
+
+function snoozeBackupReminder() {
+  const meta = loadBackupMeta();
+  meta.snoozedUntil = Date.now() + BACKUP_SNOOZE_DAYS * DAY_MS;
+  saveBackupMeta(meta);
+  updateBackupReminder();
+}
+
+function backupAgeLabel(meta) {
+  if (!meta.lastBackupAt) return "Never backed up";
+  const days = Math.floor((Date.now() - meta.lastBackupAt) / DAY_MS);
+  if (days <= 0) return "Backed up today";
+  return days === 1 ? "Last backup yesterday" : `Last backup ${days} days ago`;
+}
+
+function backupIsOverdue(meta = loadBackupMeta()) {
+  if (!state.songs.length) return false;
+  if (meta.snoozedUntil && Date.now() < meta.snoozedUntil) return false;
+  const since = Date.now() - (meta.lastBackupAt || meta.firstSeenAt);
+  return since >= (meta.lastBackupAt ? BACKUP_REPEAT_DAYS : BACKUP_FIRST_REMINDER_DAYS) * DAY_MS;
+}
+
+function updateBackupReminder() {
+  if (!els.backupReminder) return;
+  const meta = loadBackupMeta();
+  const show = backupIsOverdue(meta);
+  els.backupReminder.classList.toggle("hidden", !show);
+  if (show) els.backupReminderText.textContent = meta.lastBackupAt ? `${backupAgeLabel(meta)}. Save a copy of your songs.` : "Your songs are only on this device. Save a backup copy.";
+}
+
+// Settings & Backup: the Export row says how old the last backup is, and a line under the
+// cards says whether the browser has agreed to keep this app's storage.
+async function refreshBackupStatus() {
+  const meta = loadBackupMeta();
+  if (els.backupStatusText) els.backupStatusText.textContent = backupAgeLabel(meta);
+  els.exportLibraryBtn?.classList.toggle("needs-attention", backupIsOverdue({ ...meta, snoozedUntil: 0 }));
+  if (!els.storageStatusText) return;
+  let persisted = null;
+  try {
+    persisted = await globalThis.navigator?.storage?.persisted?.();
+  } catch {
+    persisted = null;
+  }
+  els.storageStatusText.textContent = persisted === true
+    ? "Your browser has agreed to keep this app's storage. Backups are still the best protection."
+    : "Your songs are saved on this device. If you clear this site's data or delete the app, they are gone, so keep a backup.";
 }
 function renderGigs() {
   if (workspaceMode !== "gigs") {
@@ -8638,7 +9602,7 @@ function gigSetMarkup(set) {
 function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const song = state.songs.find((candidate) => candidate.id === item.songId);
   if (!song) return "";
-  const songKey = item.keyOverride || song.key;
+  const songKey = item.keyOverride || songCurrentKey(song) || song.key;
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("item", item.id, item.setId, `Move ${song.title}`) : "";
   const moreMenu = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item danger-icon" type="button" data-remove-gig-item="${item.id}"><i data-lucide="list-x"></i><span>Remove from this event</span></button>`, `More options for ${song.title}`) : "";
   return `<div class="slp-row gig-song-reference ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""}" style="padding-inline-start:${isDirect ? "30px" : "50px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}">
@@ -8808,6 +9772,9 @@ function openNewGigForm(date = state.gigNavigation.selectedDate || todayDateStri
   els.gigFormTitle.textContent = "New Event";
   els.gigDateInput.value = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : todayDateString();
   els.gigChuppahInput.value = "no";
+  els.gigTemplateGroup.hidden = false;
+  gigTemplateChosenByUser = false;
+  setGigFormTemplate("blank");
   resetGigFormAccordion();
   updateGigFormSummaries();
   showOverlay(els.gigFormSheet);
@@ -8835,6 +9802,7 @@ function openEditGigForm() {
   els.gigDirectorInput.value = gig.musicalDirector;
   els.gigChoirInput.value = gig.choir;
   els.gigNotesInput.value = gig.notes;
+  els.gigTemplateGroup.hidden = true;
   resetGigFormAccordion();
   updateGigFormSummaries();
   showOverlay(els.gigFormSheet);
@@ -8875,6 +9843,44 @@ function updateGigRecord(gigId, values) {
   return gig;
 }
 
+// Starting structures for a new event. Section names are ordinary sections afterwards:
+// rename, reorder or delete them like any other.
+const GIG_TEMPLATES = {
+  blank: { label: "Blank", hint: "An empty event. Add sections as you go.", sections: () => [] },
+  wedding: {
+    label: "Wedding",
+    hint: "Kabbalas Panim, Chuppah, Meal, First Dance, Second Dance, Slow Set, Kumzitz, Final Dance.",
+    sections: (hasChuppah) => ["Kabbalas Panim", ...(hasChuppah ? ["Chuppah"] : []), "Meal", "First Dance", "Second Dance", "Slow Set", "Kumzitz", "Final Dance"]
+  },
+  barmitzvah: {
+    label: "Bar Mitzvah",
+    hint: "Kabbalas Panim, Meal, Dancing, Slow Set, Kumzitz.",
+    sections: () => ["Kabbalas Panim", "Meal", "Dancing", "Slow Set", "Kumzitz"]
+  },
+  concert: { label: "Concert", hint: "Opening, Main Set, Encore.", sections: () => ["Opening", "Main Set", "Encore"] }
+};
+let gigFormTemplate = "blank";
+let gigTemplateChosenByUser = false;
+
+function setGigFormTemplate(id, byUser = false) {
+  if (!GIG_TEMPLATES[id]) return;
+  gigFormTemplate = id;
+  if (byUser) gigTemplateChosenByUser = true;
+  els.gigTemplateGroup.querySelectorAll("[data-gig-template]").forEach((chip) => chip.setAttribute("aria-pressed", String(chip.dataset.gigTemplate === id)));
+  els.gigTemplateHint.textContent = GIG_TEMPLATES[id].hint;
+}
+
+// Until a structure is picked by hand, follow what the event type says.
+function suggestGigTemplate() {
+  if (gigTemplateChosenByUser || editingGigId) return;
+  const type = els.gigEventTypeInput.value.toLocaleLowerCase();
+  setGigFormTemplate(/wedding|chasuna|chatuna/.test(type) ? "wedding" : /bar mitzvah|bat mitzvah|bris|sheva/.test(type) ? "barmitzvah" : /concert|show/.test(type) ? "concert" : "blank");
+}
+
+function applyGigTemplate(gig, templateId) {
+  (GIG_TEMPLATES[templateId] || GIG_TEMPLATES.blank).sections(gig.hasChuppah).forEach((name) => createGigSectionRecord(gig.id, name));
+}
+
 function saveGig(event) {
   event.preventDefault();
   if (!els.gigDateInput.value) {
@@ -8899,8 +9905,10 @@ function saveGig(event) {
     status: state.gigs.find((item) => item.id === editingGigId)?.status || "draft",
     notes: els.gigNotesInput.value
   };
+  const creating = !editingGigId;
   const gig = editingGigId ? updateGigRecord(editingGigId, values) : createGigRecord(values);
   if (!gig) return showToast("This event could not be saved");
+  if (creating) applyGigTemplate(gig, gigFormTemplate);
   workspaceMode = "gigs";
   state.gigNavigation.gigId = gig.id;
   state.gigNavigation.selectedDate = gig.date;
@@ -9273,7 +10281,7 @@ function renderNotes() {
       `;
       if (noteFolderEditMode) {
         row.querySelector(".rename-note-folder-btn").addEventListener("click", () => renameNoteFolder(folder.id));
-        row.querySelector(".delete-note-folder-btn").addEventListener("click", () => deleteNoteFolder(folder.id));
+        row.querySelector(".delete-note-folder-btn").addEventListener("click", () => requestDeleteNoteFolder(folder.id));
         wireNoteFolderDrag(row, folder.id);
       } else {
         row.addEventListener("click", () => openNoteFolder(folder.id));
@@ -9634,19 +10642,54 @@ function handleNoteChecklistClick(event) {
   autosaveOpenNote();
 }
 
-function openNoteFolderDialog() {
-  const currentParentId = selectedNoteFolderId === "all" ? "" : selectedNoteFolderId;
-  els.noteFolderNameInput.value = "";
-  els.noteFolderParentInput.innerHTML = `<option value="">Notes (top level)</option>${state.noteFolders.map((folder) => `<option value="${folder.id}" ${folder.id === currentParentId ? "selected" : ""}>${escapeHtml(noteFolderLabel(folder))}</option>`).join("")}`;
+let noteFolderDialogId = null;
+
+// Folders under `id` (so a folder can't be moved inside itself).
+function noteFolderDescendantIds(id) {
+  const ids = new Set();
+  const collect = (parentId) => state.noteFolders.filter((folder) => folder.parentId === parentId).forEach((folder) => {
+    ids.add(folder.id);
+    collect(folder.id);
+  });
+  collect(id);
+  return ids;
+}
+
+function openNoteFolderDialog(id = null) {
+  noteFolderDialogId = id;
+  const folder = id ? state.noteFolders.find((item) => item.id === id) : null;
+  const currentParentId = folder ? folder.parentId || "" : selectedNoteFolderId === "all" ? "" : selectedNoteFolderId;
+  const blocked = folder ? new Set([folder.id, ...noteFolderDescendantIds(folder.id)]) : new Set();
+  els.noteFolderDialogTitle.textContent = folder ? "Rename Folder" : "New Folder";
+  els.noteFolderNameInput.value = folder?.name || "";
+  els.noteFolderParentInput.innerHTML = `<option value="">Notes (top level)</option>${state.noteFolders.filter((item) => !blocked.has(item.id)).map((item) => `<option value="${item.id}" ${item.id === currentParentId ? "selected" : ""}>${escapeHtml(noteFolderLabel(item))}</option>`).join("")}`;
   showOverlay(els.noteFolderDialog);
   requestAnimationFrame(() => els.noteFolderNameInput.focus());
 }
 
+// New folder and rename share one dialog (same as Categories folders).
 function createNoteFolder() {
   const name = els.noteFolderNameInput.value.trim();
   if (!name) return showToast("Enter a folder name");
   const parentId = els.noteFolderParentInput.value || null;
-  if (state.noteFolders.some((folder) => folder.parentId === parentId && folder.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return showToast("That notes folder already exists here");
+  const editing = noteFolderDialogId ? state.noteFolders.find((item) => item.id === noteFolderDialogId) : null;
+  if (state.noteFolders.some((folder) => folder.id !== editing?.id && folder.parentId === parentId && folder.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return showToast("That notes folder already exists here");
+  if (editing) {
+    const oldKey = editing.parentId || ROOT_ORDER_KEY;
+    const newKey = parentId || ROOT_ORDER_KEY;
+    editing.name = name;
+    if (oldKey !== newKey) {
+      state.noteFolderOrder[oldKey] = (state.noteFolderOrder[oldKey] || []).filter((item) => item !== editing.id);
+      if (!state.noteFolderOrder[newKey]) state.noteFolderOrder[newKey] = [];
+      state.noteFolderOrder[newKey].push(editing.id);
+      editing.parentId = parentId;
+    }
+    noteFolderDialogId = null;
+    closeOverlays();
+    render();
+    showToast("Folder updated");
+    return;
+  }
   const folder = { id: makeId(), name, parentId, color: COLORS[state.noteFolders.length % COLORS.length], createdAt: new Date().toISOString() };
   state.noteFolders.push(folder);
   const key = parentId || ROOT_ORDER_KEY;
@@ -9658,11 +10701,18 @@ function createNoteFolder() {
 }
 
 function renameNoteFolder(id) {
+  openNoteFolderDialog(id);
+}
+
+// Deleting asks first, like Categories folders do.
+function requestDeleteNoteFolder(id) {
   const folder = state.noteFolders.find((item) => item.id === id);
-  const name = window.prompt("Rename notes folder", folder?.name || "");
-  if (!folder || !name?.trim()) return;
-  folder.name = name.trim();
-  render();
+  if (!folder) return;
+  if (noteChildFolders(id).length) return showToast("Move or delete its subfolders first");
+  openConfirm("Delete folder?", `“${folder.name}” will be removed. Its notes are kept in All Notes.`, "Delete folder", () => {
+    deleteNoteFolder(id);
+    closeOverlays();
+  });
 }
 
 function deleteNoteFolder(id) {
@@ -11760,7 +12810,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.noteFolderDialog, els.appearancePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -12181,6 +13231,87 @@ function gigDragRowSelector(type) {
   return type === "section" ? ".gig-section-card" : type === "set" ? ".gig-set-card" : ".gig-song-reference";
 }
 
+// ---------- Swipe-to-act rows ----------
+// Drag a row sideways (touch or mouse) to reveal an action behind it; past the threshold the
+// action runs and the row springs back. The row keeps vertical scrolling, and a swipe never
+// counts as a tap. ArrowLeft on a focused row does the same thing for keyboard users.
+function wireSwipeAction(item, row, { label, icon, onTrigger }) {
+  // Needs pointer events (every current phone and desktop browser has them).
+  if (!globalThis.PointerEvent) return;
+  const reveal = document.createElement("div");
+  reveal.className = "swipe-action";
+  reveal.setAttribute("aria-hidden", "true");
+  reveal.innerHTML = `<i data-lucide="${icon}"></i><span>${escapeHtml(label)}</span>`;
+  item.prepend(reveal);
+  item.classList.add("swipeable");
+  const THRESHOLD = 72;
+  const LIMIT = 132;
+  let startX = 0;
+  let startY = 0;
+  let dx = 0;
+  let swiping = false;
+  let active = false;
+  let swallowClick = false;
+
+  const settle = () => {
+    row.style.transition = "transform 180ms cubic-bezier(.2,.8,.2,1)";
+    row.style.transform = "";
+    reveal.style.opacity = "0";
+    setTimeout(() => { row.style.transition = ""; }, 200);
+  };
+  row.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    active = true;
+    swiping = false;
+    dx = 0;
+    startX = event.clientX;
+    startY = event.clientY;
+  });
+  row.addEventListener("pointermove", (event) => {
+    if (!active) return;
+    const moveX = event.clientX - startX;
+    const moveY = event.clientY - startY;
+    if (!swiping) {
+      if (Math.abs(moveY) > 12 && Math.abs(moveY) > Math.abs(moveX)) { active = false; return; }
+      if (moveX > -10 || Math.abs(moveX) < Math.abs(moveY) * 1.5) return;
+      swiping = true;
+      row.setPointerCapture?.(event.pointerId);
+      row.style.transition = "none";
+      row.classList.add("swiping");
+    }
+    dx = Math.max(-LIMIT, Math.min(0, moveX));
+    row.style.transform = `translateX(${dx}px)`;
+    reveal.style.opacity = String(Math.min(1, Math.abs(dx) / THRESHOLD));
+    reveal.classList.toggle("armed", Math.abs(dx) >= THRESHOLD);
+  });
+  const end = (cancelled) => {
+    if (!active) return;
+    active = false;
+    if (!swiping) return;
+    swiping = false;
+    swallowClick = true;
+    setTimeout(() => { swallowClick = false; }, 60);
+    row.classList.remove("swiping");
+    reveal.classList.remove("armed");
+    const fire = !cancelled && Math.abs(dx) >= THRESHOLD;
+    settle();
+    if (fire) onTrigger();
+  };
+  row.addEventListener("pointerup", () => end(false));
+  row.addEventListener("pointercancel", () => end(true));
+  row.addEventListener("click", (event) => {
+    if (!swallowClick) return;
+    event.stopPropagation();
+    event.preventDefault();
+  }, true);
+  row.addEventListener("keydown", (event) => {
+    if (event.target === row && event.key === "ArrowLeft") {
+      event.preventDefault();
+      onTrigger();
+    }
+  });
+}
+
 function folderMatchesQuery(folder, query, scope = "all") {
   if (!query) return true;
   if (scope === "all" && folder.name.toLocaleLowerCase().includes(query)) return true;
@@ -12249,6 +13380,8 @@ function textFromDocumentHtml(html) {
     .replaceAll("&gt;", ">")
     .replaceAll("&quot;", '"')
     .replaceAll("&#039;", "'")
+    .replace(chordTokenPattern(), "")
+    .replace(/[ \t]{2,}/g, " ")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
@@ -12415,6 +13548,8 @@ els.gigSearchBtn.addEventListener("click", () => { els.gigSearchWrap.classList.r
 els.newGigBtn.addEventListener("click", () => openNewGigForm());
 els.gigForm.addEventListener("submit", saveGig);
 els.gigForm.addEventListener("input", updateGigFormSummaries);
+els.gigEventTypeInput.addEventListener("input", suggestGigTemplate);
+els.gigTemplateGroup.querySelectorAll("[data-gig-template]").forEach((chip) => chip.addEventListener("click", () => setGigFormTemplate(chip.dataset.gigTemplate, true)));
 els.gigForm.querySelectorAll("[data-gig-type]").forEach((chip) => chip.addEventListener("click", () => {
   els.gigEventTypeInput.value = chip.dataset.gigType;
   els.gigEventTypeInput.dispatchEvent(new Event("input", { bubbles: true }));
@@ -12595,6 +13730,20 @@ els.sortMenuBtn.addEventListener("click", (event) => {
 els.backToFolderBtn.addEventListener("click", backToFolder);
 els.songArtist.addEventListener("click", () => openArtistSongs(currentSong()?.artist));
 els.songKey.addEventListener("click", openSongKeyEditor);
+els.songTransposeBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  openTransposePanel();
+});
+els.transposeUpBtn.addEventListener("click", () => changeTranspose(1));
+els.transposeDownBtn.addEventListener("click", () => changeTranspose(-1));
+els.transposeResetBtn.addEventListener("click", () => changeTranspose(null));
+els.showChordsToggle.addEventListener("change", () => {
+  state.lyricPrefs.showChords = els.showChordsToggle.checked;
+  persist();
+  rerenderSongDocument();
+});
+els.insertChordBtn.addEventListener("click", insertChordToken);
 els.songCategoryBtn.addEventListener("click", openSongAddTo);
 els.songMoreBtn.addEventListener("click", (event) => {
   event.preventDefault();
@@ -12686,7 +13835,7 @@ els.songDocument.addEventListener("click", (event) => {
   else if (selectedImageFigure) finishImageAdjustment(true);
 });
 els.songDocument.addEventListener("keydown", keepEnterInsideDisclosure);
-[els.makeHeadingBtn, els.insertDisclosureBtn, els.boldTextBtn, els.italicTextBtn, els.underlineTextBtn, els.strikeTextBtn, els.clearTextFormatBtn, els.insertImageBtn, els.undoBtn, els.redoBtn, els.finishWritingBtn, ...els.textFormatMenu.querySelectorAll("[data-highlight-color]")].forEach((button) => {
+[els.makeHeadingBtn, els.insertChordBtn, els.insertDisclosureBtn, els.boldTextBtn, els.italicTextBtn, els.underlineTextBtn, els.strikeTextBtn, els.clearTextFormatBtn, els.insertImageBtn, els.undoBtn, els.redoBtn, els.finishWritingBtn, ...els.textFormatMenu.querySelectorAll("[data-highlight-color]")].forEach((button) => {
   button.addEventListener("pointerdown", (event) => event.preventDefault());
 });
 els.makeHeadingBtn.addEventListener("click", toggleCurrentLineHeading);
@@ -12764,6 +13913,8 @@ document.querySelectorAll("[data-theme]").forEach((button) => button.addEventLis
   persist();
 }));
 els.exportLibraryBtn.addEventListener("click", exportLibrary);
+els.backupNowBtn.addEventListener("click", exportLibrary);
+els.backupLaterBtn.addEventListener("click", snoozeBackupReminder);
 els.googleDriveBackupBtn.addEventListener("click", () => shareCloudBackup("Google Drive"));
 els.dropboxBackupBtn.addEventListener("click", () => shareCloudBackup("Dropbox"));
 document.querySelectorAll("[data-mode-choice]").forEach((button) => button.addEventListener("click", () => {
@@ -12842,6 +13993,10 @@ els.confirmAcceptBtn.addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && performanceActive) {
+    closePerformanceMode();
+    return;
+  }
   if (event.key === "Escape") {
     closeOverlays();
     hideWritingToolbar();
@@ -12873,9 +14028,16 @@ document.addEventListener("pointerdown", (event) => {
   if (!target.closest("#appearancePopover") && !target.closest("#songAppearanceBtn")) {
     setElementVisible(els.appearancePopover, false);
   }
+  if (!target.closest("#transposePopover") && !target.closest("#songTransposeBtn")) {
+    setElementVisible(els.transposePopover, false);
+  }
 });
 
 function closeCurrentMobileLayer() {
+  if (performanceActive) {
+    closePerformanceMode();
+    return true;
+  }
   const editingSong = document.activeElement === els.songDocument || !els.writingToolbar.classList.contains("hidden");
   if (keyboardIsLikelyOpen() || editingSong) {
     hideWritingToolbar();
@@ -12957,8 +14119,9 @@ document.addEventListener("visibilitychange", () => {
 });
 
 initToolsUi();
+initPerformanceUi();
 render();
-migrateInlineImages();
+migrateInlineImages().then(cleanUnusedImages).catch(() => {});
 registerOfflineSupport();
 
 </script>
