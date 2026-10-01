@@ -183,6 +183,8 @@ body {
 
 body {
   min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
   overflow: hidden;
   background: var(--color-bg);
   color: var(--color-text);
@@ -243,10 +245,19 @@ svg {
      it well past its intended ~56px (Wave 1 verification measurement caught
      this at 177px on Notes). */
   grid-template-rows: minmax(0, 1fr) auto;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
+  /* iOS WebKit reports 100vh as the tallest the screen can ever be (toolbars hidden),
+     so a vh-tall shell pushes the bottom nav off-screen. dvh follows the real visible
+     height; -webkit-fill-available is the fallback for older iOS that lacks dvh. */
   min-height: 100vh;
   height: 100vh;
+  min-height: -webkit-fill-available;
+  height: -webkit-fill-available;
+  min-height: 100dvh;
+  height: 100dvh;
   overflow: hidden;
+  overflow-x: hidden;
   background: var(--color-card);
 }
 
@@ -1204,6 +1215,7 @@ svg {
 
 .lyric-sheet {
   min-height: calc(100vh - 72px);
+  min-height: calc(100dvh - 72px);
   padding: 18px clamp(20px, 4vw, 54px) 110px;
 }
 
@@ -1317,6 +1329,7 @@ svg {
 
 .song-document {
   min-height: calc(100vh - 156px);
+  min-height: calc(100dvh - 156px);
   margin-top: 18px;
   touch-action: manipulation;
   color: #111615;
@@ -1397,6 +1410,7 @@ svg {
   display: block;
   width: 100%;
   max-height: 70vh;
+  max-height: 70dvh;
   object-fit: contain;
   object-position: center;
   border-radius: 6px;
@@ -1939,7 +1953,7 @@ svg {
 
 .folder-choice {
   display: grid;
-  grid-template-columns: 22px 24px minmax(0, 1fr);
+  grid-template-columns: 22px minmax(0, 1fr);
   align-items: center;
   gap: 9px;
   min-height: 44px;
@@ -1948,6 +1962,8 @@ svg {
   font-size: 0.82rem;
   font-weight: 500;
 }
+
+.folder-choice.event-choice { grid-template-columns: 22px 24px minmax(0, 1fr); }
 
 .folder-choice:last-child {
   border-bottom: 0;
@@ -1966,8 +1982,8 @@ svg {
 .folder-choice svg {
   width: 19px;
   height: 19px;
-  color: var(--folder-color);
-  fill: color-mix(in srgb, var(--folder-color), white 75%);
+  color: var(--color-text-secondary);
+  fill: none;
 }
 
 .attached-notes-section { border-bottom: 1px solid var(--line); }
@@ -2431,7 +2447,6 @@ textarea.slp-input { resize: vertical; }
 .import-folder-option.child { margin-inline-start: var(--space-8); }
 .import-folder-option input { width: 20px; height: 20px; accent-color: var(--accent); flex-shrink: 0; }
 /* User folders carry no color (design principle P6). */
-.folder-dot { display: none; }
 .import-suggestions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); color: var(--color-text-secondary); font-size: var(--text-sm); }
 .import-suggestions small { padding: 3px var(--space-5); border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent); font-size: var(--text-xs-plus); font-weight: var(--font-weight-semibold); }
 
@@ -3024,6 +3039,7 @@ button.slp-row__body {
 .slp-picker-sheet {
   width: 100%;
   max-height: 80vh;
+  max-height: 80dvh;
   overflow-y: auto;
   background: var(--color-bg);
   border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
@@ -3385,6 +3401,11 @@ textarea.slp-collapse__panel::placeholder { color: var(--color-text-secondary); 
   .app-shell.note-editor-active .slp-bottom-nav {
     display: none;
   }
+}
+/* Keeps the tabs clear of the iPhone home indicator (needs viewport-fit=cover). */
+.slp-bottom-nav {
+  flex: none;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .slp-bottom-nav button {
   flex: 1;
@@ -3968,6 +3989,7 @@ textarea.slp-collapse__panel::placeholder { color: var(--color-text-secondary); 
 .appearance-popover {
   width: min(340px, calc(100vw - 24px));
   max-height: calc(100vh - 110px);
+  max-height: calc(100dvh - 110px);
   overflow-y: auto;
   padding: 0;
   gap: 0;
@@ -4259,6 +4281,286 @@ body.perf-open { overflow: hidden; }
 .song-document .cp-word, .perf-doc .cp-word { white-space: nowrap; }
 .cp-word > .cp { margin-inline-end: 0; }
 
+/* ============ Chord editor (tap a spot, pick a chord) ============ */
+.chord-editor {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-card);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.chord-editor.hidden { display: none; }
+body.chord-editor-open { overflow: hidden; }
+.chord-editor > .slp-header { padding-inline: var(--space-9); }
+.chord-editor .slp-header__titles { align-items: center; text-align: center; }
+.chord-editor__note { margin: 0; padding: 0 var(--space-9) var(--space-4); color: var(--color-text-secondary); font-size: var(--text-sm); }
+.chord-editor__note:empty { display: none; }
+/* The lyric surface stays the light "paper" of the lyrics page in every app theme. */
+.chord-editor__lines { flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-6) var(--space-9) var(--space-11); background: #FBFAF5; color: #111615; }
+.ce-line { margin-bottom: var(--space-3); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.ce-inner { position: relative; width: max-content; min-width: 100%; }
+.ce-chords { position: relative; height: 40px; }
+.ce-chip {
+  position: absolute;
+  top: 2px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 9px;
+  background: #E6F1FB;
+  color: #0C447C;
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: grab;
+  touch-action: none;
+}
+.ce-chip::after { content: ""; position: absolute; inset: -5px -3px; }
+.ce-chip.selected { background: #0C447C; color: #fff; }
+.ce-chip.dragging { cursor: grabbing; box-shadow: 0 6px 16px rgba(12, 68, 124, 0.35); z-index: 3; }
+.ce-text { padding: 7px 0; font-size: 22px; line-height: 1.4; white-space: nowrap; cursor: text; -webkit-user-select: none; user-select: none; }
+.ce-caret { position: absolute; top: 4px; bottom: 6px; width: 3px; margin-inline: -1px; border-radius: 2px; background: #E8A317; pointer-events: none; }
+.chord-editor__panel {
+  flex-shrink: 0;
+  display: grid;
+  gap: var(--space-5);
+  max-height: 58vh;
+  max-height: 58dvh;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-9) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+.ce-status { display: block; min-height: 18px; color: var(--color-text-secondary); font-size: var(--text-base); }
+.ce-tools { display: flex; align-items: center; gap: var(--space-4); }
+.ce-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 var(--space-6);
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-chip-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+.ce-tool:disabled { opacity: 0.4; cursor: default; }
+.ce-tool svg { width: var(--icon-lg); height: var(--icon-lg); }
+.ce-tool--danger { margin-inline-start: auto; color: var(--danger); }
+.ce-bar-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); }
+.ce-bar-hint { color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+.ce-bar { display: flex; gap: var(--space-4); overflow-x: auto; padding-bottom: var(--space-2); }
+.ce-key {
+  flex: 0 0 auto;
+  min-width: 54px;
+  min-height: 48px;
+  padding: 0 var(--space-7);
+  border: none;
+  border-radius: var(--radius-lg);
+  background: #E6F1FB;
+  color: #0C447C;
+  font-family: var(--font-family);
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ce-key.recent { background: #FFF1D6; color: #7A4B00; }
+.ce-key.selected { background: #0C447C; color: #fff; }
+.ce-custom[hidden] { display: none; }
+.ce-custom, .ce-builder { display: grid; gap: var(--space-4); }
+.ce-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.ce-row .ce-key { min-width: 44px; min-height: 44px; padding: 0 var(--space-5); font-size: 15px; }
+.ce-row__label { color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--font-weight-bold); }
+.ce-type { display: flex; gap: var(--space-4); }
+.ce-type .slp-input { flex: 1; min-width: 0; }
+
+.ce-line { padding-inline: 12px; margin-inline: -12px; }
+
+/* ============ iPhone WebKit fixes (Safari, Chrome on iOS, home-screen app) ============
+   iOS zooms the page and slides it sideways when a focused field's text is under 16px.
+   -webkit-touch-callout exists only on iOS WebKit, so Android and desktop are untouched. */
+@supports (-webkit-touch-callout: none) {
+  /* !important so the many per-screen field rules (13-14px) cannot win on iPhone. */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: max(16px, 1em) !important;
+  }
+  html,
+  body,
+  .app-shell {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+}
+
+/* ============ Categories: section "+" buttons and slim empty rows ============ */
+.slp-section-label-row__actions { display: inline-flex; align-items: center; gap: var(--space-2); }
+.slp-btn--icon.slp-section-add { min-width: 44px; min-height: 44px; width: 44px; height: 44px; }
+.slp-section-add svg { width: var(--icon-lg); height: var(--icon-lg); }
+.slp-row--empty {
+  width: 100%;
+  min-height: 44px;
+  padding-block: var(--space-4);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  text-align: start;
+}
+.slp-row--empty .slp-row__title { color: var(--color-text-secondary); font-weight: var(--font-weight-regular, 400); }
+.slp-row--empty .slp-row__empty-action { color: var(--accent); font-weight: var(--font-weight-semibold); }
+
+/* ============ Select mode (one shared multi-select for every song list) ============ */
+.select-topbar[hidden],
+.select-actionbar[hidden] { display: none; }
+.select-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 15; /* above rows and sticky headers, below the scrim (20) and sheets (25) */
+  width: min(100%, 720px);
+  margin-inline: auto;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: calc(56px + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) var(--space-4) 0;
+  background: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+}
+.select-topbar__count { font-size: var(--text-md); font-weight: var(--font-weight-bold); color: var(--color-text); }
+.select-actionbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 15; /* above rows and sticky headers, below the scrim (20) and sheets (25) */
+  width: min(100%, 720px);
+  margin-inline: auto;
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-card);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.08);
+}
+.select-actionbar--edge { padding-bottom: max(var(--space-3), env(safe-area-inset-bottom, 0px)); }
+.select-action {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font-family);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.select-action svg { width: var(--icon-lg); height: var(--icon-lg); }
+.select-action:disabled { opacity: 0.4; cursor: default; }
+#selectRemoveBtn { color: var(--danger); }
+.select-action.hidden { display: none; }
+.select-mode-active #songLibraryContent,
+.select-mode-active .folder-content,
+.select-mode-active .gig-detail-view { padding-bottom: 104px; }
+.select-mode-active .slp-header { visibility: hidden; }
+.select-mode-active .song-item,
+.select-mode-active .gig-song-reference,
+.select-mode-active #librarySearchSongList .slp-row { cursor: pointer; }
+.song-item,
+.gig-song-reference,
+#librarySearchSongList .slp-row { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.select-check {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-inline-end: var(--space-4);
+  border: 2px solid var(--color-text-secondary);
+  border-radius: 50%;
+  color: transparent;
+}
+.select-check svg { width: 16px; height: 16px; }
+.is-selected .select-check { background: var(--accent); border-color: var(--accent); color: #fff; }
+.song-item.is-selected > .slp-row,
+.slp-row.is-selected { background: color-mix(in srgb, var(--accent) 13%, var(--color-card)); }
+
+/* Several artists on one song row: each name is its own link, wrapping like a sentence. */
+.song-item .slp-row__artists { display: flex; flex-wrap: wrap; align-items: baseline; min-width: 0; }
+.song-item .slp-row__artists .slp-row__artist-link { display: inline-block; max-width: 100%; }
+.slp-row__artist-sep { color: var(--color-text-secondary); font-size: var(--text-sm); white-space: pre; }
+.song-organization { display: grid; gap: var(--space-5); margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--color-border); }
+
+/* ============ Needs-lyrics banner and Quick add ============ */
+.needs-lyrics-banner { width: 100%; margin: 0 0 var(--space-6); border: 0; text-align: start; cursor: pointer; align-items: center; font-family: var(--font-family); }
+.needs-lyrics-banner.hidden { display: none; }
+#needsLyricsBannerEvents { box-sizing: border-box; width: calc(100% - 2 * var(--space-11)); margin-inline: var(--space-11); }
+.needs-lyrics-banner > span { flex: 1; min-width: 0; }
+.needs-lyrics-banner .slp-row__chevron { margin-inline-start: auto; }
+.quick-add-body { display: grid; gap: var(--space-4); align-content: start; }
+.quick-add-body .slp-input { font-size: 16px; }
+.quick-add-hint { margin: 0; color: var(--color-text-secondary); font-size: var(--text-sm); line-height: 1.4; }
+.quick-add-suggestions { display: grid; gap: var(--space-2); }
+.quick-add-suggestion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "title action" "meta action";
+  align-items: center;
+  column-gap: var(--space-5);
+  min-height: 52px;
+  padding: var(--space-4) var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  text-align: start;
+  cursor: pointer;
+}
+.quick-add-suggestion__title { grid-area: title; font-weight: var(--font-weight-semibold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quick-add-suggestion__meta { grid-area: meta; color: var(--color-text-secondary); font-size: var(--text-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quick-add-suggestion__action { grid-area: action; color: var(--accent); font-weight: var(--font-weight-semibold); }
+.quick-add-log { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.quick-add-log li { padding: var(--space-3) var(--space-2); color: var(--color-text); font-size: var(--text-sm); border-bottom: 1px solid var(--color-border); }
+.quick-add-log li.note { color: var(--color-text-secondary); }
+#pickerQuickAddBtn { width: 100%; justify-content: center; min-height: 44px; margin-bottom: var(--space-4); }
+
+/* ============ Locations & tags (song Details) ============ */
+.song-locations { display: grid; gap: var(--space-4); margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-border); }
+.song-locations__head { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
+.song-locations__group { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
+.song-locations__label { color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+.song-locations__chips { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.song-location-chip { height: auto; min-height: 44px; max-width: 100%; padding-block: var(--space-3); text-align: start; }
+.song-location-chip span { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.song-locations__empty { color: var(--color-text-secondary); font-size: var(--text-sm); }
+.song-locations__edit { justify-self: end; }
+
 }
 
 </style>
@@ -4277,7 +4579,7 @@ body.perf-open { overflow: hidden; }
             <button id="settingsBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Library settings">
               <i data-lucide="settings-2"></i>
             </button>
-            <button id="newRootFolderBtn" class="slp-btn slp-btn--fab" type="button" aria-label="Add category">
+            <button id="newRootFolderBtn" class="slp-btn slp-btn--fab" type="button" aria-label="New song">
               <i data-lucide="plus"></i>
             </button>
           </div>
@@ -4291,6 +4593,12 @@ body.perf-open { overflow: hidden; }
             <button id="backupLaterBtn" class="slp-link-btn" type="button">Later</button>
           </div>
         </div>
+
+        <button id="needsLyricsBannerSongs" class="slp-info-banner needs-lyrics-banner hidden" type="button">
+          <i data-lucide="file-pen-line"></i>
+          <span><strong id="needsLyricsTextSongs">0 songs need lyrics</strong><span>Tap to open just those songs</span></span>
+          <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
 
         <div id="librarySearchWrap" class="slp-search-bar hidden">
           <button id="librarySearchScopeBtn" class="slp-scope-dropdown" type="button" aria-haspopup="listbox" aria-expanded="false">
@@ -4348,7 +4656,10 @@ body.perf-open { overflow: hidden; }
         <section aria-label="User folders">
           <div class="slp-section-label-row">
             <span class="slp-section-label">FOLDERS</span>
-            <button id="editFoldersBtn" class="slp-link-btn" type="button">Edit</button>
+            <span class="slp-section-label-row__actions">
+              <button id="addFolderBtn" class="slp-btn slp-btn--icon slp-section-add" type="button" aria-label="New folder"><i data-lucide="plus"></i></button>
+              <button id="editFoldersBtn" class="slp-link-btn" type="button">Edit</button>
+            </span>
           </div>
           <div id="rootFolderList" class="slp-card" aria-label="Categories"></div>
         </section>
@@ -4356,7 +4667,10 @@ body.perf-open { overflow: hidden; }
         <section aria-label="Lists">
           <div class="slp-section-label-row">
             <span class="slp-section-label">LISTS</span>
-            <button id="editListsBtn" class="slp-link-btn" type="button">Edit</button>
+            <span class="slp-section-label-row__actions">
+              <button id="addListBtn" class="slp-btn slp-btn--icon slp-section-add" type="button" aria-label="New list"><i data-lucide="plus"></i></button>
+              <button id="editListsBtn" class="slp-link-btn" type="button">Edit</button>
+            </span>
           </div>
           <div id="rootListList" class="slp-card" aria-label="Personal lists"></div>
         </section>
@@ -4491,6 +4805,11 @@ body.perf-open { overflow: hidden; }
             </div>
             <label id="gigSortWrap" class="gig-sort-chip"><span>Sort</span><select id="gigSortSelect"><option value="soonest">Soonest first</option><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="name">Event name</option><option value="edited">Recently edited</option></select></label>
           </div>
+          <button id="needsLyricsBannerEvents" class="slp-info-banner needs-lyrics-banner hidden" type="button">
+          <i data-lucide="file-pen-line"></i>
+          <span><strong id="needsLyricsTextEvents">0 songs need lyrics</strong><span>Tap to open just those songs</span></span>
+          <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
           <div id="gigListView" class="gig-list-view">
             <div id="gigList"></div>
             <div id="gigListEmpty" class="hidden"><div class="empty-list"><i data-lucide="calendar-plus"></i><p>No events yet</p></div></div>
@@ -4519,6 +4838,8 @@ body.perf-open { overflow: hidden; }
                 <details class="slp-menu">
                   <summary class="slp-btn slp-btn--icon" aria-label="More"><i data-lucide="more-horizontal"></i></summary>
                   <div class="slp-menu-panel">
+                    <button id="quickAddGigBtn" class="slp-picker-item" type="button"><i data-lucide="zap"></i><span>Quick add</span></button>
+                    <button id="selectGigSongsBtn" class="slp-picker-item" type="button"><i data-lucide="check-circle-2"></i><span>Select songs</span></button>
                     <button id="shareGigBtn" class="slp-picker-item" type="button"><i data-lucide="share-2"></i><span>Share event</span></button>
                   </div>
                 </details>
@@ -4676,6 +4997,11 @@ body.perf-open { overflow: hidden; }
             <div class="slp-details-row"><button id="songArtist" class="slp-details-row__link" type="button" dir="auto"></button></div>
             <div id="songSecondaryMeta" class="slp-details-grid"></div>
             <div id="songLinks" class="slp-chip-row song-links" aria-label="Song links" hidden></div>
+            <section id="songLocations" class="song-locations" aria-label="Locations &amp; tags">
+              <div class="song-locations__head"><span class="slp-section-label">LOCATIONS &amp; TAGS</span></div>
+              <div id="songLocationsBody"></div>
+              <button id="editSongLocationsBtn" class="slp-link-btn song-locations__edit" type="button">Edit</button>
+            </section>
             <div id="songEdited" class="slp-timestamp"></div>
           </div>
 
@@ -4687,7 +5013,7 @@ body.perf-open { overflow: hidden; }
             <button id="makeHeadingBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert header" title="Header">H</button>
             <button id="insertDisclosureBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert note" title="Note"><i data-lucide="sticky-note"></i></button>
             <button id="insertImageBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert photo" title="Photo"><i data-lucide="image-plus"></i></button>
-            <button id="insertChordBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert chord" title="Chord"><i data-lucide="music"></i></button>
+            <button id="insertChordBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Place chords" title="Place chords"><i data-lucide="music"></i></button>
             <button id="undoBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Undo" title="Undo"><i data-lucide="undo-2"></i></button>
             <button id="redoBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Redo" title="Redo"><i data-lucide="redo-2"></i></button>
             <button id="finishWritingBtn" class="slp-link-btn slp-link-btn--accent" type="button">Done</button>
@@ -4730,6 +5056,19 @@ body.perf-open { overflow: hidden; }
         <button id="appNotesNavBtn" type="button"><i data-lucide="notebook-tabs"></i><span>Notes</span></button>
         <button id="appToolsNavBtn" type="button"><i data-lucide="wrench"></i><span>Tools</span></button>
       </nav>
+
+      <!-- Select mode (one shared component for every song list): replaces the screen's header
+           while choosing songs, and sits above the tab bar for the actions. -->
+      <div id="selectTopBar" class="select-topbar" hidden>
+        <button id="selectCancelBtn" class="slp-link-btn" type="button">Cancel</button>
+        <strong id="selectCount" class="select-topbar__count" aria-live="polite">0 selected</strong>
+        <button id="selectAllBtn" class="slp-link-btn slp-link-btn--accent" type="button">Select all</button>
+      </div>
+      <div id="selectActionBar" class="select-actionbar" role="toolbar" aria-label="Actions for selected songs" hidden>
+        <button id="selectAddBtn" class="select-action" type="button"><i data-lucide="folder-plus"></i><span>Add to folder or event</span></button>
+        <button id="selectMoveBtn" class="select-action" type="button"><i data-lucide="folder-input"></i><span>Move to…</span></button>
+        <button id="selectRemoveBtn" class="select-action" type="button"><i data-lucide="folder-minus"></i><span>Remove from here</span></button>
+      </div>
     </main>
 
     <div id="scrim" class="scrim hidden" hidden></div>
@@ -4767,14 +5106,12 @@ body.perf-open { overflow: hidden; }
           <input id="songTitleYiddishInput" type="hidden" />
         </section>
         <section class="slp-form-section" aria-label="Credits">
-          <label class="slp-field-label" for="songArtistInput">ARTIST</label>
-          <input id="songArtistInput" class="slp-input" type="text" dir="auto" list="artistSuggestions" placeholder="Type an artist name" autocomplete="off" />
-          <label class="slp-field-label" for="songFeaturedArtistInput">SECONDARY ARTIST (OPTIONAL)</label>
-          <input id="songFeaturedArtistInput" class="slp-input" type="text" dir="auto" list="artistSuggestions" placeholder="For duets / features" autocomplete="off" />
+          <label class="slp-field-label" for="songArtistInput">ARTIST (OPTIONAL)</label>
+          <input id="songArtistInput" class="slp-input" type="text" dir="auto" list="artistSuggestions" placeholder="One or more names, separated by commas" autocomplete="off" />
         </section>
         <section class="slp-form-section" aria-label="Details">
           <div id="songDetailsCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="false" aria-controls="songDetailsPanel">
-            <span>Details</span>
+            <span>More details</span>
             <svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div id="songDetailsPanel" class="slp-collapse__panel" hidden>
@@ -4837,39 +5174,31 @@ body.perf-open { overflow: hidden; }
                 </select>
               </div>
             </div>
-          </div>
-        </section>
-        <section class="slp-form-section" aria-label="Organization">
+            <label class="slp-field-label" for="songLinksInput">LINKS (OPTIONAL)</label>
+            <textarea id="songLinksInput" class="slp-input song-links-input" rows="3" dir="ltr" placeholder="One link per line: Spotify, YouTube, Apple Music, a voice memo..."></textarea>
+            <div class="song-organization" aria-label="Folders and events">
           <div class="slp-btn-row">
-            <button id="songAddFolderBtn" class="slp-btn slp-btn--soft" style="flex:1;" type="button" aria-expanded="false" aria-controls="songFolderPanel">+ Add To Folder</button>
-            <button id="songAddEventBtn" class="slp-btn slp-btn--soft" style="flex:1;" type="button" aria-expanded="false" aria-controls="songEventPanel">+ Add To Event</button>
-          </div>
-          <fieldset id="songFolderPanel" class="folder-membership song-detail-fields" hidden>
-            <legend class="sr-only">Appears in</legend>
-            <div class="folder-membership-heading"><p>Select every list or category where this song should appear.</p><button id="newSongLocationBtn" class="text-button" type="button"><i data-lucide="folder-plus"></i>New location</button></div>
-            <div id="quickLocationForm" class="quick-location-form hidden">
-              <label class="slp-field-label" for="quickLocationName">NAME</label>
-              <input id="quickLocationName" class="slp-input" type="text" dir="auto" placeholder="Folder or category name" />
-              <label class="slp-field-label" for="quickLocationParent">INSIDE</label>
-              <select id="quickLocationParent" class="slp-input"></select>
-              <div class="quick-location-actions"><button id="cancelQuickLocationBtn" class="text-button" type="button">Cancel</button><button id="saveQuickLocationBtn" class="secondary-button" type="button">Create &amp; select</button></div>
+              <button id="songAddFolderBtn" class="slp-btn slp-btn--soft" style="flex:1;" type="button" aria-expanded="false" aria-controls="songFolderPanel">+ Add To Folder</button>
+              <button id="songAddEventBtn" class="slp-btn slp-btn--soft" style="flex:1;" type="button" aria-expanded="false" aria-controls="songEventPanel">+ Add To Event</button>
             </div>
-            <div id="songFolderChoices" class="folder-choice-list"></div>
-          </fieldset>
-          <div id="songEventPanel" class="song-event-panel" hidden>
-            <p class="song-event-panel__hint">Choose the events and setlists this song should join. The song remains one master record.</p>
-            <div id="songEventChoices" class="folder-choice-list"></div>
+            <fieldset id="songFolderPanel" class="folder-membership song-detail-fields" hidden>
+              <legend class="sr-only">Appears in</legend>
+              <div class="folder-membership-heading"><p>Select every list or category where this song should appear.</p><button id="newSongLocationBtn" class="text-button" type="button"><i data-lucide="folder-plus"></i>New location</button></div>
+              <div id="quickLocationForm" class="quick-location-form hidden">
+                <label class="slp-field-label" for="quickLocationName">NAME</label>
+                <input id="quickLocationName" class="slp-input" type="text" dir="auto" placeholder="Folder or category name" />
+                <label class="slp-field-label" for="quickLocationParent">INSIDE</label>
+                <select id="quickLocationParent" class="slp-input"></select>
+                <div class="quick-location-actions"><button id="cancelQuickLocationBtn" class="text-button" type="button">Cancel</button><button id="saveQuickLocationBtn" class="secondary-button" type="button">Create &amp; select</button></div>
+              </div>
+              <div id="songFolderChoices" class="folder-choice-list"></div>
+            </fieldset>
+            <div id="songEventPanel" class="song-event-panel" hidden>
+              <p class="song-event-panel__hint">Choose the events and setlists this song should join. The song remains one master record.</p>
+              <div id="songEventChoices" class="folder-choice-list"></div>
+            </div>
+            </div>
           </div>
-        </section>
-        <section class="slp-form-section" aria-label="Source">
-          <label class="slp-field-label" for="songSourceUrlInput">SOURCE URL (OPTIONAL)</label>
-          <input id="songSourceUrlInput" class="slp-input" type="url" dir="ltr" placeholder="https://..." />
-        </section>
-        <section class="slp-form-section" aria-label="Links">
-          <label class="slp-field-label" for="songAudioLinksInput">AUDIO LINKS (OPTIONAL)</label>
-          <textarea id="songAudioLinksInput" class="slp-input song-links-input" rows="2" dir="ltr" placeholder="One link per line: Spotify, YouTube Music, a voice memo..."></textarea>
-          <label class="slp-field-label" for="songVideoLinksInput">VIDEO LINKS (OPTIONAL)</label>
-          <textarea id="songVideoLinksInput" class="slp-input song-links-input" rows="2" dir="ltr" placeholder="One link per line: YouTube, Vimeo..."></textarea>
         </section>
         <section id="songDeleteZone" class="slp-form-section" aria-label="Delete">
           <button id="deleteSongBtn" class="danger-button" type="button"><i data-lucide="trash-2"></i> Delete</button>
@@ -4888,7 +5217,7 @@ body.perf-open { overflow: hidden; }
 
     <section id="songAddToSheet" class="sheet compact-sheet song-add-to-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="songAddToTitle">
       <div class="sheet-header"><div><span>Song locations</span><h2 id="songAddToTitle">Add to</h2></div><button id="closeSongAddToBtn" class="icon-button" type="button" aria-label="Close Add to"><i data-lucide="x"></i></button></div>
-      <div class="sheet-body song-add-to-body"><p>Choose folders, categories, event sections, or setlists. The song remains one master record.</p><div id="songAddToChoices" class="folder-choice-list"></div></div>
+      <div class="sheet-body song-add-to-body"><p id="songAddToHint">Choose folders, categories, event sections, or setlists. The song remains one master record.</p><div id="songAddToChoices" class="folder-choice-list"></div></div>
       <div class="sheet-footer"><button id="cancelSongAddToBtn" class="secondary-button" type="button">Cancel</button><button id="saveSongAddToBtn" class="primary-button" type="button">Save locations</button></div>
     </section>
 
@@ -5006,12 +5335,30 @@ body.perf-open { overflow: hidden; }
       </form>
     </section>
 
+    <section id="quickAddSheet" class="sheet compact-sheet quick-add-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="quickAddTitle">
+      <div class="sheet-header">
+        <div><span>Event setlist</span><h2 id="quickAddTitle">Quick add</h2></div>
+        <button id="closeQuickAddBtn" class="icon-button" type="button" aria-label="Close Quick add"><i data-lucide="x"></i></button>
+      </div>
+      <div class="sheet-body quick-add-body">
+        <label class="slp-field-label" for="quickAddTarget">ADD TO</label>
+        <select id="quickAddTarget" class="slp-input"></select>
+        <label class="slp-field-label" for="quickAddInput">SONG</label>
+        <input id="quickAddInput" class="slp-input" type="text" dir="auto" enterkeyhint="next" autocomplete="off" autocapitalize="sentences" placeholder="Title, or Title - Artist" />
+        <p class="quick-add-hint">Press return to add it and keep typing. New songs go to Unfiled and are marked Needs details; a song you already have is reused, never copied.</p>
+        <div id="quickAddSuggestions" class="quick-add-suggestions" role="listbox" aria-label="Matching songs"></div>
+        <ul id="quickAddLog" class="quick-add-log" aria-live="polite"></ul>
+      </div>
+      <div class="sheet-footer"><button id="doneQuickAddBtn" class="primary-button" type="button">Done</button></div>
+    </section>
+
     <section id="gigSongPickerSheet" class="sheet compact-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="gigSongPickerTitle">
       <div class="sheet-header">
         <div><span>Event setlist</span><h2 id="gigSongPickerTitle">Add Songs</h2></div>
         <button id="closeGigSongPickerBtn" class="icon-button" type="button" aria-label="Close song selection"><i data-lucide="x"></i></button>
       </div>
       <div class="sheet-body gig-song-picker-body">
+        <button id="pickerQuickAddBtn" class="slp-btn slp-btn--soft" type="button"><i data-lucide="zap"></i><span>Quick add: type titles, press return</span></button>
         <label class="gig-picker-search"><i data-lucide="search"></i><input id="gigSongPickerSearch" type="search" placeholder="Search title, artist, or key" autocomplete="off" /></label>
         <div id="gigSongPickerList" class="gig-song-picker-list"></div>
       </div>
@@ -5295,6 +5642,39 @@ body.perf-open { overflow: hidden; }
       </div>
     </section>
 
+    <section id="chordEditor" class="chord-editor hidden" hidden role="dialog" aria-modal="true" aria-label="Place chords">
+      <header class="slp-header">
+        <button id="chordEditorCancelBtn" class="slp-link-btn" type="button">Cancel</button>
+        <div class="slp-header__titles">
+          <h2 class="slp-header__title">Place chords</h2>
+          <span id="chordEditorTitle" class="slp-header__eyebrow"></span>
+        </div>
+        <button id="chordEditorDoneBtn" class="slp-link-btn slp-link-btn--accent" type="button">Done</button>
+      </header>
+      <p id="chordEditorNote" class="chord-editor__note"></p>
+      <div id="chordEditorLines" class="chord-editor__lines"></div>
+      <div class="chord-editor__panel">
+        <div class="ce-status-row">
+          <span id="chordEditorStatus" class="ce-status" role="status"></span>
+        </div>
+        <div class="ce-tools">
+          <button id="chordUndoBtn" class="ce-tool" type="button"><i data-lucide="undo-2"></i><span>Undo</span></button>
+          <button id="chordNudgeBackBtn" class="ce-tool" type="button" aria-label="Move chord one letter left"><i data-lucide="chevron-left"></i></button>
+          <button id="chordNudgeForwardBtn" class="ce-tool" type="button" aria-label="Move chord one letter right"><i data-lucide="chevron-right"></i></button>
+          <button id="chordDeleteBtn" class="ce-tool ce-tool--danger" type="button"><i data-lucide="trash-2"></i><span>Remove</span></button>
+        </div>
+        <div class="ce-bar-head"><span id="chordBarHint" class="ce-bar-hint"></span><button id="chordMoreBtn" class="slp-link-btn" type="button" aria-expanded="false" aria-controls="chordCustom">More chords</button></div>
+        <div id="chordBar" class="ce-bar" role="group" aria-label="Chords"></div>
+        <div id="chordCustom" class="ce-custom" hidden>
+          <div id="chordBuilder" class="ce-builder"></div>
+          <form id="chordTypeForm" class="ce-type">
+            <input id="chordTypeInput" class="slp-input" type="text" autocomplete="off" autocapitalize="characters" placeholder="Or type one: F#m7, C/E">
+            <button class="slp-btn slp-btn--soft" type="submit">Add</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
     <section id="performanceView" class="perf-view hidden" hidden role="dialog" aria-modal="true" aria-label="Performance mode">
       <header id="perfBar" class="perf-bar">
         <div class="perf-bar__row">
@@ -5548,6 +5928,8 @@ const ALL_SONGS = "all";
 const UNFILED = "unfiled";
 const ARTISTS = "artists";
 const ARTIST_PREFIX = "artist:";
+// A virtual list of Quick-added songs that still have no lyrics (opened from the banner).
+const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "bpm", "key", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
@@ -5612,24 +5994,24 @@ const els = Object.fromEntries(
     "librarySearchWrap", "librarySearchInput", "librarySearchScopeBtn", "librarySearchScopeLabel", "librarySearchScopePopover", "closeLibrarySearchBtn", "librarySearchResults", "librarySearchResultCount",
     "librarySearchSongList", "saveLibrarySearchBtn", "savedSearchSection", "savedSearchList",
     "allSongsBtn", "unfiledBtn", "artistsBtn", "allSongsCount", "unfiledCount", "artistsCount", "editFoldersBtn",
-    "newRootFolderBtn", "rootFolderList", "editListsBtn", "rootListList", "folderEmptyState", "folderContent", "backToLibraryBtn",
+    "newRootFolderBtn", "addFolderBtn", "addListBtn", "rootFolderList", "editListsBtn", "rootListList", "folderEmptyState", "folderContent", "backToLibraryBtn",
     "folderBreadcrumbs", "folderTitle", "folderSearchBtn", "songReorderBtn", "folderAddBtn", "folderSearchWrap", "folderSearchInput", "folderSearchScopeBtn", "folderSearchScopeLabel", "folderSearchScopePopover",
     "searchEntireLibraryBtn", "closeFolderSearchBtn", "folderMoreBtn",
     "artistSection", "artistCount", "artistList", "songsSection", "subfolderSection", "subfolderCount", "subfolderList", "attachedNotesSection", "attachedNoteCount", "attachedNoteList", "songSortSelect", "sortMenuBtn", "sortMenuLabel", "songList", "songEmptyState",
     "editSubfoldersBtn", "newSubfolderBtn",
     "songReader", "backToFolderBtn", "songTitle", "songAppearanceBtn", "songMoreBtn",
-    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeLink", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
+    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeLink", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
     "insertDisclosureBtn", "textFormatMenu", "boldTextBtn", "underlineTextBtn", "clearTextFormatBtn", "insertImageBtn", "undoBtn", "redoBtn", "finishWritingBtn",
     "imageToolbar", "imageWidthInput", "imageWidthOutput", "imageAlignLeftBtn", "imageAlignCenterBtn",
     "imageAlignRightBtn", "deleteImageBtn", "finishImageBtn",
     "scrim", "folderDialog", "folderDialogTitle", "cancelFolderBtn", "saveFolderBtn", "folderNameInput",
     "folderParentSelect", "songInfoSheet", "songInfoTitle", "closeSongInfoBtn",
     "songTitleInput", "songTitleEnglishInput", "songTitleHebrewInput", "songTitleYiddishInput", "songAlternateTitlesInput",
-    "songArtistInput", "songArtistHebrewInput", "songFeaturedArtistInput", "songComposerInput", "songLyricistInput", "songAlbumInput",
+    "songArtistInput", "songArtistHebrewInput", "songComposerInput", "songLyricistInput", "songAlbumInput",
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
-    "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songSourceUrlInput", "songAudioLinksInput", "songVideoLinksInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
+    "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
+    "songLinksInput", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "appearancePopover", "decreaseFontBtn",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -5680,6 +6062,10 @@ let workspaceMode = "library";
 let libraryMode = "category";
 let currentFolderId = ALL_SONGS;
 let selectedSongId = null;
+// Select mode (see src/ui/select-mode.js): ids are kept in the order they were chosen.
+let selectMode = { active: false, ids: [], context: null, swallowClickUntil: 0 };
+let songAddToMode = null;
+let quickAddLastTarget = "";
 let songInfoDraft = null;
 let mobileView = "library";
 let folderEditMode = false;
@@ -6186,6 +6572,15 @@ function normalizeSong(song) {
     ? song.blocks.map(normalizeBlock)
     : blocksFromLegacy(song);
   const title = song.title || song.titleEnglish || song.titleHebrew || "Untitled Song";
+  // One list of artist names. The old separate "secondary artist" is folded in here, and the
+  // display string `artist` is always the list joined, so nothing typed before is lost.
+  const artists = normalizeArtistNames([...(Array.isArray(song.artists) ? song.artists : []), song.artist, song.featuredArtist]);
+  // The old Source URL joins the song's links; the original address is kept as hidden import metadata.
+  const oldSource = /^https?:\/\/\S+$/i.test(String(song.sourceUrl || "").trim()) ? String(song.sourceUrl).trim() : "";
+  const audioLinks = normalizeUrlList(song.audioLinks);
+  const videoLinks = normalizeUrlList(song.videoLinks);
+  if (oldSource && ![...audioLinks, ...videoLinks].includes(oldSource)) (linkInfo(oldSource).kind === "video" ? videoLinks : audioLinks).push(oldSource);
+  const documentHtml = sanitizeStoredHtml(typeof song.documentHtml === "string" ? song.documentHtml : blocksToDocumentHtml(blocks));
   return {
     id: song.id || makeId(),
     title,
@@ -6193,19 +6588,22 @@ function normalizeSong(song) {
     titleHebrew: song.titleHebrew || (hasHebrewText(title) ? title : ""),
     titleYiddish: song.titleYiddish || "",
     alternateTitles: normalizeStringArray(song.alternateTitles || song.alternateTitle),
-    artist: song.artist || "",
+    artist: artists.join(", "),
+    artists,
     artistHebrew: song.artistHebrew || "",
-    featuredArtist: song.featuredArtist || "",
+    featuredArtist: "",
     composer: song.composer || "",
     lyricist: song.lyricist || "",
     album: song.album || "",
     style: song.style || song.genre || "",
     bpm: Number(song.bpm) > 0 ? Number(song.bpm) : "",
     language: song.language || "",
-    sourceUrl: song.sourceUrl || "",
+    sourceUrl: "",
+    importSourceUrl: String(song.importSourceUrl || oldSource || "").trim(),
+    needsDetails: Boolean(song.needsDetails) && !songHasLyricText(documentHtml),
     transpose: clamp(Math.round(Number(song.transpose) || 0), -11, 11),
-    audioLinks: normalizeUrlList(song.audioLinks),
-    videoLinks: normalizeUrlList(song.videoLinks),
+    audioLinks,
+    videoLinks,
     alternateOfId: song.alternateOfId || null,
     key: song.key || song.myKey || "",
     timeSignature: String(song.timeSignature || "").trim(),
@@ -6214,7 +6612,7 @@ function normalizeSong(song) {
     direction: ["auto", "rtl", "ltr"].includes(song.direction) ? song.direction : "auto",
     folderIds: [...new Set(Array.isArray(song.folderIds) ? song.folderIds : [])],
     updatedAt: song.updatedAt || new Date().toISOString(),
-    documentHtml: sanitizeStoredHtml(typeof song.documentHtml === "string" ? song.documentHtml : blocksToDocumentHtml(blocks)),
+    documentHtml,
     blocks
   };
 }
@@ -6587,6 +6985,7 @@ function setFolderSearchOpen(open) {
 }
 
 function render() {
+  dropStaleSelectMode();
   applyAppAppearance();
   applyLyricPrefs();
   els.app.dataset.libraryMode = workspaceMode === "gigs" || workspaceMode === "tools" ? workspaceMode : libraryMode;
@@ -6607,6 +7006,8 @@ function render() {
     renderSong();
   }
   els.app.dataset.mobileView = mobileView;
+  syncSelectModeUi();
+  renderNeedsLyricsBanners();
   const primarySection = workspaceMode === "tools" ? "tools" : workspaceMode === "gigs" ? "events" : libraryMode === "notes" ? "notes" : "songs";
   [[els.appSongsNavBtn, "songs"], [els.appEventsNavBtn, "events"], [els.appNotesNavBtn, "notes"], [els.appToolsNavBtn, "tools"]].forEach(([button, section]) => {
     if (!button) return;
@@ -6648,7 +7049,7 @@ function renderLibrary() {
     editBtn: els.editFoldersBtn,
     addLabel: "Add Folder",
     addAriaLabel: "Add folder",
-    emptyMessage: query ? "No matching locations" : "No categories yet",
+    emptyMessage: query ? "No matching locations" : "No folders yet",
     query,
     scope
   });
@@ -6674,7 +7075,14 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
   listEl.innerHTML = "";
 
   if (!roots.length && !editMode) {
-    listEl.innerHTML = emptyMarkup(query ? "folder-search" : "folder-plus", emptyMessage);
+    // A slim row, not a big empty box: tapping it starts the same New Folder / New List form
+    // the section's "+" opens. Searching shows a plain, non-tappable note instead.
+    if (query) {
+      listEl.innerHTML = `<div class="slp-row slp-row--empty"><span class="slp-row__body"><span class="slp-row__title">${escapeHtml(emptyMessage)}</span></span></div>`;
+      return;
+    }
+    listEl.innerHTML = `<button class="slp-row slp-row--empty" type="button"><span class="slp-row__body"><span class="slp-row__title">${escapeHtml(emptyMessage)} <span class="slp-row__empty-sep">·</span> <span class="slp-row__empty-action">Create one</span></span></span></button>`;
+    listEl.querySelector("button").addEventListener("click", () => openFolderDialog(null, null, kind));
     return;
   }
 
@@ -6761,9 +7169,10 @@ function renderLibrarySearchResults(rawQuery, scope = "all") {
   matches.slice(0, 50).forEach((song) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "slp-row";
-    button.innerHTML = `<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([song.artist, song.key, song.language].filter(Boolean).join(" · ") || "Song")}</span></span><svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    button.className = `slp-row ${selectMode.active ? "selecting" : ""}`;
+    button.innerHTML = `${selectMode.active ? selectCheckMarkup() : ""}<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([song.artist, song.key, song.language].filter(Boolean).join(" · ") || "Song")}</span></span><svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
     button.addEventListener("click", () => openSongFromSearch(song.id));
+    wireSelectableRow(button, song.id, searchSelectContext);
     els.librarySearchSongList.append(button);
   });
   if (matches.length > 50) els.librarySearchSongList.insertAdjacentHTML("beforeend", `<p class="search-result-limit">Showing the first 50 of ${matches.length} matches</p>`);
@@ -6830,9 +7239,10 @@ function renderFolder() {
   const artistName = artistNameFromFolderId(currentFolderId);
   const isArtistIndex = currentFolderId === ARTISTS;
   const isArtistView = isArtistIndex || Boolean(artistName);
-  const isSpecial = [ALL_SONGS, UNFILED, ARTISTS].includes(currentFolderId) || Boolean(artistName);
+  const isSpecial = [ALL_SONGS, UNFILED, ARTISTS, NEEDS_LYRICS].includes(currentFolderId) || Boolean(artistName);
   const title = currentFolderId === ALL_SONGS ? "All Songs"
     : currentFolderId === UNFILED ? "Unfiled"
+      : currentFolderId === NEEDS_LYRICS ? "Needs lyrics"
       : isArtistIndex ? "Artists"
         : artistName || folder?.name || "Folder";
   const subfolders = folder ? childFolders(folder.id) : [];
@@ -6916,7 +7326,7 @@ function renderArtists(visible) {
   const songCounts = new Map();
   state.songs.forEach((song) => {
     const seenForSong = new Set();
-    [song.artist, song.featuredArtist].forEach((artist) => {
+    (song.artists || []).forEach((artist) => {
       const key = normalizedArtist(artist);
       if (!key || seenForSong.has(key)) return;
       seenForSong.add(key);
@@ -7013,7 +7423,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
 
   songs.forEach((song) => {
     const item = document.createElement("article");
-    item.className = `song-item ${songReorderMode ? "reordering" : ""}`;
+    item.className = `song-item ${songReorderMode ? "reordering" : ""} ${selectMode.active ? "selecting" : ""}`;
     item.dataset.songId = song.id;
     const visibleTitle = songListTitle(song);
 
@@ -7024,6 +7434,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
       // interaction here, unlike the All Songs/Unfiled row shape.
       item.innerHTML = `
         <div class="slp-row ${selectedSongId === song.id ? "selected" : ""}" role="button" tabindex="0" aria-label="Open ${escapeAttribute(visibleTitle)}">
+          ${selectMode.active ? selectCheckMarkup() : ""}
           <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></span>
           ${song.key ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(song.key)}" aria-label="Show songs in ${escapeAttribute(song.key)}${songTranspose(song) ? `, sung in ${escapeAttribute(songCurrentKey(song))}` : ""}">${escapeHtml(songCurrentKey(song))}</button>` : ""}
           <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -7036,7 +7447,8 @@ function renderSongList(sourceSongs, isArtistView = false) {
         if (event.target !== row) return;
         if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openSong(song.id); }
       });
-      wireSwipeAction(item, row, { label: "Add to", icon: "folder-plus", onTrigger: () => openSongAddTo(song.id) });
+      if (!selectMode.active) wireSwipeAction(item, row, { label: "Add to", icon: "folder-plus", onTrigger: () => openSongAddTo(song.id) });
+      wireSelectableRow(item, song.id, folderSelectContext);
       els.songList.append(item);
       return;
     }
@@ -7046,14 +7458,15 @@ function renderSongList(sourceSongs, isArtistView = false) {
     const secondaryTitle = alternateDisplayTitle(song, visibleTitle);
     item.innerHTML = `
       <div class="slp-row ${selectedSongId === song.id ? "selected" : ""} ${songReorderMode ? "slp-row--editable" : ""}" ${songReorderMode ? "" : `role="button" tabindex="0" aria-expanded="${expanded}" aria-label="${expanded ? "Hide" : "Show"} song details"`}>
+        ${selectMode.active ? selectCheckMarkup() : ""}
         ${songReorderMode ? `<button class="slp-row__drag-handle song-grip" type="button" aria-label="Move ${escapeAttribute(song.title)}"><i data-lucide="grip-vertical"></i></button>` : ""}
         <div class="slp-row__body">
           <button class="song-title-button" type="button"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></button>
-          ${song.artist ? `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(song.artist)}">${escapeHtml(song.artist)}</button>` : ""}
+          ${(song.artists || []).length ? `<span class="slp-row__artists">${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
         </div>
         ${song.key ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(song.key)}" aria-label="Show songs in ${escapeAttribute(song.key)}${songTranspose(song) ? `, sung in ${escapeAttribute(songCurrentKey(song))}` : ""}">${escapeHtml(songCurrentKey(song))}</button>` : ""}
       </div>
-      ${expanded && !songReorderMode ? `<div class="song-details">
+      ${expanded && !songReorderMode && !selectMode.active ? `<div class="song-details">
         <span><strong>Folders:</strong> ${escapeHtml(folders || "Unfiled")}</span>
         ${secondaryTitle ? `<span><strong>Also known as:</strong> <span dir="auto">${escapeHtml(secondaryTitle)}</span></span>` : ""}
         <span><strong>Status:</strong> ${escapeHtml(statusLabel(song.status))}</span>
@@ -7063,7 +7476,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
     const row = item.querySelector(".slp-row");
     item.querySelector(".song-title-button").addEventListener("click", (event) => { event.stopPropagation(); openSong(song.id); });
     item.querySelector("[data-song-key]")?.addEventListener("click", (event) => { event.stopPropagation(); openSongsByKey(song.key); });
-    item.querySelector("[data-artist]")?.addEventListener("click", (event) => { event.stopPropagation(); openArtistSongs(song.artist); });
+    item.querySelectorAll("[data-artist]").forEach((link) => link.addEventListener("click", (event) => { event.stopPropagation(); openArtistSongs(link.dataset.artist); }));
     if (songReorderMode) {
       wireSongDrag(item, song.id);
     } else {
@@ -7078,7 +7491,8 @@ function renderSongList(sourceSongs, isArtistView = false) {
         if (event.target !== row) return;
         if (event.key === "Enter" || event.key === " ") { event.preventDefault(); togglePreview(); }
       });
-      wireSwipeAction(item, row, { label: "Add to", icon: "folder-plus", onTrigger: () => openSongAddTo(song.id) });
+      if (!selectMode.active) wireSwipeAction(item, row, { label: "Add to", icon: "folder-plus", onTrigger: () => openSongAddTo(song.id) });
+      wireSelectableRow(item, song.id, folderSelectContext);
     }
     els.songList.append(item);
   });
@@ -7113,10 +7527,11 @@ function renderSong() {
   if (elementIsVisible(els.transposePopover)) refreshTransposePanel(song);
   els.songEdited.textContent = `Updated ${formatDateTime(song.updatedAt)}`;
   renderSongSecondaryMeta(song);
-  const practiceUrl = safeExternalUrl(song.sourceUrl);
-  els.songPracticeLink.classList.toggle("hidden", !practiceUrl);
-  els.songPracticeLink.href = practiceUrl || "#";
+  // The import source address is kept as hidden metadata (song.importSourceUrl); it is not shown.
+  els.songPracticeLink.classList.add("hidden");
+  els.songPracticeLink.href = "#";
   renderSongCategoryButton(song);
+  renderSongLocations(song);
   renderSongLinks(song);
   applyLyricPrefs();
   renderDocument(song);
@@ -7135,7 +7550,6 @@ function renderSongSecondaryMeta(song) {
   const extra = [
     ["Alternate title", song.alternateTitles.join(" · ")],
     ["Artist in Hebrew", song.artistHebrew],
-    ["Featured artist", song.featuredArtist],
     ["Composer", song.composer],
     ["Lyricist", song.lyricist],
     ["Time signature", song.timeSignature],
@@ -7148,16 +7562,57 @@ function renderSongSecondaryMeta(song) {
 // are more. Tapping it opens the Add-to sheet, so it is a control, not just a label.
 // Audio and video links open in a new tab; only http(s) addresses are ever linked.
 function renderSongLinks(song) {
-  const links = [
-    ...song.audioLinks.map((url) => ({ url, icon: "headphones", kind: "Audio" })),
-    ...song.videoLinks.map((url) => ({ url, icon: "video", kind: "Video" }))
-  ].filter((link) => safeExternalUrl(link.url));
+  const links = [...song.audioLinks, ...song.videoLinks].filter((url) => safeExternalUrl(url));
   els.songLinks.hidden = !links.length;
-  els.songLinks.innerHTML = links.map(({ url, icon, kind }) => {
-    let host = url;
-    try { host = new URL(url).hostname.replace(/^www\./, ""); } catch { /* keep the raw address */ }
-    return `<a class="slp-chip slp-chip--link" href="${escapeAttribute(safeExternalUrl(url))}" target="_blank" rel="noopener noreferrer" aria-label="${kind} link, ${escapeAttribute(host)}"><i data-lucide="${icon}"></i><span>${escapeHtml(host)}</span></a>`;
+  els.songLinks.innerHTML = links.map((url) => {
+    const { label, icon } = linkInfo(url);
+    return `<a class="slp-chip slp-chip--link" href="${escapeAttribute(safeExternalUrl(url))}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttribute(label)} link"><i data-lucide="${icon}"></i><span>${escapeHtml(label)}</span></a>`;
   }).join("");
+}
+
+// "Locations & tags" in the Details panel: every folder the song is in, and every event or
+// setlist that uses it, as tappable chips. (Songs have no separate tags; folders and
+// categories are the tags.)
+function renderSongLocations(song) {
+  const folders = song.folderIds.map((id) => folderById(id)).filter(Boolean);
+  const events = state.gigSetItems.filter((item) => item.songId === song.id).map((item) => {
+    const set = state.gigSets.find((candidate) => candidate.id === item.setId);
+    const section = set && state.gigSections.find((candidate) => candidate.id === set.sectionId);
+    const gig = section && state.gigs.find((candidate) => candidate.id === section.gigId);
+    if (!gig) return null;
+    const place = set.isDirect ? section.name : `${section.name} · ${set.name}`;
+    return { gig, section, set, label: `${gigDisplayName(gig)} · ${place}` };
+  }).filter(Boolean);
+  const group = (title, chips, empty) => `<div class="song-locations__group"><span class="song-locations__label">${title}</span><div class="song-locations__chips">${chips || `<span class="song-locations__empty">${empty}</span>`}</div></div>`;
+  els.songLocationsBody.innerHTML =
+    group("Folders", folders.map((folder) => `<button class="slp-chip song-location-chip" type="button" dir="auto" data-location-folder="${escapeAttribute(folder.id)}"><span>${escapeHtml(folder.name)}</span></button>`).join(""), "Not in any folder") +
+    group("Events &amp; setlists", events.map((entry) => `<button class="slp-chip song-location-chip" type="button" dir="auto" data-location-set="${escapeAttribute(entry.set.id)}"><span>${escapeHtml(entry.label)}</span></button>`).join(""), "Not in any event");
+  els.songLocationsBody.querySelectorAll("[data-location-folder]").forEach((chip) => chip.addEventListener("click", () => {
+    workspaceMode = "library";
+    songReturnContext = null;
+    openFolder(chip.dataset.locationFolder);
+  }));
+  els.songLocationsBody.querySelectorAll("[data-location-set]").forEach((chip) => chip.addEventListener("click", () => {
+    const entry = events.find((candidate) => candidate.set.id === chip.dataset.locationSet);
+    if (!entry) return;
+    workspaceMode = "gigs";
+    mobileView = "library";
+    songReturnContext = null;
+    state.gigNavigation.gigId = entry.gig.id;
+    state.gigNavigation.sectionId = entry.section.id;
+    state.gigNavigation.setId = entry.set.id;
+    selectedSongId = null;
+    persist();
+    render();
+  }));
+}
+
+// The header chip: open Details and bring the Locations & tags section into view.
+function openSongLocations() {
+  els.songDetailsViewCollapse.setAttribute("aria-expanded", "true");
+  els.songDetailsViewPanel.hidden = false;
+  refreshIcons();
+  requestAnimationFrame(() => els.songLocations.scrollIntoView?.({ block: "center", behavior: "smooth" }));
 }
 
 function renderSongCategoryButton(song) {
@@ -7292,7 +7747,7 @@ function openFolderDialog(id = null, requestedParentId = null, explicitKind = nu
   // User folders carry no color in the redesign (P6); one is still assigned so the
   // stored record stays valid for backups and older builds.
   selectedFolderColor = folder?.color || COLORS[state.folders.length % COLORS.length];
-  els.folderDialogTitle.textContent = folder ? "Edit Folder" : requestedParentId ? "New Subfolder" : "New Main Folder";
+  els.folderDialogTitle.textContent = folder ? "Edit Folder" : requestedParentId ? "New Subfolder" : folderDialogKind === "personal" ? "New List" : "New Folder";
   els.folderNameInput.value = folder?.name || "";
   renderParentOptions(folder, requestedParentId);
   showOverlay(els.folderDialog);
@@ -7400,9 +7855,8 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   els.songTitleHebrewInput.value = song.titleHebrew;
   els.songTitleYiddishInput.value = song.titleYiddish;
   els.songAlternateTitlesInput.value = normalizeStringArray([...song.alternateTitles, song.titleEnglish, song.titleHebrew, song.titleYiddish].filter((title) => title && title !== song.title)).join(" | ");
-  els.songArtistInput.value = song.artist;
+  els.songArtistInput.value = (song.artists || []).join(", ");
   els.songArtistHebrewInput.value = song.artistHebrew;
-  els.songFeaturedArtistInput.value = song.featuredArtist;
   els.songComposerInput.value = song.composer;
   els.songLyricistInput.value = song.lyricist;
   els.songAlbumInput.value = song.album;
@@ -7414,9 +7868,7 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   els.songLanguageInput.value = song.language;
   els.songStatusInput.value = song.status;
   els.songDirectionInput.value = song.direction;
-  els.songSourceUrlInput.value = song.sourceUrl;
-  els.songAudioLinksInput.value = song.audioLinks.join("\n");
-  els.songVideoLinksInput.value = song.videoLinks.join("\n");
+  els.songLinksInput.value = [...song.audioLinks, ...song.videoLinks].join("\n");
   els.quickLocationForm.classList.add("hidden");
   els.songDeleteZone.hidden = isNew;
   renderSongFolderChoices(song);
@@ -7459,7 +7911,7 @@ function toggleSongOrganizationPanel(which) {
 }
 
 function renderSongDetailSuggestions(currentKey = "") {
-  renderDatalist(els.artistSuggestions, state.songs.flatMap((song) => [song.artist, song.featuredArtist]));
+  renderDatalist(els.artistSuggestions, state.songs.flatMap((song) => song.artists || []));
   renderDatalist(els.artistHebrewSuggestions, state.songs.map((song) => song.artistHebrew));
   renderDatalist(els.composerSuggestions, state.songs.map((song) => song.composer));
   renderDatalist(els.lyricistSuggestions, state.songs.map((song) => song.lyricist));
@@ -7628,8 +8080,7 @@ function commitSongInfoFolders() {
 function appendFolderChoice(folder, song, child, container = els.songFolderChoices) {
   const label = document.createElement("label");
   label.className = `folder-choice ${child ? "child" : ""}`;
-  label.style.setProperty("--folder-color", folderColor(folder));
-  label.innerHTML = `<input type="checkbox" value="${folder.id}" ${song.folderIds.includes(folder.id) ? "checked" : ""} /><i data-lucide="folder"></i><span>${escapeHtml(folder.name)}</span>`;
+  label.innerHTML = `<input type="checkbox" value="${folder.id}" ${song.folderIds.includes(folder.id) ? "checked" : ""} /><span>${escapeHtml(folder.name)}</span>`;
   container.append(label);
 }
 
@@ -7638,13 +8089,13 @@ function appendFolderChoice(folder, song, child, container = els.songFolderChoic
 // side has no artist yet -- is treated as the existing song, not a new one.
 function findExistingSongMatch(title, artist, alternateTitles, excludeId) {
   const wanted = [title, ...alternateTitles].map(normalizeComparisonText).filter(Boolean);
-  const wantedArtist = normalizeComparisonText(artist);
+  const wantedArtists = normalizeArtistNames(artist).map(normalizeComparisonText);
   return state.songs.find((existing) => {
     if (existing.id === excludeId) return false;
     const names = [existing.title, ...(existing.alternateTitles || [])].map(normalizeComparisonText);
     if (!wanted.some((name) => names.includes(name))) return false;
-    const existingArtist = normalizeComparisonText(existing.artist);
-    return !wantedArtist || !existingArtist || wantedArtist === existingArtist;
+    const existingArtists = (existing.artists || []).map(normalizeComparisonText);
+    return !wantedArtists.length || !existingArtists.length || wantedArtists.some((name) => existingArtists.includes(name));
   }) || null;
 }
 
@@ -7691,9 +8142,10 @@ function saveSongInfo() {
   song.titleEnglish = titleCandidates.find(hasLatinText) || "";
   song.titleHebrew = titleCandidates.find(hasHebrewText) || "";
   song.titleYiddish = song.titleYiddish && titleCandidates.includes(song.titleYiddish) ? song.titleYiddish : "";
-  song.artist = els.songArtistInput.value.trim();
+  song.artists = normalizeArtistNames(els.songArtistInput.value);
+  song.artist = song.artists.join(", ");
   song.artistHebrew = els.songArtistHebrewInput.value.trim();
-  song.featuredArtist = els.songFeaturedArtistInput.value.trim();
+  song.featuredArtist = "";
   song.composer = els.songComposerInput.value.trim();
   song.lyricist = els.songLyricistInput.value.trim();
   song.album = els.songAlbumInput.value.trim();
@@ -7705,9 +8157,11 @@ function saveSongInfo() {
   song.language = els.songLanguageInput.value.trim();
   song.status = els.songStatusInput.value;
   song.direction = els.songDirectionInput.value;
-  song.sourceUrl = els.songSourceUrlInput.value.trim();
-  song.audioLinks = normalizeUrlList(els.songAudioLinksInput.value);
-  song.videoLinks = normalizeUrlList(els.songVideoLinksInput.value);
+  // One Links field: each address is filed as audio or video by the site it points to.
+  const links = normalizeUrlList(els.songLinksInput.value);
+  song.audioLinks = links.filter((url) => linkInfo(url).kind !== "video");
+  song.videoLinks = links.filter((url) => linkInfo(url).kind === "video");
+  song.sourceUrl = "";
   song.folderIds = [...els.songFolderChoices.querySelectorAll("input:checked")].map((input) => input.value);
   song.updatedAt = new Date().toISOString();
   commitSongInfoFolders();
@@ -8221,14 +8675,19 @@ function openSongAddTo(songId = null) {
   const song = typeof songId === "string" ? state.songs.find((item) => item.id === songId) : currentSong();
   if (!song) return;
   songAddToId = song.id;
+  songAddToMode = null;
+  setSongAddToCopy("Save locations", "Choose folders, categories, event sections, or setlists. The song remains one master record.");
   els.songAddToTitle.textContent = `Add “${song.title}” to`;
   renderSongAddToChoices(song);
   showOverlay(els.songAddToSheet);
 }
 
-function renderSongAddToChoices(song) {
+// `song` is null when the sheet is choosing for several songs: nothing starts ticked, since the
+// songs differ in where they already are. `options.radio` turns the ticks into one-of-many
+// (Move to...), and `options.gigId` limits event destinations to a single event.
+function renderSongAddToChoices(song, options = {}) {
   els.songAddToChoices.innerHTML = "";
-  [["personal", "Folders"], ["category", "Categories"]].forEach(([kind, heading]) => {
+  if (!options.eventsOnly) [["personal", "Folders"], ["category", "Categories"]].forEach(([kind, heading]) => {
     const roots = childFolders(null).filter((folder) => folder.kind === kind);
     if (!roots.length) return;
     const groupLabel = document.createElement("div");
@@ -8236,18 +8695,18 @@ function renderSongAddToChoices(song) {
     groupLabel.textContent = heading;
     els.songAddToChoices.append(groupLabel);
     roots.forEach((root) => {
-      appendSongAddToChoice(root, song, false);
-      childFolders(root.id).forEach((folder) => appendSongAddToChoice(folder, song, true));
+      appendSongAddToChoice(root, song, false, options);
+      childFolders(root.id).forEach((folder) => appendSongAddToChoice(folder, song, true, options));
     });
   });
-  appendSongEventChoices(song);
+  if (!options.foldersOnly) appendSongEventChoices(song, els.songAddToChoices, true, options);
 }
 
-function appendSongAddToChoice(folder, song, child) {
+function appendSongAddToChoice(folder, song, child, options = {}) {
+  if (options.excludeFolderId && folder.id === options.excludeFolderId) return;
   const label = document.createElement("label");
   label.className = `folder-choice ${child ? "child" : ""}`;
-  label.style.setProperty("--folder-color", folderColor(folder));
-  label.innerHTML = `<input type="checkbox" data-add-to-kind="folder" value="${folder.id}" ${song.folderIds.includes(folder.id) ? "checked" : ""}><i data-lucide="folder"></i><span>${escapeHtml(folder.name)}</span>`;
+  label.innerHTML = `<input type="${options.radio ? "radio" : "checkbox"}" ${options.radio ? 'name="song-move-destination"' : ""} data-add-to-kind="folder" value="${folder.id}" ${song?.folderIds.includes(folder.id) ? "checked" : ""}><span>${escapeHtml(folder.name)}</span>`;
   els.songAddToChoices.append(label);
 }
 
@@ -8260,8 +8719,8 @@ function renderSongEventChoices(song) {
   refreshIcons();
 }
 
-function appendSongEventChoices(song, container = els.songAddToChoices, withHeading = true) {
-  const gigs = [...state.gigs].sort((a, b) => a.date.localeCompare(b.date));
+function appendSongEventChoices(song, container = els.songAddToChoices, withHeading = true, options = {}) {
+  const gigs = [...state.gigs].filter((gig) => !options.gigId || gig.id === options.gigId).sort((a, b) => a.date.localeCompare(b.date));
   const destinations = gigs.flatMap((gig) => state.gigSections
     .filter((section) => section.gigId === gig.id && !section.isHidden)
     .sort((a, b) => a.position - b.position)
@@ -8271,7 +8730,7 @@ function appendSongEventChoices(song, container = els.songAddToChoices, withHead
       return [{ gig, section, set: directSet }, ...sets.filter((set) => !set.isDirect).map((set) => ({ gig, section, set }))];
     }));
   if (!destinations.length) return;
-  const existingSetIds = new Set(state.gigSetItems.filter((item) => item.songId === song.id).map((item) => item.setId));
+  const existingSetIds = new Set(song ? state.gigSetItems.filter((item) => item.songId === song.id).map((item) => item.setId) : []);
   if (withHeading) {
     const heading = document.createElement("div");
     heading.className = "folder-choice-heading";
@@ -8284,7 +8743,7 @@ function appendSongEventChoices(song, container = els.songAddToChoices, withHead
     const destination = !set || set.isDirect ? section.name : `${section.name} · ${set.name}`;
     const kind = set ? "gig-set" : "gig-section";
     const value = set?.id || section.id;
-    label.innerHTML = `<input type="checkbox" data-add-to-kind="${kind}" value="${value}" ${set && existingSetIds.has(set.id) ? "checked" : ""}><i data-lucide="list-music"></i><span><strong>${escapeHtml(gigDisplayName(gig))}</strong><small>${escapeHtml(destination)}</small></span>`;
+    label.innerHTML = `<input type="${options.radio ? "radio" : "checkbox"}" ${options.radio ? 'name="song-move-destination"' : ""} data-add-to-kind="${kind}" value="${value}" ${set && existingSetIds.has(set.id) ? "checked" : ""}><i data-lucide="list-music"></i><span><strong>${escapeHtml(gigDisplayName(gig))}</strong><small>${escapeHtml(destination)}</small></span>`;
     container.append(label);
   });
 }
@@ -8303,7 +8762,116 @@ function applySongEventChoices(song, container) {
   });
 }
 
+function setSongAddToCopy(buttonLabel, hint) {
+  els.saveSongAddToBtn.textContent = buttonLabel;
+  els.songAddToHint.textContent = hint;
+}
+
+// Several songs from Select mode. Adds only: a song already in a destination is skipped.
+function openSongAddToMany(songIds) {
+  if (!songIds.length) return;
+  songAddToMode = { type: "add", songIds };
+  setSongAddToCopy("Add", "Choose folders, categories, event sections, or setlists. Songs already there are skipped, and every song stays one master record.");
+  els.songAddToTitle.textContent = `Add ${songIds.length} ${plural(songIds.length, "song")} to`;
+  renderSongAddToChoices(null);
+  showOverlay(els.songAddToSheet);
+}
+
+// "Move to..." from Select mode: one destination. In a folder it is another folder; in an
+// event it is another section or setlist of the same event.
+function openSongMoveTo() {
+  const context = selectMode.context;
+  if (!context || !selectMode.ids.length) return;
+  const count = selectMode.ids.length;
+  songAddToMode = { type: "move", ids: [...selectMode.ids], context };
+  setSongAddToCopy("Move", context.kind === "event" ? "Choose another section or setlist in this event." : "Choose a folder or category. The songs leave this one and stay in your library.");
+  els.songAddToTitle.textContent = `Move ${count} ${plural(count, "song")} to`;
+  if (context.kind === "event") renderSongAddToChoices(null, { radio: true, eventsOnly: true, gigId: context.gigId });
+  else renderSongAddToChoices(null, { radio: true, foldersOnly: true, excludeFolderId: context.folderId });
+  showOverlay(els.songAddToSheet);
+}
+
+function applySongAddToMany(songIds) {
+  const inputs = [...els.songAddToChoices.querySelectorAll("input[data-add-to-kind]:checked")];
+  if (!inputs.length) return showToast("Choose where to add the songs");
+  let added = 0;
+  let already = 0;
+  inputs.forEach((input) => {
+    const kind = input.dataset.addToKind;
+    if (kind === "folder") {
+      songIds.forEach((songId) => {
+        const song = state.songs.find((item) => item.id === songId);
+        if (!song) return;
+        if (song.folderIds.includes(input.value)) { already += 1; return; }
+        song.folderIds.push(input.value);
+        song.updatedAt = new Date().toISOString();
+        (state.songOrder[input.value] = state.songOrder[input.value] || []).push(songId);
+        added += 1;
+      });
+      return;
+    }
+    const set = kind === "gig-set" ? state.gigSets.find((item) => item.id === input.value) : directGigSetForSection(input.value, true);
+    if (!set) return;
+    const additions = addSongReferencesToGigSet(set.id, songIds);
+    added += additions.length;
+    already += new Set(songIds).size - additions.length;
+  });
+  finishSelectAction(`${added} added${already ? `, ${already} already there` : ""}`);
+}
+
+function applySongMoveTo(mode) {
+  const input = els.songAddToChoices.querySelector("input[data-add-to-kind]:checked");
+  if (!input) return showToast("Choose where to move the songs");
+  const { context } = mode;
+  let moved = 0;
+  let already = 0;
+  if (context.kind === "event") {
+    const target = input.dataset.addToKind === "gig-set" ? state.gigSets.find((item) => item.id === input.value) : directGigSetForSection(input.value, true);
+    if (!target) return;
+    mode.ids.forEach((itemId) => {
+      const item = state.gigSetItems.find((candidate) => candidate.id === itemId);
+      if (!item || item.setId === target.id) return;
+      if (state.gigSetItems.some((other) => other.setId === target.id && other.songId === item.songId)) {
+        state.gigSetItems = state.gigSetItems.filter((other) => other.id !== itemId);
+        already += 1;
+        return;
+      }
+      item.position = state.gigSetItems.filter((other) => other.setId === target.id).length;
+      item.setId = target.id;
+      item.updatedAt = new Date().toISOString();
+      moved += 1;
+    });
+  } else {
+    const destination = input.value;
+    mode.ids.forEach((songId) => {
+      const song = state.songs.find((item) => item.id === songId);
+      if (!song) return;
+      if (context.folderId) song.folderIds = song.folderIds.filter((id) => id !== context.folderId);
+      if (song.folderIds.includes(destination)) already += 1;
+      else {
+        song.folderIds.push(destination);
+        (state.songOrder[destination] = state.songOrder[destination] || []).push(songId);
+        moved += 1;
+      }
+      song.updatedAt = new Date().toISOString();
+    });
+  }
+  finishSelectAction(`${moved} moved${already ? `, ${already} already there` : ""}`);
+}
+
+function finishSelectAction(message) {
+  persist();
+  closeOverlays();
+  leaveSelectMode({ rerender: false });
+  songAddToMode = null;
+  render();
+  refreshIcons();
+  showToast(message);
+}
+
 function saveSongAddTo() {
+  if (songAddToMode?.type === "add") return applySongAddToMany(songAddToMode.songIds);
+  if (songAddToMode?.type === "move") return applySongMoveTo(songAddToMode);
   const song = state.songs.find((item) => item.id === songAddToId) || currentSong();
   if (!song) return closeOverlays();
   song.folderIds = [...els.songAddToChoices.querySelectorAll('input[data-add-to-kind="folder"]:checked')].map((input) => input.value);
@@ -8396,6 +8964,7 @@ function showSongSortMenu() {
     items.push({ icon: songSortDirection === "asc" ? "arrow-down-up" : "arrow-up-down", label: songSortDirection === "asc" ? "Descending order" : "Ascending order", action: toggleSongSortDirection });
   }
   items.push({ icon: "list-filter", label: activeFilterCount() ? `Filters (${activeFilterCount()})` : "Filter songs", action: openFilterSheet });
+  items.push({ icon: "check-circle-2", label: "Select songs", action: () => enterSelectMode(folderSelectContext()) });
   showActionMenu(items, els.sortMenuBtn);
 }
 
@@ -8411,15 +8980,12 @@ function openFilterSheet() {
 function populateArtistFilter() {
   const artists = new Map();
   state.songs.forEach((song) => {
-    if (song.artist) {
-      const key = normalizedArtist(song.artist);
-      if (!artists.has(key)) artists.set(key, { value: song.artist, hebrew: song.artistHebrew || "" });
-      else if (!artists.get(key).hebrew && song.artistHebrew) artists.get(key).hebrew = song.artistHebrew;
-    }
-    if (song.featuredArtist) {
-      const key = normalizedArtist(song.featuredArtist);
-      if (!artists.has(key)) artists.set(key, { value: song.featuredArtist, hebrew: "" });
-    }
+    (song.artists || []).forEach((name, index) => {
+      const key = normalizedArtist(name);
+      const hebrew = index === 0 ? song.artistHebrew || "" : "";
+      if (!artists.has(key)) artists.set(key, { value: name, hebrew });
+      else if (!artists.get(key).hebrew && hebrew) artists.get(key).hebrew = hebrew;
+    });
   });
   const options = [...artists.values()].sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: "base" }));
   els.filterArtistInput.innerHTML = `<option value="">All artists</option>${options.map((artist) => `<option value="${escapeAttribute(artist.value)}">${escapeHtml(artist.hebrew ? `${artist.value} · ${artist.hebrew}` : artist.value)}</option>`).join("")}`;
@@ -8457,7 +9023,7 @@ function activeFilterCount() {
 }
 
 function songMatchesFilters(song) {
-  if (songFilters.artist && ![song.artist, song.artistHebrew, song.featuredArtist].includes(songFilters.artist)) return false;
+  if (songFilters.artist && ![...(song.artists || []), song.artistHebrew].includes(songFilters.artist)) return false;
   if (songFilters.language && song.language !== songFilters.language) return false;
   if (songFilters.key && ![song.key, ...song.alternateKeys].includes(songFilters.key)) return false;
   if (songFilters.status && song.status !== songFilters.status) return false;
@@ -8505,11 +9071,11 @@ function showSongMenu() {
   if (!song) return;
   showActionMenu([
     { icon: "maximize-2", label: "Performance mode", action: openPerformanceMode },
+    { icon: "music", label: "Place chords", action: openChordEditor },
     { icon: "folder-plus", label: "Add to folder or event", action: openSongAddTo },
     { icon: "pencil", label: "Song details & folders", action: () => openSongInfo(false) },
     { icon: "share-2", label: "Share lyrics", action: shareCurrentSong },
     { icon: "printer", label: "Print", action: () => { closeOverlays(); window.print(); } },
-    { icon: "copy", label: "Duplicate", action: duplicateCurrentSong },
     { icon: "trash-2", label: "Delete song", danger: true, action: requestDeleteSong }
   ], els.songMoreBtn);
 }
@@ -8550,6 +9116,7 @@ function positionFloatingMenu(menu, anchor) {
 }
 
 function toggleSongReorder() {
+  leaveSelectMode({ rerender: false });
   songReorderMode = !songReorderMode;
   songSort = "custom";
   els.songSortSelect.value = "custom";
@@ -8578,24 +9145,6 @@ async function shareCurrentSong() {
     downloadText(`${safeFilename(song.title)}.txt`, text);
     showToast("Lyrics file created");
   }
-}
-
-function duplicateCurrentSong() {
-  const song = currentSong();
-  if (!song) return;
-  const copy = normalizeSong({
-    ...structuredCloneSafe(song),
-    id: makeId(),
-    title: `${song.title} Copy`,
-    updatedAt: new Date().toISOString(),
-    blocks: song.blocks.map((block) => ({ ...structuredCloneSafe(block), id: makeId() }))
-  });
-  state.songs.unshift(copy);
-  Object.keys(state.songOrder).forEach((key) => state.songOrder[key].unshift(copy.id));
-  selectedSongId = copy.id;
-  closeOverlays();
-  render();
-  showToast("Song duplicated");
 }
 
 async function exportLibrary() {
@@ -8818,15 +9367,6 @@ function showRawSongDocument() {
   if (songTranspose(song)) showToast(`Editing chords in the original key${song.key ? ` (${song.key})` : ""}`);
 }
 
-function insertChordToken() {
-  els.songDocument.focus();
-  restoreEditorSelection();
-  pushUndoSnapshot();
-  document.execCommand("insertText", false, "[]");
-  globalThis.getSelection?.()?.modify?.("move", "backward", "character");
-  syncSongDocument();
-}
-
 // ---------- Transpose panel ----------
 
 function openTransposePanel() {
@@ -8863,6 +9403,553 @@ function changeTranspose(delta) {
   renderSong();
   refreshTransposePanel(song);
   refreshIcons();
+}
+
+// ---------- Placing chords at exact spots ----------
+// A line's chords are (position, chord) pairs over its plain text: position 6 in
+// "Modeh Ani" means "just before the A". These helpers read them out of a line's [Am] tokens and
+// write them back, touching only text (never the bold/italic wrappers around it), so a chord can
+// sit on any letter, not just at the start of a word.
+
+// The line's text pieces in order. A <br> counts as one character ("\n") with no text node.
+function chordLineSegments(line) {
+  const segments = [];
+  const walk = (node) => {
+    node.childNodes.forEach((child) => {
+      if (child.nodeType === 3) segments.push({ node: child });
+      else if (child.nodeName === "BR") segments.push({ node: null });
+      else if (child.nodeType === 1 && !child.matches?.(".line-disclosure, figure")) walk(child);
+    });
+  };
+  walk(line);
+  return segments;
+}
+
+function readLineChords(line) {
+  let text = "";
+  const chords = [];
+  chordLineSegments(line).forEach(({ node }) => {
+    if (!node) {
+      text += "\n";
+      return;
+    }
+    const value = node.nodeValue;
+    const pattern = chordTokenPattern();
+    let last = 0;
+    let match;
+    while ((match = pattern.exec(value))) {
+      text += value.slice(last, match.index);
+      chords.push({ pos: text.length, chord: match[1] });
+      last = pattern.lastIndex;
+    }
+    text += value.slice(last);
+  });
+  return { text, chords };
+}
+
+function writeLineChords(line, chords) {
+  const segments = chordLineSegments(line);
+  segments.forEach(({ node }) => {
+    if (node) node.nodeValue = node.nodeValue.replace(chordTokenPattern(), "");
+  });
+  const starts = [];
+  let total = 0;
+  segments.forEach(({ node }) => {
+    starts.push(total);
+    total += node ? node.nodeValue.length : 1;
+  });
+  // Insert from the end so earlier offsets stay valid; equal positions keep their order.
+  chords
+    .map((entry, index) => ({ ...entry, index }))
+    .sort((a, b) => b.pos - a.pos || b.index - a.index)
+    .forEach(({ pos, chord }) => {
+      const spot = Math.max(0, Math.min(pos, total));
+      let target = segments.findIndex((segment, k) => segment.node && spot >= starts[k] && spot < starts[k] + segment.node.nodeValue.length);
+      if (target < 0) {
+        // At the very end (or on a <br>): use the last text piece.
+        for (let k = segments.length - 1; k >= 0; k -= 1) if (segments[k].node) { target = k; break; }
+        if (target < 0) return;
+        const node = segments[target].node;
+        node.nodeValue = `${node.nodeValue}[${chord}]`;
+        return;
+      }
+      const node = segments[target].node;
+      const offset = spot - starts[target];
+      node.nodeValue = `${node.nodeValue.slice(0, offset)}[${chord}]${node.nodeValue.slice(offset)}`;
+    });
+}
+
+// String offsets where a user-perceived character starts (so a chord never lands between a
+// Hebrew letter and its vowel mark), plus the end of the text.
+function graphemeStarts(text) {
+  if (globalThis.Intl?.Segmenter) {
+    return [...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text)].map((part) => part.index);
+  }
+  const starts = [];
+  let index = 0;
+  for (const point of text) {
+    if (!/[̀-֑ͯ-ׇ]/.test(point) || !starts.length) starts.push(index);
+    index += point.length;
+  }
+  return starts;
+}
+
+// The chords that fit a key: the seven triads of its scale spelled to match the key, plus the
+// dominant 7th. Falls back to the C-major set when the song has no key.
+function diatonicChords(key) {
+  const parsed = parseKey(key);
+  const minor = parsed ? /^m(?!aj)/.test(parsed.suffix.trim()) : false;
+  const root = parsed ? noteIndexOf(parsed.root) : 0;
+  const flats = parsed ? keyPrefersFlats(key) : false;
+  const steps = minor ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11];
+  const qualities = minor ? ["m", "dim", "", "m", "m", "", ""] : ["", "m", "m", "", "", "m", "dim"];
+  const chords = steps.map((step, index) => `${(flats ? FLAT_NOTE_NAMES : SHARP_NOTE_NAMES)[(root + step) % 12]}${qualities[index]}`);
+  chords.push(`${(flats ? FLAT_NOTE_NAMES : SHARP_NOTE_NAMES)[(root + 7) % 12]}7`);
+  return chords;
+}
+
+// Charts copied from tab sites put chords on their own line above the words, lined up by
+// spaces:
+//     Am        F
+//     Modeh Ani lefanecha
+// Turn each such pair into the inline form ("[Am]Modeh [F]Ani lefanecha") by dropping every
+// chord in at the column it sat over. A chord line with no words under it becomes a row of
+// chords. Ordinary lyrics are left alone.
+function isChordOnlyLine(line) {
+  const tokens = line.trim().split(/\s+/).filter((token) => token && token !== "|" && token !== "-" && !/^x\d+$/i.test(token));
+  return tokens.length > 0 && tokens.every((token) => isChordSymbol(token.replace(/^\(|\)$/g, "")));
+}
+
+// Tabs stand for the next multiple-of-8 column, as they look in a text editor.
+function expandTabs(line) {
+  let out = "";
+  for (const char of line) out += char === "\t" ? " ".repeat(8 - (out.length % 8)) : char;
+  return out;
+}
+
+function convertChordLinesToInline(text) {
+  const lines = String(text || "").replace(/\r\n?/g, "\n").split("\n").map((line) => (line.includes("\t") ? expandTabs(line) : line));
+  const output = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!isChordOnlyLine(line)) {
+      output.push(line);
+      continue;
+    }
+    const chordPattern = /\(?[A-G][^\s|()]*\)?/g;
+    const marks = [];
+    let match;
+    while ((match = chordPattern.exec(line))) {
+      const chord = match[0].replace(/^\(|\)$/g, "");
+      if (isChordSymbol(chord)) marks.push({ column: match.index + (match[0].startsWith("(") ? 1 : 0), chord });
+    }
+    const next = lines[index + 1];
+    const hasWordsBelow = next !== undefined && next.trim() && !isChordOnlyLine(next) && !/^\s*\[[^\]]*\]\s*$/.test(next);
+    if (!hasWordsBelow) {
+      output.push(marks.map(({ chord }) => `[${chord}]`).join(" "));
+      continue;
+    }
+    // Insert from the right so earlier columns keep their meaning; a chord past the end of the
+    // words goes at the end.
+    let merged = next;
+    [...marks].reverse().forEach(({ column, chord }) => {
+      // Measured against the original words (not the growing merged text) so chords that
+      // pile up past the end keep their order. A chord sitting over a space belongs to the
+      // word that follows it.
+      let spot = Math.min(column, next.length);
+      while (spot < next.length && /\s/.test(next[spot])) spot += 1;
+      merged = `${merged.slice(0, spot)}[${chord}]${merged.slice(spot)}`;
+    });
+    output.push(merged);
+    index += 1;
+  }
+  return output.join("\n");
+}
+// Chord editor: place chords over the exact letter they belong to.
+//
+// It works the way the established chord apps do: tap the spot in the lyrics, then tap the chord
+// (the bar offers the song's own key first). Each placed chord is a chip you can drag along the
+// line, nudge a letter at a time, retype or delete. The song still stores the plain [Am]word
+// text; this screen only reads and rewrites those tokens (readLineChords / writeLineChords), so
+// nothing else about the lyrics changes.
+
+let chordEditor = null;
+let chordEditorRecent = [];
+
+function openChordEditor() {
+  const song = currentSong();
+  if (!song) return;
+  // Finish any typing first so the editor starts from what is saved.
+  if (songEditMode) hideWritingToolbar();
+  const root = document.createElement("div");
+  root.innerHTML = song.documentHtml || "";
+  const lines = [...root.children]
+    .filter((line) => line.tagName !== "FIGURE" && !line.querySelector("figure") && readLineChords(line).text.replace(/\n/g, "").trim())
+    .map((element) => {
+      const { text, chords } = readLineChords(element);
+      return { element, text, chords, starts: [...graphemeStarts(text), text.length], rtl: /[֐-׿]/.test(text) };
+    });
+  chordEditor = { song, root, lines, selection: null, undo: [], custom: { root: "C", quality: "", bass: "" }, moreOpen: false };
+  els.chordEditor.hidden = false;
+  els.chordEditor.classList.remove("hidden");
+  document.body.classList.add("chord-editor-open");
+  els.chordEditorTitle.textContent = song.title;
+  els.chordEditorNote.textContent = songTranspose(song)
+    ? `Chords here are in the original key${song.key ? ` (${compactKeyLabel(song.key)})` : ""}. The lyrics page shows them moved.`
+    : "";
+  renderChordEditor();
+  renderChordEditorBar();
+  refreshIcons();
+}
+
+function closeChordEditor(save) {
+  if (!chordEditor) return;
+  if (save) {
+    const { song, root, lines } = chordEditor;
+    lines.forEach((line) => writeLineChords(line.element, line.chords));
+    const html = sanitizeStoredHtml(root.innerHTML);
+    if (html !== song.documentHtml) {
+      song.documentHtml = html;
+      song.updatedAt = new Date().toISOString();
+      persist();
+    }
+  }
+  chordEditor = null;
+  els.chordEditor.hidden = true;
+  els.chordEditor.classList.add("hidden");
+  document.body.classList.remove("chord-editor-open");
+  if (save) {
+    els.songDocument.dataset.songId = "";
+    render();
+    showToast("Chords saved");
+  }
+}
+
+function chordEditorSnapshot() {
+  return JSON.stringify(chordEditor.lines.map((line) => line.chords));
+}
+
+function chordEditorRemember() {
+  chordEditor.undo.push(chordEditorSnapshot());
+  if (chordEditor.undo.length > 60) chordEditor.undo.shift();
+}
+
+function undoChordEdit() {
+  if (!chordEditor?.undo.length) return;
+  const saved = JSON.parse(chordEditor.undo.pop());
+  chordEditor.lines.forEach((line, index) => { line.chords = saved[index]; });
+  chordEditor.selection = null;
+  renderChordEditor();
+  renderChordEditorBar();
+}
+
+// ---------- drawing the lines ----------
+
+function renderChordEditor() {
+  const container = els.chordEditorLines;
+  const scroll = container.scrollTop;
+  container.innerHTML = "";
+  chordEditor.lines.forEach((line, lineIndex) => {
+    const row = document.createElement("div");
+    row.className = "ce-line";
+    row.dir = line.rtl ? "rtl" : "ltr";
+    row.dataset.line = lineIndex;
+    const inner = document.createElement("div");
+    inner.className = "ce-inner";
+    const chordRow = document.createElement("div");
+    chordRow.className = "ce-chords";
+    const textRow = document.createElement("div");
+    textRow.className = "ce-text";
+    for (let g = 0; g < line.starts.length - 1; g += 1) {
+      const glyph = document.createElement("span");
+      glyph.className = "ce-ch";
+      const value = line.text.slice(line.starts[g], line.starts[g + 1]);
+      glyph.textContent = value === " " ? " " : value === "\n" ? "↵" : value;
+      textRow.append(glyph);
+    }
+    const caret = document.createElement("span");
+    caret.className = "ce-caret";
+    caret.hidden = true;
+    inner.append(chordRow, textRow, caret);
+    row.append(inner);
+    container.append(row);
+    line.dom = { row, inner, chordRow, textRow, caret };
+    wireChordEditorLine(line, lineIndex);
+  });
+  container.scrollTop = scroll;
+  positionChordEditorChips();
+}
+
+// x of the boundary just before the letter at string offset `pos`, inside the line's inner box.
+function chordBoundaryX(line, pos) {
+  const glyphs = line.dom.textRow.children;
+  const inner = line.dom.inner.getBoundingClientRect();
+  if (!glyphs.length) return 0;
+  const startIndex = line.starts.findIndex((start) => start >= pos);
+  const atEnd = startIndex < 0 || startIndex >= glyphs.length;
+  const rect = glyphs[atEnd ? glyphs.length - 1 : startIndex].getBoundingClientRect();
+  const edge = line.rtl ? (atEnd ? rect.left : rect.right) : (atEnd ? rect.right : rect.left);
+  return edge - inner.left;
+}
+
+function positionChordEditorChips() {
+  const selection = chordEditor.selection;
+  chordEditor.lines.forEach((line, lineIndex) => {
+    line.dom.chordRow.innerHTML = "";
+    line.chords.forEach((entry, chipIndex) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "ce-chip";
+      chip.textContent = entry.chord;
+      chip.dataset.chip = chipIndex;
+      chip.setAttribute("aria-label", `Chord ${entry.chord}. Drag to move, or choose it to change`);
+      const x = chordBoundaryX(line, entry.pos);
+      if (line.rtl) chip.style.right = `${line.dom.inner.clientWidth - x}px`;
+      else chip.style.left = `${x}px`;
+      if (selection && selection.line === lineIndex && selection.chip === chipIndex) chip.classList.add("selected");
+      line.dom.chordRow.append(chip);
+      wireChordChip(line, lineIndex, chipIndex, chip);
+    });
+    const caret = line.dom.caret;
+    caret.hidden = !(selection && selection.line === lineIndex && selection.chip === undefined);
+    if (!caret.hidden) {
+      const x = chordBoundaryX(line, selection.pos);
+      caret.style.left = line.rtl ? "" : `${x}px`;
+      caret.style.right = line.rtl ? `${line.dom.inner.clientWidth - x}px` : "";
+    }
+  });
+  refreshChordEditorStatus();
+}
+
+function nearestChordBoundary(line, clientX) {
+  const inner = line.dom.inner.getBoundingClientRect();
+  const x = clientX - inner.left;
+  let best = line.starts[0];
+  let bestDistance = Infinity;
+  line.starts.forEach((start) => {
+    const distance = Math.abs(chordBoundaryX(line, start) - x);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = start;
+    }
+  });
+  return best;
+}
+
+function wireChordEditorLine(line, lineIndex) {
+  // A tap anywhere on the line (the words, or the space above them) picks the spot between
+  // two letters closest to the finger. Chips handle their own taps.
+  let down = null;
+  line.dom.row.addEventListener("pointerdown", (event) => {
+    down = event.target.closest(".ce-chip") ? null : { x: event.clientX, y: event.clientY };
+  });
+  line.dom.row.addEventListener("pointerup", (event) => {
+    if (!down || Math.hypot(event.clientX - down.x, event.clientY - down.y) > 10) return;
+    down = null;
+    chordEditor.selection = { line: lineIndex, pos: nearestChordBoundary(line, event.clientX) };
+    positionChordEditorChips();
+    renderChordEditorBar();
+  });
+}
+
+function wireChordChip(line, lineIndex, chipIndex, chip) {
+  let drag = null;
+  chip.addEventListener("pointerdown", (event) => {
+    event.stopPropagation();
+    drag = { x: event.clientX, moved: false };
+    chip.setPointerCapture?.(event.pointerId);
+  });
+  chip.addEventListener("pointermove", (event) => {
+    if (!drag) return;
+    if (!drag.moved && Math.abs(event.clientX - drag.x) < 6) return;
+    if (!drag.moved) {
+      drag.moved = true;
+      chordEditorRemember();
+      chip.classList.add("dragging");
+    }
+    // The chip follows the finger; the caret shows the letter it will snap to.
+    const pos = nearestChordBoundary(line, event.clientX);
+    drag.pos = pos;
+    const x = chordBoundaryX(line, pos);
+    if (line.rtl) chip.style.right = `${line.dom.inner.clientWidth - x}px`;
+    else chip.style.left = `${x}px`;
+    line.dom.caret.hidden = false;
+    line.dom.caret.style.left = line.rtl ? "" : `${x}px`;
+    line.dom.caret.style.right = line.rtl ? `${line.dom.inner.clientWidth - x}px` : "";
+  });
+  const finish = () => {
+    if (!drag) return;
+    const moved = drag.moved;
+    const pos = drag.pos;
+    drag = null;
+    const entry = line.chords[chipIndex];
+    if (moved && pos !== undefined) entry.pos = pos;
+    // Keep the line's chords in reading order, and keep this one selected.
+    line.chords.sort((a, b) => a.pos - b.pos);
+    chordEditor.selection = { line: lineIndex, chip: line.chords.indexOf(entry), pos: entry.pos };
+    renderChordEditor();
+    renderChordEditorBar();
+  };
+  chip.addEventListener("pointerup", finish);
+  chip.addEventListener("pointercancel", finish);
+}
+
+// ---------- the chord bar ----------
+
+function chordEditorSelectedChip() {
+  const selection = chordEditor?.selection;
+  return selection && selection.chip !== undefined ? chordEditor.lines[selection.line].chords[selection.chip] : null;
+}
+
+function refreshChordEditorStatus() {
+  const selection = chordEditor.selection;
+  let message = "Tap the lyrics where a chord goes.";
+  if (selection) {
+    const line = chordEditor.lines[selection.line];
+    const chip = chordEditorSelectedChip();
+    const before = line.text.slice(Math.max(0, selection.pos - 8), selection.pos).trimStart();
+    const after = line.text.slice(selection.pos, selection.pos + 8).trimEnd();
+    message = chip
+      ? `Changing ${chip.chord}. Pick a new chord, drag it, or nudge it.`
+      : `Adding at “${before}▮${after}”. Pick the chord.`;
+  }
+  els.chordEditorStatus.textContent = message;
+  const chip = chordEditorSelectedChip();
+  els.chordNudgeBackBtn.disabled = !chip;
+  els.chordNudgeForwardBtn.disabled = !chip;
+  els.chordDeleteBtn.disabled = !chip;
+  els.chordUndoBtn.disabled = !chordEditor.undo.length;
+}
+
+function applyChordFromBar(chord) {
+  const selection = chordEditor.selection;
+  if (!selection) {
+    showToast("Tap the lyrics where the chord goes first");
+    return;
+  }
+  chordEditorRemember();
+  const line = chordEditor.lines[selection.line];
+  if (selection.chip !== undefined) {
+    line.chords[selection.chip].chord = chord;
+  } else {
+    // A spot holds one chord: choosing another there replaces it.
+    const existing = line.chords.findIndex((entry) => entry.pos === selection.pos);
+    if (existing >= 0) line.chords[existing].chord = chord;
+    else line.chords.push({ pos: selection.pos, chord });
+    line.chords.sort((a, b) => a.pos - b.pos);
+    chordEditor.selection = { line: selection.line, chip: line.chords.findIndex((entry) => entry.pos === selection.pos), pos: selection.pos };
+  }
+  chordEditorRecent = [chord, ...chordEditorRecent.filter((item) => item !== chord)].slice(0, 4);
+  renderChordEditor();
+  renderChordEditorBar();
+}
+
+function nudgeChord(direction) {
+  const chip = chordEditorSelectedChip();
+  if (!chip) return;
+  const selection = chordEditor.selection;
+  const line = chordEditor.lines[selection.line];
+  // The arrows point the way you see them: in a right-to-left line, "right" is earlier text.
+  const step = (line.rtl ? -direction : direction);
+  const index = line.starts.indexOf(chip.pos);
+  const next = line.starts[Math.max(0, Math.min(line.starts.length - 1, index + step))];
+  if (next === undefined || next === chip.pos) return;
+  chordEditorRemember();
+  chip.pos = next;
+  selection.pos = next;
+  line.chords.sort((a, b) => a.pos - b.pos);
+  selection.chip = line.chords.indexOf(chip);
+  renderChordEditor();
+  renderChordEditorBar();
+}
+
+function deleteSelectedChord() {
+  const chip = chordEditorSelectedChip();
+  if (!chip) return;
+  chordEditorRemember();
+  const selection = chordEditor.selection;
+  const line = chordEditor.lines[selection.line];
+  line.chords.splice(selection.chip, 1);
+  chordEditor.selection = { line: selection.line, pos: chip.pos };
+  renderChordEditor();
+  renderChordEditorBar();
+}
+
+function renderChordEditorBar() {
+  const key = chordEditor.song.key;
+  const suggestions = diatonicChords(key);
+  const recent = chordEditorRecent.filter((chord) => !suggestions.includes(chord));
+  els.chordBar.innerHTML = [
+    ...recent.map((chord) => `<button type="button" class="ce-key recent" data-chord="${escapeAttribute(chord)}">${escapeHtml(chord)}</button>`),
+    ...suggestions.map((chord) => `<button type="button" class="ce-key" data-chord="${escapeAttribute(chord)}">${escapeHtml(chord)}</button>`)
+  ].join("");
+  els.chordBarHint.textContent = key ? `Chords in ${compactKeyLabel(key)}` : "Common chords. Set the song's key for its own chords.";
+  els.chordCustom.hidden = !chordEditor.moreOpen;
+  els.chordMoreBtn.setAttribute("aria-expanded", String(chordEditor.moreOpen));
+  if (chordEditor.moreOpen) renderChordBuilder();
+  refreshChordEditorStatus();
+}
+
+const CHORD_QUALITIES = [["", "major"], ["m", "minor"], ["7", "7"], ["maj7", "maj7"], ["m7", "m7"], ["sus4", "sus4"], ["sus2", "sus2"], ["dim", "dim"], ["aug", "aug"], ["6", "6"], ["add9", "add9"], ["5", "5"]];
+
+function chordBuilderSymbol() {
+  const { root, quality, bass } = chordEditor.custom;
+  return `${root}${quality}${bass ? `/${bass}` : ""}`;
+}
+
+function renderChordBuilder() {
+  const names = keyPrefersFlats(chordEditor.song.key) ? FLAT_NOTE_NAMES : SHARP_NOTE_NAMES;
+  const custom = chordEditor.custom;
+  const noteButtons = (attr, selected, includeNone) => [
+    ...(includeNone ? [`<button type="button" class="ce-key ${!selected ? "selected" : ""}" data-${attr}="">none</button>`] : []),
+    ...names.map((name) => `<button type="button" class="ce-key ${selected === name ? "selected" : ""}" data-${attr}="${name}">${name}</button>`)
+  ].join("");
+  els.chordBuilder.innerHTML = `
+    <div class="ce-row" aria-label="Root note">${noteButtons("root", custom.root, false)}</div>
+    <div class="ce-row" aria-label="Quality">${CHORD_QUALITIES.map(([value, label]) => `<button type="button" class="ce-key ${custom.quality === value ? "selected" : ""}" data-quality="${value}">${label}</button>`).join("")}</div>
+    <div class="ce-row" aria-label="Bass note"><span class="ce-row__label">Bass</span>${noteButtons("bass", custom.bass, true)}</div>
+    <button id="chordUseCustomBtn" class="slp-btn slp-btn--primary" type="button">Use ${escapeHtml(chordBuilderSymbol())}</button>`;
+}
+
+function initChordEditorUi() {
+  els.chordEditorCancelBtn.addEventListener("click", () => closeChordEditor(false));
+  els.chordEditorDoneBtn.addEventListener("click", () => closeChordEditor(true));
+  els.chordUndoBtn.addEventListener("click", undoChordEdit);
+  els.chordNudgeBackBtn.addEventListener("click", () => nudgeChord(-1));
+  els.chordNudgeForwardBtn.addEventListener("click", () => nudgeChord(1));
+  els.chordDeleteBtn.addEventListener("click", deleteSelectedChord);
+  els.chordBar.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-chord]");
+    if (button) applyChordFromBar(button.dataset.chord);
+  });
+  els.chordMoreBtn.addEventListener("click", () => {
+    chordEditor.moreOpen = !chordEditor.moreOpen;
+    renderChordEditorBar();
+  });
+  els.chordBuilder.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button) return;
+    const custom = chordEditor.custom;
+    if (button.id === "chordUseCustomBtn") {
+      applyChordFromBar(chordBuilderSymbol());
+      return;
+    }
+    if ("root" in button.dataset) custom.root = button.dataset.root;
+    else if ("quality" in button.dataset) custom.quality = button.dataset.quality;
+    else if ("bass" in button.dataset) custom.bass = button.dataset.bass;
+    renderChordBuilder();
+  });
+  els.chordTypeForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const typed = els.chordTypeInput.value.trim().replace(/^\[|\]$/g, "");
+    if (!isChordSymbol(typed)) {
+      showToast("That doesn't look like a chord. Try Am, F#m7 or C/E");
+      return;
+    }
+    els.chordTypeInput.value = "";
+    applyChordFromBar(typed);
+  });
+  globalThis.addEventListener?.("resize", () => { if (chordEditor) positionChordEditorChips(); });
 }
 // Performance mode: a dark, high-contrast, full-screen view of one song for the stage.
 //
@@ -9437,6 +10524,10 @@ function renderGigBuilder(gig) {
   els.gigSectionList.querySelectorAll("[data-gig-key-filter]").forEach((badge) => badge.addEventListener("click", () => setGigKeyFilter(badge.dataset.gigKeyFilter)));
   els.gigSectionList.querySelectorAll("[data-gig-set-sort]").forEach((select) => select.addEventListener("change", () => setGigListSort(select.dataset.gigSetSort, select.value)));
   els.gigSectionList.querySelectorAll(".gig-drag-handle").forEach(wireGigDrag);
+  // Rows can be long-pressed into Select mode, except while Rearrange / Edit own the gesture.
+  if (selectMode.active || !(gigReorderMode || gigStructureEditMode)) {
+    els.gigSectionList.querySelectorAll("[data-gig-song-row]").forEach((row) => wireSelectableRow(row, row.dataset.gigSongRow, () => eventSelectContext(gig.id)));
+  }
 }
 
 function renderGigPlanSearchOptions(gig, sections) {
@@ -9498,6 +10589,7 @@ function toggleGigSet(id) { toggleGigCollapsed("collapsedSetIds", id); }
 // the mock's edit-mode row). Turning one on turns the other off so a row
 // is never asked to render both action sets in different modes at once.
 function setGigReorderMode(value) {
+  if (value) leaveSelectMode({ rerender: false });
   gigReorderMode = value;
   if (value) gigStructureEditMode = false;
   render();
@@ -9505,6 +10597,7 @@ function setGigReorderMode(value) {
 }
 
 function setGigStructureEditMode(value) {
+  if (value) leaveSelectMode({ rerender: false });
   gigStructureEditMode = value;
   if (value) gigReorderMode = false;
   render();
@@ -9605,7 +10698,8 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const songKey = item.keyOverride || songCurrentKey(song) || song.key;
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("item", item.id, item.setId, `Move ${song.title}`) : "";
   const moreMenu = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item danger-icon" type="button" data-remove-gig-item="${item.id}"><i data-lucide="list-x"></i><span>Remove from this event</span></button>`, `More options for ${song.title}`) : "";
-  return `<div class="slp-row gig-song-reference ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""}" style="padding-inline-start:${isDirect ? "30px" : "50px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}">
+  return `<div class="slp-row gig-song-reference ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "30px" : "50px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
+    ${selectMode.active ? selectCheckMarkup() : ""}
     <span class="gig-song-number">${index + 1}</span>
     <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-song="${song.id}">
       <span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span>
@@ -10241,6 +11335,189 @@ function gigPlanSongCount(gigId) {
   const sectionIds = new Set(state.gigSections.filter((section) => section.gigId === gigId && !section.isHidden).map((section) => section.id));
   const setIds = new Set(state.gigSets.filter((set) => sectionIds.has(set.sectionId)).map((set) => set.id));
   return state.gigSetItems.filter((item) => setIds.has(item.setId)).length;
+}
+// Quick add: type song titles into an event's setlist, one after another.
+//
+// The field stays open after each entry (press return, keep typing). While typing, matching
+// songs already in the library are suggested; picking one, or typing a title that matches one,
+// adds that same song - never a copy. A title that matches nothing becomes one new master
+// record: filed in Unfiled (no folders), added to the chosen section or list, and flagged
+// "needs details" until it has lyrics.
+
+// "Title - Artist" (a spaced dash or a bar). Only the first separator counts.
+function parseQuickAddText(text) {
+  const value = String(text || "").trim();
+  const match = value.match(/\s+[-–—|]\s+/);
+  if (!match) return { title: value, artist: "" };
+  return { title: value.slice(0, match.index).trim(), artist: value.slice(match.index + match[0].length).trim() };
+}
+
+// Every place in the open event a song can be added: each section, and each list inside one.
+function quickAddTargets(gigId) {
+  const sections = state.gigSections.filter((section) => section.gigId === gigId && !section.isHidden).sort((a, b) => a.position - b.position);
+  return sections.flatMap((section) => {
+    const lists = state.gigSets.filter((set) => set.sectionId === section.id && !set.isDirect).sort((a, b) => a.position - b.position);
+    return [
+      { value: `section:${section.id}`, label: section.name },
+      ...lists.map((set) => ({ value: `set:${set.id}`, label: `${section.name} · ${set.name}` }))
+    ];
+  });
+}
+
+function quickAddTargetSet() {
+  const value = els.quickAddTarget.value;
+  if (value.startsWith("section:")) return directGigSetForSection(value.slice(8), true);
+  return state.gigSets.find((set) => set.id === value.slice(4)) || null;
+}
+
+function openQuickAdd(preferredSetId = null) {
+  const gigId = state.gigNavigation.gigId;
+  if (!gigId) return;
+  const targets = quickAddTargets(gigId);
+  if (!targets.length) return showToast("Add a section to this event first");
+  els.quickAddTarget.innerHTML = targets.map((target) => `<option value="${escapeAttribute(target.value)}">${escapeHtml(target.label)}</option>`).join("");
+  const preferredSet = state.gigSets.find((set) => set.id === preferredSetId);
+  const preferredValue = preferredSet ? (preferredSet.isDirect ? `section:${preferredSet.sectionId}` : `set:${preferredSet.id}`) : "";
+  const wanted = [preferredValue, quickAddLastTarget].find((value) => value && targets.some((target) => target.value === value));
+  els.quickAddTarget.value = wanted || targets[0].value;
+  els.quickAddInput.value = "";
+  els.quickAddLog.innerHTML = "";
+  els.quickAddSuggestions.innerHTML = "";
+  showOverlay(els.quickAddSheet);
+  requestAnimationFrame(() => els.quickAddInput.focus());
+}
+
+// Existing songs whose title (in any language we hold) contains what is typed. When an artist
+// is typed too, only songs by that artist remain.
+function quickAddMatches(text) {
+  const { title, artist } = parseQuickAddText(text);
+  const query = normalizeComparisonText(title);
+  if (!query) return [];
+  const wantedArtists = normalizeArtistNames(artist).map(normalizeComparisonText);
+  const scored = [];
+  state.songs.forEach((song) => {
+    const names = [song.title, song.titleEnglish, song.titleHebrew, song.titleYiddish, ...(song.alternateTitles || [])].map(normalizeComparisonText).filter(Boolean);
+    const best = names.reduce((score, name) => {
+      if (name === query) return Math.max(score, 3);
+      if (name.startsWith(query)) return Math.max(score, 2);
+      if (name.includes(query)) return Math.max(score, 1);
+      return score;
+    }, 0);
+    if (!best) return;
+    if (wantedArtists.length) {
+      const songArtists = (song.artists || []).map(normalizeComparisonText);
+      if (!wantedArtists.some((name) => songArtists.some((existing) => existing.includes(name)))) return;
+    }
+    scored.push({ song, best });
+  });
+  return scored.sort((a, b) => b.best - a.best || a.song.title.localeCompare(b.song.title)).slice(0, 5).map((item) => item.song);
+}
+
+function renderQuickAddSuggestions() {
+  const matches = quickAddMatches(els.quickAddInput.value);
+  els.quickAddSuggestions.innerHTML = matches.map((song) => `<button class="quick-add-suggestion" type="button" role="option" data-quick-add-song="${escapeAttribute(song.id)}"><span class="quick-add-suggestion__title" dir="auto">${escapeHtml(song.title)}</span><span class="quick-add-suggestion__meta" dir="auto">${escapeHtml([song.artist, song.key].filter(Boolean).join(" · ") || "In your library")}</span><span class="quick-add-suggestion__action">Add</span></button>`).join("");
+}
+
+function logQuickAdd(message, tone = "") {
+  const item = document.createElement("li");
+  item.className = tone;
+  item.textContent = message;
+  els.quickAddLog.prepend(item);
+}
+
+function finishQuickAddEntry() {
+  quickAddLastTarget = els.quickAddTarget.value;
+  markStateDirty();
+  render();
+  els.quickAddInput.value = "";
+  els.quickAddSuggestions.innerHTML = "";
+  els.quickAddInput.focus();
+}
+
+function quickAddExistingSong(song, set) {
+  const added = addSongReferencesToGigSet(set.id, [song.id]).length;
+  logQuickAdd(added ? `Added “${song.title}” (already in your library)` : `“${song.title}” is already in this list`, added ? "" : "note");
+  finishQuickAddEntry();
+}
+
+function quickAddSubmit() {
+  const text = els.quickAddInput.value.trim();
+  if (!text) return;
+  const set = quickAddTargetSet();
+  if (!set) return showToast("Pick where to add the song");
+  const { title, artist } = parseQuickAddText(text);
+  if (!title) return;
+  // Never a duplicate: a title (and artist, if given) that already exists reuses that song.
+  const existing = findExistingSongMatch(title, artist, [], null);
+  if (existing) return quickAddExistingSong(existing, set);
+  const artists = normalizeArtistNames(artist);
+  const song = normalizeSong({
+    id: makeId(),
+    title,
+    artist: artists.join(", "),
+    needsDetails: true,
+    status: "learning",
+    direction: "auto",
+    folderIds: [],
+    updatedAt: new Date().toISOString(),
+    documentHtml: "",
+    blocks: [{ id: makeId(), type: "lyrics", text: "", src: "" }]
+  });
+  state.songs.unshift(song);
+  Object.keys(state.songOrder).forEach((key) => state.songOrder[key].unshift(song.id));
+  ensureOrder(state.songOrder, ALL_SONGS, state.songs.map((item) => item.id));
+  addSongReferencesToGigSet(set.id, [song.id]);
+  logQuickAdd(`Added “${song.title}”${song.artist ? ` · ${song.artist}` : ""} — new, needs details`);
+  finishQuickAddEntry();
+}
+
+function openNeedsLyrics() {
+  workspaceMode = "library";
+  libraryMode = "category";
+  state.gigNavigation.gigId = null;
+  currentFolderId = NEEDS_LYRICS;
+  selectedSongId = null;
+  mobileView = "folder";
+  songReorderMode = false;
+  subfolderEditMode = false;
+  expandedSongs.clear();
+  closeOverlays();
+  render();
+}
+
+// The banner on Songs and Events: only shown while some Quick-added song still has no lyrics.
+function renderNeedsLyricsBanners() {
+  const count = state.songs.filter(songNeedsLyrics).length;
+  const text = `${count} ${plural(count, "song")} ${count === 1 ? "needs" : "need"} lyrics`;
+  const onEventsHome = workspaceMode === "gigs" && !state.gigNavigation.gigId;
+  els.needsLyricsTextSongs.textContent = text;
+  els.needsLyricsTextEvents.textContent = text;
+  els.needsLyricsBannerSongs.classList.toggle("hidden", !count);
+  els.needsLyricsBannerEvents.classList.toggle("hidden", !count || !onEventsHome);
+}
+
+function initQuickAddUi() {
+  els.quickAddGigBtn.addEventListener("click", () => {
+    els.quickAddGigBtn.closest("details")?.removeAttribute("open");
+    openQuickAdd();
+  });
+  els.pickerQuickAddBtn.addEventListener("click", () => openQuickAdd(activeGigSetId));
+  els.quickAddInput.addEventListener("input", renderQuickAddSuggestions);
+  els.quickAddInput.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || event.isComposing) return;
+    event.preventDefault();
+    quickAddSubmit();
+  });
+  els.quickAddSuggestions.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-quick-add-song]");
+    const song = button && state.songs.find((item) => item.id === button.dataset.quickAddSong);
+    const set = quickAddTargetSet();
+    if (song && set) quickAddExistingSong(song, set);
+  });
+  els.closeQuickAddBtn.addEventListener("click", closeOverlays);
+  els.doneQuickAddBtn.addEventListener("click", closeOverlays);
+  els.needsLyricsBannerSongs.addEventListener("click", openNeedsLyrics);
+  els.needsLyricsBannerEvents.addEventListener("click", openNeedsLyrics);
 }
 function renderNotes() {
   if (libraryMode !== "notes") {
@@ -11026,7 +12303,7 @@ async function addImportFiles(files) {
       const isDocx = /\.docx$/i.test(name) || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
       const isCsv = /\.csv$/i.test(name) || file.type === "text/csv";
       const text = isDocx ? await extractDocxText(file) : await readFileText(file);
-      additions.push(...(isCsv ? candidatesFromCsv(text, name) : [candidateFromText(text, name)]));
+      additions.push(...(isCsv ? candidatesFromCsv(text, name) : [candidateFromExtractedText(text, name, "Text file")]));
     } catch {
       showToast(`Could not read ${file.name || "that file"}`);
     }
@@ -11067,19 +12344,87 @@ async function candidatesFromPdfFiles(files) {
   return additions;
 }
 
+// Rebuild a PDF page as text lines. Each word is placed by where it actually sits on the page,
+// so a chord chart keeps its alignment even in a proportional font: a chord line is matched
+// to the lyric line under it by horizontal position, and the chord is written inline
+// ("[Am]word") at the letter it was above. Pages without chords come out as ordinary lines.
 function textFromPdfContent(content) {
-  const lines = [];
-  let current = [];
-  (content?.items || []).forEach((item) => {
-    const value = String(item?.str || "");
-    if (value) current.push(value);
-    if (item?.hasEOL) {
-      if (current.length) lines.push(current.join(" ").replace(/\s+/g, " ").trim());
-      current = [];
-    }
+  // Text without page positions (some PDF readers) can only be rebuilt line by line.
+  if ((content?.items || []).some((item) => item?.str?.trim() && !item.transform)) {
+    const rows = [];
+    let row = [];
+    (content.items || []).forEach((item) => {
+      if (item?.str) row.push(item.str);
+      if (item?.hasEOL) { rows.push(row.join(" ").replace(/\s+/g, " ").trim()); row = []; }
+    });
+    if (row.length) rows.push(row.join(" ").replace(/\s+/g, " ").trim());
+    return rows.join("\n").trim();
+  }
+  const items = (content?.items || [])
+    .map((item) => ({ str: String(item?.str || ""), x: Number(item?.transform?.[4]) || 0, y: Number(item?.transform?.[5]) || 0, w: Number(item?.width) || 0 }))
+    .filter((item) => item.str.trim());
+  if (!items.length) return "";
+  // Group into lines by height (PDF y grows upward), then left to right.
+  const heights = items.map((item) => item.y).sort((a, b) => b - a);
+  const groups = [];
+  items.sort((a, b) => b.y - a.y || a.x - b.x).forEach((item) => {
+    const group = groups[groups.length - 1];
+    if (group && Math.abs(group.y - item.y) <= 3) group.items.push(item);
+    else groups.push({ y: item.y, items: [item] });
   });
-  if (current.length) lines.push(current.join(" ").replace(/\s+/g, " ").trim());
-  return lines.join("\n").trim();
+  const lines = groups.map((group) => {
+    const ordered = group.items.sort((a, b) => a.x - b.x);
+    let text = "";
+    const xs = [];
+    let previousEnd = null;
+    let previousWidth = 6;
+    ordered.forEach((item) => {
+      const charWidth = item.w && item.str.length ? item.w / item.str.length : previousWidth;
+      if (previousEnd !== null && text) {
+        const spaces = Math.max(1, Math.min(60, Math.round((item.x - previousEnd) / Math.max(previousWidth, 1))));
+        for (let index = 0; index < spaces; index += 1) {
+          text += " ";
+          xs.push(previousEnd + index * previousWidth);
+        }
+      }
+      for (let index = 0; index < item.str.length; index += 1) xs.push(item.x + index * charWidth);
+      text += item.str;
+      previousEnd = item.x + (item.w || charWidth * item.str.length);
+      previousWidth = charWidth;
+    });
+    return { text, xs, end: previousEnd ?? 0 };
+  });
+  const output = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const next = lines[index + 1];
+    if (isChordOnlyLine(line.text) && next && next.text.trim() && !isChordOnlyLine(next.text) && !/^\s*\[[^\]]*\]\s*$/.test(next.text)) {
+      const marks = [];
+      const pattern = /\S+/g;
+      let match;
+      while ((match = pattern.exec(line.text))) {
+        const chord = match[0].replace(/^\(|\)$/g, "");
+        if (isChordSymbol(chord)) marks.push({ x: line.xs[match.index], chord });
+      }
+      let merged = next.text;
+      [...marks].reverse().forEach(({ x, chord }) => {
+        // The letter on the lyric line whose left edge is closest to the chord's left edge.
+        let spot = next.xs.length;
+        let best = Math.abs(next.end - x);
+        next.xs.forEach((letterX, letterIndex) => {
+          const distance = Math.abs(letterX - x);
+          if (distance < best) { best = distance; spot = letterIndex; }
+        });
+        while (spot < next.text.length && /\s/.test(next.text[spot])) spot += 1;
+        merged = `${merged.slice(0, spot)}[${chord}]${merged.slice(spot)}`;
+      });
+      output.push(merged.trim());
+      index += 1;
+    } else {
+      output.push(line.text.trim());
+    }
+  }
+  return output.join("\n").trim();
 }
 
 async function loadPdfModule() {
@@ -11215,7 +12560,8 @@ function decodeXmlText(value) {
 }
 
 function parsePastedSongText(rawText) {
-  const text = String(rawText || "").replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+  // Charts with chords on the line above the words become inline [Am]word chords first.
+  const text = convertChordLinesToInline(String(rawText || "").replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n"));
   const lines = text.split("\n");
   const consumed = new Set();
   const confidence = Object.fromEntries(IMPORT_METADATA_FIELDS.map((field) => [field, "none"]));
@@ -11272,9 +12618,11 @@ function parsePastedSongText(rawText) {
 
   const usableIndexes = lines.map((line, index) => ({ index, text: line.trim() }))
     .filter((item) => item.text && !consumed.has(item.index) && !isImportNoise(item.text));
+  // A line carrying [Am] chords is lyrics, never a title, translation or artist.
+  const isMetaLine = (item) => !/\[[^\]]+\]/.test(item.text);
 
   if (!draft.title) {
-    const titleLine = usableIndexes.find((item) => item.text.length <= 140 && !/^https?:\/\//i.test(item.text));
+    const titleLine = usableIndexes.find((item) => isMetaLine(item) && item.text.length <= 140 && !/^https?:\/\//i.test(item.text));
     if (titleLine) {
       draft.title = titleLine.text;
       confidence.title = "medium";
@@ -11283,7 +12631,7 @@ function parsePastedSongText(rawText) {
   }
 
   if (!draft.alternateTitles.length && draft.title) {
-    const alternateLine = usableIndexes.find((item) => !consumed.has(item.index)
+    const alternateLine = usableIndexes.find((item) => !consumed.has(item.index) && isMetaLine(item)
       && item.text.length <= 140
       && scriptsDiffer(draft.title, item.text));
     if (alternateLine) {
@@ -11295,7 +12643,7 @@ function parsePastedSongText(rawText) {
 
   if (!draft.artist) {
     const byline = usableIndexes.find((item) => !consumed.has(item.index) && /^(?:by|performed by|sung by)\s+/i.test(item.text));
-    const artistLine = byline || usableIndexes.find((item) => !consumed.has(item.index) && item.text.length <= 80 && !/[.!?]$/.test(item.text));
+    const artistLine = byline || usableIndexes.find((item) => !consumed.has(item.index) && isMetaLine(item) && item.text.length <= 80 && !/[.!?]$/.test(item.text));
     if (artistLine) {
       draft.artist = artistLine.text.replace(/^(?:by|performed by|sung by)\s+/i, "").trim();
       confidence.artist = byline ? "high" : "low";
@@ -11438,7 +12786,7 @@ function validateStructuredImportDraft(input) {
 }
 
 function candidateFromText(text, filename = "Untitled.txt") {
-  const lines = String(text || "").replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n").split("\n");
+  const lines = convertChordLinesToInline(String(text || "").replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n")).split("\n");
   const metadata = { title: "", artist: "", key: "" };
   const lyrics = [];
   lines.forEach((line) => {
@@ -11929,9 +13277,12 @@ function mergeMissingImportMetadata(candidate, songId) {
   commitCandidateImportFolders([candidate]);
   const candidateTitles = [candidate.title, ...candidate.alternateTitles].filter((title) => normalizeComparisonText(title) !== normalizeComparisonText(song.title));
   song.alternateTitles = normalizeStringArray([...song.alternateTitles, ...candidateTitles]);
-  ["artist", "featuredArtist", "composer", "lyricist", "album", "style", "bpm", "language", "sourceUrl", "key"].forEach((field) => {
+  ["composer", "lyricist", "album", "style", "bpm", "language", "key"].forEach((field) => {
     if (!song[field] && candidate[field]) song[field] = candidate[field];
   });
+  song.artists = normalizeArtistNames([...(song.artists || []), candidate.artist, candidate.featuredArtist]);
+  song.artist = song.artists.join(", ");
+  if (!song.importSourceUrl && /^https?:\/\//i.test(candidate.sourceUrl || "")) song.importSourceUrl = candidate.sourceUrl.trim();
   if (!textFromDocumentHtml(song.documentHtml) && candidate.lyrics) song.documentHtml = plainTextToDocumentHtml(candidate.lyrics);
   song.folderIds = [...new Set([...song.folderIds, ...candidate.selectedFolderIds])];
   song.updatedAt = new Date().toISOString();
@@ -11947,7 +13298,6 @@ function importFolderOptionsMarkup(candidate) {
   const choice = (folder, child = false) => `
     <label class="import-folder-option ${child ? "child" : ""}">
       <input class="import-folder-check" type="checkbox" value="${folder.id}" ${candidate.selectedFolderIds.includes(folder.id) ? "checked" : ""}>
-      <span class="folder-dot" style="--folder-color:${folderColor(folder)}"></span>
       <span>${escapeHtml(folder.name)}</span>
     </label>`;
   return [["personal", "Folders"], ["category", "Categories"]].map(([kind, label]) => {
@@ -11994,7 +13344,7 @@ function importSelectedSongs() {
     style: candidate.style.trim(),
     bpm: candidate.bpm ? clamp(Number(candidate.bpm), 20, 300) : "",
     language: candidate.language.trim(),
-    sourceUrl: /^https?:\/\//i.test(candidate.sourceUrl.trim()) ? candidate.sourceUrl.trim() : "",
+    importSourceUrl: /^https?:\/\//i.test(candidate.sourceUrl.trim()) ? candidate.sourceUrl.trim() : "",
     alternateOfId: candidate.duplicateDecision?.type === "alternate" ? candidate.duplicateDecision.songId : null,
     key: candidate.key.trim(),
     status: candidate.status,
@@ -12810,7 +14160,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -12868,7 +14218,8 @@ function songsInCurrentFolder() {
   if (currentFolderId === UNFILED) return state.songs.filter((song) => !song.folderIds.length);
   if (currentFolderId === ARTISTS) return [];
   const artistName = artistNameFromFolderId(currentFolderId);
-  if (artistName) return state.songs.filter((song) => [song.artist, song.featuredArtist].some((artist) => normalizedArtist(artist) === normalizedArtist(artistName)));
+  if (currentFolderId === NEEDS_LYRICS) return state.songs.filter(songNeedsLyrics);
+  if (artistName) return state.songs.filter((song) => (song.artists || []).some((artist) => normalizedArtist(artist) === normalizedArtist(artistName)));
   return state.songs.filter((song) => song.folderIds.includes(currentFolderId));
 }
 
@@ -12879,7 +14230,7 @@ function normalizedArtist(value) {
 function artistNames() {
   const names = new Map();
   state.songs.forEach((song) => {
-    [song.artist, song.featuredArtist].forEach((artist) => {
+    (song.artists || []).forEach((artist) => {
       const name = String(artist || "").trim().replace(/\s+/g, " ");
       if (name && !names.has(normalizedArtist(name))) names.set(normalizedArtist(name), name);
     });
@@ -13419,6 +14770,45 @@ function parseNames(value) {
   return String(value || "").split(",").map((item) => item.trim()).filter(Boolean);
 }
 
+// Artist names typed in one field: commas, semicolons, "|" or "feat." separate them.
+// ("&" is left alone so a duo such as "Simon & Garfunkel" stays one name.)
+function normalizeArtistNames(value) {
+  const parts = Array.isArray(value) ? value.flatMap((item) => normalizeArtistNames(item)) : String(value || "").split(/[\n,;|]+|\s+(?:feat\.?|ft\.?|featuring)\s+/i);
+  const seen = new Set();
+  return parts.map((item) => String(item || "").trim()).filter((item) => {
+    const key = normalizeComparisonText(item);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+// What a link is, from its address: a friendly name, and whether it is something to
+// listen to or watch. Unknown sites keep their host name and are filed under audio.
+// (Plain function with local tables: it runs while the saved library loads.)
+function linkInfo(url) {
+  let host = "";
+  try { host = new URL(url).hostname.replace(/^www\./, "").toLowerCase(); } catch { /* not a link */ }
+  const sites = [
+    ["music.youtube.com", "YouTube Music", "audio"], ["youtube.com", "YouTube", "video"], ["youtu.be", "YouTube", "video"],
+    ["spotify.com", "Spotify", "audio"], ["music.apple.com", "Apple Music", "audio"], ["soundcloud.com", "SoundCloud", "audio"],
+    ["deezer.com", "Deezer", "audio"], ["tidal.com", "Tidal", "audio"], ["bandcamp.com", "Bandcamp", "audio"],
+    ["vimeo.com", "Vimeo", "video"], ["facebook.com", "Facebook", "video"], ["fb.watch", "Facebook", "video"], ["tiktok.com", "TikTok", "video"]
+  ];
+  const site = sites.find(([domain]) => host === domain || host.endsWith(`.${domain}`));
+  if (site) return { label: site[1], kind: site[2], icon: site[2] === "video" ? "video" : "headphones", known: true };
+  return { label: host || url, kind: "audio", icon: "link", known: false };
+}
+
+// Lyrics present, judged from the saved markup (tags and chords ignored).
+function songHasLyricText(documentHtml) {
+  return String(documentHtml || "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\[[^\]]*\]/g, " ").trim().length > 0;
+}
+
+function songNeedsLyrics(song) {
+  return Boolean(song.needsDetails) && !songHasLyricText(song.documentHtml);
+}
+
 function normalizeStringArray(value) {
   const values = Array.isArray(value) ? value : String(value || "").split(/[\n,;|]+/);
   const seen = new Set();
@@ -13440,10 +14830,6 @@ function structuredCloneSafe(value) {
     }
   }
   return JSON.parse(JSON.stringify(value));
-}
-
-function folderColor(folder) {
-  return COLOR_VALUES[folder?.color] || COLOR_VALUES.blue;
 }
 
 function statusLabel(status) {
@@ -13492,6 +14878,274 @@ function downloadText(filename, text, type = "text/plain") {
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+// Select mode: choose several songs at once, in any song list.
+//
+// One component serves every list. A list opts in by:
+//   1. giving each row data-select-id (a song id; an event row uses its set-item id),
+//   2. calling wireSelectableRow(row, id, contextFactory) once per row,
+//   3. adding selectCheckMarkup() inside the row while selectMode.active.
+// The context says where the rows live and what "here" means, so the bar can offer
+// Move / Remove only where a song actually belongs to somewhere (a folder or an event).
+// Nothing here deletes a song: "Remove from here" drops membership only.
+
+const SELECT_LONG_PRESS_MS = 500;
+const SELECT_LONG_PRESS_SLOP = 10;
+
+function selectCheckMarkup() {
+  return `<span class="select-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 12.5l4 4 8-9" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+}
+
+function folderSelectContext() {
+  const folder = folderById(currentFolderId);
+  const artistName = artistNameFromFolderId(currentFolderId);
+  const kind = artistName ? "artist" : currentFolderId === ALL_SONGS || currentFolderId === NEEDS_LYRICS ? "all" : currentFolderId === UNFILED ? "unfiled" : "folder";
+  return {
+    key: `folder:${currentFolderId}`,
+    kind,
+    folderId: folder?.id || null,
+    label: folder?.name || "",
+    container: els.songList,
+    canMove: kind === "folder" || kind === "unfiled",
+    canRemove: kind === "folder",
+    resolve: (id) => id
+  };
+}
+
+function searchSelectContext() {
+  return { key: "library-search", kind: "search", folderId: null, label: "", container: els.librarySearchSongList, canMove: false, canRemove: false, resolve: (id) => id };
+}
+
+function eventSelectContext(gigId) {
+  return {
+    key: `gig:${gigId}`,
+    kind: "event",
+    gigId,
+    folderId: null,
+    label: "this event",
+    container: els.gigSectionList,
+    canMove: true,
+    canRemove: true,
+    resolve: (id) => state.gigSetItems.find((item) => item.id === id)?.songId || null
+  };
+}
+
+// Entering Select mode turns off every other list mode: they never apply together.
+function enterSelectMode(context, firstId = null) {
+  songReorderMode = false;
+  subfolderEditMode = false;
+  folderEditMode = false;
+  listEditMode = false;
+  gigReorderMode = false;
+  gigStructureEditMode = false;
+  selectMode.active = true;
+  selectMode.context = context;
+  selectMode.ids = firstId ? [firstId] : [];
+  closeOverlays();
+  render();
+  refreshIcons();
+}
+
+// Leaving without a re-render is for callers (an Edit button, say) that render right after.
+function leaveSelectMode({ rerender = true } = {}) {
+  if (!selectMode.active) return;
+  selectMode.active = false;
+  selectMode.ids = [];
+  selectMode.context = null;
+  if (rerender) {
+    render();
+    refreshIcons();
+  } else {
+    syncSelectModeUi();
+  }
+}
+
+function toggleSelectedId(id) {
+  const index = selectMode.ids.indexOf(id);
+  if (index >= 0) selectMode.ids.splice(index, 1);
+  else selectMode.ids.push(id);
+  syncSelectModeUi();
+}
+
+function visibleSelectableIds() {
+  const container = selectMode.context?.container;
+  if (!container) return [];
+  const ids = [];
+  container.querySelectorAll("[data-select-id]").forEach((row) => {
+    if (row.getClientRects().length && !ids.includes(row.dataset.selectId)) ids.push(row.dataset.selectId);
+  });
+  return ids;
+}
+
+function toggleSelectAll() {
+  const visible = visibleSelectableIds();
+  const allSelected = visible.length > 0 && visible.every((id) => selectMode.ids.includes(id));
+  if (allSelected) selectMode.ids = selectMode.ids.filter((id) => !visible.includes(id));
+  else visible.forEach((id) => { if (!selectMode.ids.includes(id)) selectMode.ids.push(id); });
+  syncSelectModeUi();
+}
+
+// Songs in the order they were chosen, once each.
+function selectedSongIds() {
+  const context = selectMode.context;
+  if (!context) return [];
+  const songIds = [];
+  selectMode.ids.forEach((id) => {
+    const songId = context.resolve(id);
+    if (songId && !songIds.includes(songId) && state.songs.some((song) => song.id === songId)) songIds.push(songId);
+  });
+  return songIds;
+}
+
+// The selection belongs to one list. If the screen has moved on (another folder, another
+// event, search closed) it is dropped rather than carried somewhere it makes no sense.
+function selectContextStillValid() {
+  const context = selectMode.context;
+  if (!context) return false;
+  if (context.kind === "event") return workspaceMode === "gigs" && state.gigNavigation.gigId === context.gigId;
+  if (context.kind === "search") return workspaceMode === "library" && libraryMode !== "notes" && Boolean(els.librarySearchInput.value.trim());
+  return workspaceMode === "library" && libraryMode !== "notes" && context.key === `folder:${currentFolderId}`;
+}
+
+// Called at the top of every render so rows are never drawn with checkboxes for a list the
+// user has already left.
+function dropStaleSelectMode() {
+  if (selectMode.active && !selectContextStillValid()) {
+    selectMode.active = false;
+    selectMode.ids = [];
+    selectMode.context = null;
+  }
+}
+
+function syncSelectModeUi() {
+  dropStaleSelectMode();
+  const active = selectMode.active;
+  const context = selectMode.context;
+  els.app.classList.toggle("select-mode-active", active);
+  setElementVisible(els.selectTopBar, active);
+  setElementVisible(els.selectActionBar, active);
+  if (!active) return;
+  const count = selectMode.ids.length;
+  els.selectCount.textContent = `${count} selected`;
+  const visible = visibleSelectableIds();
+  const allSelected = visible.length > 0 && visible.every((id) => selectMode.ids.includes(id));
+  els.selectAllBtn.textContent = allSelected ? "Select none" : "Select all";
+  els.selectAddBtn.disabled = !count;
+  els.selectMoveBtn.disabled = !count;
+  els.selectRemoveBtn.disabled = !count;
+  els.selectMoveBtn.classList.toggle("hidden", !context.canMove);
+  els.selectRemoveBtn.classList.toggle("hidden", !context.canRemove);
+  document.querySelectorAll("[data-select-id]").forEach((row) => {
+    const selected = selectMode.ids.includes(row.dataset.selectId);
+    row.classList.toggle("is-selected", selected);
+    row.setAttribute("aria-checked", String(selected));
+  });
+  // Sit on top of the tab bar when it is showing, at the screen's bottom edge when it is not.
+  const nav = els.app.querySelector("#primaryNav");
+  const navHeight = nav && getComputedStyle(nav).display !== "none" ? nav.getBoundingClientRect().height : 0;
+  els.selectActionBar.style.bottom = `${navHeight}px`;
+  els.selectActionBar.classList.toggle("select-actionbar--edge", navHeight === 0);
+}
+
+// Long-press starts Select mode; once it is on, a tap anywhere on the row toggles it.
+// `contextFactory` is a function so the context is read fresh when the press happens.
+function wireSelectableRow(row, id, contextFactory) {
+  row.dataset.selectId = id;
+  if (selectMode.active) {
+    row.setAttribute("role", "checkbox");
+    row.setAttribute("aria-checked", String(selectMode.ids.includes(id)));
+    row.classList.toggle("is-selected", selectMode.ids.includes(id));
+    // Capture phase: runs before the row's own handlers (open song, expand, key filter...).
+    row.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (Date.now() < selectMode.swallowClickUntil) return;
+      toggleSelectedId(id);
+    }, true);
+    return;
+  }
+  if (!globalThis.PointerEvent) return;
+  let timer = null;
+  let startX = 0;
+  let startY = 0;
+  const cancel = () => { clearTimeout(timer); timer = null; };
+  row.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    startX = event.clientX;
+    startY = event.clientY;
+    cancel();
+    timer = setTimeout(() => {
+      timer = null;
+      selectMode.swallowClickUntil = Date.now() + 600;
+      globalThis.navigator?.vibrate?.(12);
+      enterSelectMode(contextFactory(), id);
+    }, SELECT_LONG_PRESS_MS);
+  });
+  row.addEventListener("pointermove", (event) => {
+    if (timer && Math.hypot(event.clientX - startX, event.clientY - startY) > SELECT_LONG_PRESS_SLOP) cancel();
+  });
+  ["pointerup", "pointercancel", "pointerleave", "dragstart"].forEach((name) => row.addEventListener(name, cancel));
+  // The long-press must not also pop the browser's own context menu / text selection.
+  row.addEventListener("contextmenu", (event) => event.preventDefault());
+}
+
+// A long-press ends with the finger lifting, which the browser reports as a click on whatever
+// is under it by then (the list was just redrawn). Swallow that one click.
+document.addEventListener("click", (event) => {
+  if (Date.now() < selectMode.swallowClickUntil) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+}, true);
+
+function selectedLocationLabel() {
+  const context = selectMode.context;
+  return context?.label ? `“${context.label}”` : "here";
+}
+
+function removeSelectedFromHere() {
+  const context = selectMode.context;
+  if (!context || !selectMode.ids.length) return;
+  let removed = 0;
+  let where = selectedLocationLabel();
+  if (context.kind === "event") {
+    const chosen = new Set(selectMode.ids);
+    const before = state.gigSetItems.length;
+    state.gigSetItems = state.gigSetItems.filter((item) => !chosen.has(item.id));
+    removed = before - state.gigSetItems.length;
+    where = "this event";
+  } else if (context.kind === "folder" && context.folderId) {
+    selectedSongIds().forEach((songId) => {
+      const song = state.songs.find((item) => item.id === songId);
+      if (song?.folderIds.includes(context.folderId)) {
+        song.folderIds = song.folderIds.filter((id) => id !== context.folderId);
+        song.updatedAt = new Date().toISOString();
+        removed += 1;
+      }
+    });
+  }
+  persist();
+  leaveSelectMode({ rerender: false });
+  render();
+  showToast(`${removed} ${plural(removed, "song")} removed from ${where}. Songs stay in your library.`);
+}
+
+function initSelectModeUi() {
+  els.selectCancelBtn.addEventListener("click", () => leaveSelectMode());
+  els.selectAllBtn.addEventListener("click", toggleSelectAll);
+  els.selectAddBtn.addEventListener("click", () => {
+    const ids = selectedSongIds();
+    if (ids.length) openSongAddToMany(ids);
+  });
+  els.selectMoveBtn.addEventListener("click", () => {
+    if (selectMode.ids.length) openSongMoveTo();
+  });
+  els.selectRemoveBtn.addEventListener("click", removeSelectedFromHere);
+  els.selectGigSongsBtn?.addEventListener("click", () => {
+    els.selectGigSongsBtn.closest("details")?.removeAttribute("open");
+    const gigId = state.gigNavigation.gigId;
+    if (gigId) enterSelectMode(eventSelectContext(gigId));
+  });
 }
 function refreshIcons() {
   globalThis.lucide?.createIcons?.({ attrs: { "aria-hidden": "true" } });
@@ -13645,16 +15299,20 @@ els.allSongsBtn.addEventListener("click", () => openFolder(ALL_SONGS));
 els.unfiledBtn.addEventListener("click", () => openFolder(UNFILED));
 els.artistsBtn.addEventListener("click", () => openFolder(ARTISTS));
 els.editFoldersBtn.addEventListener("click", () => {
+  leaveSelectMode({ rerender: false });
   folderEditMode = !folderEditMode;
   renderLibrary();
   refreshIcons();
 });
 els.editListsBtn.addEventListener("click", () => {
+  leaveSelectMode({ rerender: false });
   listEditMode = !listEditMode;
   renderLibrary();
   refreshIcons();
 });
-els.newRootFolderBtn.addEventListener("click", () => openFolderDialog(null, null, "category"));
+els.newRootFolderBtn.addEventListener("click", () => addSong(null));
+els.addFolderBtn.addEventListener("click", () => openFolderDialog(null, null, "category"));
+els.addListBtn.addEventListener("click", () => openFolderDialog(null, null, "personal"));
 els.backToLibraryBtn.addEventListener("click", backToLibrary);
 els.folderSearchBtn.addEventListener("click", () => {
   setFolderSearchOpen(true);
@@ -13715,6 +15373,7 @@ els.newSubfolderBtn.addEventListener("click", () => {
   openFolderDialog(null, folder.id);
 });
 els.editSubfoldersBtn.addEventListener("click", () => {
+  leaveSelectMode({ rerender: false });
   subfolderEditMode = !subfolderEditMode;
   renderFolder();
   refreshIcons();
@@ -13728,7 +15387,11 @@ els.sortMenuBtn.addEventListener("click", (event) => {
   showSongSortMenu();
 });
 els.backToFolderBtn.addEventListener("click", backToFolder);
-els.songArtist.addEventListener("click", () => openArtistSongs(currentSong()?.artist));
+els.songArtist.addEventListener("click", () => {
+  const names = currentSong()?.artists || [];
+  if (names.length > 1) showActionMenu(names.map((name) => ({ icon: "mic-vocal", label: name, action: () => openArtistSongs(name) })), els.songArtist);
+  else if (names.length) openArtistSongs(names[0]);
+});
 els.songKey.addEventListener("click", openSongKeyEditor);
 els.songTransposeBtn.addEventListener("click", (event) => {
   event.preventDefault();
@@ -13743,8 +15406,9 @@ els.showChordsToggle.addEventListener("change", () => {
   persist();
   rerenderSongDocument();
 });
-els.insertChordBtn.addEventListener("click", insertChordToken);
-els.songCategoryBtn.addEventListener("click", openSongAddTo);
+els.insertChordBtn.addEventListener("click", openChordEditor);
+els.songCategoryBtn.addEventListener("click", openSongLocations);
+els.editSongLocationsBtn.addEventListener("click", () => openSongAddTo());
 els.songMoreBtn.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -13993,6 +15657,10 @@ els.confirmAcceptBtn.addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && chordEditor) {
+    closeChordEditor(false);
+    return;
+  }
   if (event.key === "Escape" && performanceActive) {
     closePerformanceMode();
     return;
@@ -14034,6 +15702,10 @@ document.addEventListener("pointerdown", (event) => {
 });
 
 function closeCurrentMobileLayer() {
+  if (chordEditor) {
+    closeChordEditor(false);
+    return true;
+  }
   if (performanceActive) {
     closePerformanceMode();
     return true;
@@ -14120,6 +15792,9 @@ document.addEventListener("visibilitychange", () => {
 
 initToolsUi();
 initPerformanceUi();
+initChordEditorUi();
+initSelectModeUi();
+initQuickAddUi();
 render();
 migrateInlineImages().then(cleanUnusedImages).catch(() => {});
 registerOfflineSupport();
