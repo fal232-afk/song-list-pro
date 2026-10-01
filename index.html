@@ -4561,6 +4561,179 @@ body.chord-editor-open { overflow: hidden; }
 .song-locations__empty { color: var(--color-text-secondary); font-size: var(--text-sm); }
 .song-locations__edit { justify-self: end; }
 
+/* ============ Tap-target floor (44px) for controls the audit found smaller ============ */
+button.slp-chip,
+a.slp-chip { min-height: 44px; }
+.primary-button,
+.secondary-button,
+.danger-button { min-height: 44px; }
+.sheet-header > .icon-button,
+.sheet-header > button.icon-button { min-width: 44px; min-height: 44px; }
+.gig-sort-chip select { min-height: 44px; }
+.gig-song-reference-main { min-height: 44px; }
+.note-title-input { min-height: 44px; }
+.breadcrumb-button { min-width: 44px; }
+.select-action { min-width: 44px; }
+.gig-list-sort select { min-height: 44px; }
+.song-chip--icon { min-width: 44px; justify-content: center; }
+
+/* ============ Songs Board (second view of the Songs tab) ============ */
+.songs-view-bar { display: flex; padding: 0 var(--space-11) var(--space-6); }
+@media (min-width: 901px) { .songs-view-bar { display: none; } }
+.board { position: absolute; inset: 0; display: flex; flex-direction: column; min-height: 0; background: var(--color-bg); }
+.board.hidden { display: none; }
+.board-toolbar { flex: none; padding: var(--space-4) 16px var(--space-4); }
+.board-panel-wrap { flex: none; padding-inline: 16px; }
+.board-panel-wrap[data-size="half"] { --board-panel-h: 36dvh; }
+.board-panel-wrap[data-size="tall"] { --board-panel-h: 58dvh; }
+.board-panel {
+  display: flex;
+  flex-direction: column;
+  height: var(--board-panel-h);
+  min-height: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+  overflow: hidden;
+}
+.board-panel-wrap.is-collapsed .board-panel { height: auto; }
+.board-panel__head { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3) var(--space-2) var(--space-6); border-bottom: 1px solid var(--color-border); flex: none; }
+.board-panel-wrap.is-collapsed .board-panel__head { border-bottom: 0; }
+.board-panel__titles { display: grid; flex: 1; min-width: 0; line-height: 1.25; }
+.board-panel__titles strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-md); color: var(--color-text); }
+.board-panel__titles span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-sm); color: var(--color-text-secondary); }
+.board-icon-btn { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.board-icon-btn svg { width: var(--icon-md); height: var(--icon-md); }
+.board-panel__body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: var(--space-5) var(--space-7); -webkit-overflow-scrolling: touch; }
+.board-lyric-line { font-size: 1.12rem; line-height: 1.55; color: var(--color-text); unicode-bidi: plaintext; }
+.board-lyric-gap { height: 0.7em; }
+.board-lyric-empty { color: var(--color-text-secondary); padding: var(--space-4) 0; }
+.board-handle { display: flex; align-items: center; justify-content: center; gap: var(--space-3); width: 100%; min-height: 44px; border: 0; background: transparent; color: var(--color-text-secondary); font-family: var(--font-family); font-size: var(--text-sm); font-weight: var(--font-weight-semibold); cursor: pointer; }
+.board-handle svg { width: var(--icon-sm, 16px); height: var(--icon-sm, 16px); }
+.board-handle__bar { width: 36px; height: 4px; border-radius: 2px; background: var(--color-border); }
+.board-panel-empty { display: flex; align-items: center; justify-content: center; gap: var(--space-4); min-height: 64px; margin-bottom: var(--space-3); padding: var(--space-5) var(--space-7); border: 2px dashed var(--color-border); border-radius: var(--radius-lg); color: var(--color-text-secondary); font-size: var(--text-sm); text-align: center; }
+.board-panel-empty svg { flex: none; width: var(--icon-md); height: var(--icon-md); }
+.board-filters { flex: none; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0 var(--space-3) 16px; }
+.board-filter-scroll { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--space-3); overflow-x: auto; padding-inline-end: 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.board-filter-scroll::-webkit-scrollbar { display: none; }
+.board-chip { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-width: 44px; min-height: 44px; padding: 0 var(--space-7); border: 1px solid transparent; border-radius: var(--radius-pill); background: var(--color-chip-bg); color: var(--color-text); font-family: var(--font-family); font-size: var(--text-sm-plus); font-weight: var(--font-weight-semibold); white-space: nowrap; cursor: pointer; }
+.board-chip svg { width: 14px; height: 14px; }
+.board-chip--add { border: 1px dashed var(--accent); background: transparent; color: var(--accent); }
+.board-chip.is-active { background: var(--accent-soft-2); border-color: var(--accent); color: var(--accent); }
+.board-chip.is-selected { background: var(--accent); color: #fff; }
+.board-chip--clear { background: transparent; color: var(--color-text-secondary); text-decoration: underline; }
+.board-divider { flex: none; width: 1px; height: 24px; background: var(--color-border); margin-inline: var(--space-2); }
+.board-columns { flex: 1; min-height: 0; display: flex; gap: var(--space-6); overflow-x: auto; overflow-y: hidden; padding: var(--space-3) 16px var(--space-6) 16px; scroll-snap-type: x mandatory; scroll-padding-inline: 16px; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+.board-col { flex: 0 0 min(300px, 84vw); scroll-snap-align: start; display: flex; flex-direction: column; min-height: 0; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-card-2, var(--color-card)); }
+.board-col__head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 48px; padding: 0 var(--space-6); border-bottom: 1px solid var(--color-border); }
+.board-col__head strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text); }
+.board-col__count { flex: none; min-width: 24px; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--color-chip-bg); color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--font-weight-semibold); text-align: center; }
+.board-col__body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-4); -webkit-overflow-scrolling: touch; }
+.board-col__empty, .board-empty-board { margin: 0; padding: var(--space-6) var(--space-4); color: var(--color-text-secondary); font-size: var(--text-sm); text-align: center; }
+.board-card { flex: none; border: 2px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-card); overflow: hidden; }
+.board-card.is-current { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.board-card__head { display: flex; align-items: center; gap: var(--space-4); width: 100%; min-height: 56px; padding: var(--space-4) var(--space-5); border: 0; background: transparent; color: var(--color-text); font-family: var(--font-family); text-align: start; cursor: pointer; }
+.board-card__text { display: grid; flex: 1; min-width: 0; gap: 2px; }
+.board-card__text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-base); }
+.board-card__sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); font-size: var(--text-sm); }
+.board-card__key { flex: none; min-width: 44px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; }
+.board-card__lyrics { max-height: 200px; overflow-y: auto; overscroll-behavior: contain; margin: 0 var(--space-4); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg); -webkit-overflow-scrolling: touch; }
+.board-card__pin { display: flex; align-items: center; justify-content: center; gap: var(--space-3); width: calc(100% - 2 * var(--space-4)); min-height: 44px; margin: var(--space-3) var(--space-4) var(--space-4); border: 0; border-radius: var(--radius-md); background: var(--accent-soft-2); color: var(--accent); font-family: var(--font-family); font-weight: var(--font-weight-semibold); cursor: pointer; }
+.board-card__pin svg { width: 16px; height: 16px; }
+.board-return-label { display: none; font-weight: var(--font-weight-semibold); }
+.board-return #backToFolderBtn { width: auto; padding-inline: var(--space-3) var(--space-5); gap: var(--space-2); }
+.board-return #backToFolderBtn .board-return-label { display: inline; }
+.board-pill { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); transform: translateX(-50%); z-index: 14; display: inline-flex; align-items: center; gap: var(--space-3); min-height: 48px; padding: 0 var(--space-9); border: 0; border-radius: var(--radius-pill); background: var(--accent); color: #fff; font-family: var(--font-family); font-size: var(--text-base); font-weight: var(--font-weight-semibold); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); cursor: pointer; }
+.board-pill.hidden { display: none; }
+.board-pill svg { width: 18px; height: 18px; }
+.sheet.board-sheet { top: auto; right: 0; bottom: 0; left: 0; width: 100%; max-height: 78dvh; border-radius: 16px 16px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.board-sheet .sheet-header { display: flex; align-items: center; gap: var(--space-3); }
+.board-sheet .sheet-header > div { flex: 1; }
+.board-sheet-body { overflow-y: auto; padding: 0; }
+.board-field-row, .board-value-row { display: flex; align-items: center; gap: var(--space-5); width: 100%; min-height: 52px; padding: 0 var(--space-8); border: 0; border-bottom: 1px solid var(--color-border); background: transparent; color: var(--color-text); font-family: var(--font-family); font-size: var(--text-base); text-align: start; cursor: pointer; }
+.board-field-row span, .board-value-row__name { flex: 1; min-width: 0; }
+.board-field-row em, .board-value-row em { color: var(--color-text-secondary); font-style: normal; font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+.board-value-row input { width: 22px; height: 22px; accent-color: var(--accent); }
+.board-value-row small { display: block; color: var(--color-text-secondary); font-size: var(--text-sm); }
+.board-sheet .icon-button.hidden { display: none; }
+.board-sheet .sheet-header .icon-button { width: 44px; height: 44px; min-width: 44px; padding: 0; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-text-secondary); }
+.board-sheet .sheet-footer { display: flex; }
+.board-sheet #boardFilterDoneBtn { flex: 1; }
+.board-panel__titles { text-align: start; }
+
+/* ============ Board: saved boards, columns screen ============ */
+.board-toolbar { display: flex; align-items: center; gap: var(--space-4); }
+.board-name-btn { flex: 1 1 auto; min-width: 0; display: inline-flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-6); border: 0; border-radius: var(--radius-pill); background: var(--color-chip-bg); color: var(--color-text); font-family: var(--font-family); font-size: var(--text-sm-plus); font-weight: var(--font-weight-semibold); cursor: pointer; }
+.board-name-btn span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-name-btn svg { flex: none; width: 16px; height: 16px; }
+.board-name-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.board-columns-btn { background: var(--color-chip-bg); border-radius: var(--radius-pill); }
+.board-menu { position: absolute; z-index: 16; top: 64px; left: 16px; right: 16px; max-height: 60dvh; overflow-y: auto; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-card); box-shadow: var(--shadow-card); }
+.board-menu.hidden { display: none; }
+.board-menu__item { display: flex; align-items: center; gap: var(--space-4); width: 100%; min-height: 48px; padding: 0 var(--space-5); border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-text); font-family: var(--font-family); font-size: var(--text-base); text-align: start; cursor: pointer; }
+.board-menu__item[aria-selected="true"] { font-weight: var(--font-weight-semibold); }
+.board-menu__item.is-dim, .board-add-row.is-dim { opacity: 0.4; }
+.board-menu__check { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 24px; color: var(--accent); }
+.board-menu__check svg { width: 18px; height: 18px; }
+.board-menu__divider { height: 1px; margin: var(--space-3) 0; background: var(--color-border); }
+.sheet.board-columns-screen { top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; padding-top: env(safe-area-inset-top, 0px); }
+.board-columns-screen .slp-header { flex: none; justify-content: space-between; padding: var(--space-4) var(--space-8); }
+.board-columns-body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 var(--space-8) calc(var(--space-9) + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: var(--space-3); }
+.board-columns-body > * { flex: none; }
+.board-col-list { padding: 0; overflow: hidden; }
+.board-col-row { display: flex; align-items: center; gap: var(--space-3); min-height: 56px; padding: 0 var(--space-3) 0 0; border-bottom: 1px solid var(--color-border); background: var(--color-card); }
+.board-col-row:last-child { border-bottom: 0; }
+.board-col-row__grip { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; background: transparent; color: var(--color-text-secondary); touch-action: none; cursor: grab; }
+.board-col-row__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text); font-weight: var(--font-weight-semibold); }
+.board-type-badge { flex: none; padding: 3px 10px; border-radius: var(--radius-pill); background: var(--color-chip-bg); color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+.board-save-new { justify-self: start; margin: var(--space-3) 0 var(--space-5); }
+.board-add-group { display: grid; margin-bottom: var(--space-5); }
+.board-add-group > .slp-section-label { padding: var(--space-4) var(--space-2); }
+.board-add-row { display: flex; align-items: center; gap: var(--space-4); width: 100%; min-height: 52px; padding: 0 var(--space-6); border: 0; border-bottom: 1px solid var(--color-border); background: var(--color-card); color: var(--color-text); font-family: var(--font-family); font-size: var(--text-base); text-align: start; cursor: pointer; }
+.board-add-row__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-add-row__name small { color: var(--color-text-secondary); font-size: var(--text-sm); }
+.board-add-row em { color: var(--color-text-secondary); font-style: normal; font-size: var(--text-sm); }
+.board-add-row svg { flex: none; width: 20px; height: 20px; color: var(--accent); }
+.gig-structure-sheet input { font-size: 16px; }
+
+/* ============ Board: whole-library search, add as new song, needs details ============ */
+.board-chip--icon { padding: 0; width: 44px; }
+.board-chip--icon svg { width: 18px; height: 18px; }
+.board-chip.hidden, .board-filter-scroll.hidden, .board-search-row.hidden { display: none; }
+.board-search-row { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--space-3); min-height: 48px; padding: 0 var(--space-2) 0 var(--space-6); margin-right: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-card); }
+.board-search-row > svg { flex: none; width: 18px; height: 18px; color: var(--color-text-secondary); }
+.board-search-row input { flex: 1; min-width: 0; height: 44px; border: 0; outline: 0; background: transparent; color: var(--color-text); font-family: var(--font-family); font-size: 16px; }
+.board-columns.hidden { display: none; }
+.board-results { flex: 1; min-height: 0; display: flex; padding: var(--space-3) 16px var(--space-6); }
+.board-results.hidden { display: none; }
+.board-col--wide { flex: 1; min-width: 0; }
+.board-search-hint { padding: var(--space-8) var(--space-6); }
+.board-card__needs { color: var(--accent); font-weight: var(--font-weight-semibold); }
+.board-col--needs { border-color: var(--accent); }
+.board-col--needs .board-col__head { background: var(--accent-soft-2); }
+.board-add-new { flex: none; display: grid; margin-top: var(--space-3); border: 2px dashed var(--accent); border-radius: var(--radius-md); overflow: hidden; }
+.board-add-new__main, .board-add-new__dest { display: flex; align-items: center; gap: var(--space-3); width: 100%; min-height: 48px; padding: 0 var(--space-5); border: 0; background: transparent; font-family: var(--font-family); text-align: start; cursor: pointer; }
+.board-add-new__main { color: var(--accent); font-weight: var(--font-weight-semibold); font-size: var(--text-base); }
+.board-add-new__main span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-add-new__dest { justify-content: space-between; min-height: 44px; border-top: 1px dashed var(--color-border); color: var(--color-text-secondary); font-size: var(--text-sm); }
+.board-add-new svg { flex: none; width: 18px; height: 18px; }
+.board-panel-wrap.is-compact .board-panel { height: auto; }
+.board-panel-wrap.is-compact .board-panel__body { flex: none; max-height: 136px; }
+.board-panel-wrap.is-compact { padding-bottom: var(--space-3); }
+.board-undo { position: absolute; z-index: 17; left: 16px; right: 16px; bottom: 12px; display: flex; align-items: center; gap: var(--space-2); min-height: 56px; padding: 0 var(--space-3) 0 var(--space-6); border-radius: var(--radius-lg); background: #1d242b; color: #fff; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+.board-undo.hidden { display: none; }
+.board-undo span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-sm-plus); }
+.board-undo button { flex: none; min-width: 52px; min-height: 44px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-md); background: transparent; color: #7ee0cf; font-family: var(--font-family); font-weight: var(--font-weight-bold); cursor: pointer; }
+@media (max-height: 560px) { .board.is-searching .board-toolbar { display: none; } .board-menu { top: 8px; } }
+
+/* Board cards in Select mode */
+.board-card__head { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.board-card.is-selected { border-color: var(--accent); }
+.board-card.is-selected .board-card__head { background: color-mix(in srgb, var(--accent) 13%, var(--color-card)); }
+.select-mode-active .board-columns,
+.select-mode-active .board-results { padding-bottom: 88px; }
+.select-mode-active .board-undo { bottom: 76px; }
+
 }
 
 </style>
@@ -4584,6 +4757,13 @@ body.chord-editor-open { overflow: hidden; }
             </button>
           </div>
         </header>
+
+        <div class="songs-view-bar">
+          <div class="slp-segmented songs-view-toggle" id="songsViewToggleList" role="group" aria-label="Songs view">
+            <button type="button" data-songs-view="list" class="selected"><i data-lucide="list"></i><span>List</span></button>
+            <button type="button" data-songs-view="board"><i data-lucide="columns-3"></i><span>Board</span></button>
+          </div>
+        </div>
 
         <div id="backupReminder" class="slp-info-banner backup-reminder hidden">
           <i data-lucide="shield-alert"></i>
@@ -4676,6 +4856,36 @@ body.chord-editor-open { overflow: hidden; }
         </section>
 
         </div>
+
+        <section id="boardWorkspace" class="board hidden" aria-label="Song board">
+          <div class="songs-view-bar board-toolbar">
+            <div class="slp-segmented songs-view-toggle" id="songsViewToggleBoard" role="group" aria-label="Songs view">
+            <button type="button" data-songs-view="list" class="selected"><i data-lucide="list"></i><span>List</span></button>
+            <button type="button" data-songs-view="board"><i data-lucide="columns-3"></i><span>Board</span></button>
+          </div>
+            <button id="boardNameBtn" class="board-name-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="boardNameLabel">Dancing</span><i data-lucide="chevron-down"></i></button>
+            <button id="boardColumnsBtn" class="board-icon-btn board-columns-btn" type="button" aria-label="Columns"><i data-lucide="columns-4"></i></button>
+          </div>
+          <div id="boardMenu" class="board-menu hidden" role="listbox" aria-label="Boards"></div>
+          <div id="boardPanelWrap" class="board-panel-wrap is-empty" data-size="half"></div>
+          <div id="boardFilterStrip" class="board-filters">
+            <button id="boardAddFilterBtn" class="board-chip board-chip--add" type="button"><i data-lucide="plus"></i><span>Filter</span></button>
+            <button id="boardSearchBtn" class="board-chip board-chip--icon" type="button" aria-label="Search the whole library"><i data-lucide="search"></i></button>
+            <div id="boardFilterScroll" class="board-filter-scroll"></div>
+            <div id="boardSearchRow" class="board-search-row hidden">
+              <i data-lucide="search"></i>
+              <input id="boardSearchInput" type="search" dir="auto" placeholder="Search the whole library" autocomplete="off" autocapitalize="off" enterkeyhint="search" />
+              <button id="boardSearchClose" class="board-icon-btn" type="button" aria-label="Close search"><i data-lucide="x"></i></button>
+            </div>
+          </div>
+          <div id="boardColumns" class="board-columns" tabindex="-1"></div>
+          <div id="boardResults" class="board-results hidden" aria-label="Search results"></div>
+          <div id="boardUndoBar" class="board-undo hidden" role="status">
+            <span id="boardUndoText"></span>
+            <button id="boardUndoView" type="button">View</button>
+            <button id="boardUndoUndo" type="button">Undo</button>
+          </div>
+        </section>
 
         <section id="notesWorkspace" class="notes-workspace hidden slp-screen" aria-label="Notes">
           <header id="notesHeader" class="slp-header slp-header--screen-root">
@@ -4977,7 +5187,7 @@ body.chord-editor-open { overflow: hidden; }
         <div id="songReader" class="song-reader slp-screen hidden">
           <header class="slp-header song-header">
             <button id="backToFolderBtn" class="slp-btn slp-btn--icon mobile-only" type="button" aria-label="Back to songs">
-              <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="board-return-label">Board</span>
             </button>
             <h1 id="songTitle" class="slp-header__title" dir="auto">Song</h1>
             <div class="slp-header__actions">
@@ -5107,7 +5317,7 @@ body.chord-editor-open { overflow: hidden; }
         </section>
         <section class="slp-form-section" aria-label="Credits">
           <label class="slp-field-label" for="songArtistInput">ARTIST (OPTIONAL)</label>
-          <input id="songArtistInput" class="slp-input" type="text" dir="auto" list="artistSuggestions" placeholder="One or more names, separated by commas" autocomplete="off" />
+          <input id="songArtistInput" class="slp-input" type="text" dir="auto" list="artistSuggestions" placeholder="Several artists: separate with ; or Return" autocomplete="off" enterkeyhint="next" />
         </section>
         <section class="slp-form-section" aria-label="Details">
           <div id="songDetailsCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="false" aria-controls="songDetailsPanel">
@@ -5334,6 +5544,26 @@ body.chord-editor-open { overflow: hidden; }
         </section>
       </form>
     </section>
+
+    <section id="boardColumnsScreen" class="sheet board-columns-screen hidden" hidden role="dialog" aria-modal="true" aria-labelledby="boardColumnsTitle">
+      <header class="slp-header">
+        <h2 id="boardColumnsTitle" class="slp-header__title">Columns</h2>
+        <button id="boardColumnsDoneBtn" class="slp-link-btn slp-link-btn--accent" type="button">Done</button>
+      </header>
+      <div id="boardColumnsBody" class="board-columns-body"></div>
+    </section>
+
+    <section id="boardFilterSheet" class="sheet board-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="boardFilterSheetTitle">
+      <div class="sheet-header">
+        <button id="boardFilterSheetBack" class="icon-button hidden" type="button" aria-label="Back to filter fields"><i data-lucide="chevron-left"></i></button>
+        <div><span>Board</span><h2 id="boardFilterSheetTitle">Filter</h2></div>
+        <button id="closeBoardFilterBtn" class="icon-button" type="button" aria-label="Close filter"><i data-lucide="x"></i></button>
+      </div>
+      <div id="boardFilterSheetBody" class="sheet-body board-sheet-body"></div>
+      <div class="sheet-footer"><button id="boardFilterDoneBtn" class="primary-button" type="button">Done</button></div>
+    </section>
+
+    <button id="backToBoardPill" class="board-pill hidden" type="button"><i data-lucide="columns-3"></i><span>Back to Board</span></button>
 
     <section id="quickAddSheet" class="sheet compact-sheet quick-add-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="quickAddTitle">
       <div class="sheet-header">
@@ -6011,7 +6241,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
+    "songLinksInput", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "appearancePopover", "decreaseFontBtn",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -6477,6 +6707,20 @@ function normalizeState(raw) {
     updatedAt: item.updatedAt || item.createdAt || new Date().toISOString()
   }));
 
+  // Saved Boards (Songs tab): each is { id, name, columns: [{ type, ref }] }, up to 8 columns.
+  const boardTypes = ["folder", "key", "language", "composer", "artist"];
+  const boards = (Array.isArray(raw.boards) ? raw.boards : []).filter((board) => board && typeof board === "object").map((board) => {
+    const seen = new Set();
+    const columns = (Array.isArray(board.columns) ? board.columns : []).filter((column) => {
+      if (!column || !boardTypes.includes(column.type) || !String(column.ref || "").trim()) return false;
+      if (column.type === "folder" && !folders.some((folder) => folder.id === column.ref)) return false;
+      const id = `${column.type}:${column.ref}`;
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }).slice(0, 8).map((column) => ({ type: column.type, ref: String(column.ref) }));
+    return { id: String(board.id || makeId()), name: String(board.name || "Board").trim() || "Board", columns };
+  });
   return {
     version: 4,
     folders,
@@ -6484,6 +6728,8 @@ function normalizeState(raw) {
     songs,
     songOrder,
     savedSearches,
+    boards,
+    activeBoardId: boards.some((board) => board.id === raw.activeBoardId) ? raw.activeBoardId : (boards[0]?.id || ""),
     noteFolders,
     notes,
     noteLocationLinks,
@@ -6574,7 +6820,11 @@ function normalizeSong(song) {
   const title = song.title || song.titleEnglish || song.titleHebrew || "Untitled Song";
   // One list of artist names. The old separate "secondary artist" is folded in here, and the
   // display string `artist` is always the list joined, so nothing typed before is lost.
-  const artists = normalizeArtistNames([...(Array.isArray(song.artists) ? song.artists : []), song.artist, song.featuredArtist]);
+  // Once a song has its artist list, that list is the truth; `artist` is only the joined text
+  // for display and is never parsed back (it can contain commas inside a name). A song that
+  // has no list yet (older saves, imports) gets one from the `artist` text.
+  const savedArtists = Array.isArray(song.artists) ? song.artists.filter((name) => String(name || "").trim()) : [];
+  const artists = normalizeArtistNames([...(savedArtists.length ? savedArtists : [song.artist]), song.featuredArtist]);
   // The old Source URL joins the song's links; the original address is kept as hidden import metadata.
   const oldSource = /^https?:\/\/\S+$/i.test(String(song.sourceUrl || "").trim()) ? String(song.sourceUrl).trim() : "";
   const audioLinks = normalizeUrlList(song.audioLinks);
@@ -6995,6 +7245,7 @@ function render() {
     releaseToolAudioSession();
   }
   renderLibrary();
+  renderBoard();
   if (workspaceMode === "tools") {
     renderTools();
   } else if (workspaceMode === "gigs") {
@@ -7035,7 +7286,7 @@ function renderLibrary() {
   const query = rawQuery.toLocaleLowerCase();
   const scope = librarySearchScope;
   els.allSongsCount.textContent = state.songs.length;
-  els.unfiledCount.textContent = state.songs.filter((song) => !song.folderIds.length).length;
+  els.unfiledCount.textContent = state.songs.filter(songIsUnfiled).length;
   els.artistsCount.textContent = artistNames().length;
   els.allSongsBtn.classList.toggle("selected", currentFolderId === ALL_SONGS);
   els.unfiledBtn.classList.toggle("selected", currentFolderId === UNFILED);
@@ -7117,6 +7368,7 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
       row.addEventListener("click", (event) => {
         if (!event.target.closest(".folder-expand-btn")) openFolder(folder.id);
       });
+      wireFolderLongPress(row, folder.id);
       row.querySelector(".folder-expand-btn")?.addEventListener("click", () => {
         if (expandedFolderIds.has(folder.id)) expandedFolderIds.delete(folder.id);
         else expandedFolderIds.add(folder.id);
@@ -7134,6 +7386,7 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
         childRow.dataset.folderId = child.id;
         childRow.innerHTML = `<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(child.name)}</span></span><span class="slp-row__count">${countSongsInTree(child.id)}</span>`;
         childRow.addEventListener("click", () => openFolder(child.id));
+        wireFolderLongPress(childRow, child.id);
         listEl.append(childRow);
       });
     }
@@ -7170,7 +7423,7 @@ function renderLibrarySearchResults(rawQuery, scope = "all") {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `slp-row ${selectMode.active ? "selecting" : ""}`;
-    button.innerHTML = `${selectMode.active ? selectCheckMarkup() : ""}<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([song.artist, song.key, song.language].filter(Boolean).join(" · ") || "Song")}</span></span><svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    button.innerHTML = `${selectMode.active ? selectCheckMarkup() : ""}<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([song.artist, songDisplayKey(song), song.language].filter(Boolean).join(" · ") || "Song")}</span></span><svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
     button.addEventListener("click", () => openSongFromSearch(song.id));
     wireSelectableRow(button, song.id, searchSelectContext);
     els.librarySearchSongList.append(button);
@@ -7404,6 +7657,7 @@ function renderSubfolders(folders, parentFolder) {
       wireFolderDrag(row, folder.id);
     } else {
       row.addEventListener("click", () => openFolder(folder.id));
+      wireFolderLongPress(row, folder.id);
     }
     els.subfolderList.append(row);
   });
@@ -7436,12 +7690,12 @@ function renderSongList(sourceSongs, isArtistView = false) {
         <div class="slp-row ${selectedSongId === song.id ? "selected" : ""}" role="button" tabindex="0" aria-label="Open ${escapeAttribute(visibleTitle)}">
           ${selectMode.active ? selectCheckMarkup() : ""}
           <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></span>
-          ${song.key ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(song.key)}" aria-label="Show songs in ${escapeAttribute(song.key)}${songTranspose(song) ? `, sung in ${escapeAttribute(songCurrentKey(song))}` : ""}">${escapeHtml(songCurrentKey(song))}</button>` : ""}
+          ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
           <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
       `;
       const row = item.querySelector(".slp-row");
-      item.querySelector("[data-song-key]")?.addEventListener("click", (event) => { event.stopPropagation(); openSongsByKey(song.key); });
+      item.querySelector("[data-song-key]")?.addEventListener("click", (event) => { event.stopPropagation(); openSongsByKey(songDisplayKey(song)); });
       row.addEventListener("click", () => openSong(song.id));
       row.addEventListener("keydown", (event) => {
         if (event.target !== row) return;
@@ -7464,7 +7718,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
           <button class="song-title-button" type="button"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></button>
           ${(song.artists || []).length ? `<span class="slp-row__artists">${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
         </div>
-        ${song.key ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(song.key)}" aria-label="Show songs in ${escapeAttribute(song.key)}${songTranspose(song) ? `, sung in ${escapeAttribute(songCurrentKey(song))}` : ""}">${escapeHtml(songCurrentKey(song))}</button>` : ""}
+        ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
       </div>
       ${expanded && !songReorderMode && !selectMode.active ? `<div class="song-details">
         <span><strong>Folders:</strong> ${escapeHtml(folders || "Unfiled")}</span>
@@ -7475,7 +7729,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
     `;
     const row = item.querySelector(".slp-row");
     item.querySelector(".song-title-button").addEventListener("click", (event) => { event.stopPropagation(); openSong(song.id); });
-    item.querySelector("[data-song-key]")?.addEventListener("click", (event) => { event.stopPropagation(); openSongsByKey(song.key); });
+    item.querySelector("[data-song-key]")?.addEventListener("click", (event) => { event.stopPropagation(); openSongsByKey(songDisplayKey(song)); });
     item.querySelectorAll("[data-artist]").forEach((link) => link.addEventListener("click", (event) => { event.stopPropagation(); openArtistSongs(link.dataset.artist); }));
     if (songReorderMode) {
       wireSongDrag(item, song.id);
@@ -7553,6 +7807,8 @@ function renderSongSecondaryMeta(song) {
     ["Composer", song.composer],
     ["Lyricist", song.lyricist],
     ["Time signature", song.timeSignature],
+    ["Original key", song.key ? fullKeyLabel(song.key) : ""],
+    ["Sung in", songTranspose(song) ? fullKeyLabel(songCurrentKey(song)) : ""],
     ["Alternate keys", song.alternateKeys.join(" · ")]
   ].filter(([, value]) => String(value || "").trim());
   els.songSecondaryMeta.innerHTML = [...always, ...extra].map(([label, value]) => `<div class="slp-details-field"><span class="slp-section-label">${escapeHtml(label)}</span><span dir="auto">${escapeHtml(value)}</span></div>`).join("");
@@ -7705,6 +7961,10 @@ function openSong(id) {
 }
 
 function backToFolder() {
+  if (songReturnContext?.board) {
+    returnToBoard();
+    return;
+  }
   if (songReturnContext?.gigId) {
     workspaceMode = "gigs";
     state.gigNavigation.gigId = songReturnContext.gigId;
@@ -7738,6 +7998,926 @@ function saveExpandedFolders() {
   } catch {
     // Folders simply start closed next time.
   }
+}
+// Board data: saved boards and their columns, the filters, and the whole-library search.
+// Pure model logic - no DOM. (Rendering is in board-render.js, event wiring in board-ui.js.)
+//
+// A board is { id, name, columns: [{ type, ref }] }; a column is a folder, key, language,
+// composer or artist. Each card is the same master song record (never a copy).
+
+const BOARD_PREFS_KEY = "slp-board-prefs";
+
+const BOARD_SHORT_LINES = 8;
+
+const BOARD_FIELDS = [
+  { id: "composer", label: "Composer", none: "No composer" },
+  { id: "style", label: "Style", none: "No style" },
+  { id: "language", label: "Language", none: "No language" },
+  { id: "artist", label: "Artist", none: "No artist" },
+  { id: "tempo", label: "Tempo", none: "No tempo" }
+];
+
+const BOARD_TEMPO_ORDER = ["Slow", "Medium", "Fast"];
+
+let boardPrefs = loadBoardPrefs();
+
+// What the Board is showing right now. Kept in memory so it survives a trip to the full
+// lyrics page; only the view choice and the panel size are saved across launches.
+const boardState = {
+  filters: {},
+  key: "",
+  panelSongId: null,
+  collapsed: false,
+  expanded: new Set(),
+  scrollX: 0,
+  scrollY: {},
+  filterField: null,
+  searchOpen: false,
+  query: "",
+  lastColumnId: "",
+  newDest: null,
+  undoSongId: null
+};
+
+function loadBoardPrefs() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(BOARD_PREFS_KEY) || "{}");
+    return { view: saved.view === "board" ? "board" : "list", size: saved.size === "tall" ? "tall" : "half" };
+  } catch {
+    return { view: "list", size: "half" };
+  }
+}
+
+function saveBoardPrefs() {
+  try {
+    localStorage.setItem(BOARD_PREFS_KEY, JSON.stringify(boardPrefs));
+  } catch {
+    // The choice just will not survive a relaunch.
+  }
+}
+
+// The Board is a phone-width layout: on a wide window the library pane is a narrow side
+// column, so the normal list stays.
+function boardAvailable() {
+  return Boolean(globalThis.matchMedia?.("(max-width: 900px)")?.matches);
+}
+
+function boardActive() {
+  return boardPrefs.view === "board" && boardAvailable() && workspaceMode === "library" && libraryMode !== "notes";
+}
+
+const BOARD_MAX_COLUMNS = 8;
+
+const BOARD_TYPE_LABELS = { folder: "Folder", key: "Key", language: "Language", composer: "Composer", artist: "Artist" };
+
+function boardDefaultColumns() {
+  const style = state.folders.find((folder) => !folder.parentId && folder.name === "Style & Tempo");
+  const subfolders = style ? childFolders(style.id) : [];
+  return (subfolders.length ? subfolders : childFolders(null).slice(0, 5)).map((folder) => ({ type: "folder", ref: folder.id }));
+}
+
+// The first run starts with one board, "Dancing", made from the default columns.
+function ensureBoards() {
+  if (!Array.isArray(state.boards)) state.boards = [];
+  if (!state.boards.length) {
+    state.boards.push({ id: makeId(), name: "Dancing", columns: boardDefaultColumns() });
+  }
+  if (!state.boards.some((board) => board.id === state.activeBoardId)) state.activeBoardId = state.boards[0].id;
+}
+
+function activeBoard() {
+  ensureBoards();
+  return state.boards.find((board) => board.id === state.activeBoardId);
+}
+
+// A folder that was deleted quietly leaves every board; nothing breaks.
+function pruneBoardColumns() {
+  (state.boards || []).forEach((board) => {
+    const kept = board.columns.filter((column) => column.type !== "folder" || folderById(column.ref));
+    if (kept.length !== board.columns.length) board.columns = kept;
+  });
+}
+
+function boardColumnName(column) {
+  return column.type === "folder" ? (folderById(column.ref)?.name || "") : column.ref;
+}
+
+function boardColumns() {
+  return activeBoard().columns.map((column) => ({ ...column, id: `${column.type}:${column.ref}`, name: boardColumnName(column), badge: BOARD_TYPE_LABELS[column.type] }));
+}
+
+// "Just added · needs details": any song still flagged, at the far left, ignoring every filter.
+function boardAllColumns() {
+  const columns = boardColumns();
+  if (state.songs.some(songNeedsLyrics)) columns.unshift({ type: "needs", ref: "", id: "needs:", name: "Just added · needs details", badge: "New" });
+  return columns;
+}
+
+function boardSongsForColumn(column) {
+  if (column.type === "needs") return state.songs.filter(songNeedsLyrics).sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+  const byTitle = (list) => list.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }));
+  if (column.type === "folder") {
+    const folder = folderById(column.ref);
+    if (!folder) return [];
+    const ids = new Set([folder.id, ...childFolders(folder.id).map((child) => child.id)]);
+    const songs = state.songs.filter((song) => song.folderIds.some((id) => ids.has(id)));
+    const order = state.songOrder[folder.id] || [];
+    return songs.sort((a, b) => {
+      const ai = order.indexOf(a.id);
+      const bi = order.indexOf(b.id);
+      if (ai >= 0 || bi >= 0) return (ai < 0 ? 1e9 : ai) - (bi < 0 ? 1e9 : bi);
+      return a.title.localeCompare(b.title, undefined, { sensitivity: "base" });
+    });
+  }
+  if (column.type === "key") return byTitle(state.songs.filter((song) => boardSongKey(song) === column.ref));
+  if (column.type === "language") return byTitle(state.songs.filter((song) => String(song.language || "").trim() === column.ref));
+  if (column.type === "composer") return byTitle(state.songs.filter((song) => String(song.composer || "").trim() === column.ref));
+  return byTitle(state.songs.filter((song) => (song.artists || []).some((artist) => normalizedArtist(artist) === normalizedArtist(column.ref))));
+}
+
+function boardTempoBucket(song) {
+  const bpm = Number(song.bpm);
+  if (!(bpm > 0)) return "";
+  if (bpm < 95) return "Slow";
+  if (bpm <= 125) return "Medium";
+  return "Fast";
+}
+
+// The values a song has for one filter field ("" stands for "none" so it is never hidden).
+function boardFieldValues(song, field) {
+  let values;
+  if (field === "artist") values = song.artists || [];
+  else if (field === "tempo") values = [boardTempoBucket(song)];
+  else values = [String(song[field] || "").trim()];
+  values = values.filter((value, index) => values.indexOf(value) === index);
+  return values.length ? values : [""];
+}
+
+function boardSongKey(song) {
+  return songDisplayKey(song);
+}
+
+function boardMatchesFilters(song) {
+  if (boardState.key && boardSongKey(song) !== boardState.key) return false;
+  return Object.entries(boardState.filters).every(([field, selected]) => {
+    if (!selected.size) return true;
+    return boardFieldValues(song, field).some((value) => selected.has(value));
+  });
+}
+
+function boardActiveFilterCount() {
+  return Object.values(boardState.filters).reduce((sum, set) => sum + set.size, 0) + (boardState.key ? 1 : 0);
+}
+
+function boardLyricLines(song) {
+  return textFromDocumentHtml(song.documentHtml).split("\n").map((line) => line.replace(/\s+$/, ""));
+}
+
+function boardCountNonEmpty(lines) {
+  return lines.filter((line) => line.trim()).length;
+}
+
+function boardSongById(id) {
+  return state.songs.find((song) => song.id === id) || null;
+}
+
+function boardColumnIsOn(type, ref) {
+  return activeBoard().columns.some((column) => column.type === type && column.ref === ref);
+}
+
+function boardAddCandidates() {
+  const counted = (values) => {
+    const counts = new Map();
+    values.forEach((value) => { if (value) counts.set(value, (counts.get(value) || 0) + 1); });
+    return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  };
+  const folders = [];
+  childFolders(null).forEach((root) => {
+    folders.push({ type: "folder", ref: root.id, name: root.name });
+    childFolders(root.id).forEach((child) => folders.push({ type: "folder", ref: child.id, name: child.name, parent: root.name }));
+  });
+  const groups = [
+    ["Folders", folders],
+    ["Keys", counted(state.songs.map(boardSongKey)).map(([ref, count]) => ({ type: "key", ref, name: ref, count }))],
+    ["Languages", counted(state.songs.map((song) => String(song.language || "").trim())).map(([ref, count]) => ({ type: "language", ref, name: ref, count }))],
+    ["Composers", counted(state.songs.map((song) => String(song.composer || "").trim())).map(([ref, count]) => ({ type: "composer", ref, name: ref, count }))],
+    ["Artists", counted(state.songs.flatMap((song) => song.artists || [])).map(([ref, count]) => ({ type: "artist", ref, name: ref, count }))]
+  ];
+  return groups.map(([title, items]) => [title, items.filter((item) => !boardColumnIsOn(item.type, item.ref))]).filter(([, items]) => items.length);
+}
+
+function addBoardColumn(type, ref) {
+  const board = activeBoard();
+  if (board.columns.length >= BOARD_MAX_COLUMNS || boardColumnIsOn(type, ref)) return false;
+  board.columns.push({ type, ref });
+  return true;
+}
+
+function boardNormalize(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0591-\u05C7]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
+function boardSearchTitles(song) {
+  return [song.title, song.titleEnglish, song.titleHebrew, song.titleYiddish, ...(song.alternateTitles || [])].map(boardNormalize).filter(Boolean);
+}
+
+// Every typed word must match somewhere in the title, other titles, composer or artist.
+// Rank: title starts with the query, then a word of the title starts with it, then the rest.
+function boardSearchResults(rawQuery) {
+  const query = boardNormalize(rawQuery);
+  if (!query) return [];
+  const words = query.split(" ");
+  const results = [];
+  state.songs.forEach((song) => {
+    const titles = boardSearchTitles(song);
+    const haystack = ` ${[...titles, boardNormalize(song.composer), boardNormalize(song.artist), ...(song.artists || []).map(boardNormalize), boardNormalize(song.artistHebrew)].join(" ")} `;
+    if (!words.every((word) => haystack.includes(word))) return;
+    let rank = 2;
+    if (titles.some((title) => title.startsWith(query))) rank = 0;
+    else if (titles.some((title) => ` ${title}`.includes(` ${query}`))) rank = 1;
+    results.push({ song, rank });
+  });
+  return results.sort((a, b) => a.rank - b.rank || a.song.title.localeCompare(b.song.title, undefined, { sensitivity: "base" })).map((item) => item.song);
+}
+
+function boardHasExactTitle(rawQuery) {
+  const query = boardNormalize(rawQuery);
+  return state.songs.some((song) => boardSearchTitles(song).includes(query));
+}
+
+// The column the person was looking at: from the horizontal scroll position of the columns.
+function boardLastViewedColumn() {
+  const columns = boardAllColumns();
+  const first = els.boardColumns.querySelector(".board-col");
+  const gap = parseFloat(getComputedStyle(els.boardColumns).columnGap) || 12;
+  const step = first ? first.getBoundingClientRect().width + gap : 0;
+  const index = step ? Math.min(columns.length - 1, Math.max(0, Math.round(boardState.scrollX / step))) : 0;
+  return columns[index] || null;
+}
+
+function boardNewDestinations() {
+  if (boardState.newDest) return boardState.newDest;
+  const column = boardState.lastColumnId ? boardAllColumns().find((item) => item.id === boardState.lastColumnId) : null;
+  return { folders: column?.type === "folder" && folderById(column.ref) ? [column.ref] : [], sets: [], sections: [] };
+}
+
+function boardDestinationLabel(dest) {
+  const names = ["Unfiled", ...dest.folders.map((id) => folderById(id)?.name).filter(Boolean)];
+  const events = dest.sets.length + dest.sections.length;
+  const shown = names.slice(0, 3).join(" + ");
+  const more = names.length - 3 + events;
+  return `${shown}${more > 0 ? ` + ${more} more` : ""}`;
+}
+// Board rendering: the panel, filter strip, columns, search results, filter sheet and the
+// Columns screen. Reads the data in board-data.js; user actions live in board-ui.js.
+
+function boardLinesMarkup(lines) {
+  const trimmed = lines.slice();
+  while (trimmed.length && !trimmed[0].trim()) trimmed.shift();
+  while (trimmed.length && !trimmed[trimmed.length - 1].trim()) trimmed.pop();
+  if (!trimmed.length) return `<div class="board-lyric-empty">No lyrics yet</div>`;
+  return trimmed.map((line) => line.trim() ? `<div class="board-lyric-line" dir="auto">${escapeHtml(line)}</div>` : `<div class="board-lyric-gap"></div>`).join("");
+}
+
+function renderBoard() {
+  const active = boardActive();
+  if (active) els.songLibraryContent.classList.add("hidden");
+  els.boardWorkspace.classList.toggle("hidden", !active);
+  els.songsViewToggleList?.querySelectorAll("button").forEach((button) => button.classList.toggle("selected", button.dataset.songsView === boardPrefs.view));
+  els.songsViewToggleBoard?.querySelectorAll("button").forEach((button) => button.classList.toggle("selected", button.dataset.songsView === boardPrefs.view));
+  const returning = Boolean(songReturnContext?.board) && mobileView === "song" && workspaceMode === "library";
+  els.app.classList.toggle("board-return", returning);
+  els.backToBoardPill.classList.toggle("hidden", !returning || songEditMode);
+  if (!active) {
+    closeBoardMenu();
+    return;
+  }
+  ensureBoards();
+  pruneBoardColumns();
+  els.boardNameLabel.textContent = activeBoard().name;
+  if (boardState.panelSongId && !state.songs.some((song) => song.id === boardState.panelSongId)) boardState.panelSongId = null;
+  const searching = boardState.searchOpen;
+  els.boardWorkspace.classList.toggle("is-searching", searching);
+  renderBoardPanel();
+  renderBoardFilterStrip();
+  // While searching the columns stay mounted but hidden, so closing search brings back the
+  // same filters and scroll position.
+  els.boardColumns.classList.toggle("hidden", searching);
+  els.boardResults.classList.toggle("hidden", !searching);
+  if (searching) renderBoardResults();
+  else renderBoardColumns();
+}
+
+function renderBoardPanel() {
+  const song = boardSongById(boardState.panelSongId);
+  const wrap = els.boardPanelWrap;
+  wrap.dataset.size = boardPrefs.size;
+  wrap.classList.toggle("is-collapsed", Boolean(song) && boardState.collapsed);
+  wrap.classList.toggle("is-empty", !song);
+  wrap.classList.toggle("is-compact", Boolean(song) && boardState.searchOpen && !boardState.collapsed);
+  if (!song) {
+    wrap.innerHTML = `<div class="board-panel-empty"><i data-lucide="music-2"></i><span>Tap a song. Short ones open in place, long ones dock here.</span></div>`;
+    refreshIcons();
+    return;
+  }
+  const collapsed = boardState.collapsed;
+  const meta = [boardSongKey(song), song.composer].filter(Boolean).join(" · ");
+  const keepScroll = wrap.querySelector(".board-panel__body");
+  const scrollTop = keepScroll && wrap.dataset.songId === song.id ? keepScroll.scrollTop : 0;
+  wrap.dataset.songId = song.id;
+  wrap.innerHTML = `
+    <section class="board-panel" aria-label="Lyrics">
+      <header class="board-panel__head">
+        <div class="board-panel__titles" dir="auto">
+          <strong>${escapeHtml(song.title)}</strong>
+          ${meta ? `<span>${escapeHtml(meta)}</span>` : ""}
+        </div>
+        <button class="board-icon-btn" type="button" data-board-act="full" aria-label="Open full page"><i data-lucide="maximize-2"></i></button>
+        <button class="board-icon-btn" type="button" data-board-act="collapse" aria-expanded="${!collapsed}" aria-label="${collapsed ? "Expand lyrics panel" : "Collapse lyrics panel"}"><i data-lucide="${collapsed ? "chevron-down" : "chevron-up"}"></i></button>
+        <button class="board-icon-btn" type="button" data-board-act="close" aria-label="Close lyrics panel"><i data-lucide="x"></i></button>
+      </header>
+      ${collapsed ? "" : `<div class="board-panel__body" tabindex="0">${boardLinesMarkup(boardLyricLines(song))}</div>`}
+    </section>
+    ${collapsed || boardState.searchOpen ? "" : `<button class="board-handle" type="button" data-board-act="size" aria-label="Panel size: ${boardPrefs.size === "tall" ? "Tall" : "Half"}. Change size"><span class="board-handle__bar"></span><span>${boardPrefs.size === "tall" ? "Tall" : "Half"}</span><i data-lucide="${boardPrefs.size === "tall" ? "chevron-up" : "chevron-down"}"></i></button>`}
+  `;
+  const body = wrap.querySelector(".board-panel__body");
+  if (body) body.scrollTop = scrollTop;
+  refreshIcons();
+}
+
+function renderBoardFilterStrip() {
+  const chips = [];
+  Object.entries(boardState.filters).forEach(([field, selected]) => {
+    const meta = BOARD_FIELDS.find((item) => item.id === field);
+    [...selected].forEach((value) => {
+      const label = value || meta.none;
+      chips.push(`<button class="board-chip is-active" type="button" data-board-remove="${escapeAttribute(field)}" data-value="${escapeAttribute(value)}" aria-label="Remove filter ${escapeAttribute(meta.label)}: ${escapeAttribute(label)}"><span dir="auto">${escapeHtml(meta.label)}: ${escapeHtml(label)}</span><i data-lucide="x"></i></button>`);
+    });
+  });
+  const clear = boardActiveFilterCount() >= 2 ? `<button class="board-chip board-chip--clear" type="button" data-board-clear>Clear all</button>` : "";
+  const counts = new Map();
+  state.songs.forEach((song) => {
+    const key = boardSongKey(song);
+    if (key) counts.set(key, (counts.get(key) || 0) + 1);
+  });
+  const keys = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([key]) => key);
+  const keyChips = [`<button class="board-chip ${boardState.key ? "" : "is-selected"}" type="button" data-board-key="" aria-pressed="${!boardState.key}">All keys</button>`]
+    .concat(keys.map((key) => `<button class="board-chip ${boardState.key === key ? "is-selected" : ""}" type="button" dir="ltr" data-board-key="${escapeAttribute(key)}" aria-pressed="${boardState.key === key}">${escapeHtml(key)}</button>`));
+  const searching = boardState.searchOpen;
+  els.boardAddFilterBtn.classList.toggle("hidden", searching);
+  els.boardSearchBtn.classList.toggle("hidden", searching);
+  els.boardFilterScroll.classList.toggle("hidden", searching);
+  els.boardSearchRow.classList.toggle("hidden", !searching);
+  const scroller = els.boardFilterScroll;
+  const keepX = scroller.scrollLeft;
+  scroller.innerHTML = `${chips.join("")}${clear}${chips.length || clear ? `<span class="board-divider" aria-hidden="true"></span>` : ""}${keyChips.join("")}`;
+  scroller.scrollLeft = keepX;
+  refreshIcons();
+}
+
+function renderBoardColumns() {
+  const container = els.boardColumns;
+  const columns = boardAllColumns();
+  if (!columns.length) {
+    container.innerHTML = `<div class="board-empty-board">This board has no columns yet. Tap the columns button to add some.</div>`;
+    return;
+  }
+  container.innerHTML = columns.map((column) => {
+    const songs = boardSongsForColumn(column).filter((song) => column.type === "needs" || boardMatchesFilters(song));
+    const cards = songs.map((song) => boardCardMarkup(song, column)).join("");
+    return `<section class="board-col ${column.type === "needs" ? "board-col--needs" : ""}" data-col-id="${escapeAttribute(column.id)}" aria-label="${escapeAttribute(column.name)}">
+      <header class="board-col__head"><strong dir="auto">${escapeHtml(column.name)}</strong><span class="board-col__count">${songs.length}</span></header>
+      <div class="board-col__body" data-col-body="${escapeAttribute(column.id)}">${cards || `<p class="board-col__empty">${boardActiveFilterCount() ? "No songs match these filters." : "No songs here yet."}</p>`}</div>
+    </section>`;
+  }).join("");
+  wireBoardCardsForSelect(container);
+  container.scrollLeft = boardState.scrollX;
+  container.querySelectorAll("[data-col-body]").forEach((body) => { body.scrollTop = boardState.scrollY[body.dataset.colBody] || 0; });
+  refreshIcons();
+}
+
+function boardCardMarkup(song, column) {
+  const cardKey = `${column.id}:${song.id}`;
+  const open = boardState.expanded.has(cardKey);
+  const current = boardState.panelSongId === song.id;
+  const key = boardSongKey(song);
+  const lyrics = open ? boardLinesMarkup(boardLyricLines(song)) : "";
+  return `<article class="board-card ${open ? "is-open" : ""} ${current ? "is-current" : ""}" data-song-id="${escapeAttribute(song.id)}" data-card-key="${escapeAttribute(cardKey)}">
+    <button class="board-card__head" type="button" aria-expanded="${open}" data-board-card>
+      ${selectMode.active ? selectCheckMarkup() : ""}
+      <span class="board-card__text">
+        <strong dir="auto">${escapeHtml(song.title)}</strong>
+        ${songNeedsLyrics(song) ? `<span class="board-card__sub board-card__needs">Needs details</span>` : boardCardSubline(song, column)}
+      </span>
+      ${key ? `<span class="slp-badge--key board-card__key" dir="ltr">${escapeHtml(key)}</span>` : ""}
+    </button>
+    ${open ? `<div class="board-card__lyrics" tabindex="0">${lyrics}</div><button class="board-card__pin" type="button" data-board-pin><i data-lucide="pin"></i><span>Pin to top</span></button>` : ""}
+  </article>`;
+}
+
+function renderBoardFilterSheet() {
+  const field = boardState.filterField;
+  els.boardFilterSheetBack.classList.toggle("hidden", !field);
+  const meta = BOARD_FIELDS.find((item) => item.id === field);
+  els.boardFilterSheetTitle.textContent = meta ? meta.label : "Filter";
+  if (!meta) {
+    els.boardFilterSheetBody.innerHTML = BOARD_FIELDS.map((item) => {
+      const count = (boardState.filters[item.id] || new Set()).size;
+      return `<button class="board-field-row" type="button" data-board-field="${item.id}"><span>${item.label}</span>${count ? `<em>${count}</em>` : ""}<svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>`;
+    }).join("");
+    return;
+  }
+  // Counts are over the distinct songs that are on the Board (in any column).
+  const seen = new Set();
+  const counts = new Map();
+  boardColumns().forEach((column) => boardSongsForColumn(column).forEach((song) => {
+    if (seen.has(song.id)) return;
+    seen.add(song.id);
+    boardFieldValues(song, field).forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+  }));
+  const selected = boardState.filters[field] || new Set();
+  [...selected].forEach((value) => { if (!counts.has(value)) counts.set(value, 0); });
+  let values = [...counts.entries()];
+  if (field === "tempo") values.sort((a, b) => BOARD_TEMPO_ORDER.indexOf(a[0]) - BOARD_TEMPO_ORDER.indexOf(b[0]) || b[1] - a[1]);
+  else values.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  if (field === "tempo") values = values.map(([value, count]) => [value, count]);
+  const hints = { Slow: "under 95 BPM", Medium: "95 to 125", Fast: "126 and up" };
+  els.boardFilterSheetBody.innerHTML = values.length ? values.map(([value, count]) => `<label class="board-value-row"><input type="checkbox" data-board-value="${escapeAttribute(value)}" ${selected.has(value) ? "checked" : ""}><span class="board-value-row__name" dir="auto">${escapeHtml(value || meta.none)}${hints[value] ? `<small>${hints[value]}</small>` : ""}</span><em>${count}</em></label>`).join("") : `<p class="board-col__empty">Nothing to filter by yet.</p>`;
+}
+
+function renderBoardColumnsScreen() {
+  const board = activeBoard();
+  const full = board.columns.length >= BOARD_MAX_COLUMNS;
+  const rows = board.columns.map((column, index) => `<div class="board-col-row" data-col-index="${index}" data-col-type="${column.type}" data-col-ref="${escapeAttribute(column.ref)}">
+      <button class="board-col-row__grip" type="button" aria-label="Move ${escapeAttribute(boardColumnName(column))}" title="Drag to reorder"><i data-lucide="grip-vertical"></i></button>
+      <span class="board-col-row__name" dir="auto">${escapeHtml(boardColumnName(column))}</span>
+      <span class="board-type-badge">${BOARD_TYPE_LABELS[column.type]}</span>
+      <button class="board-icon-btn" type="button" data-col-remove="${index}" aria-label="Remove ${escapeAttribute(boardColumnName(column))}"><i data-lucide="x"></i></button>
+    </div>`).join("");
+  const addGroups = boardAddCandidates().map(([title, items]) => `<div class="board-add-group"><span class="slp-section-label">${title.toUpperCase()}</span>
+      ${items.map((item) => `<button class="board-add-row ${full ? "is-dim" : ""}" type="button" aria-disabled="${full}" data-add-type="${item.type}" data-add-ref="${escapeAttribute(item.ref)}">
+        <span class="board-add-row__name" dir="auto">${item.parent ? `<small>${escapeHtml(item.parent)} › </small>` : ""}${escapeHtml(item.name)}</span>
+        ${item.count ? `<em>${item.count}</em>` : ""}<i data-lucide="plus"></i></button>`).join("")}</div>`).join("");
+  els.boardColumnsBody.innerHTML = `
+    <div class="slp-section-label-row"><span class="slp-section-label">ON THIS BOARD</span><span class="slp-section-label" id="boardColumnCounter">${board.columns.length} of ${BOARD_MAX_COLUMNS}</span></div>
+    <div id="boardColumnList" class="slp-card board-col-list">${rows || `<p class="board-col__empty">No columns yet. Add some below.</p>`}</div>
+    <button id="boardSaveAsNewBtn" class="slp-btn slp-btn--soft board-save-new" type="button"><i data-lucide="copy-plus"></i><span>Save as new board</span></button>
+    <div class="slp-section-label-row"><span class="slp-section-label">ADD A COLUMN</span>${full ? `<span class="slp-section-label">Full</span>` : ""}</div>
+    ${addGroups || `<p class="board-col__empty">Everything is already on this board.</p>`}`;
+  refreshIcons();
+  wireBoardColumnRows();
+}
+
+function boardCardSubline(song, column) {
+  const parts = column?.type === "search" ? [song.composer, ...(song.artists || [])] : [song.composer];
+  const text = [...new Set(parts.map((part) => String(part || "").trim()).filter(Boolean))].join(" · ");
+  return text ? `<span class="board-card__sub" dir="auto">${escapeHtml(text)}</span>` : "";
+}
+
+function renderBoardResults() {
+  const query = boardState.query.trim();
+  const matches = query ? boardSearchResults(query) : [];
+  const column = { id: "search", type: "search" };
+  const addRow = query && !boardHasExactTitle(query) ? `
+    <div class="board-add-new">
+      <button class="board-add-new__main" type="button" data-board-add-new><i data-lucide="plus"></i><span dir="auto">Add “${escapeHtml(query)}” as new song</span></button>
+      <button class="board-add-new__dest" type="button" data-board-dest>to: ${escapeHtml(boardDestinationLabel(boardNewDestinations()))}<i data-lucide="chevron-right"></i></button>
+    </div>` : "";
+  let body;
+  if (!query) body = `<p class="board-col__empty board-search-hint">Type a title, composer or artist. Your current song stays above.</p>`;
+  else body = (matches.length ? matches.map((song) => boardCardMarkup(song, column)).join("") : `<p class="board-col__empty">No songs match yet.</p>`) + addRow;
+  const keep = els.boardResults.querySelector(".board-col__body")?.scrollTop || 0;
+  els.boardResults.innerHTML = `<section class="board-col board-col--wide" aria-label="Results · whole library">
+    <header class="board-col__head"><strong>Results · whole library</strong><span class="board-col__count">${matches.length}</span></header>
+    <div class="board-col__body">${body}</div></section>`;
+  const bodyEl = els.boardResults.querySelector(".board-col__body");
+  if (bodyEl) bodyEl.scrollTop = keep;
+  wireBoardCardsForSelect(els.boardResults);
+  refreshIcons();
+}
+
+// Long-press a card to start Select mode; once it is on, a tap anywhere on the card toggles it.
+function wireBoardCardsForSelect(container) {
+  container.querySelectorAll(".board-card").forEach((card) => wireSelectableRow(card, card.dataset.songId, boardSelectContext));
+}
+// Board wiring: every tap, long-press and sheet that changes the Board - opening cards, the
+// docked panel, saved boards, the Columns screen, search, "add as new song" and undo.
+
+let boardUndoTimer = null;
+
+function setSongsView(view) {
+  boardPrefs.view = view === "board" ? "board" : "list";
+  saveBoardPrefs();
+  render();
+  refreshIcons();
+}
+
+function boardOpenCard(songId, cardKey) {
+  const song = boardSongById(songId);
+  if (!song) return;
+  const lines = boardCountNonEmpty(boardLyricLines(song));
+  if (lines > BOARD_SHORT_LINES) {
+    boardState.panelSongId = song.id;
+    boardState.collapsed = false;
+  } else if (boardState.expanded.has(cardKey)) {
+    boardState.expanded.delete(cardKey);
+  } else {
+    boardState.expanded.add(cardKey);
+  }
+  renderBoard();
+}
+
+function openBoardSongFullPage() {
+  const song = boardSongById(boardState.panelSongId);
+  if (!song) return;
+  songReturnContext = { board: true };
+  openSong(song.id);
+}
+
+function returnToBoard() {
+  songReturnContext = null;
+  mobileView = "library";
+  hideWritingToolbar();
+  render();
+}
+
+function toggleBoardFilterValue(field, value, checked) {
+  const set = boardState.filters[field] || new Set();
+  if (checked) set.add(value);
+  else set.delete(value);
+  if (set.size) boardState.filters[field] = set;
+  else delete boardState.filters[field];
+  renderBoard();
+  if (!els.boardFilterSheet.hidden) renderBoardFilterSheet();
+}
+
+function openBoardFilterSheet() {
+  boardState.filterField = null;
+  renderBoardFilterSheet();
+  showOverlay(els.boardFilterSheet);
+}
+
+function initBoardUi() {
+  document.querySelectorAll("[data-songs-view]").forEach((button) => button.addEventListener("click", () => setSongsView(button.dataset.songsView)));
+  els.boardPanelWrap.addEventListener("click", (event) => {
+    const act = event.target.closest("[data-board-act]")?.dataset.boardAct;
+    if (!act) return;
+    if (act === "full") openBoardSongFullPage();
+    else if (act === "collapse") { boardState.collapsed = !boardState.collapsed; renderBoard(); }
+    else if (act === "close") { boardState.panelSongId = null; boardState.collapsed = false; renderBoard(); }
+    else if (act === "size") { boardPrefs.size = boardPrefs.size === "tall" ? "half" : "tall"; saveBoardPrefs(); renderBoard(); }
+  });
+  els.boardColumns.addEventListener("click", (event) => {
+    const card = event.target.closest(".board-card");
+    if (!card) return;
+    if (event.target.closest("[data-board-pin]")) {
+      boardState.panelSongId = card.dataset.songId;
+      boardState.collapsed = false;
+      boardState.expanded.delete(card.dataset.cardKey);
+      renderBoard();
+    } else if (event.target.closest("[data-board-card]")) {
+      boardOpenCard(card.dataset.songId, card.dataset.cardKey);
+    }
+  });
+  // Remember where the columns are scrolled so a trip to the full page (or any redraw) restores it.
+  els.boardColumns.addEventListener("scroll", (event) => {
+    if (event.target === els.boardColumns) boardState.scrollX = els.boardColumns.scrollLeft;
+    else if (event.target.dataset?.colBody) boardState.scrollY[event.target.dataset.colBody] = event.target.scrollTop;
+  }, { capture: true, passive: true });
+  els.boardFilterStrip.addEventListener("click", (event) => {
+    if (event.target.closest("#boardAddFilterBtn")) return openBoardFilterSheet();
+    const remove = event.target.closest("[data-board-remove]");
+    if (remove) return toggleBoardFilterValue(remove.dataset.boardRemove, remove.dataset.value, false);
+    if (event.target.closest("[data-board-clear]")) {
+      boardState.filters = {};
+      boardState.key = "";
+      return renderBoard();
+    }
+    const key = event.target.closest("[data-board-key]");
+    if (key) {
+      boardState.key = key.dataset.boardKey;
+      renderBoard();
+    }
+  });
+  els.boardFilterSheetBody.addEventListener("click", (event) => {
+    const row = event.target.closest("[data-board-field]");
+    if (row) {
+      boardState.filterField = row.dataset.boardField;
+      renderBoardFilterSheet();
+    }
+  });
+  els.boardFilterSheetBody.addEventListener("change", (event) => {
+    const input = event.target.closest("[data-board-value]");
+    if (input && boardState.filterField) toggleBoardFilterValue(boardState.filterField, input.dataset.boardValue, input.checked);
+  });
+  els.boardFilterSheetBack.addEventListener("click", () => { boardState.filterField = null; renderBoardFilterSheet(); });
+  els.boardFilterDoneBtn.addEventListener("click", closeOverlays);
+  els.closeBoardFilterBtn.addEventListener("click", closeOverlays);
+  els.backToBoardPill.addEventListener("click", returnToBoard);
+}
+
+function closeBoardMenu() {
+  els.boardMenu.classList.add("hidden");
+  els.boardNameBtn.setAttribute("aria-expanded", "false");
+}
+
+function openBoardMenu() {
+  ensureBoards();
+  const onlyOne = state.boards.length <= 1;
+  els.boardMenu.innerHTML = `
+    ${state.boards.map((board) => `<button class="slp-picker-item board-menu__item" type="button" role="option" aria-selected="${board.id === state.activeBoardId}" data-board-switch="${escapeAttribute(board.id)}"><span class="board-menu__check">${board.id === state.activeBoardId ? `<i data-lucide="check"></i>` : ""}</span><span dir="auto">${escapeHtml(board.name)}</span></button>`).join("")}
+    <div class="board-menu__divider" role="separator"></div>
+    <button class="slp-picker-item board-menu__item" type="button" data-board-act-menu="save"><span class="board-menu__check"><i data-lucide="save"></i></span><span>Save current as board</span></button>
+    <button class="slp-picker-item board-menu__item" type="button" data-board-act-menu="rename"><span class="board-menu__check"><i data-lucide="pencil"></i></span><span>Rename board</span></button>
+    <button class="slp-picker-item board-menu__item ${onlyOne ? "is-dim" : ""}" type="button" data-board-act-menu="delete" aria-disabled="${onlyOne}"><span class="board-menu__check"><i data-lucide="trash-2"></i></span><span>Delete board</span></button>`;
+  els.boardMenu.classList.remove("hidden");
+  els.boardNameBtn.setAttribute("aria-expanded", "true");
+  refreshIcons();
+}
+
+// Switching is one tap: the panel song stays, expanded cards close, filters are untouched.
+function switchBoard(id) {
+  if (!state.boards.some((board) => board.id === id)) return;
+  state.activeBoardId = id;
+  boardState.expanded.clear();
+  boardState.scrollX = 0;
+  boardState.scrollY = {};
+  closeBoardMenu();
+  renderBoard();
+}
+
+function saveBoardName(name) {
+  const mode = gigStructureMode;
+  gigStructureMode = null;
+  gigStructureTargetId = null;
+  if (mode === "board-save") {
+    const copy = { id: makeId(), name, columns: activeBoard().columns.map((column) => ({ ...column })) };
+    state.boards.push(copy);
+    state.activeBoardId = copy.id;
+    boardState.expanded.clear();
+  } else {
+    activeBoard().name = name;
+  }
+  closeOverlays();
+  render();
+  showToast(mode === "board-save" ? `Saved board “${name}”` : "Board renamed");
+}
+
+function requestDeleteBoard() {
+  if (state.boards.length <= 1) return showToast("You need at least one board");
+  const board = activeBoard();
+  openConfirm("Delete board?", `Remove “${board.name}”? Your songs and folders are not affected.`, "Delete", () => {
+    state.boards = state.boards.filter((item) => item.id !== board.id);
+    state.activeBoardId = state.boards[0].id;
+    boardState.expanded.clear();
+    closeOverlays();
+    render();
+    showToast(`Deleted board “${board.name}”`);
+  });
+}
+
+function openBoardColumnsScreen() {
+  renderBoardColumnsScreen();
+  showOverlay(els.boardColumnsScreen);
+}
+
+function wireBoardColumnRows() {
+  const list = els.boardColumnsBody.querySelector("#boardColumnList");
+  list?.querySelectorAll(".board-col-row").forEach((row) => {
+    makeSortable(row.querySelector(".board-col-row__grip"), row, () => [...list.querySelectorAll(":scope > .board-col-row")], (rows) => {
+      const board = activeBoard();
+      const byId = new Map(board.columns.map((column) => [`${column.type}:${column.ref}`, column]));
+      board.columns = rows.map((item) => byId.get(`${item.dataset.colType}:${item.dataset.colRef}`)).filter(Boolean);
+      renderBoardColumnsScreen();
+      renderBoard();
+    });
+  });
+}
+
+// Long-press a folder anywhere: offer to make it a column of the active board.
+function addFolderAsBoardColumn(folderId) {
+  const folder = folderById(folderId);
+  const board = activeBoard();
+  if (!folder) return;
+  if (boardColumnIsOn("folder", folderId)) return showToast(`“${folder.name}” is already a column on ${board.name}`);
+  if (board.columns.length >= BOARD_MAX_COLUMNS) return showToast(`${board.name} is full (${BOARD_MAX_COLUMNS} columns)`);
+  addBoardColumn("folder", folderId);
+  renderBoard();
+  showToast(`Added “${folder.name}” to ${board.name}`);
+}
+
+function wireFolderLongPress(row, folderId) {
+  if (!globalThis.PointerEvent) return;
+  let timer = null;
+  let startX = 0;
+  let startY = 0;
+  const cancel = () => { clearTimeout(timer); timer = null; };
+  row.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    startX = event.clientX;
+    startY = event.clientY;
+    cancel();
+    timer = setTimeout(() => {
+      timer = null;
+      selectMode.swallowClickUntil = Date.now() + 600;
+      globalThis.navigator?.vibrate?.(12);
+      showActionMenu([{ icon: "columns-4", label: "Add as board column", action: () => addFolderAsBoardColumn(folderId) }], row);
+    }, 500);
+  });
+  row.addEventListener("pointermove", (event) => {
+    if (timer && Math.hypot(event.clientX - startX, event.clientY - startY) > 10) cancel();
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((name) => row.addEventListener(name, cancel));
+  row.addEventListener("contextmenu", (event) => event.preventDefault());
+}
+
+function initBoardBoardsUi() {
+  ensureBoards();
+  els.boardNameBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (els.boardMenu.classList.contains("hidden")) openBoardMenu();
+    else closeBoardMenu();
+  });
+  document.addEventListener("click", (event) => {
+    if (!els.boardMenu.classList.contains("hidden") && !event.target.closest("#boardMenu") && !event.target.closest("#boardNameBtn")) closeBoardMenu();
+  });
+  els.boardMenu.addEventListener("click", (event) => {
+    const sw = event.target.closest("[data-board-switch]");
+    if (sw) return switchBoard(sw.dataset.boardSwitch);
+    const act = event.target.closest("[data-board-act-menu]")?.dataset.boardActMenu;
+    if (!act) return;
+    if (act === "delete" && state.boards.length <= 1) return showToast("You need at least one board");
+    closeBoardMenu();
+    if (act === "save") openGigStructureForm("board-save", null, `${activeBoard().name} copy`);
+    else if (act === "rename") openGigStructureForm("board-rename", null, activeBoard().name);
+    else requestDeleteBoard();
+  });
+  els.boardColumnsBtn.addEventListener("click", openBoardColumnsScreen);
+  els.boardColumnsDoneBtn.addEventListener("click", closeOverlays);
+  els.boardColumnsBody.addEventListener("click", (event) => {
+    const remove = event.target.closest("[data-col-remove]");
+    if (remove) {
+      activeBoard().columns.splice(Number(remove.dataset.colRemove), 1);
+      renderBoardColumnsScreen();
+      renderBoard();
+      return;
+    }
+    const add = event.target.closest("[data-add-type]");
+    if (add) {
+      if (add.getAttribute("aria-disabled") === "true") return;
+      if (addBoardColumn(add.dataset.addType, add.dataset.addRef)) {
+        renderBoardColumnsScreen();
+        renderBoard();
+      }
+      return;
+    }
+    if (event.target.closest("#boardSaveAsNewBtn")) openGigStructureForm("board-save", null, `${activeBoard().name} copy`);
+  });
+}
+
+function openBoardSearch() {
+  boardState.lastColumnId = boardLastViewedColumn()?.id || "";
+  boardState.searchOpen = true;
+  boardState.query = "";
+  els.boardSearchInput.value = "";
+  renderBoard();
+  requestAnimationFrame(() => els.boardSearchInput.focus());
+}
+
+function closeBoardSearch() {
+  boardState.searchOpen = false;
+  boardState.query = "";
+  boardState.newDest = null;
+  els.boardSearchInput.value = "";
+  els.boardSearchInput.blur();
+  renderBoard();
+}
+
+function openBoardDestinationPicker() {
+  const dest = boardNewDestinations();
+  songAddToMode = { type: "board-dest" };
+  setSongAddToCopy("Done", "Choose where the new song goes. It is one master record, always in Unfiled.");
+  els.songAddToTitle.textContent = "Add new song to";
+  renderSongAddToChoices(null);
+  const locked = document.createElement("label");
+  locked.className = "folder-choice";
+  locked.innerHTML = `<input type="checkbox" checked disabled><span>Unfiled <small>always</small></span>`;
+  els.songAddToChoices.prepend(locked);
+  dest.folders.forEach((id) => { const input = els.songAddToChoices.querySelector(`input[data-add-to-kind="folder"][value="${CSS.escape(id)}"]`); if (input) input.checked = true; });
+  dest.sets.forEach((id) => { const input = els.songAddToChoices.querySelector(`input[data-add-to-kind="gig-set"][value="${CSS.escape(id)}"]`); if (input) input.checked = true; });
+  dest.sections.forEach((id) => { const input = els.songAddToChoices.querySelector(`input[data-add-to-kind="gig-section"][value="${CSS.escape(id)}"]`); if (input) input.checked = true; });
+  showOverlay(els.songAddToSheet);
+}
+
+function applyBoardDestinationPick() {
+  const checked = (kind) => [...els.songAddToChoices.querySelectorAll(`input[data-add-to-kind="${kind}"]:checked`)].map((input) => input.value);
+  boardState.newDest = { folders: checked("folder"), sets: checked("gig-set"), sections: checked("gig-section") };
+  songAddToMode = null;
+  closeOverlays();
+  renderBoard();
+}
+
+function boardAddNewSong() {
+  const title = boardState.query.trim();
+  if (!title) return;
+  const dest = boardNewDestinations();
+  const song = normalizeSong({
+    id: makeId(),
+    title,
+    needsDetails: true,
+    status: "learning",
+    direction: "auto",
+    folderIds: [...dest.folders],
+    updatedAt: new Date().toISOString(),
+    documentHtml: "",
+    blocks: [{ id: makeId(), type: "lyrics", text: "", src: "" }]
+  });
+  state.songs.unshift(song);
+  Object.keys(state.songOrder).forEach((key) => state.songOrder[key].unshift(song.id));
+  ensureOrder(state.songOrder, ALL_SONGS, state.songs.map((item) => item.id));
+  dest.sets.forEach((id) => addSongReferencesToGigSet(id, [song.id]));
+  dest.sections.forEach((id) => {
+    const set = directGigSetForSection(id, true);
+    if (set) addSongReferencesToGigSet(set.id, [song.id]);
+  });
+  const label = boardDestinationLabel(dest);
+  boardState.newDest = null; // nothing is remembered between songs
+  boardState.panelSongId = song.id;
+  boardState.collapsed = false;
+  markStateDirty();
+  showBoardUndo(song, label);
+  renderBoard();
+}
+
+function showBoardUndo(song, label) {
+  clearTimeout(boardUndoTimer);
+  boardState.undoSongId = song.id;
+  els.boardUndoText.textContent = `Added “${song.title}” to ${label}`;
+  els.boardUndoBar.classList.remove("hidden");
+  boardUndoTimer = setTimeout(hideBoardUndo, 7000);
+}
+
+function hideBoardUndo() {
+  clearTimeout(boardUndoTimer);
+  boardState.undoSongId = null;
+  els.boardUndoBar.classList.add("hidden");
+}
+
+// Undo removes the song completely: the record, its place in every order, and its event references.
+function undoBoardAdd() {
+  const id = boardState.undoSongId;
+  hideBoardUndo();
+  if (!id) return;
+  state.songs = state.songs.filter((song) => song.id !== id);
+  Object.keys(state.songOrder).forEach((key) => { state.songOrder[key] = state.songOrder[key].filter((songId) => songId !== id); });
+  state.gigSetItems = state.gigSetItems.filter((item) => item.songId !== id);
+  if (boardState.panelSongId === id) boardState.panelSongId = null;
+  markStateDirty();
+  render();
+  showToast("Song removed");
+}
+
+function viewBoardAdded() {
+  hideBoardUndo();
+  if (boardState.searchOpen) closeBoardSearch();
+  boardState.scrollX = 0;
+  els.boardColumns.scrollLeft = 0;
+  renderBoard();
+  requestAnimationFrame(() => { els.boardColumns.scrollLeft = 0; });
+}
+
+function initBoardSearchUi() {
+  els.boardSearchBtn.addEventListener("click", openBoardSearch);
+  els.boardSearchClose.addEventListener("click", closeBoardSearch);
+  els.boardSearchInput.addEventListener("input", () => {
+    boardState.query = els.boardSearchInput.value;
+    renderBoardResults();
+  });
+  els.boardSearchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeBoardSearch();
+  });
+  els.boardResults.addEventListener("click", (event) => {
+    if (event.target.closest("[data-board-dest]")) return openBoardDestinationPicker();
+    if (event.target.closest("[data-board-add-new]")) return boardAddNewSong();
+    const card = event.target.closest(".board-card");
+    if (!card) return;
+    if (event.target.closest("[data-board-pin]")) {
+      boardState.panelSongId = card.dataset.songId;
+      boardState.collapsed = false;
+      boardState.expanded.delete(card.dataset.cardKey);
+      renderBoard();
+    } else if (event.target.closest("[data-board-card]")) {
+      boardOpenCard(card.dataset.songId, card.dataset.cardKey);
+    }
+  });
+  els.boardUndoUndo.addEventListener("click", undoBoardAdd);
+  els.boardUndoView.addEventListener("click", viewBoardAdded);
 }
 function openFolderDialog(id = null, requestedParentId = null, explicitKind = null) {
   folderDialogId = id;
@@ -7828,6 +9008,7 @@ function deleteFolder(id) {
   state.folderOrder[key] = (state.folderOrder[key] || []).filter((folderId) => folderId !== id);
   delete state.folderOrder[id];
   state.folders = state.folders.filter((item) => item.id !== id);
+  pruneBoardColumns();
   state.noteLocationLinks = state.noteLocationLinks.filter((link) => link.folderId !== id);
   if (currentFolderId === id) currentFolderId = ALL_SONGS;
   closeOverlays();
@@ -7855,7 +9036,7 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   els.songTitleHebrewInput.value = song.titleHebrew;
   els.songTitleYiddishInput.value = song.titleYiddish;
   els.songAlternateTitlesInput.value = normalizeStringArray([...song.alternateTitles, song.titleEnglish, song.titleHebrew, song.titleYiddish].filter((title) => title && title !== song.title)).join(" | ");
-  els.songArtistInput.value = (song.artists || []).join(", ");
+  els.songArtistInput.value = (song.artists || []).join("; ");
   els.songArtistHebrewInput.value = song.artistHebrew;
   els.songComposerInput.value = song.composer;
   els.songLyricistInput.value = song.lyricist;
@@ -8805,7 +9986,7 @@ function applySongAddToMany(songIds) {
         if (song.folderIds.includes(input.value)) { already += 1; return; }
         song.folderIds.push(input.value);
         song.updatedAt = new Date().toISOString();
-        (state.songOrder[input.value] = state.songOrder[input.value] || []).push(songId);
+        appendToFolderOrder(input.value, [songId]);
         added += 1;
       });
       return;
@@ -8850,7 +10031,7 @@ function applySongMoveTo(mode) {
       if (song.folderIds.includes(destination)) already += 1;
       else {
         song.folderIds.push(destination);
-        (state.songOrder[destination] = state.songOrder[destination] || []).push(songId);
+        appendToFolderOrder(destination, [songId]);
         moved += 1;
       }
       song.updatedAt = new Date().toISOString();
@@ -8870,6 +10051,7 @@ function finishSelectAction(message) {
 }
 
 function saveSongAddTo() {
+  if (songAddToMode?.type === "board-dest") return applyBoardDestinationPick();
   if (songAddToMode?.type === "add") return applySongAddToMany(songAddToMode.songIds);
   if (songAddToMode?.type === "move") return applySongMoveTo(songAddToMode);
   const song = state.songs.find((item) => item.id === songAddToId) || currentSong();
@@ -8924,7 +10106,7 @@ function renderFolderSongPicker() {
   if (!folder) return;
   const query = els.folderSongPickerSearch.value.trim().toLocaleLowerCase();
   const songs = state.songs.filter((song) => !song.folderIds.includes(folder.id) && (!query || songSearchText(song).includes(query)));
-  els.folderSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="folder-song-pick"><input type="checkbox" value="${song.id}"><span><strong dir="auto">${escapeHtml(song.title)}</strong><small dir="auto">${escapeHtml([song.artist, compactKeyLabel(song.key)].filter(Boolean).join(" · ") || "No artist or key")}</small></span></label>`).join("") : `<div class="picker-empty"><i data-lucide="music-2"></i><strong>${query ? "No matching songs" : "Every song is already here"}</strong></div>`;
+  els.folderSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="folder-song-pick"><input type="checkbox" value="${song.id}"><span><strong dir="auto">${escapeHtml(song.title)}</strong><small dir="auto">${escapeHtml([song.artist, compactKeyLabel(songDisplayKey(song))].filter(Boolean).join(" · ") || "No artist or key")}</small></span></label>`).join("") : `<div class="picker-empty"><i data-lucide="music-2"></i><strong>${query ? "No matching songs" : "Every song is already here"}</strong></div>`;
   refreshIcons();
 }
 
@@ -8937,7 +10119,7 @@ function addSelectedSongsToFolder() {
     const song = state.songs.find((item) => item.id === id);
     if (song && !song.folderIds.includes(folder.id)) song.folderIds.push(folder.id);
   });
-  ensureOrder(state.songOrder, folder.id, ids);
+  appendToFolderOrder(folder.id, ids);
   folderSongPickerFolderId = null;
   closeOverlays();
   render();
@@ -8971,7 +10153,7 @@ function showSongSortMenu() {
 function openFilterSheet() {
   populateArtistFilter();
   populateFilterSelect(els.filterLanguageInput, "All languages", state.songs.map((song) => song.language), songFilters.language);
-  populateFilterSelect(els.filterKeyInput, "All keys", state.songs.flatMap((song) => [song.key, ...song.alternateKeys]), songFilters.key);
+  populateFilterSelect(els.filterKeyInput, "All keys", state.songs.map(songDisplayKey), songFilters.key);
   populateFilterSelect(els.filterComposerInput, "All composers", state.songs.map((song) => song.composer), songFilters.composer);
   els.filterStatusInput.value = songFilters.status;
   showOverlay(els.filterSheet);
@@ -9025,7 +10207,7 @@ function activeFilterCount() {
 function songMatchesFilters(song) {
   if (songFilters.artist && ![...(song.artists || []), song.artistHebrew].includes(songFilters.artist)) return false;
   if (songFilters.language && song.language !== songFilters.language) return false;
-  if (songFilters.key && ![song.key, ...song.alternateKeys].includes(songFilters.key)) return false;
+  if (songFilters.key && songDisplayKey(song) !== songFilters.key) return false;
   if (songFilters.status && song.status !== songFilters.status) return false;
   if (songFilters.composer && song.composer !== songFilters.composer) return false;
   return true;
@@ -10563,9 +11745,9 @@ function gigSetItemsForDisplay(setId) {
   return items.filter((item) => {
     const song = state.songs.find((candidate) => candidate.id === item.songId);
     if (!song) return false;
-    if (gigKeyFilter && (item.keyOverride || song.key) !== gigKeyFilter) return false;
+    if (gigKeyFilter && eventItemKey(item, song) !== gigKeyFilter) return false;
     if (!query) return true;
-    return normalizeComparisonText([song.title, song.titleEnglish, song.titleHebrew, song.titleYiddish, song.artist, song.artistHebrew, item.keyOverride || song.key, song.timeSignature].join(" ")).includes(query);
+    return normalizeComparisonText([song.title, song.titleEnglish, song.titleHebrew, song.titleYiddish, song.artist, song.artistHebrew, eventItemKey(item, song), song.timeSignature].join(" ")).includes(query);
   });
 }
 
@@ -10695,7 +11877,7 @@ function gigSetMarkup(set) {
 function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const song = state.songs.find((candidate) => candidate.id === item.songId);
   if (!song) return "";
-  const songKey = item.keyOverride || songCurrentKey(song) || song.key;
+  const songKey = eventItemKey(item, song);
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("item", item.id, item.setId, `Move ${song.title}`) : "";
   const moreMenu = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item danger-icon" type="button" data-remove-gig-item="${item.id}"><i data-lucide="list-x"></i><span>Remove from this event</span></button>`, `More options for ${song.title}`) : "";
   return `<div class="slp-row gig-song-reference ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "30px" : "50px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
@@ -11112,13 +12294,13 @@ function buildGigShareText(gigId, options = {}) {
       const directSet = state.gigSets.find((set) => set.sectionId === section.id && set.isDirect);
       if (directSet) state.gigSetItems.filter((item) => item.setId === directSet.id).sort((a, b) => a.position - b.position).forEach((item, index) => {
         const song = state.songs.find((candidate) => candidate.id === item.songId);
-        if (song) lines.push(`${index + 1}. ${song.title} — ${song.artist || "Artist not added"} — ${item.keyOverride || song.key || "Key not added"}`);
+        if (song) lines.push(`${index + 1}. ${song.title} — ${song.artist || "Artist not added"} — ${eventItemKey(item, song) || "Key not added"}`);
       });
       state.gigSets.filter((set) => set.sectionId === section.id && !set.isDirect).sort((a, b) => a.position - b.position).forEach((set) => {
         lines.push(set.name);
         state.gigSetItems.filter((item) => item.setId === set.id).sort((a, b) => a.position - b.position).forEach((item, index) => {
           const song = state.songs.find((candidate) => candidate.id === item.songId);
-          if (song) lines.push(`${index + 1}. ${song.title} — ${song.artist || "Artist not added"} — ${item.keyOverride || song.key || "Key not added"}`);
+          if (song) lines.push(`${index + 1}. ${song.title} — ${song.artist || "Artist not added"} — ${eventItemKey(item, song) || "Key not added"}`);
         });
       });
     });
@@ -11175,12 +12357,15 @@ function openGigStructureForm(mode, targetId, value = "") {
     "add-section": ["Add Section", "Section name", "Meal, Ceremony, Second Dance..."],
     "add-set": ["Add Song List", "Song list name", "Main Set, Slow Songs, Requests..."],
     "rename-section": ["Rename Section", "Section name", ""],
-    "rename-set": ["Rename Song List", "Song list name", ""]
+    "rename-set": ["Rename Song List", "Song list name", ""],
+    "board-save": ["Save as Board", "Board name", "Kumzitz, Wedding night..."],
+    "board-rename": ["Rename Board", "Board name", ""]
   }[mode];
   if (!settings) return;
   gigStructureMode = mode;
   gigStructureTargetId = targetId;
   els.gigStructureTitle.textContent = settings[0];
+  els.gigStructureSheet.querySelector(".sheet-header span").textContent = mode.startsWith("board-") ? "Songs board" : "Event song plan";
   els.gigStructureLabel.textContent = settings[1];
   els.gigStructureNameInput.placeholder = settings[2];
   els.gigStructureNameInput.value = value;
@@ -11191,6 +12376,7 @@ function openGigStructureForm(mode, targetId, value = "") {
 function saveGigStructure() {
   const name = els.gigStructureNameInput.value.trim();
   if (!name) return showToast("Add a name first");
+  if (gigStructureMode === "board-save" || gigStructureMode === "board-rename") return saveBoardName(name);
   let newSetId = null;
   if (gigStructureMode === "add-section") {
     const section = createGigSectionRecord(gigStructureTargetId, name);
@@ -14160,7 +15346,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -14215,7 +15401,7 @@ function countSongsInTree(folderId) {
 
 function songsInCurrentFolder() {
   if (currentFolderId === ALL_SONGS) return [...state.songs];
-  if (currentFolderId === UNFILED) return state.songs.filter((song) => !song.folderIds.length);
+  if (currentFolderId === UNFILED) return state.songs.filter(songIsUnfiled);
   if (currentFolderId === ARTISTS) return [];
   const artistName = artistNameFromFolderId(currentFolderId);
   if (currentFolderId === NEEDS_LYRICS) return state.songs.filter(songNeedsLyrics);
@@ -14254,11 +15440,12 @@ function artistNameFromFolderId(id) {
 function sortSongs(songs) {
   if (songSort === "titleEnglish") return [...songs].sort((a, b) => compareSortTitles(latinSortText(englishTitleForSong(a)), latinSortText(englishTitleForSong(b)), "en", songSortDirection));
   if (songSort === "titleHebrew") return [...songs].sort((a, b) => compareSortTitles(hebrewSortText(hebrewTitleForSong(a)), hebrewSortText(hebrewTitleForSong(b)), "he", songSortDirection));
-  if (songSort === "key") return [...songs].sort((a, b) => compareSortTitles(a.key, b.key, "en", songSortDirection));
+  if (songSort === "key") return [...songs].sort((a, b) => compareSortTitles(songDisplayKey(a), songDisplayKey(b), "en", songSortDirection));
   if (songSort === "date") return [...songs].sort((a, b) => (new Date(a.updatedAt) - new Date(b.updatedAt)) * (songSortDirection === "asc" ? 1 : -1));
+  // Read the saved order without rewriting it: `songs` may be a filtered or searched subset, and
+  // trimming the saved order to that subset would forget where the hidden songs were.
   const key = currentFolderId || ALL_SONGS;
-  ensureOrder(state.songOrder, key, songs.map((song) => song.id));
-  const positions = new Map(state.songOrder[key].map((id, index) => [id, index]));
+  const positions = new Map((state.songOrder[key] || []).map((id, index) => [id, index]));
   return [...songs].sort((a, b) => (positions.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (positions.get(b.id) ?? Number.MAX_SAFE_INTEGER));
 }
 
@@ -14334,6 +15521,20 @@ function ensureOrder(orderObject, key, ids) {
   if (!Array.isArray(current) || current.length !== next.length || current.some((id, index) => id !== next[index])) {
     orderObject[key] = next;
   }
+}
+
+// Put songs at the end of a folder's custom order without disturbing anyone else's place.
+// If the folder has never had a custom order, its current songs are written in first (in the
+// order they show today) so the newcomers do not jump ahead of them.
+function appendToFolderOrder(folderId, songIds) {
+  const order = Array.isArray(state.songOrder[folderId]) ? [...state.songOrder[folderId]] : [];
+  const have = new Set(order);
+  const adding = new Set(songIds);
+  state.songs.forEach((song) => {
+    if (song.folderIds.includes(folderId) && !adding.has(song.id) && !have.has(song.id)) { have.add(song.id); order.push(song.id); }
+  });
+  songIds.forEach((id) => { if (!have.has(id)) { have.add(id); order.push(id); } });
+  state.songOrder[folderId] = order;
 }
 
 function moveInArray(array, sourceId, targetId) {
@@ -14692,14 +15893,14 @@ function songSearchIndex(song) {
   const metadataFingerprint = [
     song.title, song.titleEnglish, song.titleHebrew, song.titleYiddish, song.alternateTitles.join(" "),
     song.artist, song.artistHebrew, song.featuredArtist, song.composer, song.lyricist, song.album,
-    song.style, song.language, song.key, song.alternateKeys.join(" ")
+    song.style, song.language, song.key, song.alternateKeys.join(" "), song.transpose
   ].join("\u0001");
   const cached = songSearchCache.get(song);
   if (cached?.metadataFingerprint === metadataFingerprint && cached.documentHtml === song.documentHtml) return cached.index;
   const lyrics = textFromDocumentHtml(song.documentHtml).toLocaleLowerCase();
   const index = {
     artist: `${song.artist} ${song.artistHebrew} ${song.featuredArtist}`.toLocaleLowerCase(),
-    key: `${song.key} ${song.alternateKeys.join(" ")}`.toLocaleLowerCase(),
+    key: songDisplayKey(song).toLocaleLowerCase(),
     lyrics,
     composer: song.composer.toLocaleLowerCase(),
     style: song.style.toLocaleLowerCase(),
@@ -14770,10 +15971,10 @@ function parseNames(value) {
   return String(value || "").split(",").map((item) => item.trim()).filter(Boolean);
 }
 
-// Artist names typed in one field: commas, semicolons, "|" or "feat." separate them.
-// ("&" is left alone so a duo such as "Simon & Garfunkel" stays one name.)
+// Artist names typed in one field: a semicolon, a new line (Return) or "feat." separates them.
+// Commas and "&" stay inside a name, so "Name, Jr." and "Simon & Garfunkel" are one artist each.
 function normalizeArtistNames(value) {
-  const parts = Array.isArray(value) ? value.flatMap((item) => normalizeArtistNames(item)) : String(value || "").split(/[\n,;|]+|\s+(?:feat\.?|ft\.?|featuring)\s+/i);
+  const parts = Array.isArray(value) ? value.flatMap((item) => normalizeArtistNames(item)) : String(value || "").split(/[\n;|]+|\s+(?:feat\.?|ft\.?|featuring)\s+/i);
   const seen = new Set();
   return parts.map((item) => String(item || "").trim()).filter((item) => {
     const key = normalizeComparisonText(item);
@@ -14803,6 +16004,24 @@ function linkInfo(url) {
 // Lyrics present, judged from the saved markup (tags and chords ignored).
 function songHasLyricText(documentHtml) {
   return String(documentHtml || "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\[[^\]]*\]/g, " ").trim().length > 0;
+}
+
+// Unfiled: songs in no folder, plus songs still marked "Needs details" (they stay findable there
+// until they have lyrics, even when they were also placed in a folder or an event).
+function songIsUnfiled(song) {
+  return !song.folderIds.length || songNeedsLyrics(song);
+}
+
+// The key a person sees on the song's badge: the original key moved by the song's transposition.
+// Every key chip, filter, search and sort uses this, so what you tap is what you see. (The
+// original key stays in song.key and in the song's Details.)
+function songDisplayKey(song) {
+  return songCurrentKey(song) || song.key || "";
+}
+
+// In an event the key can also be overridden for that one appearance of the song.
+function eventItemKey(item, song) {
+  return item?.keyOverride || songDisplayKey(song);
 }
 
 function songNeedsLyrics(song) {
@@ -14916,6 +16135,21 @@ function searchSelectContext() {
   return { key: "library-search", kind: "search", folderId: null, label: "", container: els.librarySearchSongList, canMove: false, canRemove: false, resolve: (id) => id };
 }
 
+// Board cards: a song is selected as a whole, so a song that sits in several columns lights up
+// in all of them. Move / Remove are hidden because "here" differs per column; Add works.
+function boardSelectContext() {
+  return {
+    key: "board",
+    kind: "board",
+    folderId: null,
+    label: "",
+    get container() { return boardState.searchOpen ? els.boardResults : els.boardColumns; },
+    canMove: false,
+    canRemove: false,
+    resolve: (id) => id
+  };
+}
+
 function eventSelectContext(gigId) {
   return {
     key: `gig:${gigId}`,
@@ -15003,6 +16237,7 @@ function selectContextStillValid() {
   const context = selectMode.context;
   if (!context) return false;
   if (context.kind === "event") return workspaceMode === "gigs" && state.gigNavigation.gigId === context.gigId;
+  if (context.kind === "board") return boardActive();
   if (context.kind === "search") return workspaceMode === "library" && libraryMode !== "notes" && Boolean(els.librarySearchInput.value.trim());
   return workspaceMode === "library" && libraryMode !== "notes" && context.key === `folder:${currentFolderId}`;
 }
@@ -15793,8 +17028,19 @@ document.addEventListener("visibilitychange", () => {
 initToolsUi();
 initPerformanceUi();
 initChordEditorUi();
+// Return in the Artist field starts the next artist name instead of submitting anything.
+els.songArtistInput.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" || event.isComposing) return;
+  event.preventDefault();
+  const value = els.songArtistInput.value.trimEnd();
+  if (value && !value.endsWith(";")) els.songArtistInput.value = `${value}; `;
+  else if (value) els.songArtistInput.value = `${value} `;
+});
 initSelectModeUi();
 initQuickAddUi();
+initBoardUi();
+initBoardBoardsUi();
+initBoardSearchUi();
 render();
 migrateInlineImages().then(cleanUnusedImages).catch(() => {});
 registerOfflineSupport();
