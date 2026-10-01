@@ -3691,32 +3691,32 @@ textarea.slp-collapse__panel::placeholder { color: var(--color-text-secondary); 
 
 .slp-edit-dock {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: var(--writing-toolbar-inset, 0px);
+  bottom: calc(var(--writing-toolbar-inset, 0px) + var(--space-8));
   z-index: 30;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-6) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid var(--color-border);
-  background: var(--color-card);
-  box-shadow: var(--shadow-card);
+  gap: 0;
 }
+.slp-edit-dock[data-side="left"] { left: var(--space-5); }
+.slp-edit-dock[data-side="right"] { right: var(--space-5); }
 .slp-edit-dock.hidden { display: none; }
-.slp-edit-dock .slp-btn--icon { min-width: 44px; min-height: 44px; font-size: var(--text-xl); font-weight: var(--font-weight-bold); }
-.slp-edit-dock .slp-link-btn { min-height: 44px; }
-@media (min-width: 901px) {
-  .slp-edit-dock {
-    left: auto;
-    right: var(--space-9);
-    bottom: calc(var(--space-9) + var(--writing-toolbar-inset, 0px));
-    width: min(420px, 46vw);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xl);
-  }
+.edit-dock__toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--color-text); color: var(--color-card); opacity: 0.55; cursor: pointer;
+  transition: opacity 150ms ease;
 }
+.edit-dock__toggle:hover, .edit-dock__toggle:focus-visible { opacity: 0.9; }
+.edit-dock__toggle svg { width: 20px; height: 20px; }
+/* Closed: only the round button shows. Open: the dark pill of tools. */
+.slp-edit-dock:not(.is-open) > :not(.edit-dock__toggle) { display: none; }
+.slp-edit-dock.is-open { background: var(--color-text); border-radius: 22px; padding: 0 var(--space-2); }
+.slp-edit-dock.is-open .edit-dock__toggle { opacity: 1; background: transparent; }
+.slp-edit-dock .slp-btn--icon { min-width: 44px; min-height: 44px; font-size: var(--text-xl); font-weight: var(--font-weight-bold); color: var(--color-card); background: transparent; }
+.slp-edit-dock .slp-btn--icon svg { width: 20px; height: 20px; }
+.slp-edit-dock .edit-dock__done { color: var(--accent-on-dark, #7ee0cf); }
+.lyric-sheet.dock-pad-left { padding-left: calc(clamp(20px, 4vw, 54px) + 36px); }
+.lyric-sheet.dock-pad-right { padding-right: calc(clamp(20px, 4vw, 54px) + 36px); }
 
 .slp-selection-popover {
   position: fixed;
@@ -4101,9 +4101,12 @@ body.is-sorting { cursor: grabbing; -webkit-user-select: none; user-select: none
 }
 
 /* ============ Swipe-to-add on song rows ============ */
-.song-item.swipeable { position: relative; overflow: hidden; }
-.song-item.swipeable > .slp-row { position: relative; z-index: 1; touch-action: pan-y; }
-.song-item.swipeable > .slp-row.swiping { user-select: none; -webkit-user-select: none; cursor: grabbing; }
+.song-item.swipeable,
+.gig-item.swipeable { position: relative; overflow: hidden; }
+.song-item.swipeable > .slp-row,
+.gig-item.swipeable > .slp-row { position: relative; z-index: 1; touch-action: pan-y; }
+.song-item.swipeable > .slp-row.swiping,
+.gig-item.swipeable > .slp-row.swiping { user-select: none; -webkit-user-select: none; cursor: grabbing; }
 .swipe-action {
   position: absolute;
   inset: 0 0 0 auto;
@@ -4734,6 +4737,184 @@ a.slp-chip { min-height: 44px; }
 .select-mode-active .board-results { padding-bottom: 88px; }
 .select-mode-active .board-undo { bottom: 76px; }
 
+/* Categories: keep the List / Board pill snug under the title instead of floating in a tall band. */
+#songLibraryContent > .songs-view-bar { margin-top: calc(-1 * var(--space-5)); padding-bottom: var(--space-2); }
+#songLibraryContent > .songs-view-bar .slp-segmented { padding: 2px; }
+#songLibraryContent > .songs-view-bar { padding-inline: 0; }
+
+/* Columns screen: scrolls up and down only; long names shorten with "…" instead of widening the page. */
+.board-columns-body { overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y; min-width: 0; }
+.board-columns-body > * { min-width: 0; max-width: 100%; }
+.board-add-group { grid-template-columns: minmax(0, 1fr); }
+.board-col-list, .board-col-row { min-width: 0; }
+
+/* ============ Folder screen sections: same side margins as the song list ============ */
+#subfolderSection,
+#artistSection,
+#attachedNotesSection { padding-inline: var(--space-11); }
+#subfolderSection .slp-section-label-row,
+#artistSection .slp-section-label-row { padding-inline: var(--space-2); }
+.slp-section-label__count { margin-inline-start: var(--space-3); color: var(--color-text-secondary); font-weight: var(--font-weight-regular, 400); }
+#songsSection > .slp-section-label-row { padding-inline: var(--space-2); }
+#songsEmptyHeader.hidden { display: none; }
+
+/* Empty-list messages, where one is still needed, are a quiet single line (not a tall box). */
+.empty-list { min-height: 0; padding: var(--space-6) var(--space-8); grid-auto-flow: column; justify-content: center; gap: var(--space-4); }
+.empty-list svg { width: 18px; height: 18px; }
+.empty-list p { font-size: var(--text-sm); }
+
+.swipe-action--danger { background: var(--danger); }
+.gig-item { background: var(--color-card); }
+.gig-item > .slp-row { width: 100%; background: var(--color-card); }
+#deleteGigBtn { width: 100%; min-height: 44px; }
+#gigDeleteZone[hidden] { display: none; }
+
+/* Event sort: an icon at the end of the section or list title, with a dot while a sort is active. */
+.gig-sort-btn { position: relative; flex: none; color: var(--color-text-secondary); }
+.gig-sort-btn.is-active { color: var(--accent); }
+.gig-sort-btn.is-active::after { content: ""; position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+/* ============ Notes screen: compact folders header and note rows ============ */
+#notesBrowserContent > .slp-section-label-row { min-height: 44px; padding-block: 0; margin-top: calc(-1 * var(--space-4)); }
+#noteList .note-row { align-items: flex-start; min-height: 0; padding-block: var(--space-4); }
+#noteList .note-row .slp-row__body { min-width: 0; gap: 2px; }
+.note-row__head { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.note-row__head .slp-row__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.note-row__pin { flex: none; width: 14px; height: 14px; color: var(--accent); }
+.note-row__preview { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; line-height: 1.35; font-size: var(--text-sm); }
+.note-row__date { flex: none; margin-top: 2px; font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+/* ============ Song menu as an icon grid ============ */
+.action-menu--grid { padding: var(--space-3); }
+.action-menu--grid .action-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+.action-menu--grid button.action-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: var(--space-3);
+  min-height: 84px; padding: var(--space-6) var(--space-2) var(--space-4);
+  border: 0; border-radius: var(--radius-md); background: var(--color-card-2, var(--panel-soft));
+  color: var(--color-text); font-family: var(--font-family); font-size: 12.5px; line-height: 1.2; text-align: center; cursor: pointer;
+}
+.action-menu--grid button.action-tile svg { width: 26px; height: 26px; color: var(--accent); }
+.action-menu--grid button.action-footer {
+  display: flex; align-items: center; justify-content: center; gap: var(--space-4); width: 100%;
+  min-height: 44px; margin-top: var(--space-3); padding: 0; border: 0; border-radius: var(--radius-md);
+  background: var(--color-card-2, var(--panel-soft)); color: var(--danger); font-family: var(--font-family); font-size: var(--text-base); cursor: pointer;
+}
+.action-menu--grid button.action-footer svg { width: 20px; height: 20px; }
+
+/* ============ Lyrics appearance popover: one compact page ============ */
+.appearance-popover { padding: var(--space-3) var(--space-8); }
+.appearance-popover__title { padding: var(--space-5) 0 var(--space-2); }
+.lyr-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); min-height: 48px; border-bottom: 1px solid var(--color-border); }
+.lyr-row:last-child { border-bottom: 0; }
+.lyr-row__label { color: var(--color-text); font-size: var(--text-base); }
+.lyr-stepper { display: flex; align-items: center; gap: var(--space-2); }
+.lyr-stepper button { position: relative; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 9px; background: var(--color-chip-bg); color: var(--color-text); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.lyr-stepper button::after { content: ""; position: absolute; inset: -6px -3px; }
+.lyr-stepper button svg { width: 16px; height: 16px; }
+.lyr-stepper output { min-width: 44px; text-align: center; font-weight: var(--font-weight-semibold); }
+.lyr-row--chips { justify-content: flex-start; gap: var(--space-4); flex-wrap: wrap; padding-block: var(--space-3); }
+.lyr-chip { position: relative; display: inline-flex; align-items: center; gap: var(--space-2); min-height: 40px; padding: 0 var(--space-6); border: 1px solid var(--color-border-strong, var(--color-border)); border-radius: var(--radius-pill); color: var(--color-text-secondary); font-size: var(--text-sm-plus); cursor: pointer; white-space: nowrap; }
+.lyr-chip input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.lyr-chip svg { width: 14px; height: 14px; visibility: hidden; }
+.lyr-chip:has(input:checked) { background: var(--accent-soft-2); border-color: var(--accent); color: var(--accent); }
+.lyr-chip:has(input:checked) svg { visibility: visible; }
+.lyr-select { min-width: 160px; height: 40px; padding: 0 var(--space-5); border: 0; border-radius: var(--radius-md); background: var(--color-chip-bg); color: var(--color-text); font-family: var(--font-family); font-size: 16px; }
+.lyr-row--bg { flex-wrap: wrap; row-gap: 0; padding-top: var(--space-3); }
+.lyr-dots { display: flex; align-items: center; gap: var(--space-2); }
+.lyr-dot { position: relative; width: 34px; height: 34px; padding: 0; border: 0; background: transparent; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.lyr-dot__fill { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--color-border-strong, var(--color-border)); display: block; }
+.lyr-dot.selected .lyr-dot__fill { outline: 2px solid var(--color-text); outline-offset: 2px; }
+.lyr-theme-name { flex-basis: 100%; text-align: right; padding-bottom: var(--space-4); color: var(--color-text-secondary); font-size: var(--text-sm); }
+.appearance-popover { grid-template-columns: minmax(0, 1fr); overflow-x: hidden; }
+.appearance-popover > * { min-width: 0; }
+.lyr-select { min-width: 0; width: 170px; max-width: 58%; text-overflow: ellipsis; }
+.lyr-stepper output { min-width: 40px; }
+.lyr-dots { flex-wrap: nowrap; }
+.lyr-dot { width: 32px; }
+.lyr-dots .lyr-dot.slp-swatch { min-width: 0; min-height: 0; width: 34px; height: 44px; padding: 0; gap: 0; flex-direction: row; }
+.lyr-dots { gap: 0; }
+.lyr-dots .lyr-dot::after { content: none; }
+
+/* Board position bar */
+.board-pos { position: relative; flex: none; padding: var(--space-2) 16px 0 16px; touch-action: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
+.board-pos.hidden { display: none; }
+.board-pos__label { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); min-width: 0; font-size: var(--text-sm, 13px); }
+.board-pos__label strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.board-pos__label span { flex: none; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.board-pos__ticks { display: flex; align-items: flex-end; gap: 2px; height: 44px; padding-bottom: 12px; }
+.board-pos__ticks i { flex: 1 1 0; min-width: 1px; height: 10px; border-radius: 2px; background: var(--color-border); }
+.board-pos__ticks i.is-current { height: 20px; background: var(--color-accent, currentColor); }
+.board-pos__bubble { position: absolute; bottom: calc(100% - 6px); transform: translateX(-50%); max-width: calc(100% - 24px); padding: 6px 12px; border-radius: var(--radius-pill); background: var(--color-text); color: var(--color-bg); font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; z-index: 5; }
+.board-pos__bubble.hidden { display: none; }
+
+/* Columns screen: add-a-column picker */
+.board-pick-area { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.board-pick { border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-card); overflow: hidden; min-width: 0; }
+.board-pick__head { display: flex; align-items: center; gap: var(--space-4); width: 100%; min-height: 52px; padding: 0 var(--space-6); border: 0; background: transparent; color: var(--color-text); font: inherit; font-weight: 600; text-align: start; cursor: pointer; }
+.board-pick__head > span { flex: 1; min-width: 0; }
+.board-pick__head em { color: var(--color-text-secondary); font-style: normal; font-size: var(--text-sm); font-weight: 500; }
+.board-pick__head svg { width: 20px; height: 20px; flex: none; color: var(--color-text-secondary); transition: transform 0.15s; }
+.board-pick.is-open .board-pick__head svg { transform: rotate(180deg); }
+.board-pick__badge { min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--accent); color: #fff; font-size: 12px; line-height: 22px; text-align: center; }
+.board-pick__body { display: flex; flex-direction: column; gap: var(--space-3); padding: 0 0 var(--space-3); border-top: 1px solid var(--color-border); min-width: 0; }
+.board-pick-search { margin: var(--space-4) var(--space-6) 0; min-height: 44px; padding: 0 var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-bg); color: var(--color-text); font: inherit; min-width: 0; }
+.board-pick-modes { margin: var(--space-4) var(--space-6) 0; }
+.board-pick-modes button { min-height: 44px; }
+.board-pick-allrow { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-6); color: var(--color-text-secondary); font-size: var(--text-sm); min-height: 44px; }
+.board-pick-allrow .slp-link-btn { min-height: 44px; }
+.board-pick-row { padding: 0 var(--space-6); }
+.board-pick-row.is-child { padding-inline-start: calc(var(--space-6) + 20px); }
+.board-pick-keys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); padding: 0 var(--space-6) var(--space-3); }
+.board-pick-key { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 56px; border: 1px solid var(--color-border); border-radius: var(--radius-md, 12px); background: var(--color-chip-bg); color: var(--color-text); font: inherit; font-weight: 700; cursor: pointer; }
+.board-pick-key em { font-style: normal; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); }
+.board-pick-key[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.board-pick-key[aria-pressed="true"] em { color: rgba(255, 255, 255, 0.85); }
+.board-pick-key small { font-size: 0.7em; font-weight: 600; margin-inline-start: 1px; }
+.board-pick-bar { flex: none; padding: var(--space-4) var(--space-8) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--color-border); background: var(--color-bg); }
+.board-pick-bar .slp-btn { width: 100%; min-height: 48px; }
+.board-pick-bar .slp-btn:disabled { opacity: 0.5; }
+
+/* Board text sizes: top panel (Normal 18px by default), card previews (Overview 10.5px by default) */
+.board-panel-wrap[data-text="normal"] .board-lyric-line { font-size: 18px; line-height: 1.55; }
+.board-panel-wrap[data-text="small"] .board-lyric-line { font-size: 14px; line-height: 1.5; }
+.board-panel-wrap[data-text="overview"] .board-lyric-line { font-size: 10.5px; line-height: 1.4; }
+[data-card-text="normal"] .board-card__lyrics { max-height: 220px; }
+[data-card-text="normal"] .board-card__lyrics .board-lyric-line { font-size: 18px; line-height: 1.55; }
+[data-card-text="small"] .board-card__lyrics { max-height: 160px; }
+[data-card-text="small"] .board-card__lyrics .board-lyric-line { font-size: 14px; line-height: 1.5; }
+[data-card-text="overview"] .board-card__lyrics { max-height: 110px; padding: var(--space-3) var(--space-4); }
+[data-card-text="overview"] .board-card__lyrics .board-lyric-line { font-size: 10.5px; line-height: 1.4; }
+.board-aa-btn { font-weight: 700; font-size: 15px; letter-spacing: -0.02em; color: var(--color-text); }
+.board-text-menu { position: fixed; right: 16px; left: auto; z-index: 70; width: min(320px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-6); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-card); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22); }
+.board-text-group { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.board-text-seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.board-text-seg button { min-height: 44px; }
+
+/* New / edit event form: short form with quiet "Add" rows */
+.gig-when-row { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-3); margin-top: var(--space-6); }
+.gig-when-row > div { display: grid; gap: var(--space-2); min-width: 0; align-content: start; }
+.gig-when-row .slp-field-label { margin-top: 0; }
+.gig-when-row .slp-input { width: 100%; min-width: 0; padding-inline: var(--space-3); font-size: 15px; min-height: 44px; }
+.gig-other-type { margin-top: var(--space-3); }
+.gig-title-preview { margin: var(--space-3) 0 0; }
+.gig-add-rows .slp-collapse__summary { color: var(--color-text-secondary); }
+.gig-balance-row { display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin-top: var(--space-4); padding: 0 var(--space-5); border-radius: var(--radius-md); background: var(--color-chip-bg); }
+.gig-paid-row { display: flex; align-items: center; gap: var(--space-4); min-height: 44px; margin-top: var(--space-3); }
+.gig-paid-row input { width: 22px; height: 22px; accent-color: var(--accent); }
+.gig-money-private { margin: var(--space-4) 0 0; }
+/* Templates */
+.gig-template-stack { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.gig-template-list { display: flex; flex-direction: column; overflow: hidden; }
+.gig-template-row { display: flex; align-items: center; border-bottom: 1px solid var(--color-border); }
+.gig-template-row:last-child { border-bottom: 0; }
+.gig-template-row__main { flex: 1; min-width: 0; display: grid; gap: 2px; min-height: 56px; padding: var(--space-3) var(--space-6); border: 0; background: transparent; color: var(--color-text); font: inherit; text-align: start; cursor: pointer; }
+.gig-template-row__main span { color: var(--color-text-secondary); font-size: var(--text-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gig-template-action { width: 100%; min-height: 48px; }
+.gig-template-build[hidden], #gigTemplateListView[hidden] { display: none; }
+.gig-template-build { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.gig-template-body textarea { width: 100%; min-height: 150px; }
+.slp-collapse__panel[hidden] { display: none; }
+
 }
 
 </style>
@@ -4878,6 +5059,11 @@ a.slp-chip { min-height: 44px; }
               <button id="boardSearchClose" class="board-icon-btn" type="button" aria-label="Close search"><i data-lucide="x"></i></button>
             </div>
           </div>
+          <div id="boardPosBar" class="board-pos hidden" role="slider" aria-label="Column position" aria-valuemin="1" tabindex="0">
+            <div class="board-pos__label"><strong id="boardPosName" dir="auto"></strong><span id="boardPosCount"></span></div>
+            <div id="boardPosTicks" class="board-pos__ticks" aria-hidden="true"></div>
+            <div id="boardPosBubble" class="board-pos__bubble hidden" aria-hidden="true"></div>
+          </div>
           <div id="boardColumns" class="board-columns" tabindex="-1"></div>
           <div id="boardResults" class="board-results hidden" aria-label="Search results"></div>
           <div id="boardUndoBar" class="board-undo hidden" role="status">
@@ -4918,7 +5104,10 @@ a.slp-chip { min-height: 44px; }
             <nav id="noteBreadcrumbs" class="note-breadcrumbs hidden" aria-label="Note folder path"></nav>
             <section class="slp-section-label-row">
               <span class="slp-section-label">FOLDERS</span>
-              <button id="editNoteFoldersBtn" class="slp-link-btn" type="button">Edit</button>
+              <span class="slp-section-label-row__actions">
+                <button id="addNoteFolderBtn" class="slp-btn slp-btn--icon slp-section-add" type="button" aria-label="New note folder"><i data-lucide="plus"></i></button>
+                <button id="editNoteFoldersBtn" class="slp-link-btn" type="button">Edit</button>
+              </span>
             </section>
             <div id="noteFolderList" class="slp-card" aria-label="Note folders"></div>
             <div id="noteList" class="slp-card" aria-label="Notes"></div>
@@ -4964,7 +5153,7 @@ a.slp-chip { min-height: 44px; }
               <div id="noteLocationChoices"></div>
             </div>
 
-            <div id="noteBodyInput" class="slp-lyrics-body" contenteditable="false" role="textbox" aria-multiline="true" data-placeholder="Start typing..." dir="auto"></div>
+            <div id="noteBodyInput" class="slp-lyrics-body" contenteditable="false" role="textbox" aria-multiline="true" aria-label="Note text" data-placeholder="Start typing..." dir="auto"></div>
             <div class="note-save-bar"><span id="noteSaveStatus">Changes save automatically</span></div>
           </form>
         </section>
@@ -5049,6 +5238,7 @@ a.slp-chip { min-height: 44px; }
                   <summary class="slp-btn slp-btn--icon" aria-label="More"><i data-lucide="more-horizontal"></i></summary>
                   <div class="slp-menu-panel">
                     <button id="quickAddGigBtn" class="slp-picker-item" type="button"><i data-lucide="zap"></i><span>Quick add</span></button>
+                    <button id="gigTemplateMenuBtn" class="slp-picker-item" type="button"><i data-lucide="layout-template"></i><span>Add template</span></button>
                     <button id="selectGigSongsBtn" class="slp-picker-item" type="button"><i data-lucide="check-circle-2"></i><span>Select songs</span></button>
                     <button id="shareGigBtn" class="slp-picker-item" type="button"><i data-lucide="share-2"></i><span>Share event</span></button>
                   </div>
@@ -5078,7 +5268,8 @@ a.slp-chip { min-height: 44px; }
             <div id="gigBuilderEmpty" class="gig-empty-state hidden">
               <i data-lucide="list-music"></i><strong>No song sections yet</strong>
               <span>Add a section such as Ceremony, Meal, First Dance, or Kumzitz.</span>
-              <button id="addFirstGigSectionBtn" class="primary-button" type="button"><i data-lucide="plus"></i>Add first section</button>
+              <button id="addGigTemplateBtn" class="primary-button" type="button"><i data-lucide="layout-template"></i>Add template</button>
+              <button id="addFirstGigSectionBtn" class="slp-link-btn slp-link-btn--accent" type="button">or add a section yourself</button>
             </div>
           </section>
         </section>
@@ -5154,9 +5345,8 @@ a.slp-chip { min-height: 44px; }
 
           <section id="subfolderSection" class="content-section hidden">
             <div class="slp-section-label-row">
-              <span class="slp-section-label">SUBFOLDERS</span>
+              <span class="slp-section-label">SUBFOLDERS <span id="subfolderCount" class="slp-section-label__count">0</span></span>
               <div class="subfolder-heading-actions">
-                <span id="subfolderCount">0</span>
                 <button id="editSubfoldersBtn" class="slp-link-btn" type="button">Edit</button>
                 <button id="newSubfolderBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Add subfolder" title="Add subfolder">
                   <i data-lucide="folder-plus"></i>
@@ -5172,6 +5362,10 @@ a.slp-chip { min-height: 44px; }
           </section>
 
           <section id="songsSection" class="content-section songs-section">
+            <div id="songsEmptyHeader" class="slp-section-label-row hidden">
+              <span class="slp-section-label">SONGS <span class="slp-section-label__count">0</span></span>
+              <button id="songsEmptyAddBtn" class="slp-btn slp-btn--icon slp-section-add" type="button" aria-label="Add songs"><i data-lucide="plus"></i></button>
+            </div>
             <div id="songList" class="slp-card" aria-label="Songs"></div>
           </section>
         </div>
@@ -5216,17 +5410,18 @@ a.slp-chip { min-height: 44px; }
           </div>
 
           <article id="lyricSheet" class="lyric-sheet theme-paper font-system">
-            <div id="songDocument" class="song-document" contenteditable="false" role="textbox" aria-multiline="true" data-placeholder="Tap to start typing or paste your lyrics here..." dir="auto"></div>
+            <div id="songDocument" class="song-document" contenteditable="false" role="textbox" aria-multiline="true" aria-label="Lyrics" data-placeholder="Tap to start typing or paste your lyrics here..." dir="auto"></div>
           </article>
 
-          <nav id="writingToolbar" class="slp-edit-dock hidden" aria-label="Editing tools">
+          <nav id="writingToolbar" class="slp-edit-dock hidden" data-side="right" aria-label="Editing tools">
+            <button id="editDockToggle" class="edit-dock__toggle" type="button" aria-label="Editing tools" aria-expanded="false"><i data-lucide="pencil"></i></button>
             <button id="makeHeadingBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert header" title="Header">H</button>
             <button id="insertDisclosureBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert note" title="Note"><i data-lucide="sticky-note"></i></button>
             <button id="insertImageBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Insert photo" title="Photo"><i data-lucide="image-plus"></i></button>
             <button id="insertChordBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Place chords" title="Place chords"><i data-lucide="music"></i></button>
             <button id="undoBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Undo" title="Undo"><i data-lucide="undo-2"></i></button>
             <button id="redoBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Redo" title="Redo"><i data-lucide="redo-2"></i></button>
-            <button id="finishWritingBtn" class="slp-link-btn slp-link-btn--accent" type="button">Done</button>
+            <button id="finishWritingBtn" class="slp-btn slp-btn--icon edit-dock__done" type="button" aria-label="Done editing" title="Done"><i data-lucide="check"></i></button>
           </nav>
           <div id="textFormatMenu" class="slp-selection-popover hidden" hidden role="toolbar" aria-label="Text formatting">
             <button id="boldTextBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Bold"><b>B</b></button>
@@ -5439,53 +5634,58 @@ a.slp-chip { min-height: 44px; }
           <button id="saveGigBtn" class="slp-link-btn slp-link-btn--accent" type="submit">Save</button>
         </header>
         <section class="slp-form-section" aria-label="Event">
-          <label class="slp-field-label" for="gigEventTypeInput">EVENT TYPE</label>
-          <input id="gigEventTypeInput" class="slp-input" type="text" placeholder="Wedding, Bar Mitzvah..." autocomplete="off">
-          <div class="slp-chip-row gig-type-chips" role="group" aria-label="Common event types">
-            <button type="button" class="slp-chip" data-gig-type="Wedding"><span>Wedding</span></button>
-            <button type="button" class="slp-chip" data-gig-type="Bar Mitzvah"><span>Bar Mitzvah</span></button>
-            <button type="button" class="slp-chip" data-gig-type="Concert"><span>Concert</span></button>
-            <button type="button" class="slp-chip" data-gig-type="Private Event"><span>Private</span></button>
-            <button type="button" class="slp-chip" data-gig-type="Corporate Event"><span>Corporate</span></button>
-            <button type="button" class="slp-chip" data-gig-type="Kumzitz"><span>Kumzitz</span></button>
+          <label class="slp-field-label" for="gigTypeSelect">TYPE</label>
+          <select id="gigTypeSelect" class="slp-input">
+            <option value="">Choose a type</option>
+            <option value="Wedding">Wedding</option>
+            <option value="Bar mitzvah">Bar mitzvah</option>
+            <option value="Sheva brachos">Sheva brachos</option>
+            <option value="Kumzitz">Kumzitz</option>
+            <option value="Concert">Concert</option>
+            <option value="Other">Other</option>
+          </select>
+          <input id="gigEventTypeInput" class="slp-input gig-other-type" type="text" dir="auto" placeholder="What kind of event?" autocomplete="off" hidden>
+          <label class="slp-field-label" for="gigClientInput">CUSTOMER OR FAMILY</label>
+          <input id="gigClientInput" class="slp-input" type="text" dir="auto" placeholder="Cohen" autocomplete="off">
+          <p id="gigTitlePreview" class="slp-subtitle gig-title-preview" hidden></p>
+          <div class="gig-when-row">
+            <div><label class="slp-field-label" for="gigDateInput">DATE</label><input id="gigDateInput" class="slp-input" type="date" required></div>
+            <div><label class="slp-field-label" for="gigStartTimeInput">START</label><input id="gigStartTimeInput" class="slp-input" type="time"></div>
+            <div><label class="slp-field-label" for="gigEndTimeInput">END</label><input id="gigEndTimeInput" class="slp-input" type="time"></div>
           </div>
-          <div id="gigTemplateGroup">
-            <span class="slp-field-label">START FROM</span>
-            <div class="slp-chip-row gig-template-chips" role="group" aria-label="Starting structure">
-              <button type="button" class="slp-chip" data-gig-template="blank" aria-pressed="true"><span>Blank</span></button>
-              <button type="button" class="slp-chip" data-gig-template="wedding" aria-pressed="false"><span>Wedding</span></button>
-              <button type="button" class="slp-chip" data-gig-template="barmitzvah" aria-pressed="false"><span>Bar Mitzvah</span></button>
-              <button type="button" class="slp-chip" data-gig-template="concert" aria-pressed="false"><span>Concert</span></button>
-            </div>
-            <p id="gigTemplateHint" class="slp-subtitle gig-template-hint">An empty event. Add sections as you go.</p>
-          </div>
-          <label class="slp-field-label" for="gigNameInput">EVENT NAME</label>
-          <input id="gigNameInput" class="slp-input" type="text" dir="auto" placeholder="Cohen Wedding" autocomplete="off">
-          <label class="slp-field-label" for="gigChuppahInput">CHUPPAH</label>
-          <select id="gigChuppahInput" class="slp-input"><option value="no">No</option><option value="yes">Yes</option></select>
         </section>
-        <section class="slp-form-section" aria-label="Schedule">
-          <div id="gigScheduleCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="true" aria-controls="gigSchedulePanel">
-            <span>Schedule</span>
-            <span id="gigScheduleSummary" class="slp-collapse__summary"></span>
+        <section class="slp-form-section gig-add-rows" aria-label="More details">
+          <div id="gigCustomerCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="false" aria-controls="gigCustomerPanel">
+            <span>Customer details</span>
+            <span id="gigCustomerSummary" class="slp-collapse__summary"></span>
             <svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <div id="gigSchedulePanel" class="slp-collapse__panel">
-            <label class="slp-field-label" for="gigDateInput">DATE</label>
-            <input id="gigDateInput" class="slp-input" type="date" required>
-            <div class="slp-form-row">
-              <div>
-                <label class="slp-field-label" for="gigStartTimeInput">START (OPTIONAL)</label>
-                <input id="gigStartTimeInput" class="slp-input" type="time">
-              </div>
-              <div>
-                <label class="slp-field-label" for="gigEndTimeInput">END (OPTIONAL)</label>
-                <input id="gigEndTimeInput" class="slp-input" type="time">
-              </div>
-            </div>
+          <div id="gigCustomerPanel" class="slp-collapse__panel" hidden>
+            <label class="slp-field-label" for="gigContactInput">PHONE</label>
+            <input id="gigContactInput" class="slp-input" type="tel" dir="auto" autocomplete="off">
+            <label class="slp-field-label" for="gigEmailInput">EMAIL</label>
+            <input id="gigEmailInput" class="slp-input" type="email" dir="ltr" autocomplete="off" autocapitalize="off">
+            <label class="slp-field-label" for="gigAgentInput">OTHER CONTACT OR AGENT</label>
+            <input id="gigAgentInput" class="slp-input" type="text" dir="auto" autocomplete="off">
           </div>
-        </section>
-        <section class="slp-form-section" aria-label="Location">
+          <div id="gigMoneyCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="false" aria-controls="gigMoneyPanel">
+            <span>Money</span>
+            <span id="gigMoneySummary" class="slp-collapse__summary"></span>
+            <svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div id="gigMoneyPanel" class="slp-collapse__panel" hidden>
+            <div class="slp-form-row">
+              <div><label class="slp-field-label" for="gigPriceInput">PRICE</label><input id="gigPriceInput" class="slp-input" type="text" inputmode="decimal" dir="ltr" autocomplete="off"></div>
+              <div><label class="slp-field-label" for="gigDepositInput">DEPOSIT</label><input id="gigDepositInput" class="slp-input" type="text" inputmode="decimal" dir="ltr" autocomplete="off"></div>
+            </div>
+            <div class="gig-balance-row"><span>Balance</span><strong id="gigBalanceValue">—</strong></div>
+            <label class="gig-paid-row"><input id="gigPaidInput" type="checkbox"><span>Paid in full</span></label>
+            <label class="slp-field-label" for="gigDueDateInput">DUE DATE (OPTIONAL)</label>
+            <input id="gigDueDateInput" class="slp-input" type="date">
+            <label class="slp-field-label" for="gigMoneyNoteInput">NOTE (OPTIONAL)</label>
+            <input id="gigMoneyNoteInput" class="slp-input" type="text" dir="auto" autocomplete="off">
+            <p class="slp-subtitle gig-money-private">Private. Only shared if you tick it when sharing the event.</p>
+          </div>
           <div id="gigLocationCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="false" aria-controls="gigLocationPanel">
             <span>Location</span>
             <span id="gigLocationSummary" class="slp-collapse__summary"></span>
@@ -5497,23 +5697,6 @@ a.slp-chip { min-height: 44px; }
             <label class="slp-field-label" for="gigAddressInput">ADDRESS</label>
             <input id="gigAddressInput" class="slp-input" type="text" dir="auto" autocomplete="off">
           </div>
-        </section>
-        <section class="slp-form-section" aria-label="Customer">
-          <div id="gigCustomerCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="false" aria-controls="gigCustomerPanel">
-            <span>Customer</span>
-            <span id="gigCustomerSummary" class="slp-collapse__summary"></span>
-            <svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div id="gigCustomerPanel" class="slp-collapse__panel" hidden>
-            <label class="slp-field-label" for="gigClientInput">CUSTOMER / FAMILY</label>
-            <input id="gigClientInput" class="slp-input" type="text" dir="auto" autocomplete="off">
-            <label class="slp-field-label" for="gigContactInput">PHONE OR CONTACT INFORMATION</label>
-            <input id="gigContactInput" class="slp-input" type="text" dir="auto" autocomplete="off">
-            <label class="slp-field-label" for="gigAgentInput">AGENT NAME</label>
-            <input id="gigAgentInput" class="slp-input" type="text" dir="auto" autocomplete="off">
-          </div>
-        </section>
-        <section class="slp-form-section" aria-label="Music team">
           <div id="gigMusicTeamCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="false" aria-controls="gigMusicTeamPanel">
             <span>Music team</span>
             <span id="gigMusicTeamSummary" class="slp-collapse__summary"></span>
@@ -5523,24 +5706,19 @@ a.slp-chip { min-height: 44px; }
             <label class="slp-field-label" for="gigBandInput">BAND</label>
             <input id="gigBandInput" class="slp-input" type="text" dir="auto" autocomplete="off">
             <div class="slp-form-row">
-              <div>
-                <label class="slp-field-label" for="gigDirectorInput">BAND LEADER</label>
-                <input id="gigDirectorInput" class="slp-input" type="text" dir="auto" autocomplete="off">
-              </div>
-              <div>
-                <label class="slp-field-label" for="gigChoirInput">CHOIR</label>
-                <input id="gigChoirInput" class="slp-input" type="text" dir="auto" autocomplete="off">
-              </div>
+              <div><label class="slp-field-label" for="gigDirectorInput">BAND LEADER</label><input id="gigDirectorInput" class="slp-input" type="text" dir="auto" autocomplete="off"></div>
+              <div><label class="slp-field-label" for="gigChoirInput">CHOIR</label><input id="gigChoirInput" class="slp-input" type="text" dir="auto" autocomplete="off"></div>
             </div>
           </div>
-        </section>
-        <section class="slp-form-section" aria-label="Notes">
           <div id="gigNotesCollapse" class="slp-collapse" role="button" tabindex="0" aria-expanded="false" aria-controls="gigNotesInput">
             <span>Notes</span>
             <span id="gigNotesSummary" class="slp-collapse__summary"></span>
             <svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <textarea id="gigNotesInput" class="slp-collapse__panel" rows="4" dir="auto" placeholder="Add general notes for this event..." hidden></textarea>
+        </section>
+        <section id="gigDeleteZone" class="slp-form-section" aria-label="Delete event" hidden>
+          <button id="deleteGigBtn" class="danger-button" type="button"><i data-lucide="trash-2"></i> Delete event</button>
         </section>
       </form>
     </section>
@@ -5551,6 +5729,7 @@ a.slp-chip { min-height: 44px; }
         <button id="boardColumnsDoneBtn" class="slp-link-btn slp-link-btn--accent" type="button">Done</button>
       </header>
       <div id="boardColumnsBody" class="board-columns-body"></div>
+      <div class="board-pick-bar"><button id="boardPickAddBtn" class="slp-btn slp-btn--primary" type="button" disabled>Pick something to add</button></div>
     </section>
 
     <section id="boardFilterSheet" class="sheet board-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="boardFilterSheetTitle">
@@ -5612,6 +5791,22 @@ a.slp-chip { min-height: 44px; }
       </div>
     </section>
 
+    <section id="gigTemplateSheet" class="sheet compact-sheet gig-template-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="gigTemplateTitle">
+      <div class="sheet-header">
+        <button id="gigTemplateBackBtn" class="icon-button" type="button" aria-label="Back to templates" hidden><i data-lucide="chevron-left"></i></button>
+        <div><span>Event song plan</span><h2 id="gigTemplateTitle">Add template</h2></div>
+        <button id="closeGigTemplateBtn" class="icon-button" type="button" aria-label="Close templates"><i data-lucide="x"></i></button>
+      </div>
+      <div id="gigTemplateListView" class="sheet-body gig-template-body"><div id="gigTemplateListBody" class="gig-template-stack"></div></div>
+      <div id="gigTemplateBuildView" class="gig-template-build" hidden>
+        <div class="sheet-body gig-template-body">
+          <label class="field-label"><span>Template name</span><input id="gigTemplateNameInput" type="text" dir="auto" autocomplete="off" placeholder="Friday night wedding"></label>
+          <label class="field-label"><span>Sections, one per line</span><textarea id="gigTemplateSectionsInput" rows="7" dir="auto" placeholder="Kabbalas Panim&#10;Chuppah&#10;Meal&#10;Dancing"></textarea></label>
+        </div>
+        <div class="sheet-footer"><button id="gigTemplateSaveBtn" class="primary-button" type="button">Save and add</button></div>
+      </div>
+    </section>
+
     <section id="gigShareSheet" class="sheet compact-sheet gig-share-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="gigShareTitle">
       <div class="sheet-header">
         <div><span>Choose what to include</span><h2 id="gigShareTitle">Share Event</h2></div>
@@ -5624,6 +5819,7 @@ a.slp-chip { min-height: 44px; }
         <label><input id="shareGigContactInput" type="checkbox" /><span><strong>Contact information</strong></span></label>
         <label><input id="shareGigBandInput" type="checkbox" /><span><strong>Band information</strong></span></label>
         <label><input id="shareGigNotesInput" type="checkbox" /><span><strong>General notes</strong></span></label>
+        <label><input id="shareGigMoneyInput" type="checkbox" /><span><strong>Price and balance</strong><small>Private by default</small></span></label>
       </div>
       <div class="sheet-footer">
         <button id="cancelGigShareBtn" class="secondary-button" type="button">Cancel</button>
@@ -5665,53 +5861,42 @@ a.slp-chip { min-height: 44px; }
 
     <section id="appearancePopover" class="popover appearance-popover hidden" hidden aria-label="Lyrics appearance">
       <div class="appearance-popover__title">Lyrics appearance</div>
-      <div class="slp-setting slp-setting--inline">
-        <span class="slp-setting__title">Text size</span>
-        <div class="slp-stepper">
+      <div class="lyr-row">
+        <span class="lyr-row__label">Text size</span>
+        <div class="lyr-stepper">
           <button id="decreaseFontBtn" type="button" aria-label="Smaller text"><i data-lucide="minus"></i></button>
           <output id="fontSizeOutput">34</output>
           <button id="increaseFontBtn" type="button" aria-label="Larger text"><i data-lucide="plus"></i></button>
         </div>
       </div>
-      <div class="slp-setting slp-setting--inline">
-        <span class="slp-setting__title">Heading size</span>
-        <div class="slp-stepper">
+      <div class="lyr-row">
+        <span class="lyr-row__label">Heading size</span>
+        <div class="lyr-stepper">
           <button id="decreaseHeadingBtn" type="button" aria-label="Smaller headings"><i data-lucide="minus"></i></button>
           <output id="headingSizeOutput">115%</output>
           <button id="increaseHeadingBtn" type="button" aria-label="Larger headings"><i data-lucide="plus"></i></button>
         </div>
       </div>
-      <label class="slp-setting slp-setting--inline" for="headingBoldToggle">
-        <span class="slp-setting__title">Bold headings</span>
-        <input id="headingBoldToggle" class="slp-switch" type="checkbox" role="switch" checked />
-      </label>
-      <label class="slp-setting slp-setting--inline" for="showChordsToggle">
-        <span class="slp-setting__title">Show chords</span>
-        <input id="showChordsToggle" class="slp-switch" type="checkbox" role="switch" checked />
-      </label>
-      <div class="slp-setting">
-        <span class="slp-setting__title">Typeface</span>
-        <div class="slp-choice-grid" role="group" aria-label="Typeface">
-              <button type="button" class="slp-choice" data-lyric-font="system" style="font-family:system-ui, -apple-system, sans-serif">System</button>
-              <button type="button" class="slp-choice" data-lyric-font="serif" style="font-family:Times New Roman, Times, serif">Times</button>
-              <button type="button" class="slp-choice" data-lyric-font="rounded" style="font-family:Trebuchet MS, sans-serif">Trebuchet</button>
-              <button type="button" class="slp-choice" data-lyric-font="verdana" style="font-family:Verdana, sans-serif">Verdana</button>
-              <button type="button" class="slp-choice" data-lyric-font="arial" style="font-family:Arial, sans-serif">Arial</button>
-              <button type="button" class="slp-choice" data-lyric-font="georgia" style="font-family:Georgia, serif">Georgia</button>
-              <button type="button" class="slp-choice" data-lyric-font="tahoma" style="font-family:Tahoma, sans-serif">Tahoma</button>
-        </div>
+      <div class="lyr-row lyr-row--chips">
+        <label class="lyr-chip" for="headingBoldToggle"><input id="headingBoldToggle" type="checkbox" checked /><i data-lucide="check"></i><span>Bold headings</span></label>
+        <label class="lyr-chip" for="showChordsToggle"><input id="showChordsToggle" type="checkbox" checked /><i data-lucide="check"></i><span>Show chords</span></label>
       </div>
-      <div class="slp-setting">
-        <span class="slp-setting__title">Background</span>
-        <div class="slp-swatch-row" role="group" aria-label="Page background">
-          <button type="button" class="slp-swatch" data-theme="paper" aria-label="Warm paper"><span class="slp-swatch__dot slp-swatch__dot--outlined" style="background:#fbfaf5;"></span><span class="slp-swatch__label">Paper</span></button>
-          <button type="button" class="slp-swatch" data-theme="plain" aria-label="Plain white"><span class="slp-swatch__dot slp-swatch__dot--outlined" style="background:#ffffff;"></span><span class="slp-swatch__label">White</span></button>
-          <button type="button" class="slp-swatch" data-theme="blue" aria-label="Soft blue"><span class="slp-swatch__dot slp-swatch__dot--outlined" style="background:#eef6f8;"></span><span class="slp-swatch__label">Blue</span></button>
-          <button type="button" class="slp-swatch" data-theme="green" aria-label="Soft green"><span class="slp-swatch__dot slp-swatch__dot--outlined" style="background:#f1f8ef;"></span><span class="slp-swatch__label">Green</span></button>
-          <button type="button" class="slp-swatch" data-theme="lavender" aria-label="Soft lavender"><span class="slp-swatch__dot slp-swatch__dot--outlined" style="background:#f5f2fa;"></span><span class="slp-swatch__label">Lilac</span></button>
-          <button type="button" class="slp-swatch" data-theme="blush" aria-label="Soft rose"><span class="slp-swatch__dot slp-swatch__dot--outlined" style="background:#fbf1f2;"></span><span class="slp-swatch__label">Blush</span></button>
-          <button type="button" class="slp-swatch" data-theme="gray" aria-label="Soft gray"><span class="slp-swatch__dot slp-swatch__dot--outlined" style="background:#f3f5f5;"></span><span class="slp-swatch__label">Gray</span></button>
-        </div>
+      <div class="lyr-row">
+        <label class="lyr-row__label" for="lyricFontSelect">Font</label>
+        <select id="lyricFontSelect" class="lyr-select" aria-label="Font">
+          <option value="system">System default</option>
+          <option value="serif">Times</option>
+          <option value="rounded">Trebuchet</option>
+          <option value="verdana">Verdana</option>
+          <option value="arial">Arial</option>
+          <option value="georgia">Georgia</option>
+          <option value="tahoma">Tahoma</option>
+        </select>
+      </div>
+      <div class="lyr-row lyr-row--bg">
+        <span class="lyr-row__label">Background</span>
+        <div class="lyr-dots" role="group" aria-label="Page background"><button type="button" class="lyr-dot slp-swatch" data-theme="paper" data-name="Paper" aria-label="Warm paper"><span class="lyr-dot__fill" style="background:#fbfaf5;"></span></button><button type="button" class="lyr-dot slp-swatch" data-theme="plain" data-name="White" aria-label="Plain white"><span class="lyr-dot__fill" style="background:#ffffff;"></span></button><button type="button" class="lyr-dot slp-swatch" data-theme="blue" data-name="Blue" aria-label="Soft blue"><span class="lyr-dot__fill" style="background:#eef6f8;"></span></button><button type="button" class="lyr-dot slp-swatch" data-theme="green" data-name="Green" aria-label="Soft green"><span class="lyr-dot__fill" style="background:#f1f8ef;"></span></button><button type="button" class="lyr-dot slp-swatch" data-theme="lavender" data-name="Lilac" aria-label="Soft lavender"><span class="lyr-dot__fill" style="background:#f5f2fa;"></span></button><button type="button" class="lyr-dot slp-swatch" data-theme="blush" data-name="Blush" aria-label="Soft rose"><span class="lyr-dot__fill" style="background:#fbf1f2;"></span></button><button type="button" class="lyr-dot slp-swatch" data-theme="gray" data-name="Gray" aria-label="Soft gray"><span class="lyr-dot__fill" style="background:#f3f5f5;"></span></button></div>
+        <span id="lyricThemeName" class="lyr-theme-name"></span>
       </div>
     </section>
 
@@ -6216,8 +6401,8 @@ const els = Object.fromEntries(
   [
     "app", "librarySearchBtn", "backupReminder", "backupReminderText", "backupNowBtn", "backupLaterBtn", "backupStatusText", "storageStatusText", "settingsBtn", "libraryScreenTitle", "primaryNav", "appSongsNavBtn", "appEventsNavBtn", "appNotesNavBtn", "appToolsNavBtn", "songLibraryContent", "notesWorkspace", "gigsWorkspace",
     "toolsWorkspace", "toolsHub", "toolsGrid", "toolsSettingsBtn", "toolView", "backFromToolBtn", "toolTitle", "toolBody", "toolTransport", "toolTransportBtn", "gigsHomeHeader", "gigSearchBtn", "newGigBtn", "gigSearchWrap", "gigSearchInput", "closeGigSearchBtn", "gigsToolbar", "gigListViewBtn", "gigCalendarViewBtn", "gigSortWrap", "gigSortSelect", "gigListView", "gigList", "gigListEmpty", "gigCalendarView", "previousGigMonthBtn", "nextGigMonthBtn", "gigTodayBtn", "gigCalendarMonth", "gigCalendarGrid", "selectedGigDateTitle", "selectedGigDateCount", "selectedGigDateList",
-    "gigDetailView", "backToGigsBtn", "gigDetailTitle", "editGigBtn", "shareGigBtn", "gigPlanSearchBtn", "arrangeGigBtn", "gigStructureEditBtn", "gigDetailsCollapse", "gigDetailsPanel", "gigDetailsFields", "gigDetailsSummary", "gigScheduleSummary", "gigLocationSummary", "gigCustomerSummary", "gigMusicTeamSummary", "gigNotesSummary", "gigPlanSearchWrap", "gigPlanSearchScope", "gigPlanSearchInput", "closeGigPlanSearchBtn", "addGigSectionBtn", "addFirstGigSectionBtn", "gigSectionList", "gigKeyFilterBar", "gigKeyFilterLabel", "clearGigKeyFilterBtn", "gigBuilderEmpty",
-    "gigFormSheet", "gigForm", "gigFormTitle", "cancelGigFormBtn", "gigDateInput", "gigEventTypeInput", "gigChuppahInput", "gigNameInput", "gigStartTimeInput", "gigEndTimeInput", "gigVenueInput", "gigAddressInput", "gigClientInput", "gigContactInput", "gigAgentInput", "gigBandInput", "gigDirectorInput", "gigChoirInput", "gigNotesInput", "saveGigBtn",
+    "gigDetailView", "backToGigsBtn", "gigDetailTitle", "editGigBtn", "shareGigBtn", "gigPlanSearchBtn", "arrangeGigBtn", "gigStructureEditBtn", "gigDetailsCollapse", "gigDetailsPanel", "gigDetailsFields", "gigDetailsSummary", "gigLocationSummary", "gigCustomerSummary", "gigMusicTeamSummary", "gigNotesSummary", "gigPlanSearchWrap", "gigPlanSearchScope", "gigPlanSearchInput", "closeGigPlanSearchBtn", "addGigSectionBtn", "addFirstGigSectionBtn", "gigSectionList", "gigKeyFilterBar", "gigKeyFilterLabel", "clearGigKeyFilterBtn", "gigBuilderEmpty", "addGigTemplateBtn", "gigTemplateMenuBtn", "gigTemplateSheet", "gigTemplateBackBtn", "gigTemplateTitle", "closeGigTemplateBtn", "gigTemplateListView", "gigTemplateListBody", "gigTemplateBuildView", "gigTemplateNameInput", "gigTemplateSectionsInput", "gigTemplateSaveBtn",
+    "gigFormSheet", "gigForm", "gigFormTitle", "cancelGigFormBtn", "gigDateInput", "gigEventTypeInput", "gigTypeSelect", "gigEmailInput", "gigPriceInput", "gigDepositInput", "gigBalanceValue", "gigPaidInput", "gigDueDateInput", "gigMoneyNoteInput", "gigMoneySummary", "gigTitlePreview", "shareGigMoneyInput", "gigStartTimeInput", "gigEndTimeInput", "gigVenueInput", "gigAddressInput", "gigClientInput", "gigContactInput", "gigAgentInput", "gigBandInput", "gigDirectorInput", "gigChoirInput", "gigNotesInput", "saveGigBtn",
     "gigSongPickerSheet", "gigSongPickerTitle", "closeGigSongPickerBtn", "cancelGigSongPickerBtn", "gigSongPickerSearch", "gigSongPickerList", "addSelectedGigSongsBtn",
     "gigStructureSheet", "gigStructureTitle", "gigStructureLabel", "gigStructureNameInput", "closeGigStructureBtn", "cancelGigStructureBtn", "saveGigStructureBtn",
     "gigShareSheet", "closeGigShareBtn", "cancelGigShareBtn", "sendGigShareBtn", "shareGigSongsInput", "shareGigLocationInput", "shareGigCustomerInput", "shareGigContactInput", "shareGigBandInput", "shareGigNotesInput",
@@ -6241,7 +6426,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
+    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "appearancePopover", "decreaseFontBtn",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -6641,6 +6826,12 @@ function normalizeState(raw) {
     address: String(gig.address || "").trim(),
     clientName: String(gig.clientName || "").trim(),
     contactInfo: String(gig.contactInfo || "").trim(),
+    email: String(gig.email || "").trim(),
+    price: String(gig.price ?? "").trim(),
+    deposit: String(gig.deposit ?? "").trim(),
+    paid: gig.paid === true,
+    dueDate: /^\d{4}-\d{2}-\d{2}$/.test(gig.dueDate || "") ? gig.dueDate : "",
+    moneyNote: String(gig.moneyNote || "").trim(),
     agentName: String(gig.agentName || "").trim(),
     band: String(gig.band || "").trim(),
     musicalDirector: String(gig.musicalDirector || "").trim(),
@@ -6718,7 +6909,7 @@ function normalizeState(raw) {
       if (seen.has(id)) return false;
       seen.add(id);
       return true;
-    }).slice(0, 8).map((column) => ({ type: column.type, ref: String(column.ref) }));
+    }).map((column) => ({ type: column.type, ref: String(column.ref) }));
     return { id: String(board.id || makeId()), name: String(board.name || "Board").trim() || "Board", columns };
   });
   return {
@@ -6738,6 +6929,11 @@ function normalizeState(raw) {
     gigSections,
     gigSets,
     gigSetItems,
+    eventTemplates: (Array.isArray(raw.eventTemplates) ? raw.eventTemplates : []).map((template) => ({
+      id: String(template.id || makeId()),
+      name: String(template.name || "").trim(),
+      sections: (Array.isArray(template.sections) ? template.sections : []).map((name) => String(name || "").trim()).filter(Boolean)
+    })).filter((template) => template.name && template.sections.length),
     setTemplates,
     setTemplateItems,
     gigNavigation: normalizeGigNavigation(raw.gigNavigation, gigIds, sectionIds, setIds),
@@ -7670,8 +7866,14 @@ function renderSongList(sourceSongs, isArtistView = false) {
   songs = sortSongs(songs);
   els.songList.innerHTML = "";
 
-  if (!songs.length) {
-    els.songList.innerHTML = emptyMarkup("music", query ? "No matching songs" : "No songs here yet");
+  // An empty list is just a "SONGS 0 +" header (no box, no message). When a search or filter is
+  // what emptied it, a short one-line note says so instead.
+  const filtering = Boolean(query) || activeFilterCount() > 0;
+  const emptyList = !songs.length;
+  els.songsEmptyHeader.classList.toggle("hidden", !emptyList || filtering);
+  els.songList.classList.toggle("hidden", emptyList && !filtering);
+  if (emptyList) {
+    if (filtering) els.songList.innerHTML = emptyMarkup("search-x", "No songs match");
     return;
   }
 
@@ -8007,7 +8209,7 @@ function saveExpandedFolders() {
 
 const BOARD_PREFS_KEY = "slp-board-prefs";
 
-const BOARD_SHORT_LINES = 8;
+const BOARD_TEXT_SIZES = ["normal", "small", "overview"];
 
 const BOARD_FIELDS = [
   { id: "composer", label: "Composer", none: "No composer" },
@@ -8042,9 +8244,14 @@ const boardState = {
 function loadBoardPrefs() {
   try {
     const saved = JSON.parse(localStorage.getItem(BOARD_PREFS_KEY) || "{}");
-    return { view: saved.view === "board" ? "board" : "list", size: saved.size === "tall" ? "tall" : "half" };
+    return {
+      view: saved.view === "board" ? "board" : "list",
+      size: saved.size === "tall" ? "tall" : "half",
+      panelText: BOARD_TEXT_SIZES.includes(saved.panelText) ? saved.panelText : "normal",
+      cardText: BOARD_TEXT_SIZES.includes(saved.cardText) ? saved.cardText : "overview"
+    };
   } catch {
-    return { view: "list", size: "half" };
+    return { view: "list", size: "half", panelText: "normal", cardText: "overview" };
   }
 }
 
@@ -8065,8 +8272,6 @@ function boardAvailable() {
 function boardActive() {
   return boardPrefs.view === "board" && boardAvailable() && workspaceMode === "library" && libraryMode !== "notes";
 }
-
-const BOARD_MAX_COLUMNS = 8;
 
 const BOARD_TYPE_LABELS = { folder: "Folder", key: "Key", language: "Language", composer: "Composer", artist: "Artist" };
 
@@ -8185,30 +8390,9 @@ function boardColumnIsOn(type, ref) {
   return activeBoard().columns.some((column) => column.type === type && column.ref === ref);
 }
 
-function boardAddCandidates() {
-  const counted = (values) => {
-    const counts = new Map();
-    values.forEach((value) => { if (value) counts.set(value, (counts.get(value) || 0) + 1); });
-    return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-  };
-  const folders = [];
-  childFolders(null).forEach((root) => {
-    folders.push({ type: "folder", ref: root.id, name: root.name });
-    childFolders(root.id).forEach((child) => folders.push({ type: "folder", ref: child.id, name: child.name, parent: root.name }));
-  });
-  const groups = [
-    ["Folders", folders],
-    ["Keys", counted(state.songs.map(boardSongKey)).map(([ref, count]) => ({ type: "key", ref, name: ref, count }))],
-    ["Languages", counted(state.songs.map((song) => String(song.language || "").trim())).map(([ref, count]) => ({ type: "language", ref, name: ref, count }))],
-    ["Composers", counted(state.songs.map((song) => String(song.composer || "").trim())).map(([ref, count]) => ({ type: "composer", ref, name: ref, count }))],
-    ["Artists", counted(state.songs.flatMap((song) => song.artists || [])).map(([ref, count]) => ({ type: "artist", ref, name: ref, count }))]
-  ];
-  return groups.map(([title, items]) => [title, items.filter((item) => !boardColumnIsOn(item.type, item.ref))]).filter(([, items]) => items.length);
-}
-
 function addBoardColumn(type, ref) {
   const board = activeBoard();
-  if (board.columns.length >= BOARD_MAX_COLUMNS || boardColumnIsOn(type, ref)) return false;
+  if (boardColumnIsOn(type, ref)) return false;
   board.columns.push({ type, ref });
   return true;
 }
@@ -8309,6 +8493,7 @@ function renderBoard() {
   // While searching the columns stay mounted but hidden, so closing search brings back the
   // same filters and scroll position.
   els.boardColumns.classList.toggle("hidden", searching);
+  if (searching) els.boardPosBar.classList.add("hidden");
   els.boardResults.classList.toggle("hidden", !searching);
   if (searching) renderBoardResults();
   else renderBoardColumns();
@@ -8318,11 +8503,14 @@ function renderBoardPanel() {
   const song = boardSongById(boardState.panelSongId);
   const wrap = els.boardPanelWrap;
   wrap.dataset.size = boardPrefs.size;
+  wrap.dataset.text = boardPrefs.panelText;
+  els.boardColumns.dataset.cardText = boardPrefs.cardText;
+  els.boardResults.dataset.cardText = boardPrefs.cardText;
   wrap.classList.toggle("is-collapsed", Boolean(song) && boardState.collapsed);
   wrap.classList.toggle("is-empty", !song);
   wrap.classList.toggle("is-compact", Boolean(song) && boardState.searchOpen && !boardState.collapsed);
   if (!song) {
-    wrap.innerHTML = `<div class="board-panel-empty"><i data-lucide="music-2"></i><span>Tap a song. Short ones open in place, long ones dock here.</span></div>`;
+    wrap.innerHTML = `<div class="board-panel-empty"><i data-lucide="music-2"></i><span>Tap a song to pin it here. Then tap others to read them in place.</span></div>`;
     refreshIcons();
     return;
   }
@@ -8338,6 +8526,7 @@ function renderBoardPanel() {
           <strong>${escapeHtml(song.title)}</strong>
           ${meta ? `<span>${escapeHtml(meta)}</span>` : ""}
         </div>
+        <button class="board-icon-btn board-aa-btn" type="button" data-board-act="text" aria-label="Text size">Aa</button>
         <button class="board-icon-btn" type="button" data-board-act="full" aria-label="Open full page"><i data-lucide="maximize-2"></i></button>
         <button class="board-icon-btn" type="button" data-board-act="collapse" aria-expanded="${!collapsed}" aria-label="${collapsed ? "Expand lyrics panel" : "Collapse lyrics panel"}"><i data-lucide="${collapsed ? "chevron-down" : "chevron-up"}"></i></button>
         <button class="board-icon-btn" type="button" data-board-act="close" aria-label="Close lyrics panel"><i data-lucide="x"></i></button>
@@ -8385,6 +8574,7 @@ function renderBoardColumns() {
   const container = els.boardColumns;
   const columns = boardAllColumns();
   if (!columns.length) {
+    renderBoardPosBar();
     container.innerHTML = `<div class="board-empty-board">This board has no columns yet. Tap the columns button to add some.</div>`;
     return;
   }
@@ -8398,6 +8588,7 @@ function renderBoardColumns() {
   }).join("");
   wireBoardCardsForSelect(container);
   container.scrollLeft = boardState.scrollX;
+  renderBoardPosBar();
   container.querySelectorAll("[data-col-body]").forEach((body) => { body.scrollTop = boardState.scrollY[body.dataset.colBody] || 0; });
   refreshIcons();
 }
@@ -8453,25 +8644,22 @@ function renderBoardFilterSheet() {
 
 function renderBoardColumnsScreen() {
   const board = activeBoard();
-  const full = board.columns.length >= BOARD_MAX_COLUMNS;
+  const keepScroll = els.boardColumnsBody.scrollTop;
   const rows = board.columns.map((column, index) => `<div class="board-col-row" data-col-index="${index}" data-col-type="${column.type}" data-col-ref="${escapeAttribute(column.ref)}">
       <button class="board-col-row__grip" type="button" aria-label="Move ${escapeAttribute(boardColumnName(column))}" title="Drag to reorder"><i data-lucide="grip-vertical"></i></button>
       <span class="board-col-row__name" dir="auto">${escapeHtml(boardColumnName(column))}</span>
       <span class="board-type-badge">${BOARD_TYPE_LABELS[column.type]}</span>
       <button class="board-icon-btn" type="button" data-col-remove="${index}" aria-label="Remove ${escapeAttribute(boardColumnName(column))}"><i data-lucide="x"></i></button>
     </div>`).join("");
-  const addGroups = boardAddCandidates().map(([title, items]) => `<div class="board-add-group"><span class="slp-section-label">${title.toUpperCase()}</span>
-      ${items.map((item) => `<button class="board-add-row ${full ? "is-dim" : ""}" type="button" aria-disabled="${full}" data-add-type="${item.type}" data-add-ref="${escapeAttribute(item.ref)}">
-        <span class="board-add-row__name" dir="auto">${item.parent ? `<small>${escapeHtml(item.parent)} › </small>` : ""}${escapeHtml(item.name)}</span>
-        ${item.count ? `<em>${item.count}</em>` : ""}<i data-lucide="plus"></i></button>`).join("")}</div>`).join("");
   els.boardColumnsBody.innerHTML = `
-    <div class="slp-section-label-row"><span class="slp-section-label">ON THIS BOARD</span><span class="slp-section-label" id="boardColumnCounter">${board.columns.length} of ${BOARD_MAX_COLUMNS}</span></div>
+    <div class="slp-section-label-row"><span class="slp-section-label">ON THIS BOARD</span><span class="slp-section-label" id="boardColumnCounter">${board.columns.length}</span></div>
     <div id="boardColumnList" class="slp-card board-col-list">${rows || `<p class="board-col__empty">No columns yet. Add some below.</p>`}</div>
     <button id="boardSaveAsNewBtn" class="slp-btn slp-btn--soft board-save-new" type="button"><i data-lucide="copy-plus"></i><span>Save as new board</span></button>
-    <div class="slp-section-label-row"><span class="slp-section-label">ADD A COLUMN</span>${full ? `<span class="slp-section-label">Full</span>` : ""}</div>
-    ${addGroups || `<p class="board-col__empty">Everything is already on this board.</p>`}`;
-  refreshIcons();
+    <div class="slp-section-label-row"><span class="slp-section-label">ADD A COLUMN</span></div>
+    <div id="boardPickArea" class="board-pick-area"></div>`;
+  renderBoardPickArea();
   wireBoardColumnRows();
+  els.boardColumnsBody.scrollTop = keepScroll;
 }
 
 function boardCardSubline(song, column) {
@@ -8506,6 +8694,299 @@ function renderBoardResults() {
 function wireBoardCardsForSelect(container) {
   container.querySelectorAll(".board-card").forEach((card) => wireSelectableRow(card, card.dataset.songId, boardSelectContext));
 }
+// Position bar above the Board columns: one thin tick per column, the current column's name
+// and "3 of 14". Sliding a finger along it jumps the columns, with a name bubble above the
+// finger so you can see where you are going.
+
+function boardColumnEls() {
+  return [...els.boardColumns.querySelectorAll(":scope > .board-col")];
+}
+
+// The column whose left edge is nearest the scroll position.
+function boardCurrentColumnIndex() {
+  const cols = boardColumnEls();
+  if (!cols.length) return -1;
+  const x = els.boardColumns.scrollLeft;
+  let best = 0;
+  let bestDist = Infinity;
+  cols.forEach((col, index) => {
+    const dist = Math.abs(col.offsetLeft - 16 - x);
+    if (dist < bestDist) { best = index; bestDist = dist; }
+  });
+  return best;
+}
+
+function boardColumnLabel(col) {
+  return col?.getAttribute("aria-label") || "";
+}
+
+function renderBoardPosBar() {
+  const cols = boardColumnEls();
+  const show = cols.length > 1 && !boardState.searchOpen;
+  els.boardPosBar.classList.toggle("hidden", !show);
+  if (!show) return;
+  els.boardPosTicks.innerHTML = cols.map(() => "<i></i>").join("");
+  els.boardPosBar.setAttribute("aria-valuemax", String(cols.length));
+  updateBoardPosBar();
+}
+
+function updateBoardPosBar() {
+  const cols = boardColumnEls();
+  if (cols.length < 2) return;
+  const index = Math.max(0, boardCurrentColumnIndex());
+  els.boardPosName.textContent = boardColumnLabel(cols[index]);
+  els.boardPosCount.textContent = `${index + 1} of ${cols.length}`;
+  els.boardPosBar.setAttribute("aria-valuenow", String(index + 1));
+  els.boardPosTicks.querySelectorAll("i").forEach((tick, i) => tick.classList.toggle("is-current", i === index));
+}
+
+function boardJumpToColumn(index) {
+  const col = boardColumnEls()[index];
+  if (!col) return;
+  els.boardColumns.scrollLeft = Math.max(0, col.offsetLeft - 16);
+  updateBoardPosBar();
+}
+
+function initBoardPosBar() {
+  const bar = els.boardPosBar;
+  const ticks = els.boardPosTicks;
+  const indexAt = (clientX) => {
+    const rect = ticks.getBoundingClientRect();
+    const count = boardColumnEls().length;
+    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / Math.max(1, rect.width)));
+    return Math.min(count - 1, Math.floor(ratio * count));
+  };
+  const move = (event) => {
+    const index = indexAt(event.clientX);
+    boardJumpToColumn(index);
+    const rect = bar.getBoundingClientRect();
+    const bubble = els.boardPosBubble;
+    bubble.textContent = boardColumnLabel(boardColumnEls()[index]);
+    bubble.classList.remove("hidden");
+    const half = bubble.offsetWidth / 2;
+    const x = Math.min(rect.width - half - 4, Math.max(half + 4, event.clientX - rect.left));
+    bubble.style.left = `${x}px`;
+  };
+  let dragging = false;
+  bar.addEventListener("pointerdown", (event) => {
+    dragging = true;
+    bar.setPointerCapture?.(event.pointerId);
+    bar.classList.add("is-dragging");
+    move(event);
+  });
+  bar.addEventListener("pointermove", (event) => { if (dragging) move(event); });
+  const end = () => {
+    dragging = false;
+    bar.classList.remove("is-dragging");
+    els.boardPosBubble.classList.add("hidden");
+  };
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach((name) => bar.addEventListener(name, end));
+  bar.addEventListener("keydown", (event) => {
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+    if (!step) return;
+    event.preventDefault();
+    const rtl = getComputedStyle(els.boardColumns).direction === "rtl";
+    boardJumpToColumn(Math.min(boardColumnEls().length - 1, Math.max(0, boardCurrentColumnIndex() + step * (rtl ? -1 : 1))));
+  });
+  els.boardColumns.addEventListener("scroll", updateBoardPosBar, { passive: true });
+}
+// Columns screen, "Add a column" part: one collapsible row per category (Folders, Keys,
+// Languages, Composers, Artists), one open at a time. Ticks persist across categories and one
+// bottom button adds everything that is ticked.
+
+const boardPicker = { open: "", picks: new Set(), query: "", keyMode: "" };
+
+const BOARD_PICK_CATEGORIES = [
+  { id: "folder", title: "Folders", search: true },
+  { id: "key", title: "Keys", search: false },
+  { id: "language", title: "Languages", search: false },
+  { id: "composer", title: "Composers", search: true },
+  { id: "artist", title: "Artists", search: true }
+];
+const BOARD_PICK_NOTES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+const BOARD_PICK_MODES = [["major", "Major"], ["minor", "Minor"], ["freygish", "Freygish"]];
+
+function boardPickId(type, ref) {
+  return `${type}:${ref}`;
+}
+
+function boardPickCounted(values) {
+  const counts = new Map();
+  values.forEach((value) => { if (value) counts.set(value, (counts.get(value) || 0) + 1); });
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+// Everything in a category that could still be added: not already a column of this board.
+function boardPickItems(category) {
+  let items = [];
+  if (category === "folder") {
+    childFolders(null).forEach((root) => {
+      items.push({ type: "folder", ref: root.id, name: root.name, count: boardSongsForColumn({ type: "folder", ref: root.id }).length });
+      childFolders(root.id).forEach((child) => items.push({ type: "folder", ref: child.id, name: child.name, parent: root.name, count: boardSongsForColumn({ type: "folder", ref: child.id }).length }));
+    });
+  } else if (category === "key") {
+    items = boardPickCounted(state.songs.map(boardSongKey)).map(([ref, count]) => ({ type: "key", ref, name: ref, count }));
+  } else if (category === "language") {
+    items = boardPickCounted(state.songs.map((song) => String(song.language || "").trim())).map(([ref, count]) => ({ type: "language", ref, name: ref, count }));
+  } else if (category === "composer") {
+    items = boardPickCounted(state.songs.map((song) => String(song.composer || "").trim())).map(([ref, count]) => ({ type: "composer", ref, name: ref, count }));
+  } else if (category === "artist") {
+    items = boardPickCounted(state.songs.flatMap((song) => song.artists || [])).map(([ref, count]) => ({ type: "artist", ref, name: ref, count }));
+  }
+  return items.filter((item) => !boardColumnIsOn(item.type, item.ref));
+}
+
+// What the open category is showing right now (after search / key mode).
+function boardPickVisibleItems(category) {
+  const items = boardPickItems(category);
+  if (category === "key") return items.filter((item) => keyModeFromValue(item.ref) === boardPickKeyMode(items));
+  const query = boardNormalize(boardPicker.query);
+  if (query && BOARD_PICK_CATEGORIES.find((item) => item.id === category)?.search) return items.filter((item) => boardNormalize(`${item.parent || ""} ${item.name}`).includes(query));
+  return items;
+}
+
+// The mode shown in the Keys grid: the one chosen, else the first that has keys.
+function boardPickKeyMode(items) {
+  const has = (mode) => items.some((item) => keyModeFromValue(item.ref) === mode);
+  if (boardPicker.keyMode && has(boardPicker.keyMode)) return boardPicker.keyMode;
+  return BOARD_PICK_MODES.map(([mode]) => mode).find(has) || boardPicker.keyMode || "major";
+}
+
+function boardPickRowMarkup(item, child) {
+  const id = boardPickId(item.type, item.ref);
+  return `<label class="board-value-row board-pick-row ${child ? "is-child" : ""}"><input type="checkbox" data-pick="${escapeAttribute(id)}" ${boardPicker.picks.has(id) ? "checked" : ""}><span class="board-value-row__name" dir="auto">${item.parent && boardPicker.query.trim() ? `<small>${escapeHtml(item.parent)} › </small>` : ""}${escapeHtml(item.name)}</span>${item.count ? `<em>${item.count}</em>` : ""}</label>`;
+}
+
+function boardPickListMarkup(category) {
+  const items = boardPickVisibleItems(category);
+  if (category === "key") {
+    if (!items.length) return `<p class="board-col__empty">No ${boardPickKeyMode(boardPickItems("key"))} keys left to add.</p>`;
+    const mode = boardPickKeyMode(boardPickItems("key"));
+    const byRef = new Map(items.map((item) => [item.ref, item]));
+    return `<div class="board-pick-keys">${BOARD_PICK_NOTES.map((note) => {
+      const item = byRef.get(keyValueFor(note, mode));
+      if (!item) return "";
+      const id = boardPickId("key", item.ref);
+      return `<button class="board-pick-key" type="button" data-pick-toggle="${escapeAttribute(id)}" aria-pressed="${boardPicker.picks.has(id)}" dir="ltr"><span>${keyNoteLabel(note, mode)}</span><em>${item.count}</em></button>`;
+    }).join("")}</div>`;
+  }
+  if (!items.length) return `<p class="board-col__empty">${boardPicker.query.trim() ? "Nothing matches." : "Everything here is already on this board."}</p>`;
+  const searching = Boolean(boardPicker.query.trim());
+  return items.map((item) => boardPickRowMarkup(item, category === "folder" && Boolean(item.parent) && !searching)).join("");
+}
+
+function boardPickToolsMarkup(category) {
+  const meta = BOARD_PICK_CATEGORIES.find((item) => item.id === category);
+  const mode = category === "key" ? boardPickKeyMode(boardPickItems("key")) : "";
+  const modes = category === "key" ? `<div class="slp-segmented board-pick-modes" role="group" aria-label="Key type">${BOARD_PICK_MODES.map(([id, label]) => `<button type="button" data-pick-mode="${id}" class="${id === mode ? "selected" : ""}">${label}</button>`).join("")}</div>` : "";
+  const search = meta.search ? `<input id="boardPickSearch" class="board-pick-search" type="search" dir="auto" placeholder="Search ${meta.title.toLowerCase()}" value="${escapeAttribute(boardPicker.query)}" autocomplete="off" autocapitalize="off" enterkeyhint="search">` : "";
+  return `${search}${modes}<div class="board-pick-allrow"><span id="boardPickTally"></span><button id="boardPickAllBtn" class="slp-link-btn slp-link-btn--accent" type="button"></button></div>`;
+}
+
+function renderBoardPickArea() {
+  const area = els.boardColumnsBody.querySelector("#boardPickArea");
+  if (!area) return;
+  area.innerHTML = BOARD_PICK_CATEGORIES.map((meta) => {
+    const available = boardPickItems(meta.id);
+    const picked = [...boardPicker.picks].filter((id) => id.startsWith(`${meta.id}:`)).length;
+    const open = boardPicker.open === meta.id;
+    return `<section class="board-pick ${open ? "is-open" : ""}" data-pick-cat="${meta.id}">
+      <button class="board-pick__head" type="button" data-pick-head="${meta.id}" aria-expanded="${open}"><span>${meta.title}</span>${picked ? `<b class="board-pick__badge">${picked}</b>` : ""}<em>${available.length}</em><i data-lucide="chevron-down"></i></button>
+      ${open ? `<div class="board-pick__body">${available.length ? boardPickToolsMarkup(meta.id) : ""}<div id="boardPickList">${available.length ? boardPickListMarkup(meta.id) : `<p class="board-col__empty">Everything here is already on this board.</p>`}</div></div>` : ""}
+    </section>`;
+  }).join("");
+  refreshIcons();
+  syncBoardPickControls();
+}
+
+// Only the list and the buttons: keeps the search field focused while typing.
+function renderBoardPickList() {
+  const list = els.boardColumnsBody.querySelector("#boardPickList");
+  if (list && boardPicker.open) list.innerHTML = boardPickListMarkup(boardPicker.open);
+  syncBoardPickControls();
+}
+
+function syncBoardPickControls() {
+  const count = boardPicker.picks.size;
+  const add = els.boardPickAddBtn;
+  add.disabled = !count;
+  add.textContent = count ? `Add ${count} ${plural(count, "column")}` : "Pick something to add";
+  const allBtn = els.boardColumnsBody.querySelector("#boardPickAllBtn");
+  if (!allBtn || !boardPicker.open) return;
+  const visible = boardPickVisibleItems(boardPicker.open).map((item) => boardPickId(item.type, item.ref));
+  const all = visible.length > 0 && visible.every((id) => boardPicker.picks.has(id));
+  allBtn.textContent = all ? "Select none" : "Select all";
+  allBtn.disabled = !visible.length;
+  const tally = els.boardColumnsBody.querySelector("#boardPickTally");
+  if (tally) tally.textContent = `${visible.length} available`;
+}
+
+function toggleBoardPick(id, on) {
+  const want = on === undefined ? !boardPicker.picks.has(id) : on;
+  if (want) boardPicker.picks.add(id);
+  else boardPicker.picks.delete(id);
+}
+
+function addPickedBoardColumns() {
+  let added = 0;
+  [...boardPicker.picks].forEach((id) => {
+    const index = id.indexOf(":");
+    if (addBoardColumn(id.slice(0, index), id.slice(index + 1))) added += 1;
+  });
+  boardPicker.picks.clear();
+  renderBoardColumnsScreen();
+  renderBoard();
+  if (added) showToast(`Added ${added} ${plural(added, "column")} to ${activeBoard().name}`);
+}
+
+function initBoardPicker() {
+  const body = els.boardColumnsBody;
+  body.addEventListener("click", (event) => {
+    const head = event.target.closest("[data-pick-head]");
+    if (head) {
+      const id = head.dataset.pickHead;
+      boardPicker.open = boardPicker.open === id ? "" : id;
+      boardPicker.query = "";
+      renderBoardPickArea();
+      if (boardPicker.open) head.closest(".board-pick")?.scrollIntoView?.({ block: "nearest" });
+      return;
+    }
+    const toggle = event.target.closest("[data-pick-toggle]");
+    if (toggle) {
+      toggleBoardPick(toggle.dataset.pickToggle);
+      toggle.setAttribute("aria-pressed", String(boardPicker.picks.has(toggle.dataset.pickToggle)));
+      renderBoardPickArea();
+      return;
+    }
+    const mode = event.target.closest("[data-pick-mode]");
+    if (mode) {
+      boardPicker.keyMode = mode.dataset.pickMode;
+      renderBoardPickArea();
+      return;
+    }
+    if (event.target.closest("#boardPickAllBtn")) {
+      const visible = boardPickVisibleItems(boardPicker.open).map((item) => boardPickId(item.type, item.ref));
+      const all = visible.length > 0 && visible.every((id) => boardPicker.picks.has(id));
+      visible.forEach((id) => toggleBoardPick(id, !all));
+      renderBoardPickArea();
+    }
+  });
+  body.addEventListener("change", (event) => {
+    const box = event.target.closest("[data-pick]");
+    if (!box) return;
+    toggleBoardPick(box.dataset.pick, box.checked);
+    // Badge counts live on the headers, so redraw those without losing the list scroll.
+    const keep = body.scrollTop;
+    renderBoardPickArea();
+    body.scrollTop = keep;
+  });
+  body.addEventListener("input", (event) => {
+    if (event.target.id !== "boardPickSearch") return;
+    boardPicker.query = event.target.value;
+    renderBoardPickList();
+  });
+  els.boardPickAddBtn.addEventListener("click", addPickedBoardColumns);
+}
 // Board wiring: every tap, long-press and sheet that changes the Board - opening cards, the
 // docked panel, saved boards, the Columns screen, search, "add as new song" and undo.
 
@@ -8518,19 +8999,62 @@ function setSongsView(view) {
   refreshIcons();
 }
 
+// Every song opens inside its own card, whatever its length. The first tap while the top
+// panel is empty docks the song there instead; only one card per column is open at a time.
 function boardOpenCard(songId, cardKey) {
   const song = boardSongById(songId);
   if (!song) return;
-  const lines = boardCountNonEmpty(boardLyricLines(song));
-  if (lines > BOARD_SHORT_LINES) {
+  if (!boardState.panelSongId) {
     boardState.panelSongId = song.id;
     boardState.collapsed = false;
   } else if (boardState.expanded.has(cardKey)) {
     boardState.expanded.delete(cardKey);
   } else {
+    const columnPrefix = cardKey.slice(0, cardKey.length - song.id.length);
+    [...boardState.expanded].forEach((key) => { if (key.startsWith(columnPrefix)) boardState.expanded.delete(key); });
     boardState.expanded.add(cardKey);
   }
   renderBoard();
+}
+
+const BOARD_TEXT_LABELS = { normal: "Normal", small: "Small", overview: "Overview" };
+
+function closeBoardTextMenu() {
+  document.getElementById("boardTextMenu")?.remove();
+  document.removeEventListener("pointerdown", boardTextMenuOutside, true);
+}
+
+function boardTextMenuOutside(event) {
+  const menu = document.getElementById("boardTextMenu");
+  if (menu && !menu.contains(event.target) && !event.target.closest("[data-board-act=text]")) closeBoardTextMenu();
+}
+
+function boardTextGroupMarkup(title, group, sizes, current) {
+  return `<div class="board-text-group"><span class="slp-section-label">${title}</span><div class="slp-segmented board-text-seg" role="group" aria-label="${title}">${sizes.map((size) => `<button type="button" data-text-group="${group}" data-text-size="${size}" class="${size === current ? "selected" : ""}">${BOARD_TEXT_LABELS[size]}</button>`).join("")}</div></div>`;
+}
+
+function openBoardTextMenu(anchor) {
+  if (document.getElementById("boardTextMenu")) return closeBoardTextMenu();
+  const menu = document.createElement("div");
+  menu.id = "boardTextMenu";
+  menu.className = "board-text-menu";
+  menu.setAttribute("role", "dialog");
+  menu.setAttribute("aria-label", "Text size");
+  menu.innerHTML = boardTextGroupMarkup("TOP PANEL", "panel", ["normal", "small", "overview"], boardPrefs.panelText)
+    + boardTextGroupMarkup("CARD PREVIEWS", "card", ["overview", "small", "normal"], boardPrefs.cardText);
+  const rect = anchor.getBoundingClientRect();
+  menu.style.top = `${Math.round(rect.bottom + 6)}px`;
+  document.body.appendChild(menu);
+  menu.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-text-size]");
+    if (!button) return;
+    if (button.dataset.textGroup === "panel") boardPrefs.panelText = button.dataset.textSize;
+    else boardPrefs.cardText = button.dataset.textSize;
+    saveBoardPrefs();
+    menu.querySelectorAll("[data-text-size]").forEach((item) => item.classList.toggle("selected", item.dataset.textSize === (item.dataset.textGroup === "panel" ? boardPrefs.panelText : boardPrefs.cardText)));
+    renderBoard();
+  });
+  document.addEventListener("pointerdown", boardTextMenuOutside, true);
 }
 
 function openBoardSongFullPage() {
@@ -8571,6 +9095,7 @@ function initBoardUi() {
     if (act === "full") openBoardSongFullPage();
     else if (act === "collapse") { boardState.collapsed = !boardState.collapsed; renderBoard(); }
     else if (act === "close") { boardState.panelSongId = null; boardState.collapsed = false; renderBoard(); }
+    else if (act === "text") openBoardTextMenu(event.target.closest("[data-board-act]"));
     else if (act === "size") { boardPrefs.size = boardPrefs.size === "tall" ? "half" : "tall"; saveBoardPrefs(); renderBoard(); }
   });
   els.boardColumns.addEventListener("click", (event) => {
@@ -8683,6 +9208,9 @@ function requestDeleteBoard() {
 }
 
 function openBoardColumnsScreen() {
+  boardPicker.open = "";
+  boardPicker.query = "";
+  boardPicker.picks.clear();
   renderBoardColumnsScreen();
   showOverlay(els.boardColumnsScreen);
 }
@@ -8706,7 +9234,6 @@ function addFolderAsBoardColumn(folderId) {
   const board = activeBoard();
   if (!folder) return;
   if (boardColumnIsOn("folder", folderId)) return showToast(`“${folder.name}” is already a column on ${board.name}`);
-  if (board.columns.length >= BOARD_MAX_COLUMNS) return showToast(`${board.name} is full (${BOARD_MAX_COLUMNS} columns)`);
   addBoardColumn("folder", folderId);
   renderBoard();
   showToast(`Added “${folder.name}” to ${board.name}`);
@@ -8766,15 +9293,6 @@ function initBoardBoardsUi() {
       activeBoard().columns.splice(Number(remove.dataset.colRemove), 1);
       renderBoardColumnsScreen();
       renderBoard();
-      return;
-    }
-    const add = event.target.closest("[data-add-type]");
-    if (add) {
-      if (add.getAttribute("aria-disabled") === "true") return;
-      if (addBoardColumn(add.dataset.addType, add.dataset.addRef)) {
-        renderBoardColumnsScreen();
-        renderBoard();
-      }
       return;
     }
     if (event.target.closest("#boardSaveAsNewBtn")) openGigStructureForm("board-save", null, `${activeBoard().name} copy`);
@@ -9626,9 +10144,35 @@ function applySelectedTextFormat(command, value = null) {
 // Editing is opt-in: the lyrics open read-only for performance, and tapping the
 // text (or Done) moves between the two states. The dock and selection popover
 // only exist while editing.
+// The editing tools stay out of the way: a small faded round pencil on the side opposite the
+// text direction (left for Hebrew and Yiddish, right for English) that opens into a pill.
+function songTextIsRtl(song) {
+  if (!song) return false;
+  if (song.direction === "rtl") return true;
+  if (song.direction === "ltr") return false;
+  const sample = textFromDocumentHtml(song.documentHtml).slice(0, 200);
+  const hebrew = (sample.match(/[\u0590-\u05FF]/g) || []).length;
+  const latin = (sample.match(/[A-Za-z]/g) || []).length;
+  return hebrew > latin;
+}
+
+function setEditDockOpen(open) {
+  els.writingToolbar.classList.toggle("is-open", open);
+  els.editDockToggle.setAttribute("aria-expanded", String(open));
+}
+
+function placeEditDock() {
+  const left = songTextIsRtl(currentSong());
+  els.writingToolbar.dataset.side = left ? "left" : "right";
+  els.lyricSheet.classList.toggle("dock-pad-left", left);
+  els.lyricSheet.classList.toggle("dock-pad-right", !left);
+}
+
 function setSongEditMode(editing) {
   const wasEditing = songEditMode;
   songEditMode = editing;
+  if (editing) { setEditDockOpen(false); placeEditDock(); }
+  else { els.lyricSheet.classList.remove("dock-pad-left", "dock-pad-right"); }
   els.songDocument.contentEditable = String(editing);
   els.writingToolbar.classList.toggle("hidden", !editing);
   if (!editing) {
@@ -9841,8 +10385,9 @@ function applyLyricPrefs() {
   els.headingSizeOutput.textContent = `${Math.round(prefs.headingScale * 100)}%`;
   els.headingBoldToggle.checked = prefs.headingBold;
   els.showChordsToggle.checked = prefs.showChords !== false;
-  document.querySelectorAll("[data-lyric-font]").forEach((button) => button.classList.toggle("selected", button.dataset.lyricFont === prefs.font));
+  els.lyricFontSelect.value = prefs.font;
   document.querySelectorAll("[data-theme]").forEach((button) => button.classList.toggle("selected", button.dataset.theme === prefs.theme));
+  els.lyricThemeName.textContent = document.querySelector(`.lyr-dot[data-theme="${prefs.theme}"]`)?.dataset.name || "";
   const notePrefs = state.notePrefs || { fontSize: 18, font: prefs.font, theme: prefs.theme };
   ["system", "serif", "rounded", "verdana", "arial", "georgia", "tahoma"].forEach((font) => els.notesWorkspace.classList.remove(`note-font-${font}`));
   ["paper", "plain", "blue", "green", "lavender", "blush", "gray"].forEach((theme) => els.notesWorkspace.classList.remove(`note-theme-${theme}`));
@@ -10251,20 +10796,46 @@ function toggleSongSortDirection() {
 function showSongMenu() {
   const song = currentSong();
   if (!song) return;
-  showActionMenu([
-    { icon: "maximize-2", label: "Performance mode", action: openPerformanceMode },
-    { icon: "music", label: "Place chords", action: openChordEditor },
+  // An icon grid: three tiles across, then Delete on its own row below.
+  showActionGrid([
+    { icon: "pencil", label: "Edit song details", action: () => openSongInfo(false) },
     { icon: "folder-plus", label: "Add to folder or event", action: openSongAddTo },
-    { icon: "pencil", label: "Song details & folders", action: () => openSongInfo(false) },
+    { icon: "music", label: songHasChords(song) ? "Edit chords" : "Add chords", action: openChordEditor },
+    { icon: "maximize-2", label: "Performance mode", action: openPerformanceMode },
     { icon: "share-2", label: "Share lyrics", action: shareCurrentSong },
-    { icon: "printer", label: "Print", action: () => { closeOverlays(); window.print(); } },
-    { icon: "trash-2", label: "Delete song", danger: true, action: requestDeleteSong }
-  ], els.songMoreBtn);
+    { icon: "printer", label: "Print", action: () => { closeOverlays(); window.print(); } }
+  ], { icon: "trash-2", label: "Delete song", danger: true, action: requestDeleteSong }, els.songMoreBtn);
+}
+
+function showActionGrid(tiles, footer, anchor = null) {
+  setElementVisible(els.appearancePopover, false);
+  els.actionMenu.innerHTML = "";
+  els.actionMenu.classList.add("action-menu--grid");
+  const make = (item, className) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `${className} ${item.danger ? "danger" : ""}`;
+    button.innerHTML = `<i data-lucide="${item.icon}"></i><span>${escapeHtml(item.label)}</span>`;
+    button.addEventListener("click", () => {
+      setElementVisible(els.actionMenu, false);
+      item.action();
+    });
+    return button;
+  };
+  const grid = document.createElement("div");
+  grid.className = "action-grid";
+  tiles.forEach((tile) => grid.append(make(tile, "action-tile")));
+  els.actionMenu.append(grid);
+  if (footer) els.actionMenu.append(make(footer, "action-footer"));
+  positionFloatingMenu(els.actionMenu, anchor);
+  setElementVisible(els.actionMenu, true);
+  refreshIcons();
 }
 
 function showActionMenu(items, anchor = null) {
   setElementVisible(els.appearancePopover, false);
   els.actionMenu.innerHTML = "";
+  els.actionMenu.classList.remove("action-menu--grid");
   items.forEach((item) => {
     const button = document.createElement("button");
     button.type = "button";
@@ -11649,9 +12220,11 @@ function renderGigDetailsPanel(gig) {
     field("Date", gig.date ? formatGigDate(gig.date) : ""),
     field("Time", formatGigTimeRange(gig)),
     field("Type", gig.eventType),
-    field("Chuppah", gig.hasChuppah ? "Yes" : ""),
     field("Venue", [gig.venue, gig.address].filter(Boolean).join(" — ")),
     field("Customer", gig.clientName),
+    field("Phone", gig.contactInfo),
+    field("Email", gig.email),
+    field("Price", gigMoneyLine(gig)),
     field("Songs", `${planSongCount} ${plural(planSongCount, "song")}`)
   ].filter(Boolean);
   els.gigDetailsFields.innerHTML = fields.join("");
@@ -11704,7 +12277,7 @@ function renderGigBuilder(gig) {
   wireRowToggle("[data-toggle-gig-section]", toggleGigSection);
   wireRowToggle("[data-toggle-gig-set]", toggleGigSet);
   els.gigSectionList.querySelectorAll("[data-gig-key-filter]").forEach((badge) => badge.addEventListener("click", () => setGigKeyFilter(badge.dataset.gigKeyFilter)));
-  els.gigSectionList.querySelectorAll("[data-gig-set-sort]").forEach((select) => select.addEventListener("change", () => setGigListSort(select.dataset.gigSetSort, select.value)));
+  els.gigSectionList.querySelectorAll("[data-gig-sort-btn]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); openGigSortMenu(button.dataset.gigSortBtn, button); }));
   els.gigSectionList.querySelectorAll(".gig-drag-handle").forEach(wireGigDrag);
   // Rows can be long-pressed into Select mode, except while Rearrange / Edit own the gesture.
   if (selectMode.active || !(gigReorderMode || gigStructureEditMode)) {
@@ -11808,9 +12381,19 @@ function sortedGigSetItems(items, setId) {
   });
 }
 
+// Sorting is one small icon at the end of a section or list title (with a dot while something
+// other than "My order" is active), not a whole row of its own.
 function gigListSortControl(setId, label) {
   if (gigReorderMode || gigStructureEditMode) return "";
-  return `<label class="gig-list-sort"><span class="sr-only">Sort ${escapeHtml(label)}</span><select data-gig-set-sort="${setId}" aria-label="Sort ${escapeAttribute(label)}"><option value="custom" ${gigSetSort(setId) === "custom" ? "selected" : ""}>My Order</option><option value="title" ${gigSetSort(setId) === "title" ? "selected" : ""}>Title</option><option value="artist" ${gigSetSort(setId) === "artist" ? "selected" : ""}>Artist</option><option value="key" ${gigSetSort(setId) === "key" ? "selected" : ""}>Key</option></select></label>`;
+  const sort = gigSetSort(setId);
+  const names = { title: "Title", artist: "Artist", key: "Key" };
+  return `<button class="slp-btn slp-btn--icon gig-sort-btn ${sort !== "custom" ? "is-active" : ""}" type="button" data-gig-sort-btn="${setId}" aria-label="Sort ${escapeAttribute(label)}${sort !== "custom" ? `, sorted by ${names[sort]}` : ""}"><i data-lucide="arrow-up-down"></i></button>`;
+}
+
+function openGigSortMenu(setId, anchor) {
+  const current = gigSetSort(setId);
+  showActionMenu([["custom", "grip-vertical", "My order"], ["title", "arrow-down-a-z", "Title"], ["artist", "mic-vocal", "Artist"], ["key", "music-2", "Key"]]
+    .map(([value, icon, label]) => ({ icon, label: `${value === current ? "✓  " : ""}${label}`, action: () => setGigListSort(setId, value) })), anchor);
 }
 
 // Wave 2 (09-setlist.html): Category -> Section (1:1), nested subfolder
@@ -11836,7 +12419,7 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
     ${gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-section="${section.id}"><i data-lucide="pencil"></i><span>Rename section</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-section="${section.id}"><i data-lucide="trash-2"></i><span>Delete section</span></button>`, `More options for ${section.name}`)}
   ` : "";
   const setMarkup = sets.map(gigSetMarkup).filter(Boolean);
-  const directSongs = directItems.length ? `<div class="gig-direct-songs" style="padding-inline-start:30px;"><div class="gig-direct-toolbar"><span class="slp-row__subtitle">${directItems.length} ${plural(directItems.length, "song")}</span>${gigListSortControl(directSet.id, section.name)}</div>${directItems.map((item, index) => gigSongReferenceMarkup(item, index, directItems.length, true)).join("")}</div>` : "";
+  const directSongs = directItems.length ? `<div class="gig-direct-songs" style="padding-inline-start:30px;">${directItems.map((item, index) => gigSongReferenceMarkup(item, index, directItems.length, true)).join("")}</div>` : "";
   if (gigBuilderFilterActive() && !directSongs && !setMarkup.length) return "";
   return `<section class="slp-card gig-section-card" data-gig-drag-type="section" data-gig-drag-id="${section.id}" data-gig-parent-id="${section.gigId}">
     <div class="slp-row gig-toggle-row ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""}" role="button" tabindex="0" data-toggle-gig-section="${section.id}" aria-expanded="${visiblyExpanded}" aria-label="${visiblyExpanded ? "Collapse" : "Expand"} ${escapeAttribute(section.name)}">
@@ -11845,7 +12428,7 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
         <span class="slp-row__title" dir="auto">${escapeHtml(section.name)}</span>
         <span class="slp-row__subtitle">${sets.length} ${plural(sets.length, "list")} · ${songCount} ${plural(songCount, "song")}</span>
       </span>
-      ${dragHandle}${manageActions}
+      ${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${dragHandle}${manageActions}
     </div>
     <div class="gig-section-content ${visiblyExpanded ? "" : "hidden"}">${directSongs}${setMarkup.join("")}</div>
   </section>`;
@@ -11868,7 +12451,7 @@ function gigSetMarkup(set) {
         <span class="slp-row__title" dir="auto">${escapeHtml(set.name)}</span>
         <span class="slp-row__subtitle">${items.length} ${plural(items.length, "song")}</span>
       </span>
-      ${gigListSortControl(set.id, set.name)}${dragHandle}${manageActions}
+      ${items.length > 1 ? gigListSortControl(set.id, set.name) : ""}${dragHandle}${manageActions}
     </div>
     <div class="gig-set-songs ${visiblyExpanded ? "" : "hidden"}">${items.map((item, index) => gigSongReferenceMarkup(item, index, items.length)).join("")}</div>
   </div>`;
@@ -11910,19 +12493,49 @@ function renderGigList(gigs) {
   const markup = groups.filter(([, items]) => items.length).map(([label, items]) => `
     <section aria-label="${escapeAttribute(label)} events">
       <div class="slp-section-label-row"><span class="slp-section-label">${label}</span><span class="slp-section-label">${items.length}</span></div>
-      <div class="slp-card">${sortGigs(items, state.gigNavigation.sort).map(gigRowMarkup).join("")}</div>
+      <div class="slp-card">${sortGigs(items, state.gigNavigation.sort).map((gig) => `<div class="gig-item" data-gig-item="${escapeAttribute(gig.id)}">${gigRowMarkup(gig)}</div>`).join("")}</div>
     </section>
   `).join("");
   els.gigList.innerHTML = markup;
   els.gigListEmpty.classList.toggle("hidden", Boolean(gigs.length));
   els.gigList.querySelectorAll("[data-gig-id]").forEach((button) => button.addEventListener("click", () => openGigRecord(button.dataset.gigId)));
+  // Swipe an event row to the left for a red Delete (it still asks before removing anything).
+  els.gigList.querySelectorAll("[data-gig-item]").forEach((item) => {
+    wireSwipeAction(item, item.querySelector(".slp-row"), { label: "Delete", icon: "trash-2", danger: true, onTrigger: () => requestDeleteGig(item.dataset.gigItem) });
+  });
+}
+
+// Removes the event, its sections, lists and song references. The songs themselves stay in the library.
+function requestDeleteGig(gigId) {
+  const gig = state.gigs.find((item) => item.id === gigId);
+  if (!gig) return;
+  const sectionIds = new Set(state.gigSections.filter((section) => section.gigId === gigId).map((section) => section.id));
+  const setIds = new Set(state.gigSets.filter((set) => sectionIds.has(set.sectionId)).map((set) => set.id));
+  const references = state.gigSetItems.filter((item) => setIds.has(item.setId)).length;
+  const label = gigAutoTitle(gig) || [gig.eventType, formatGigDate(gig.date)].filter(Boolean).join(" · ") || "this event";
+  openConfirm("Delete event?", `Delete “${label}” and its setlist${references ? ` (${references} ${plural(references, "song")})` : ""}? Your songs stay in your library. This can't be undone.`, "Delete", () => {
+    state.gigSetItems = state.gigSetItems.filter((item) => !setIds.has(item.setId));
+    state.gigSets = state.gigSets.filter((set) => !setIds.has(set.id));
+    state.gigSections = state.gigSections.filter((section) => !sectionIds.has(section.id));
+    state.gigs = state.gigs.filter((item) => item.id !== gigId);
+    if (state.gigNavigation.gigId === gigId) {
+      state.gigNavigation.gigId = null;
+      state.gigNavigation.sectionId = null;
+      state.gigNavigation.setId = null;
+    }
+    if (activeGigSetId && setIds.has(activeGigSetId)) activeGigSetId = null;
+    editingGigId = null;
+    closeOverlays();
+    render();
+    showToast("Event deleted");
+  });
 }
 
 function gigRowMarkup(gig) {
   // Design rationale (07 — Events): performers navigate the list
   // chronologically, "what's next," not by venue/name -- date is the
   // primary line; name (or event type) and venue are secondary.
-  const identity = gig.name || gig.eventType;
+  const identity = gigAutoTitle(gig);
   const subtitle = [identity, gig.venue].filter(Boolean).join(" · ") || "Event details not added";
   return `<button class="slp-row ${state.gigNavigation.gigId === gig.id ? "selected" : ""}" type="button" data-gig-id="${gig.id}" style="flex-direction:column; align-items:flex-start; gap:2px;">
     <span class="slp-row__title" dir="auto">${escapeHtml(formatGigDate(gig.date))}</span>
@@ -12018,7 +12631,7 @@ function setGigCollapseOpen(collapse, open) {
 
 function resetGigFormAccordion() {
   const collapses = [...els.gigFormSheet.querySelectorAll(".slp-collapse")];
-  collapses.forEach((collapse, index) => setGigCollapseOpen(collapse, index === 0));
+  collapses.forEach((collapse) => setGigCollapseOpen(collapse, false));
 }
 
 function toggleGigCollapse(collapse) {
@@ -12031,15 +12644,65 @@ function toggleGigCollapse(collapse) {
   setGigCollapseOpen(collapse, opening);
 }
 
-// What each closed section of the event form holds, so nothing has to be opened to check it.
+function parseGigMoney(value) {
+  const number = Number(String(value || "").replace(/[^0-9.\-]/g, ""));
+  return Number.isFinite(number) && String(value || "").trim() ? number : null;
+}
+
+function formatGigMoney(number) {
+  return number.toLocaleString(undefined, { maximumFractionDigits: 2 });
+}
+
+// Balance = price - deposit, or nothing owed once it is marked paid in full.
+function gigBalance(gig) {
+  const price = parseGigMoney(gig.price);
+  if (price === null) return null;
+  if (gig.paid) return 0;
+  return price - (parseGigMoney(gig.deposit) || 0);
+}
+
+function gigMoneyLine(gig) {
+  const price = parseGigMoney(gig.price);
+  if (price === null) return "";
+  const balance = gigBalance(gig);
+  return [formatGigMoney(price), gig.paid ? "paid" : `balance ${formatGigMoney(balance)}`].join(" · ");
+}
+
+function gigFormMoneyValues() {
+  return { price: els.gigPriceInput.value.trim(), deposit: els.gigDepositInput.value.trim(), paid: els.gigPaidInput.checked };
+}
+
+// The type the form currently means: the dropdown, or the typed text under "Other".
+function gigFormEventType() {
+  const picked = els.gigTypeSelect.value;
+  return picked === "Other" ? els.gigEventTypeInput.value.trim() || "Other" : picked;
+}
+
+function setGigFormType(type) {
+  const known = [...els.gigTypeSelect.options].find((option) => option.value && option.value.toLocaleLowerCase() === String(type || "").toLocaleLowerCase() && option.value !== "Other");
+  els.gigTypeSelect.value = known ? known.value : (type ? "Other" : "");
+  els.gigEventTypeInput.value = known || !type ? "" : type;
+  syncGigTypeInput();
+}
+
+function syncGigTypeInput() {
+  els.gigEventTypeInput.hidden = els.gigTypeSelect.value !== "Other";
+}
+
+// What each closed row of the event form holds, so nothing has to be opened to check it.
 function updateGigFormSummaries() {
-  const clip = (text, length = 34) => (text.length > length ? `${text.slice(0, length - 1)}…` : text);
-  const time = formatGigTimeRange({ startTime: els.gigStartTimeInput.value, endTime: els.gigEndTimeInput.value });
-  els.gigScheduleSummary.textContent = [els.gigDateInput.value ? formatGigDate(els.gigDateInput.value) : "", time].filter(Boolean).join(" · ") || "Not set";
-  els.gigLocationSummary.textContent = clip(els.gigVenueInput.value.trim() || els.gigAddressInput.value.trim()) || "Not set";
-  els.gigCustomerSummary.textContent = clip(els.gigClientInput.value.trim()) || "Not set";
-  els.gigMusicTeamSummary.textContent = clip([els.gigBandInput.value, els.gigDirectorInput.value, els.gigChoirInput.value].map((value) => value.trim()).filter(Boolean).join(" · ")) || "Not set";
-  els.gigNotesSummary.textContent = clip(els.gigNotesInput.value.trim().replace(/\s+/g, " ")) || "None";
+  const clip = (text, length = 30) => (text.length > length ? `${text.slice(0, length - 1)}…` : text);
+  els.gigLocationSummary.textContent = clip(els.gigVenueInput.value.trim() || els.gigAddressInput.value.trim()) || "Add";
+  els.gigCustomerSummary.textContent = clip([els.gigContactInput.value, els.gigEmailInput.value].map((value) => value.trim()).filter(Boolean).join(" · ")) || "Add";
+  const money = gigFormMoneyValues();
+  const balance = gigBalance(money);
+  els.gigBalanceValue.textContent = balance === null ? "—" : money.paid ? "Paid" : formatGigMoney(balance);
+  els.gigMoneySummary.textContent = balance === null ? "Add" : gigMoneyLine(money);
+  els.gigMusicTeamSummary.textContent = clip([els.gigBandInput.value, els.gigDirectorInput.value, els.gigChoirInput.value].map((value) => value.trim()).filter(Boolean).join(" · ")) || "Add";
+  els.gigNotesSummary.textContent = clip(els.gigNotesInput.value.trim().replace(/\s+/g, " ")) || "Add";
+  const title = gigAutoTitle({ name: "", clientName: els.gigClientInput.value.trim(), eventType: gigFormEventType() });
+  els.gigTitlePreview.hidden = !title;
+  els.gigTitlePreview.textContent = title ? `Event title: ${title}` : "";
 }
 
 function openNewGigForm(date = state.gigNavigation.selectedDate || todayDateString()) {
@@ -12047,14 +12710,12 @@ function openNewGigForm(date = state.gigNavigation.selectedDate || todayDateStri
   els.gigForm.reset();
   els.gigFormTitle.textContent = "New Event";
   els.gigDateInput.value = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : todayDateString();
-  els.gigChuppahInput.value = "no";
-  els.gigTemplateGroup.hidden = false;
-  gigTemplateChosenByUser = false;
-  setGigFormTemplate("blank");
+  setGigFormType("");
+  els.gigDeleteZone.hidden = true;
   resetGigFormAccordion();
   updateGigFormSummaries();
   showOverlay(els.gigFormSheet);
-  setTimeout(() => els.gigEventTypeInput.focus(), 0);
+  setTimeout(() => els.gigTypeSelect.focus(), 0);
 }
 
 function openEditGigForm() {
@@ -12064,9 +12725,13 @@ function openEditGigForm() {
   els.gigForm.reset();
   els.gigFormTitle.textContent = "Edit Event";
   els.gigDateInput.value = gig.date;
-  els.gigEventTypeInput.value = gig.eventType;
-  els.gigChuppahInput.value = gig.hasChuppah ? "yes" : "no";
-  els.gigNameInput.value = gig.name;
+  setGigFormType(gig.eventType);
+  els.gigPriceInput.value = gig.price;
+  els.gigDepositInput.value = gig.deposit;
+  els.gigPaidInput.checked = gig.paid;
+  els.gigDueDateInput.value = gig.dueDate;
+  els.gigMoneyNoteInput.value = gig.moneyNote;
+  els.gigEmailInput.value = gig.email;
   els.gigStartTimeInput.value = gig.startTime;
   els.gigEndTimeInput.value = gig.endTime;
   els.gigVenueInput.value = gig.venue;
@@ -12078,7 +12743,7 @@ function openEditGigForm() {
   els.gigDirectorInput.value = gig.musicalDirector;
   els.gigChoirInput.value = gig.choir;
   els.gigNotesInput.value = gig.notes;
-  els.gigTemplateGroup.hidden = true;
+  els.gigDeleteZone.hidden = false;
   resetGigFormAccordion();
   updateGigFormSummaries();
   showOverlay(els.gigFormSheet);
@@ -12099,6 +12764,12 @@ function createGigRecord(values) {
     address: String(values.address || "").trim(),
     clientName: String(values.clientName || "").trim(),
     contactInfo: String(values.contactInfo || "").trim(),
+    email: String(values.email || "").trim(),
+    price: String(values.price || "").trim(),
+    deposit: String(values.deposit || "").trim(),
+    paid: values.paid === true,
+    dueDate: /^\d{4}-\d{2}-\d{2}$/.test(values.dueDate || "") ? values.dueDate : "",
+    moneyNote: String(values.moneyNote || "").trim(),
     agentName: String(values.agentName || "").trim(),
     band: String(values.band || "").trim(),
     musicalDirector: String(values.musicalDirector || "").trim(),
@@ -12119,44 +12790,6 @@ function updateGigRecord(gigId, values) {
   return gig;
 }
 
-// Starting structures for a new event. Section names are ordinary sections afterwards:
-// rename, reorder or delete them like any other.
-const GIG_TEMPLATES = {
-  blank: { label: "Blank", hint: "An empty event. Add sections as you go.", sections: () => [] },
-  wedding: {
-    label: "Wedding",
-    hint: "Kabbalas Panim, Chuppah, Meal, First Dance, Second Dance, Slow Set, Kumzitz, Final Dance.",
-    sections: (hasChuppah) => ["Kabbalas Panim", ...(hasChuppah ? ["Chuppah"] : []), "Meal", "First Dance", "Second Dance", "Slow Set", "Kumzitz", "Final Dance"]
-  },
-  barmitzvah: {
-    label: "Bar Mitzvah",
-    hint: "Kabbalas Panim, Meal, Dancing, Slow Set, Kumzitz.",
-    sections: () => ["Kabbalas Panim", "Meal", "Dancing", "Slow Set", "Kumzitz"]
-  },
-  concert: { label: "Concert", hint: "Opening, Main Set, Encore.", sections: () => ["Opening", "Main Set", "Encore"] }
-};
-let gigFormTemplate = "blank";
-let gigTemplateChosenByUser = false;
-
-function setGigFormTemplate(id, byUser = false) {
-  if (!GIG_TEMPLATES[id]) return;
-  gigFormTemplate = id;
-  if (byUser) gigTemplateChosenByUser = true;
-  els.gigTemplateGroup.querySelectorAll("[data-gig-template]").forEach((chip) => chip.setAttribute("aria-pressed", String(chip.dataset.gigTemplate === id)));
-  els.gigTemplateHint.textContent = GIG_TEMPLATES[id].hint;
-}
-
-// Until a structure is picked by hand, follow what the event type says.
-function suggestGigTemplate() {
-  if (gigTemplateChosenByUser || editingGigId) return;
-  const type = els.gigEventTypeInput.value.toLocaleLowerCase();
-  setGigFormTemplate(/wedding|chasuna|chatuna/.test(type) ? "wedding" : /bar mitzvah|bat mitzvah|bris|sheva/.test(type) ? "barmitzvah" : /concert|show/.test(type) ? "concert" : "blank");
-}
-
-function applyGigTemplate(gig, templateId) {
-  (GIG_TEMPLATES[templateId] || GIG_TEMPLATES.blank).sections(gig.hasChuppah).forEach((name) => createGigSectionRecord(gig.id, name));
-}
-
 function saveGig(event) {
   event.preventDefault();
   if (!els.gigDateInput.value) {
@@ -12165,15 +12798,22 @@ function saveGig(event) {
   }
   const values = {
     date: els.gigDateInput.value,
-    eventType: els.gigEventTypeInput.value,
-    hasChuppah: els.gigChuppahInput.value === "yes",
-    name: els.gigNameInput.value,
+    eventType: gigFormEventType(),
+    hasChuppah: state.gigs.find((item) => item.id === editingGigId)?.hasChuppah === true,
+    // The title is made from customer and type; an older hand-typed name stays until a customer is entered.
+    name: els.gigClientInput.value.trim() ? "" : (state.gigs.find((item) => item.id === editingGigId)?.name || ""),
     startTime: els.gigStartTimeInput.value,
     endTime: els.gigEndTimeInput.value,
     venue: els.gigVenueInput.value,
     address: els.gigAddressInput.value,
     clientName: els.gigClientInput.value,
     contactInfo: els.gigContactInput.value,
+    email: els.gigEmailInput.value,
+    price: els.gigPriceInput.value,
+    deposit: els.gigDepositInput.value,
+    paid: els.gigPaidInput.checked,
+    dueDate: els.gigDueDateInput.value,
+    moneyNote: els.gigMoneyNoteInput.value,
     agentName: els.gigAgentInput.value,
     band: els.gigBandInput.value,
     musicalDirector: els.gigDirectorInput.value,
@@ -12184,7 +12824,6 @@ function saveGig(event) {
   const creating = !editingGigId;
   const gig = editingGigId ? updateGigRecord(editingGigId, values) : createGigRecord(values);
   if (!gig) return showToast("This event could not be saved");
-  if (creating) applyGigTemplate(gig, gigFormTemplate);
   workspaceMode = "gigs";
   state.gigNavigation.gigId = gig.id;
   state.gigNavigation.selectedDate = gig.date;
@@ -12275,7 +12914,7 @@ function openSongFromGig(songId) {
 function openGigShare() {
   if (!state.gigs.some((gig) => gig.id === state.gigNavigation.gigId)) return;
   els.shareGigSongsInput.checked = true;
-  [els.shareGigLocationInput, els.shareGigCustomerInput, els.shareGigContactInput, els.shareGigBandInput, els.shareGigNotesInput].forEach((input) => { input.checked = false; });
+  [els.shareGigLocationInput, els.shareGigCustomerInput, els.shareGigContactInput, els.shareGigBandInput, els.shareGigNotesInput, els.shareGigMoneyInput].forEach((input) => { input.checked = false; });
   showOverlay(els.gigShareSheet);
 }
 
@@ -12285,7 +12924,8 @@ function buildGigShareText(gigId, options = {}) {
   const lines = [gigDisplayName(gig), [formatGigDate(gig.date), formatGigTimeRange(gig)].filter(Boolean).join(" · ")];
   if (options.location && (gig.venue || gig.address)) lines.push([gig.venue, gig.address].filter(Boolean).join(" — "));
   if (options.customer && gig.clientName) lines.push(`Customer: ${gig.clientName}`);
-  if (options.contact && gig.contactInfo) lines.push(`Contact: ${gig.contactInfo}`);
+  if (options.contact && (gig.contactInfo || gig.email)) lines.push(...[gig.contactInfo && `Contact: ${gig.contactInfo}`, gig.email && `Email: ${gig.email}`].filter(Boolean));
+  if (options.money && parseGigMoney(gig.price) !== null) lines.push(...[`Price: ${formatGigMoney(parseGigMoney(gig.price))}`, parseGigMoney(gig.deposit) !== null && `Deposit: ${formatGigMoney(parseGigMoney(gig.deposit))}`, `Balance: ${gig.paid ? "paid in full" : formatGigMoney(gigBalance(gig))}`, gig.dueDate && `Due: ${formatGigDate(gig.dueDate)}`, gig.moneyNote].filter(Boolean));
   if (options.band) lines.push(...[gig.band && `Band: ${gig.band}`, gig.musicalDirector && `Band leader: ${gig.musicalDirector}`, gig.choir && `Choir: ${gig.choir}`, gig.agentName && `Agent: ${gig.agentName}`].filter(Boolean));
   if (options.notes && gig.notes) lines.push("", "Notes", gig.notes.trim());
   if (options.songs !== false) {
@@ -12311,7 +12951,7 @@ function buildGigShareText(gigId, options = {}) {
 async function shareCurrentGig() {
   const gig = state.gigs.find((item) => item.id === state.gigNavigation.gigId);
   if (!gig) return;
-  const text = buildGigShareText(gig.id, { songs: els.shareGigSongsInput.checked, location: els.shareGigLocationInput.checked, customer: els.shareGigCustomerInput.checked, contact: els.shareGigContactInput.checked, band: els.shareGigBandInput.checked, notes: els.shareGigNotesInput.checked });
+  const text = buildGigShareText(gig.id, { songs: els.shareGigSongsInput.checked, location: els.shareGigLocationInput.checked, customer: els.shareGigCustomerInput.checked, contact: els.shareGigContactInput.checked, band: els.shareGigBandInput.checked, notes: els.shareGigNotesInput.checked, money: els.shareGigMoneyInput.checked });
   try {
     if (navigator.share) await navigator.share({ title: gigDisplayName(gig), text });
     else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); showToast("Event details copied"); }
@@ -12497,7 +13137,11 @@ function gigDateParts(value) {
 
 function formatGigDate(value) { return gigDateParts(value).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }); }
 function gigMonthYear(value) { return gigDateParts(value).toLocaleDateString(undefined, { month: "long", year: "numeric" }); }
-function gigDisplayName(gig) { return gig.name || `${gig.eventType || "Event"} — ${formatGigDate(gig.date)}`; }
+// "Cohen · Wedding": made from the customer and the type unless an older event has its own name.
+function gigAutoTitle(gig) {
+  return gig.name || [gig.clientName, gig.eventType].filter(Boolean).join(" · ");
+}
+function gigDisplayName(gig) { return gigAutoTitle(gig) || `${gig.eventType || "Event"} — ${formatGigDate(gig.date)}`; }
 function formatGigTimeRange(gig) {
   if (!gig.startTime && !gig.endTime) return "";
   const format = (value) => value ? new Date(`2000-01-01T${value}`).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }) : "";
@@ -12705,6 +13349,129 @@ function initQuickAddUi() {
   els.needsLyricsBannerSongs.addEventListener("click", openNeedsLyrics);
   els.needsLyricsBannerEvents.addEventListener("click", openNeedsLyrics);
 }
+// Event templates: a ready-made or saved list of section names that can be added to an event.
+// Applying one only adds sections that the event does not already have; nothing is removed.
+
+const READY_GIG_TEMPLATES = [
+  { id: "wedding", name: "Wedding", sections: ["Chuppah", "Meal", "Dancing"] },
+  { id: "meal-dancing", name: "Meal and dancing", sections: ["Meal", "Dancing"], hint: "Bar mitzvah, sheva brachos" }
+];
+
+let gigTemplateBuilderMode = "build";
+
+function gigTemplateSectionNames(text) {
+  const seen = new Set();
+  return String(text || "").split(/\n|;/).map((line) => line.trim()).filter((name) => {
+    const key = name.toLocaleLowerCase();
+    if (!name || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function currentGigSectionNames(gigId) {
+  return state.gigSections.filter((section) => section.gigId === gigId).sort((a, b) => a.position - b.position).map((section) => section.name);
+}
+
+function applyTemplateToGig(gigId, names, label) {
+  const have = new Set(currentGigSectionNames(gigId).map((name) => name.toLocaleLowerCase()));
+  let added = 0;
+  names.forEach((name) => {
+    if (have.has(name.toLocaleLowerCase())) return;
+    if (createGigSectionRecord(gigId, name)) added += 1;
+  });
+  persist();
+  closeOverlays();
+  render();
+  showToast(added ? `Added ${added} ${plural(added, "section")} from “${label}”` : "This event already has those sections");
+}
+
+function gigTemplateRowMarkup(template, own) {
+  return `<div class="gig-template-row"><button class="gig-template-row__main" type="button" data-template-apply="${escapeAttribute(template.id)}"><strong dir="auto">${escapeHtml(template.name)}</strong><span dir="auto">${escapeHtml(template.hint || template.sections.join(" · "))}</span></button>${own ? `<button class="board-icon-btn" type="button" data-template-delete="${escapeAttribute(template.id)}" aria-label="Delete ${escapeAttribute(template.name)}"><i data-lucide="trash-2"></i></button>` : ""}</div>`;
+}
+
+function renderGigTemplateList() {
+  const gigId = state.gigNavigation.gigId;
+  const mine = state.eventTemplates || [];
+  const hasSections = Boolean(gigId && currentGigSectionNames(gigId).length);
+  els.gigTemplateListBody.innerHTML = `
+    <span class="slp-section-label">READY-MADE</span>
+    <div class="slp-card gig-template-list">${READY_GIG_TEMPLATES.map((template) => gigTemplateRowMarkup(template, false)).join("")}</div>
+    ${mine.length ? `<span class="slp-section-label">MY TEMPLATES</span><div class="slp-card gig-template-list">${mine.map((template) => gigTemplateRowMarkup(template, true)).join("")}</div>` : ""}
+    <button class="slp-btn slp-btn--soft gig-template-action" type="button" data-template-build><i data-lucide="plus"></i><span>Build a custom template</span></button>
+    ${hasSections ? `<button class="slp-btn slp-btn--soft gig-template-action" type="button" data-template-save-current><i data-lucide="bookmark-plus"></i><span>Save this event's structure as a template</span></button>` : ""}`;
+  refreshIcons();
+}
+
+function showGigTemplateView(view) {
+  els.gigTemplateListView.hidden = view !== "list";
+  els.gigTemplateBuildView.hidden = view !== "build";
+  els.gigTemplateBackBtn.hidden = view === "list";
+  els.gigTemplateTitle.textContent = view === "list" ? "Add template" : (gigTemplateBuilderMode === "save" ? "Save as template" : "Custom template");
+}
+
+function openGigTemplates() {
+  if (!state.gigNavigation.gigId) return;
+  els.gigTemplateListBody.closest("details")?.removeAttribute("open");
+  renderGigTemplateList();
+  showGigTemplateView("list");
+  showOverlay(els.gigTemplateSheet);
+}
+
+function openGigTemplateBuilder(mode) {
+  gigTemplateBuilderMode = mode;
+  els.gigTemplateNameInput.value = "";
+  els.gigTemplateSectionsInput.value = mode === "save" ? currentGigSectionNames(state.gigNavigation.gigId).join("\n") : "";
+  els.gigTemplateSaveBtn.textContent = mode === "save" ? "Save template" : "Save and add";
+  showGigTemplateView("build");
+  setTimeout(() => els.gigTemplateNameInput.focus(), 0);
+}
+
+function saveGigTemplateFromBuilder() {
+  const name = els.gigTemplateNameInput.value.trim();
+  const sections = gigTemplateSectionNames(els.gigTemplateSectionsInput.value);
+  if (!name) return showToast("Give the template a name");
+  if (!sections.length) return showToast("Add at least one section");
+  state.eventTemplates = state.eventTemplates || [];
+  state.eventTemplates.push({ id: makeId(), name, sections });
+  if (gigTemplateBuilderMode === "save") {
+    persist();
+    renderGigTemplateList();
+    showGigTemplateView("list");
+    return showToast(`Saved “${name}”`);
+  }
+  applyTemplateToGig(state.gigNavigation.gigId, sections, name);
+}
+
+function initGigTemplatesUi() {
+  els.addGigTemplateBtn.addEventListener("click", openGigTemplates);
+  els.gigTemplateMenuBtn.addEventListener("click", openGigTemplates);
+  els.closeGigTemplateBtn.addEventListener("click", closeOverlays);
+  els.gigTemplateBackBtn.addEventListener("click", () => showGigTemplateView("list"));
+  els.gigTemplateSaveBtn.addEventListener("click", saveGigTemplateFromBuilder);
+  els.gigTemplateListBody.addEventListener("click", (event) => {
+    const apply = event.target.closest("[data-template-apply]");
+    if (apply) {
+      const template = [...READY_GIG_TEMPLATES, ...(state.eventTemplates || [])].find((item) => item.id === apply.dataset.templateApply);
+      if (template) applyTemplateToGig(state.gigNavigation.gigId, template.sections, template.name);
+      return;
+    }
+    const remove = event.target.closest("[data-template-delete]");
+    if (remove) {
+      const template = (state.eventTemplates || []).find((item) => item.id === remove.dataset.templateDelete);
+      if (!template) return;
+      openConfirm("Delete template?", `Remove “${template.name}” from My templates? Events that already use it are not changed.`, "Delete", () => {
+        state.eventTemplates = state.eventTemplates.filter((item) => item.id !== template.id);
+        persist();
+        closeOverlays();
+        showToast("Template deleted");
+      });
+      return;
+    }
+    if (event.target.closest("[data-template-build]")) openGigTemplateBuilder("build");
+    else if (event.target.closest("[data-template-save-current]")) openGigTemplateBuilder("save");
+  });
+}
 function renderNotes() {
   if (libraryMode !== "notes") {
     els.app.classList.remove("note-editor-active");
@@ -12725,8 +13492,10 @@ function renderNotes() {
   renderNoteBreadcrumbs(currentFolder);
 
   els.noteFolderList.innerHTML = "";
+  // No folders yet: just the FOLDERS header with its "+", no empty box.
+  els.noteFolderList.classList.toggle("hidden", !folders.length && !noteFolderEditMode);
   if (!folders.length && !noteFolderEditMode) {
-    els.noteFolderList.innerHTML = emptyMarkup("folder-plus", "No note folders yet");
+    // nothing to list
   } else {
     folders.forEach((folder) => {
       const row = document.createElement(noteFolderEditMode ? "div" : "button");
@@ -12793,14 +13562,14 @@ function renderNotes() {
     button.type = "button";
     button.className = "slp-row";
     button.dataset.noteId = note.id;
+    // A compact row: title (with a small pin when pinned), at most two lines of preview, date at the end.
+    button.className = "slp-row note-row";
     button.innerHTML = `
-      <span class="slp-row__icon-tile"><i data-lucide="${note.pinned ? "pin" : "notebook-pen"}"></i></span>
       <span class="slp-row__body">
-        <span class="slp-row__title" dir="auto">${escapeHtml(note.title)}</span>
-        <span class="slp-row__subtitle" dir="auto">${escapeHtml(preview)}</span>
+        <span class="note-row__head"><span class="slp-row__title" dir="auto">${escapeHtml(note.title)}</span>${note.pinned ? `<i class="note-row__pin" data-lucide="pin" aria-label="Pinned"></i>` : ""}</span>
+        <span class="slp-row__subtitle note-row__preview" dir="auto">${escapeHtml(preview)}</span>
       </span>
-      <span class="slp-timestamp">${escapeHtml(formatNoteDate(note.date))}</span>
-      <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="slp-timestamp note-row__date">${escapeHtml(formatNoteDate(note.date))}</span>
     `;
     button.addEventListener("click", () => openNoteEditor(note.id));
     els.noteList.append(button);
@@ -15346,7 +16115,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -15787,11 +16556,11 @@ function gigDragRowSelector(type) {
 // Drag a row sideways (touch or mouse) to reveal an action behind it; past the threshold the
 // action runs and the row springs back. The row keeps vertical scrolling, and a swipe never
 // counts as a tap. ArrowLeft on a focused row does the same thing for keyboard users.
-function wireSwipeAction(item, row, { label, icon, onTrigger }) {
+function wireSwipeAction(item, row, { label, icon, onTrigger, danger = false }) {
   // Needs pointer events (every current phone and desktop browser has them).
   if (!globalThis.PointerEvent) return;
   const reveal = document.createElement("div");
-  reveal.className = "swipe-action";
+  reveal.className = `swipe-action${danger ? " swipe-action--danger" : ""}`;
   reveal.setAttribute("aria-hidden", "true");
   reveal.innerHTML = `<i data-lucide="${icon}"></i><span>${escapeHtml(label)}</span>`;
   item.prepend(reveal);
@@ -16436,13 +17205,9 @@ els.appToolsNavBtn.addEventListener("click", () => {
 els.gigSearchBtn.addEventListener("click", () => { els.gigSearchWrap.classList.remove("hidden"); els.gigSearchInput.focus(); });
 els.newGigBtn.addEventListener("click", () => openNewGigForm());
 els.gigForm.addEventListener("submit", saveGig);
+els.deleteGigBtn.addEventListener("click", () => requestDeleteGig(editingGigId));
 els.gigForm.addEventListener("input", updateGigFormSummaries);
-els.gigEventTypeInput.addEventListener("input", suggestGigTemplate);
-els.gigTemplateGroup.querySelectorAll("[data-gig-template]").forEach((chip) => chip.addEventListener("click", () => setGigFormTemplate(chip.dataset.gigTemplate, true)));
-els.gigForm.querySelectorAll("[data-gig-type]").forEach((chip) => chip.addEventListener("click", () => {
-  els.gigEventTypeInput.value = chip.dataset.gigType;
-  els.gigEventTypeInput.dispatchEvent(new Event("input", { bubbles: true }));
-}));
+els.gigTypeSelect.addEventListener("change", () => { syncGigTypeInput(); updateGigFormSummaries(); if (!els.gigEventTypeInput.hidden) els.gigEventTypeInput.focus(); });
 els.cancelGigFormBtn.addEventListener("click", closeOverlays);
 els.backToGigsBtn.addEventListener("click", () => { gigReorderMode = false; gigStructureEditMode = false; state.gigNavigation.gigId = null; state.gigNavigation.sectionId = null; state.gigNavigation.setId = null; render(); });
 els.editGigBtn.addEventListener("click", openEditGigForm);
@@ -16749,7 +17514,11 @@ document.addEventListener("selectionchange", updateSelectionPopover);
 els.insertImageBtn.addEventListener("click", () => els.imageFileInput.click());
 els.undoBtn.addEventListener("click", undoEdit);
 els.redoBtn.addEventListener("click", redoEdit);
-els.finishWritingBtn.addEventListener("click", hideWritingToolbar);
+els.finishWritingBtn.addEventListener("click", () => { setEditDockOpen(false); hideWritingToolbar(); });
+els.editDockToggle.addEventListener("click", () => setEditDockOpen(!els.writingToolbar.classList.contains("is-open")));
+els.editDockToggle.addEventListener("pointerdown", (event) => event.preventDefault());
+// Typing or tapping in the lyrics folds the pill back into the round button.
+els.songDocument.addEventListener("pointerdown", () => setEditDockOpen(false));
 globalThis.visualViewport?.addEventListener("resize", updateWritingToolbarPosition);
 globalThis.visualViewport?.addEventListener("scroll", updateWritingToolbarPosition);
 globalThis.addEventListener?.("orientationchange", updateWritingToolbarPosition);
@@ -16801,11 +17570,11 @@ els.headingBoldToggle.addEventListener("change", () => {
   applyLyricPrefs();
   persist();
 });
-document.querySelectorAll("[data-lyric-font]").forEach((button) => button.addEventListener("click", () => {
-  state.lyricPrefs.font = button.dataset.lyricFont;
+els.lyricFontSelect.addEventListener("change", () => {
+  state.lyricPrefs.font = els.lyricFontSelect.value;
   applyLyricPrefs();
   persist();
-}));
+});
 document.querySelectorAll("[data-theme]").forEach((button) => button.addEventListener("click", () => {
   state.lyricPrefs.theme = button.dataset.theme;
   applyLyricPrefs();
@@ -17036,9 +17805,14 @@ els.songArtistInput.addEventListener("keydown", (event) => {
   if (value && !value.endsWith(";")) els.songArtistInput.value = `${value}; `;
   else if (value) els.songArtistInput.value = `${value} `;
 });
+els.addNoteFolderBtn.addEventListener("click", () => openNoteFolderDialog());
+els.songsEmptyAddBtn.addEventListener("click", () => els.folderAddBtn.click());
 initSelectModeUi();
 initQuickAddUi();
 initBoardUi();
+  initBoardPosBar();
+  initGigTemplatesUi();
+  initBoardPicker();
 initBoardBoardsUi();
 initBoardSearchUi();
 render();
