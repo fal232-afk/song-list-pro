@@ -4489,7 +4489,7 @@ body.chord-editor-open { overflow: hidden; }
 .select-mode-active #songLibraryContent,
 .select-mode-active .folder-content,
 .select-mode-active .gig-detail-view { padding-bottom: 104px; }
-.select-mode-active .slp-header { visibility: hidden; }
+.select-mode-active:not(.select-mode-embedded) .slp-header { visibility: hidden; }
 .select-mode-active .song-item,
 .select-mode-active .gig-song-reference,
 .select-mode-active #librarySearchSongList .slp-row { cursor: pointer; }
@@ -4989,21 +4989,35 @@ a.slp-chip { min-height: 44px; }
 .app-shell[data-short="true"] .slp-bottom-nav button { min-height: 44px; padding-block: 0; }
 .app-shell[data-short="true"] .slp-bottom-nav button span { display: none; }
 
-/* ---- Songs on medium screens (600-1019px wide): list and lyrics side by side ----
-   Left: whichever list the phone would show (categories, or the song list). Right: the lyrics.
-   Notes, Events, Tools and the Board stay single pane. */
+/* ---- Songs on medium screens (600-1019px wide) ----
+   Until a song is open the list fills a comfortable column; once one is open, the list moves to the
+   left and the lyrics sit beside it (draggable divider, and the list can be tucked away).
+   Notes, Events, Tools and the Board stay as they are. */
+.song-list-toggle, .songs-side-resizer { display: none; }
 @media (max-width: 1019px) {
-  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) { grid-template-columns: minmax(250px, 0.4fr) minmax(0, 1fr); }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) { grid-template-columns: minmax(0, 720px); justify-content: center; }
   .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .library-pane,
-  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .browser-pane { grid-column: 1; grid-row: 1; border-right: 1px solid var(--color-border); }
-  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .song-pane { grid-column: 2; grid-row: 1; display: block; border-right: 0; }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .browser-pane { grid-column: 1; grid-row: 1; border-right: 0; }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .song-pane { display: none; }
   .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="library"] .library-pane { display: block; }
-  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="library"] .browser-pane,
-  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="folder"] .library-pane,
-  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="song"] .library-pane { display: none; }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="library"] .browser-pane { display: none; }
   .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="folder"] .browser-pane,
   .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="song"] .browser-pane { display: block; }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="folder"] .library-pane,
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="song"] .library-pane { display: none; }
   .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .slp-bottom-nav { display: flex; grid-column: 1 / -1; }
+  .app-shell.songs-reading[data-split="true"][data-library-mode="category"]:not(.board-full) { grid-template-columns: var(--songs-left-w, minmax(300px, 0.38fr)) minmax(0, 1fr); justify-content: stretch; }
+  .app-shell.songs-reading[data-split="true"][data-library-mode="category"]:not(.board-full) .library-pane,
+  .app-shell.songs-reading[data-split="true"][data-library-mode="category"]:not(.board-full) .browser-pane { border-right: 1px solid var(--color-border); }
+  .app-shell.songs-reading[data-split="true"][data-library-mode="category"]:not(.board-full) .song-pane { grid-column: 2; grid-row: 1; display: block; border-right: 0; }
+  .app-shell.songs-reading.songs-list-hidden[data-split="true"][data-library-mode="category"]:not(.board-full) { grid-template-columns: minmax(0, 1fr); }
+  .app-shell.songs-reading.songs-list-hidden[data-split="true"][data-library-mode="category"]:not(.board-full) .library-pane,
+  .app-shell.songs-reading.songs-list-hidden[data-split="true"][data-library-mode="category"]:not(.board-full) .browser-pane { display: none; }
+  .app-shell.songs-reading[data-split="true"][data-library-mode="category"]:not(.board-full) .song-list-toggle { display: inline-flex; }
+  .app-shell.songs-reading[data-split="true"][data-library-mode="category"]:not(.board-full) #backToFolderBtn { display: none; }
+  .app-shell.songs-reading:not(.songs-list-hidden)[data-split="true"][data-library-mode="category"]:not(.board-full) .songs-side-resizer { display: block; position: relative; grid-column: 2; grid-row: 1; justify-self: start; width: 24px; margin-inline-start: -12px; z-index: 6; cursor: col-resize; touch-action: none; }
+  .songs-side-resizer::after { content: ""; position: absolute; top: 50%; left: 50%; width: 4px; height: 56px; transform: translate(-50%, -50%); border-radius: 2px; background: var(--color-border-strong, var(--color-border)); }
+  .songs-side-resizer:hover::after, .songs-side-resizer:focus-visible::after, .songs-side-resizer.is-dragging::after { background: var(--accent); }
 }
 
 /* ---- Events on screens 600px and wider: the setlist on the left, the open song on the right ----
@@ -5089,6 +5103,163 @@ a.slp-chip { min-height: 44px; }
 .app-shell.gig-split[data-library-mode="gigs"] .gig-detail-view > .slp-header { padding-inline: var(--space-8); }
 .app-shell.notes-dual[data-library-mode="notes"] #noteEditorHeader { padding-inline: var(--space-6); }
 
+/* ---- Events on medium screens, nothing open yet: the list on the left, a preview on the right ---- */
+.app-shell.gig-preview[data-library-mode="gigs"] { grid-template-columns: minmax(300px, 0.45fr) minmax(0, 1fr); justify-content: stretch; background: var(--color-card); }
+.app-shell.gig-preview[data-library-mode="gigs"] .library-pane { grid-column: 1; grid-row: 1; display: block; box-shadow: none; border-right: 1px solid var(--color-border); }
+.app-shell.gig-preview[data-library-mode="gigs"] .song-pane { grid-column: 2; grid-row: 1; display: block; border-right: 0; }
+.app-shell.gig-preview[data-library-mode="gigs"] .browser-pane,
+.app-shell.gig-preview[data-library-mode="gigs"] #songEmptyState,
+.app-shell.gig-preview[data-library-mode="gigs"] #songReader { display: none; }
+.app-shell.gig-preview[data-library-mode="gigs"] .slp-bottom-nav { display: flex; grid-column: 1 / -1; }
+.app-shell.gig-preview .gig-list-pane .slp-row.selected, .app-shell.gig-preview .gig-list-view .slp-row.selected { background: var(--accent-soft-2); box-shadow: inset 3px 0 0 var(--accent); }
+/* Compact calendar: shorter day cells where space is tight (a side column or a phone on its side). */
+.app-shell.gig-preview .gig-calendar-day, .app-shell.gig-triple .gig-calendar-day { min-height: 46px; padding: 4px; }
+.app-shell[data-short="true"] .gig-calendar-day { min-height: 40px; padding: 4px; }
+.app-shell[data-short="true"] .calendar-weekdays { font-size: 0.55rem; }
+
+/* ---- Phones on their side: keep content clear of the notch / Dynamic Island and rounded corners ---- */
+.app-shell { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); box-sizing: border-box; }
+.board-text-menu { right: calc(16px + env(safe-area-inset-right, 0px)); }
+.app-shell[data-short="true"] .slp-header { padding-block: var(--space-3); }
+.app-shell[data-short="true"] .gigs-toolbar { margin-block: 0; }
+
+/* ---- Phone Board: more room for the columns ---- */
+.board-card__top { display: flex; align-items: stretch; }
+.board-card__top .board-card__head { flex: 1; min-width: 0; }
+.board-card__pinbtn { flex: none; width: 44px; align-self: flex-start; min-height: 44px; margin: 6px 4px 0 0; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--accent); cursor: pointer; }
+.board-card__pinbtn svg { width: 20px; height: 20px; }
+.board-card__sub--open { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.board-card__sub--open > span[dir] { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-card__keychip { flex: none; padding: 1px 8px; border-radius: var(--radius-md); background: var(--accent-soft-2); color: var(--accent); font-weight: var(--font-weight-semibold); font-size: var(--text-sm); }
+.board-card__lyrics { overscroll-behavior: auto; margin-bottom: var(--space-4); }
+.board-panel-wrap { position: relative; padding-bottom: 14px; }
+.board-grip { position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); width: 96px; min-height: 44px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; cursor: row-resize; touch-action: none; z-index: 3; }
+.board-grip .board-handle__bar, .board-grip__bar { width: 44px; height: 5px; border-radius: 3px; background: var(--color-border-strong, var(--color-border)); }
+.board-grip:hover .board-grip__bar, .board-grip:focus-visible .board-grip__bar { background: var(--accent); }
+.board-chip { position: relative; min-height: 36px; }
+.board-chip::after { content: ""; position: absolute; inset: -4px 0; }
+.board-chip--icon { width: 36px; min-width: 36px; }
+.board-chip--icon::after { inset: -4px; }
+.board-filters { padding-block: 4px; }
+.board-pos__label { display: none; }
+.board-pos { padding-top: 0; }
+.board-pos__ticks { height: 44px; padding-bottom: 0; align-items: center; }
+/* New board sheet */
+.board-new-body { display: grid; gap: var(--space-6); }
+.board-new-start { margin: 0; padding: 0; border: 0; display: grid; gap: var(--space-3); }
+.board-new-start legend { padding: 0 0 var(--space-3); color: var(--color-text-secondary); font-size: var(--text-sm); }
+.board-new-start label { display: flex; align-items: center; gap: var(--space-5); min-height: 56px; padding: var(--space-3) var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-card); }
+.board-new-start input { width: 22px; height: 22px; accent-color: var(--accent); }
+.board-new-start small { display: block; color: var(--color-text-secondary); font-size: var(--text-sm); }
+/* Columns screen: "On this board" and "Add a column" side by side when there is room */
+@media (min-width: 640px) {
+  .board-columns-screen .board-columns-body { flex-direction: row; align-items: stretch; gap: var(--space-8); overflow: hidden; padding-bottom: 0; }
+  .board-columns-screen .board-columns-body > .board-cols-left,
+  .board-columns-screen .board-columns-body > .board-cols-right { flex: 1 1 0; min-width: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-3); padding-bottom: var(--space-8); }
+  .board-columns-screen .board-pick-bar { align-self: flex-end; width: calc(50% - var(--space-4)); }
+}
+.board-cols-left > *, .board-cols-right > * { flex: none; min-width: 0; }
+
+/* ---- Song details, tightened: artist in the chip row, "More" opens a compact grey box ---- */
+.song-artist-chip { flex: 1 1 auto !important; min-width: 0; justify-content: flex-start; background: transparent; padding-inline: var(--space-3); color: var(--accent); font-weight: var(--font-weight-semibold); }
+.song-artist-chip[hidden] { display: none; }
+.song-artist-chip > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.song-chip-row > #songCategoryBtn { flex: 0 0 auto; padding-inline: var(--space-5); }
+#songDetailsViewPanel:not([hidden]) { margin: 0 var(--space-8) var(--space-5); padding: var(--space-4) var(--space-6) var(--space-3); border-radius: var(--radius-lg); background: var(--color-chip-bg); }
+#songDetailsViewPanel .slp-details-row { display: none; }
+#songSecondaryMeta.slp-details-grid { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: var(--space-2) var(--space-5); padding: 0 0 var(--space-3); }
+#songSecondaryMeta .slp-details-field { display: contents; }
+#songSecondaryMeta .slp-details-field .slp-section-label { align-self: baseline; font-size: var(--text-sm); }
+#songSecondaryMeta .slp-details-field > span:last-of-type { font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; text-align: start; }
+#songDetailsViewPanel .song-locations { margin-top: var(--space-3); padding-top: var(--space-3); }
+#songDetailsViewPanel .song-locations__group { grid-template-columns: 104px minmax(0, 1fr); align-items: baseline; gap: var(--space-5); margin-bottom: var(--space-2); }
+#songDetailsViewPanel .song-locations__chips { gap: var(--space-2); }
+.song-details-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 44px; border-top: 1px solid var(--color-border); margin-top: var(--space-2); }
+.song-details-foot .slp-link-btn { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; }
+.song-details-foot svg { width: 16px; height: 16px; }
+/* Give the artist more of the row: tighter chips beside it. */
+.song-reader > .slp-chip-row.song-chip-row { gap: var(--space-2); }
+.song-chip-row > #songKey, .song-chip-row > #songTransposeBtn, .song-chip-row > #songDetailsViewCollapse { padding-inline: var(--space-4); }
+.song-chip-row > #songTransposeBtn { min-width: 44px; width: 44px; }
+#songSecondaryMeta .slp-details-field > span:last-of-type { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+#songDetailsViewPanel .song-location-chip { min-height: 32px; padding-inline: var(--space-4); font-size: 13px; }
+
+/* ---- Song details box: footer line (Updated + link icons + Edit), short Folders / Events summary ---- */
+.song-details-foot { gap: var(--space-2); border-top: 0; margin-top: 0; min-height: 44px; }
+.song-details-foot .slp-timestamp { flex: 1; min-width: 0; font-size: 11px; color: var(--color-text-secondary); }
+.song-foot-links { display: inline-flex; align-items: center; }
+.song-foot-links[hidden] { display: none; }
+.song-foot-links .slp-btn--icon, .song-foot-edit { width: 44px; height: 44px; color: var(--color-text-secondary); }
+.song-foot-links svg, .song-foot-edit svg { width: 18px; height: 18px; }
+.song-locations[hidden] { display: none; }
+.song-locations__text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-1); font-size: 14px; min-width: 0; }
+.song-loc-link, .song-loc-more { border: 0; background: transparent; padding: var(--space-2) 0; min-height: 32px; color: var(--color-text); font: inherit; text-align: start; cursor: pointer; }
+.song-loc-link { text-decoration: underline; text-decoration-color: var(--color-border-strong, var(--color-border)); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.song-loc-more { margin-inline-start: var(--space-3); padding-inline: var(--space-3); border-radius: var(--radius-md); background: var(--accent-soft-2); color: var(--accent); font-weight: var(--font-weight-semibold); font-size: 13px; }
+.song-loc-sep { color: var(--color-text-secondary); }
+/* Back to the song */
+.song-back-pill { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 74px); transform: translateX(-50%); z-index: 14; display: inline-flex; align-items: center; gap: var(--space-3); min-height: 48px; max-width: calc(100vw - 32px); padding: 0 var(--space-2) 0 var(--space-6); border: 0; border-radius: 24px; background: var(--color-text); color: var(--color-bg); font-family: var(--font-family); font-weight: var(--font-weight-semibold); font-size: 14px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); cursor: pointer; }
+.song-back-pill.hidden { display: none; }
+.song-back-pill > span:first-of-type { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.song-back-pill svg { width: 18px; height: 18px; flex: none; }
+.song-back-pill__x { flex: none; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; opacity: 0.85; }
+.song-back-pill__x svg { width: 16px; height: 16px; }
+/* Events sheet */
+.song-events-body { display: grid; gap: var(--space-4); align-content: start; }
+.song-event-row { text-align: start; }
+.song-loc-sep { margin-inline: -2px var(--space-3); }
+
+/* Song details footer: highlighted so they read as buttons */
+.song-foot-links .slp-btn--icon, .song-foot-edit { color: var(--accent); background: var(--accent-soft-2); border-radius: 50%; }
+.song-foot-links .slp-btn--icon + .slp-btn--icon, .song-foot-links + .song-foot-edit { margin-inline-start: var(--space-2); }
+/* Events sort chip: no inner outline around the select */
+.gig-sort-chip select { border: 0; outline: 0; box-shadow: none; background: transparent; appearance: auto; }
+.gig-sort-chip:focus-within { box-shadow: var(--focus-shadow, 0 0 0 2px var(--accent)); }
+.gig-chuppah-row { margin-top: var(--space-4); }
+.gig-chuppah-row[hidden] { display: none; }
+
+/* ---- Event setlist: Edit text button, labelled Add songs rows, swipe to remove ---- */
+.gig-edit-text-btn { min-width: 44px; min-height: 44px; padding: 0 var(--space-5); border-radius: var(--radius-md); background: transparent; color: var(--accent); font-weight: var(--font-weight-semibold); font-size: var(--text-base); }
+.gig-edit-text-btn.is-on { background: var(--accent); color: #fff; }
+.gig-add-row { display: flex; align-items: center; gap: var(--space-4); width: 100%; min-height: 48px; border: 0; background: transparent; color: var(--accent); font: inherit; font-weight: var(--font-weight-semibold); text-align: start; cursor: pointer; }
+.gig-add-row svg { width: 18px; height: 18px; flex: none; }
+.gig-direct-songs > .gig-add-row { padding-inline-start: 0; }
+.gig-song-swipe.swipeable { position: relative; overflow: hidden; }
+.gig-song-swipe.swipeable > .slp-row { position: relative; z-index: 1; touch-action: pan-y; background: var(--color-card); }
+.gig-song-swipe .slp-row.swiping { user-select: none; -webkit-user-select: none; cursor: grabbing; }
+
+/* Add to / Move to sheet: collapsible groups */
+.song-add-to-body .choice-search { width: 100%; min-height: 44px; margin-bottom: var(--space-3); padding: 0 var(--space-4); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font: inherit; }
+.choice-group { border-top: 1px solid var(--line); }
+.choice-group[hidden], .song-add-to-body label.folder-choice[hidden] { display: none; }
+.choice-group > summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-2); cursor: pointer; list-style: none; font-weight: var(--font-weight-semibold); color: var(--ink); }
+.choice-group > summary::-webkit-details-marker { display: none; }
+.choice-group > summary::after { content: "›"; color: var(--muted); transition: transform .15s; margin-inline-start: var(--space-2); }
+.choice-group[open] > summary::after { transform: rotate(90deg); }
+.choice-group > summary small { margin-inline-start: auto; color: var(--muted); }
+.choice-group--event { margin-inline-start: var(--space-4); }
+.choice-group--event .folder-choice { margin-inline-start: var(--space-3); min-height: 44px; }
+.song-add-to-body .folder-choice.event-choice { grid-template-columns: 28px minmax(0, 1fr); gap: var(--space-3); }
+.song-add-to-body .event-choice strong { font-size: var(--text-base); white-space: normal; overflow: visible; text-overflow: clip; }
+
+/* Edit mode: the circle and grip already frame the row, so drop the number and the deep indent. */
+.gig-song-reference.selecting .gig-song-number { display: none; }
+.gig-song-reference.selecting { padding-inline-start: var(--space-4) !important; }
+
+/* Compact setlist: smaller gaps and headers, rows stay at the 44px floor. */
+.gig-section-list { gap: var(--space-4); }
+#gigDetailsCollapse { margin-bottom: var(--space-4); }
+.gig-section-card > .gig-toggle-row { min-height: 48px; padding-block: var(--space-2); }
+.gig-set-card > .gig-toggle-row { min-height: 40px; padding-block: var(--space-1); }
+.gig-set-card > .gig-toggle-row .slp-row__body { display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+.gig-song-reference { min-height: 46px; padding-block: var(--space-1); gap: var(--space-4); }
+.gig-song-number { width: 14px; }
+.gig-direct-songs { padding-inline-start: 0; }
+.gig-add-text { display: inline-flex; align-items: center; gap: var(--space-2); flex: none; min-height: 44px; padding: 0 var(--space-3); border: 0; background: transparent; color: var(--accent); font: inherit; font-size: var(--text-sm); font-weight: var(--font-weight-semibold); white-space: nowrap; cursor: pointer; }
+.gig-add-text svg { width: 16px; height: 16px; flex: none; }
+.gig-section-card > .gig-toggle-row:has(.gig-add-text) .slp-row__subtitle { display: none; }
+.gig-toggle-row .slp-menu > summary { min-width: 44px; min-height: 44px; }
+
 }
 
 </style>
@@ -5099,7 +5270,7 @@ a.slp-chip { min-height: 44px; }
         <div id="songLibraryContent">
 
         <header class="slp-header slp-header--screen-root">
-          <h1 id="libraryScreenTitle" class="slp-header__title">Categories</h1>
+          <h1 id="libraryScreenTitle" class="slp-header__title">Songs</h1>
           <div class="slp-header__actions">
             <button id="librarySearchBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Search library">
               <i data-lucide="search"></i>
@@ -5412,14 +5583,14 @@ a.slp-chip { min-height: 44px; }
               <h1 id="gigDetailTitle" class="slp-header__title">Event</h1>
               <div class="slp-header__actions">
                 <button id="gigPlanSearchBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Search this event"><i data-lucide="search"></i></button>
-                <button id="arrangeGigBtn" class="slp-btn slp-btn--icon" type="button" aria-pressed="false" aria-label="Rearrange"><i data-lucide="grip-vertical"></i></button>
-                <button id="gigStructureEditBtn" class="slp-btn slp-btn--icon" type="button" aria-pressed="false" aria-label="Edit"><i data-lucide="pencil"></i></button>
+                
+                <button id="gigStructureEditBtn" class="slp-btn gig-edit-text-btn" type="button" aria-pressed="false" aria-label="Edit">Edit</button>
                 <details class="slp-menu">
                   <summary class="slp-btn slp-btn--icon" aria-label="More"><i data-lucide="more-horizontal"></i></summary>
                   <div class="slp-menu-panel">
-                    <button id="quickAddGigBtn" class="slp-picker-item" type="button"><i data-lucide="zap"></i><span>Quick add</span></button>
+                    <button id="quickAddGigBtn" class="slp-picker-item" type="button"><i data-lucide="zap"></i><span>Type songs in</span></button>
                     <button id="gigTemplateMenuBtn" class="slp-picker-item" type="button"><i data-lucide="layout-template"></i><span>Add template</span></button>
-                    <button id="selectGigSongsBtn" class="slp-picker-item" type="button"><i data-lucide="check-circle-2"></i><span>Select songs</span></button>
+
                     <button id="shareGigBtn" class="slp-picker-item" type="button"><i data-lucide="share-2"></i><span>Share event</span></button>
                   </div>
                 </details>
@@ -5564,6 +5735,7 @@ a.slp-chip { min-height: 44px; }
             <button id="backToFolderBtn" class="slp-btn slp-btn--icon mobile-only" type="button" aria-label="Back to songs">
               <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="board-return-label">Board</span>
             </button>
+            <button id="songListToggleBtn" class="slp-btn slp-btn--icon song-list-toggle" type="button" aria-label="Hide the song list" aria-pressed="false"><i data-lucide="panel-left-close"></i></button>
             <h1 id="songTitle" class="slp-header__title" dir="auto">Song</h1>
             <div class="slp-header__actions">
               <button id="songPerformanceBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Performance mode" title="Performance mode"><i data-lucide="maximize-2"></i></button>
@@ -5574,20 +5746,18 @@ a.slp-chip { min-height: 44px; }
           <div class="slp-chip-row song-chip-row">
             <button id="songKey" class="slp-chip song-chip" type="button" aria-label="Change key"><i data-lucide="music-2"></i><span>No key</span><small id="songKeyWas" hidden></small></button>
             <button id="songTransposeBtn" class="slp-chip song-chip song-chip--icon" type="button" aria-label="Transpose" aria-haspopup="dialog" aria-pressed="false"><i data-lucide="arrow-up-down"></i></button>
+            <button id="songArtistChip" class="slp-chip song-chip song-artist-chip" type="button" aria-label="Songs by this artist" hidden><span dir="auto"></span></button>
             <button id="songCategoryBtn" class="slp-chip song-chip" type="button" aria-label="Change folders"><i data-lucide="folder"></i><span>Unfiled</span></button>
             <a id="songPracticeLink" class="slp-chip song-chip hidden" href="#" target="_blank" rel="noopener noreferrer" aria-label="Practice"><i data-lucide="headphones"></i><span>Practice</span></a>
-            <button id="songDetailsViewCollapse" class="slp-chip song-chip" type="button" aria-expanded="false" aria-controls="songDetailsViewPanel"><span>Details</span><svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button id="songDetailsViewCollapse" class="slp-chip song-chip" type="button" aria-expanded="false" aria-controls="songDetailsViewPanel"><span>More</span><svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
           <div id="songDetailsViewPanel" class="slp-collapse__panel" hidden>
             <div class="slp-details-row"><button id="songArtist" class="slp-details-row__link" type="button" dir="auto"></button></div>
             <div id="songSecondaryMeta" class="slp-details-grid"></div>
-            <div id="songLinks" class="slp-chip-row song-links" aria-label="Song links" hidden></div>
             <section id="songLocations" class="song-locations" aria-label="Locations &amp; tags">
-              <div class="song-locations__head"><span class="slp-section-label">LOCATIONS &amp; TAGS</span></div>
               <div id="songLocationsBody"></div>
-              <button id="editSongLocationsBtn" class="slp-link-btn song-locations__edit" type="button">Edit</button>
             </section>
-            <div id="songEdited" class="slp-timestamp"></div>
+            <div class="song-details-foot"><span id="songEdited" class="slp-timestamp"></span><span id="songLinks" class="song-foot-links" aria-label="Song links" hidden></span><button id="editSongDetailsBtn" class="slp-btn slp-btn--icon song-foot-edit" type="button" aria-label="Edit song details" title="Edit song details"><i data-lucide="pencil"></i></button></div>
           </div>
 
           <article id="lyricSheet" class="lyric-sheet theme-paper font-system">
@@ -5641,6 +5811,7 @@ a.slp-chip { min-height: 44px; }
         </div>
       </section>
 
+      <div id="songsSideResizer" class="songs-side-resizer" role="separator" aria-orientation="vertical" aria-label="Resize the lyrics" tabindex="0"></div>
       <div id="gigSideResizer" class="gig-side-resizer" role="separator" aria-orientation="vertical" aria-label="Resize the lyrics" tabindex="0"></div>
 
       <nav id="primaryNav" class="slp-bottom-nav" aria-label="Primary navigation">
@@ -5658,7 +5829,7 @@ a.slp-chip { min-height: 44px; }
         <button id="selectAllBtn" class="slp-link-btn slp-link-btn--accent" type="button">Select all</button>
       </div>
       <div id="selectActionBar" class="select-actionbar" role="toolbar" aria-label="Actions for selected songs" hidden>
-        <button id="selectAddBtn" class="select-action" type="button"><i data-lucide="folder-plus"></i><span>Add to folder or event</span></button>
+        <button id="selectAddBtn" class="select-action" type="button"><i data-lucide="folder-plus"></i><span>Add to…</span></button>
         <button id="selectMoveBtn" class="select-action" type="button"><i data-lucide="folder-input"></i><span>Move to…</span></button>
         <button id="selectRemoveBtn" class="select-action" type="button"><i data-lucide="folder-minus"></i><span>Remove from here</span></button>
       </div>
@@ -5832,6 +6003,7 @@ a.slp-chip { min-height: 44px; }
             <option value="Concert">Concert</option>
             <option value="Other">Other</option>
           </select>
+          <label id="gigChuppahRow" class="gig-paid-row gig-chuppah-row" hidden><input id="gigChuppahInput" type="checkbox"><span>Chuppah</span></label>
           <input id="gigEventTypeInput" class="slp-input gig-other-type" type="text" dir="auto" placeholder="What kind of event?" autocomplete="off" hidden>
           <label class="slp-field-label" for="gigClientInput">CUSTOMER OR FAMILY</label>
           <input id="gigClientInput" class="slp-input" type="text" dir="auto" placeholder="Cohen" autocomplete="off">
@@ -5868,8 +6040,12 @@ a.slp-chip { min-height: 44px; }
             </div>
             <div class="gig-balance-row"><span>Balance</span><strong id="gigBalanceValue">—</strong></div>
             <label class="gig-paid-row"><input id="gigPaidInput" type="checkbox"><span>Paid in full</span></label>
-            <label class="slp-field-label" for="gigDueDateInput">DUE DATE (OPTIONAL)</label>
-            <input id="gigDueDateInput" class="slp-input" type="date">
+            <label class="slp-field-label" for="gigDepositPaidInput">DEPOSIT PAID ON (OPTIONAL)</label>
+            <input id="gigDepositPaidInput" class="slp-input" type="date">
+            <div class="slp-form-row">
+              <div><label class="slp-field-label" for="gigOvertimeStartInput">OVERTIME STARTS AT</label><input id="gigOvertimeStartInput" class="slp-input" type="time"></div>
+              <div><label class="slp-field-label" for="gigOvertimeRateInput">OVERTIME COST PER HOUR</label><input id="gigOvertimeRateInput" class="slp-input" type="text" inputmode="decimal" dir="ltr" autocomplete="off"></div>
+            </div>
             <label class="slp-field-label" for="gigMoneyNoteInput">NOTE (OPTIONAL)</label>
             <input id="gigMoneyNoteInput" class="slp-input" type="text" dir="auto" autocomplete="off">
             <p class="slp-subtitle gig-money-private">Private. Only shared if you tick it when sharing the event.</p>
@@ -5911,6 +6087,19 @@ a.slp-chip { min-height: 44px; }
       </form>
     </section>
 
+    <section id="boardNewSheet" class="sheet compact-sheet board-new-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="boardNewTitle">
+      <div class="sheet-header"><div><span>Songs board</span><h2 id="boardNewTitle">New board</h2></div></div>
+      <div class="sheet-body board-new-body">
+        <label class="field-label"><span>Name</span><input id="boardNewNameInput" type="text" dir="auto" autocomplete="off" placeholder="Wedding setup"></label>
+        <fieldset class="board-new-start"><legend>Start with</legend>
+          <label><input type="radio" name="boardNewStart" value="empty" checked><span><strong>Empty</strong><small>Add your own columns</small></span></label>
+          <label><input type="radio" name="boardNewStart" value="copy"><span><strong>A copy of this board</strong><small>Same columns, then change them</small></span></label>
+          <label><input type="radio" name="boardNewStart" value="style"><span><strong>Style &amp; Tempo columns</strong><small>The usual starting set</small></span></label>
+        </fieldset>
+      </div>
+      <div class="sheet-footer"><button id="boardNewCancelBtn" class="secondary-button" type="button">Cancel</button><button id="boardNewCreateBtn" class="primary-button" type="button">Create board</button></div>
+    </section>
+
     <section id="boardColumnsScreen" class="sheet board-columns-screen hidden" hidden role="dialog" aria-modal="true" aria-labelledby="boardColumnsTitle">
       <header class="slp-header">
         <h2 id="boardColumnsTitle" class="slp-header__title">Columns</h2>
@@ -5928,6 +6117,13 @@ a.slp-chip { min-height: 44px; }
       </div>
       <div id="boardFilterSheetBody" class="sheet-body board-sheet-body"></div>
       <div class="sheet-footer"><button id="boardFilterDoneBtn" class="primary-button" type="button">Done</button></div>
+    </section>
+
+    <button id="backToSongPill" class="song-back-pill hidden" type="button"><i data-lucide="undo-2"></i><span id="backToSongLabel">Back to song</span><span id="dismissBackToSong" class="song-back-pill__x" role="button" tabindex="0" aria-label="Dismiss"><i data-lucide="x"></i></span></button>
+
+    <section id="songEventsSheet" class="sheet compact-sheet song-events-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="songEventsTitle">
+      <div class="sheet-header"><div><span id="songEventsSong">Song</span><h2 id="songEventsTitle">Events</h2></div><button id="closeSongEventsBtn" class="icon-button" type="button" aria-label="Close"><i data-lucide="x"></i></button></div>
+      <div class="sheet-body song-events-body"><input id="songEventsSearch" class="slp-input" type="search" dir="auto" placeholder="Search by customer, hall or date" autocomplete="off"><div id="songEventsList"></div></div>
     </section>
 
     <button id="backToBoardPill" class="board-pill hidden" type="button"><i data-lucide="columns-3"></i><span>Back to Board</span></button>
@@ -6590,8 +6786,8 @@ const els = Object.fromEntries(
   [
     "app", "librarySearchBtn", "backupReminder", "backupReminderText", "backupNowBtn", "backupLaterBtn", "backupStatusText", "storageStatusText", "settingsBtn", "libraryScreenTitle", "primaryNav", "appSongsNavBtn", "appEventsNavBtn", "appNotesNavBtn", "appToolsNavBtn", "songLibraryContent", "notesWorkspace", "gigsWorkspace",
     "toolsWorkspace", "toolsHub", "toolsGrid", "toolsSettingsBtn", "toolView", "backFromToolBtn", "toolTitle", "toolBody", "toolTransport", "toolTransportBtn", "gigsHomeHeader", "gigSearchBtn", "newGigBtn", "gigSearchWrap", "gigSearchInput", "closeGigSearchBtn", "gigsToolbar", "gigListViewBtn", "gigCalendarViewBtn", "gigSortWrap", "gigSortSelect", "gigListView", "gigList", "gigListEmpty", "gigCalendarView", "previousGigMonthBtn", "nextGigMonthBtn", "gigTodayBtn", "gigCalendarMonth", "gigCalendarGrid", "selectedGigDateTitle", "selectedGigDateCount", "selectedGigDateList",
-    "gigDetailView", "backToGigsBtn", "gigDetailTitle", "editGigBtn", "shareGigBtn", "gigPlanSearchBtn", "arrangeGigBtn", "gigStructureEditBtn", "gigDetailsCollapse", "gigDetailsPanel", "gigDetailsFields", "gigDetailsSummary", "gigLocationSummary", "gigCustomerSummary", "gigMusicTeamSummary", "gigNotesSummary", "gigPlanSearchWrap", "gigPlanSearchScope", "gigPlanSearchInput", "closeGigPlanSearchBtn", "addGigSectionBtn", "addFirstGigSectionBtn", "gigSectionList", "gigKeyFilterBar", "gigKeyFilterLabel", "clearGigKeyFilterBtn", "gigBuilderEmpty", "addGigTemplateBtn", "gigTemplateMenuBtn", "gigTemplateSheet", "gigTemplateBackBtn", "gigTemplateTitle", "closeGigTemplateBtn", "gigTemplateListView", "gigTemplateListBody", "gigTemplateBuildView", "gigTemplateNameInput", "gigTemplateSectionsInput", "gigTemplateSaveBtn",
-    "gigFormSheet", "gigForm", "gigFormTitle", "cancelGigFormBtn", "gigDateInput", "gigEventTypeInput", "gigTypeSelect", "gigEmailInput", "gigPriceInput", "gigDepositInput", "gigBalanceValue", "gigPaidInput", "gigDueDateInput", "gigMoneyNoteInput", "gigMoneySummary", "gigTitlePreview", "shareGigMoneyInput", "gigStartTimeInput", "gigEndTimeInput", "gigVenueInput", "gigAddressInput", "gigClientInput", "gigContactInput", "gigAgentInput", "gigBandInput", "gigDirectorInput", "gigChoirInput", "gigNotesInput", "saveGigBtn",
+    "gigDetailView", "backToGigsBtn", "gigDetailTitle", "editGigBtn", "shareGigBtn", "gigPlanSearchBtn", "gigStructureEditBtn", "gigDetailsCollapse", "gigDetailsPanel", "gigDetailsFields", "gigDetailsSummary", "gigLocationSummary", "gigCustomerSummary", "gigMusicTeamSummary", "gigNotesSummary", "gigPlanSearchWrap", "gigPlanSearchScope", "gigPlanSearchInput", "closeGigPlanSearchBtn", "addGigSectionBtn", "addFirstGigSectionBtn", "gigSectionList", "gigKeyFilterBar", "gigKeyFilterLabel", "clearGigKeyFilterBtn", "gigBuilderEmpty", "addGigTemplateBtn", "gigTemplateMenuBtn", "gigTemplateSheet", "gigTemplateBackBtn", "gigTemplateTitle", "closeGigTemplateBtn", "gigTemplateListView", "gigTemplateListBody", "gigTemplateBuildView", "gigTemplateNameInput", "gigTemplateSectionsInput", "gigTemplateSaveBtn",
+    "gigFormSheet", "gigForm", "gigFormTitle", "cancelGigFormBtn", "gigDateInput", "gigEventTypeInput", "gigTypeSelect", "gigEmailInput", "gigPriceInput", "gigDepositInput", "gigBalanceValue", "gigPaidInput", "gigDepositPaidInput", "gigOvertimeStartInput", "gigOvertimeRateInput", "gigChuppahInput", "gigChuppahRow", "gigMoneyNoteInput", "gigMoneySummary", "gigTitlePreview", "shareGigMoneyInput", "gigStartTimeInput", "gigEndTimeInput", "gigVenueInput", "gigAddressInput", "gigClientInput", "gigContactInput", "gigAgentInput", "gigBandInput", "gigDirectorInput", "gigChoirInput", "gigNotesInput", "saveGigBtn",
     "gigSongPickerSheet", "gigSongPickerTitle", "closeGigSongPickerBtn", "cancelGigSongPickerBtn", "gigSongPickerSearch", "gigSongPickerList", "addSelectedGigSongsBtn",
     "gigStructureSheet", "gigStructureTitle", "gigStructureLabel", "gigStructureNameInput", "closeGigStructureBtn", "cancelGigStructureBtn", "saveGigStructureBtn",
     "gigShareSheet", "closeGigShareBtn", "cancelGigShareBtn", "sendGigShareBtn", "shareGigSongsInput", "shareGigLocationInput", "shareGigCustomerInput", "shareGigContactInput", "shareGigBandInput", "shareGigNotesInput",
@@ -6615,7 +6811,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
+    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "appearancePopover", "decreaseFontBtn",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -6667,7 +6863,7 @@ let libraryMode = "category";
 let currentFolderId = ALL_SONGS;
 let selectedSongId = null;
 // Select mode (see src/ui/select-mode.js): ids are kept in the order they were chosen.
-let selectMode = { active: false, ids: [], context: null, swallowClickUntil: 0 };
+let selectMode = { active: false, ids: [], context: null, swallowClickUntil: 0, embedded: false };
 let songAddToMode = null;
 let quickAddLastTarget = "";
 let songInfoDraft = null;
@@ -6696,6 +6892,8 @@ let gigReorderMode = false;
 // asked to show both action sets at once.
 let gigStructureEditMode = false;
 let songReturnContext = null;
+// The song you just left from its page (artist, folder, event), so a pill can take you back to it.
+let songBack = null;
 let edgeSwipeStart = null;
 let songReorderMode = false;
 let undoStack = [];
@@ -7020,6 +7218,9 @@ function normalizeState(raw) {
     deposit: String(gig.deposit ?? "").trim(),
     paid: gig.paid === true,
     dueDate: /^\d{4}-\d{2}-\d{2}$/.test(gig.dueDate || "") ? gig.dueDate : "",
+    depositPaidOn: /^\d{4}-\d{2}-\d{2}$/.test(gig.depositPaidOn || "") ? gig.depositPaidOn : "",
+    overtimeStart: /^\d{2}:\d{2}$/.test(gig.overtimeStart || "") ? gig.overtimeStart : "",
+    overtimeRate: String(gig.overtimeRate ?? "").trim(),
     moneyNote: String(gig.moneyNote || "").trim(),
     agentName: String(gig.agentName || "").trim(),
     band: String(gig.band || "").trim(),
@@ -7624,11 +7825,26 @@ function render() {
   applyAppAppearance();
   applyLyricPrefs();
   els.app.dataset.libraryMode = workspaceMode === "gigs" || workspaceMode === "tools" ? workspaceMode : libraryMode;
+  // On medium screens the song list fills the width until a song is open, then the lyrics sit beside it.
+  const songsReading = workspaceMode === "library" && libraryMode !== "notes" && Boolean(currentSong());
+  els.app.classList.toggle("songs-reading", songsReading);
+  const songsListHidden = songsReading && eventPrefs.songsListHidden;
+  els.app.classList.toggle("songs-list-hidden", songsListHidden);
+  els.songListToggleBtn.setAttribute("aria-label", songsListHidden ? "Show the song list" : "Hide the song list");
+  els.songListToggleBtn.setAttribute("aria-pressed", String(songsListHidden));
+  const songToggleIcon = songsListHidden ? "panel-left-open" : "panel-left-close";
+  if (els.songListToggleBtn.dataset.icon !== songToggleIcon) {
+    els.songListToggleBtn.dataset.icon = songToggleIcon;
+    els.songListToggleBtn.innerHTML = `<i data-lucide="${songToggleIcon}"></i>`;
+  }
   els.app.dataset.workspace = workspaceMode;
   if (workspaceMode !== "tools") {
     stopActiveTool();
     releaseToolAudioSession();
   }
+  // Leaving Events: drop its layout classes so the Songs screens do not inherit them (the tab bar
+  // was staying hidden after coming back from an event).
+  if (workspaceMode !== "gigs") els.app.classList.remove("gig-builder-active", "gig-split", "gig-triple", "gig-preview", "gig-list-hidden");
   renderLibrary();
   renderBoard();
   if (workspaceMode === "tools") {
@@ -7644,6 +7860,7 @@ function render() {
     renderSong();
   }
   els.app.dataset.mobileView = mobileView;
+  syncSongBackPill();
   syncSelectModeUi();
   renderNeedsLyricsBanners();
   const primarySection = workspaceMode === "tools" ? "tools" : workspaceMode === "gigs" ? "events" : libraryMode === "notes" ? "notes" : "songs";
@@ -8158,6 +8375,9 @@ function renderSong() {
   els.songTitle.textContent = song.title;
   els.songArtist.textContent = song.artist || "Unknown artist";
   els.songArtist.disabled = !song.artist;
+  // The artist sits in the chip row, right after the key, and stays tappable.
+  els.songArtistChip.hidden = !song.artist;
+  els.songArtistChip.querySelector("span").textContent = song.artist || "";
   const shift = songTranspose(song);
   const currentKey = songCurrentKey(song);
   els.songKey.querySelector("span").textContent = compactKeyLabel(currentKey) || "No key";
@@ -8187,24 +8407,23 @@ function renderSong() {
 function renderSongSecondaryMeta(song) {
   // The design's five always-present fields first (— when empty), then any
   // extra credits the song actually has.
-  const always = [
+  // Only facts the song actually has; empty ones are left out.
+  const facts = [
+    ["Composer", song.composer],
+    ["Lyricist", song.lyricist],
     ["Language", song.language],
     ["Style", song.style],
     ["Tempo", song.bpm ? `${song.bpm} BPM` : ""],
+    ["Time signature", song.timeSignature],
+    ["Status", statusLabel(song.status)],
     ["Album", song.album],
-    ["Status", statusLabel(song.status)]
-  ].map(([label, value]) => [label, value || "—"]);
-  const extra = [
     ["Alternate title", song.alternateTitles.join(" · ")],
     ["Artist in Hebrew", song.artistHebrew],
-    ["Composer", song.composer],
-    ["Lyricist", song.lyricist],
-    ["Time signature", song.timeSignature],
     ["Original key", song.key ? fullKeyLabel(song.key) : ""],
     ["Sung in", songTranspose(song) ? fullKeyLabel(songCurrentKey(song)) : ""],
     ["Alternate keys", song.alternateKeys.join(" · ")]
   ].filter(([, value]) => String(value || "").trim());
-  els.songSecondaryMeta.innerHTML = [...always, ...extra].map(([label, value]) => `<div class="slp-details-field"><span class="slp-section-label">${escapeHtml(label)}</span><span dir="auto">${escapeHtml(value)}</span></div>`).join("");
+  els.songSecondaryMeta.innerHTML = facts.map(([label, value]) => `<div class="slp-details-field"><span class="slp-section-label">${escapeHtml(label)}</span><span dir="auto">${escapeHtml(value)}</span></div>`).join("");
 }
 
 // One button standing in for where the song lives: the first folder, "+N" when there
@@ -8213,47 +8432,132 @@ function renderSongSecondaryMeta(song) {
 function renderSongLinks(song) {
   const links = [...song.audioLinks, ...song.videoLinks].filter((url) => safeExternalUrl(url));
   els.songLinks.hidden = !links.length;
+  // Small icon buttons on the footer line of the details box (the name is the tooltip).
   els.songLinks.innerHTML = links.map((url) => {
     const { label, icon } = linkInfo(url);
-    return `<a class="slp-chip slp-chip--link" href="${escapeAttribute(safeExternalUrl(url))}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttribute(label)} link"><i data-lucide="${icon}"></i><span>${escapeHtml(label)}</span></a>`;
+    return `<a class="slp-btn slp-btn--icon song-foot-link" href="${escapeAttribute(safeExternalUrl(url))}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttribute(label)}" title="${escapeAttribute(label)}"><i data-lucide="${icon}"></i></a>`;
   }).join("");
 }
 
-// "Locations & tags" in the Details panel: every folder the song is in, and every event or
-// setlist that uses it, as tappable chips. (Songs have no separate tags; folders and
-// categories are the tags.)
-function renderSongLocations(song) {
-  const folders = song.folderIds.map((id) => folderById(id)).filter(Boolean);
-  const events = state.gigSetItems.filter((item) => item.songId === song.id).map((item) => {
+// Where the song lives, kept short however many places there are: the first few folders, the
+// next upcoming event, and how many events it has already been in. The full lists open on demand.
+function songEventEntries(song) {
+  const seen = new Map();
+  state.gigSetItems.filter((item) => item.songId === song.id).forEach((item) => {
     const set = state.gigSets.find((candidate) => candidate.id === item.setId);
     const section = set && state.gigSections.find((candidate) => candidate.id === set.sectionId);
     const gig = section && state.gigs.find((candidate) => candidate.id === section.gigId);
-    if (!gig) return null;
-    const place = set.isDirect ? section.name : `${section.name} · ${set.name}`;
-    return { gig, section, set, label: `${gigDisplayName(gig)} · ${place}` };
-  }).filter(Boolean);
-  const group = (title, chips, empty) => `<div class="song-locations__group"><span class="song-locations__label">${title}</span><div class="song-locations__chips">${chips || `<span class="song-locations__empty">${empty}</span>`}</div></div>`;
-  els.songLocationsBody.innerHTML =
-    group("Folders", folders.map((folder) => `<button class="slp-chip song-location-chip" type="button" dir="auto" data-location-folder="${escapeAttribute(folder.id)}"><span>${escapeHtml(folder.name)}</span></button>`).join(""), "Not in any folder") +
-    group("Events &amp; setlists", events.map((entry) => `<button class="slp-chip song-location-chip" type="button" dir="auto" data-location-set="${escapeAttribute(entry.set.id)}"><span>${escapeHtml(entry.label)}</span></button>`).join(""), "Not in any event");
-  els.songLocationsBody.querySelectorAll("[data-location-folder]").forEach((chip) => chip.addEventListener("click", () => {
+    if (gig && !seen.has(gig.id)) seen.set(gig.id, { gig, section, set });
+  });
+  return [...seen.values()];
+}
+
+function goToSongEvent(entry) {
+  rememberSongForReturn();
+  closeOverlays();
+  workspaceMode = "gigs";
+  mobileView = "library";
+  songReturnContext = null;
+  state.gigNavigation.gigId = entry.gig.id;
+  state.gigNavigation.sectionId = entry.section.id;
+  state.gigNavigation.setId = entry.set.id;
+  selectedSongId = null;
+  persist();
+  render();
+}
+
+function renderSongLocations(song) {
+  const folders = song.folderIds.map((id) => folderById(id)).filter(Boolean);
+  const today = todayDateString();
+  const events = songEventEntries(song);
+  const upcoming = events.filter((entry) => entry.gig.date >= today).sort((a, b) => a.gig.date.localeCompare(b.gig.date));
+  const past = events.filter((entry) => entry.gig.date < today);
+  const rows = [];
+  if (folders.length) {
+    const shown = folders.slice(0, 3).map((folder) => `<button class="song-loc-link" type="button" dir="auto" data-location-folder="${escapeAttribute(folder.id)}">${escapeHtml(folder.name)}</button>`).join('<span class="song-loc-sep">,</span>');
+    rows.push(`<div class="song-locations__group"><span class="song-locations__label">Folders</span><div class="song-locations__text">${shown}${folders.length > 3 ? `<button class="song-loc-more" type="button" data-location-more>+${folders.length - 3} more</button>` : ""}</div></div>`);
+  }
+  if (upcoming.length) {
+    const next = upcoming[0];
+    rows.push(`<div class="song-locations__group"><span class="song-locations__label">Next event</span><div class="song-locations__text"><button class="song-loc-link" type="button" dir="auto" data-location-gig="${escapeAttribute(next.gig.id)}">${escapeHtml(gigDisplayName(next.gig))} · ${escapeHtml(formatGigDate(next.gig.date))}</button>${upcoming.length > 1 ? `<button class="song-loc-more" type="button" data-events-sheet>+${upcoming.length - 1}</button>` : ""}</div></div>`);
+  }
+  if (past.length) {
+    rows.push(`<div class="song-locations__group"><span class="song-locations__label">Played in</span><div class="song-locations__text"><button class="song-loc-more" type="button" data-events-sheet>${past.length} ${plural(past.length, "event")} ›</button></div></div>`);
+  }
+  els.songLocationsBody.innerHTML = rows.join("");
+  els.songLocations.hidden = !rows.length;
+  els.songLocationsBody.querySelectorAll("[data-location-folder]").forEach((link) => link.addEventListener("click", () => {
+    rememberSongForReturn();
     workspaceMode = "library";
     songReturnContext = null;
-    openFolder(chip.dataset.locationFolder);
+    openFolder(link.dataset.locationFolder);
   }));
-  els.songLocationsBody.querySelectorAll("[data-location-set]").forEach((chip) => chip.addEventListener("click", () => {
-    const entry = events.find((candidate) => candidate.set.id === chip.dataset.locationSet);
-    if (!entry) return;
-    workspaceMode = "gigs";
-    mobileView = "library";
-    songReturnContext = null;
-    state.gigNavigation.gigId = entry.gig.id;
-    state.gigNavigation.sectionId = entry.section.id;
-    state.gigNavigation.setId = entry.set.id;
-    selectedSongId = null;
-    persist();
-    render();
+  els.songLocationsBody.querySelectorAll("[data-location-more]").forEach((button) => button.addEventListener("click", () => openSongAddTo()));
+  els.songLocationsBody.querySelectorAll("[data-location-gig]").forEach((button) => button.addEventListener("click", () => {
+    const entry = events.find((candidate) => candidate.gig.id === button.dataset.locationGig);
+    if (entry) goToSongEvent(entry);
   }));
+  els.songLocationsBody.querySelectorAll("[data-events-sheet]").forEach((button) => button.addEventListener("click", () => openSongEventsSheet(song)));
+}
+
+// A searchable list of every event the song is in: upcoming first, then past, newest first.
+function openSongEventsSheet(song) {
+  songEventsSongId = song.id;
+  els.songEventsSong.textContent = song.title;
+  els.songEventsSearch.value = "";
+  renderSongEventsList();
+  showOverlay(els.songEventsSheet);
+}
+
+let songEventsSongId = null;
+
+function renderSongEventsList() {
+  const song = state.songs.find((item) => item.id === songEventsSongId);
+  if (!song) return;
+  const today = todayDateString();
+  const query = normalizeComparisonText(els.songEventsSearch.value);
+  const entries = songEventEntries(song).filter((entry) => !query || normalizeComparisonText([gigDisplayName(entry.gig), entry.gig.venue, entry.gig.date, formatGigDate(entry.gig.date)].join(" ")).includes(query));
+  const upcoming = entries.filter((entry) => entry.gig.date >= today).sort((a, b) => a.gig.date.localeCompare(b.gig.date));
+  const past = entries.filter((entry) => entry.gig.date < today).sort((a, b) => b.gig.date.localeCompare(a.gig.date));
+  const group = (label, list) => list.length ? `<span class="slp-section-label">${label} · ${list.length}</span><div class="slp-card">${list.map((entry) => `<button class="slp-row song-event-row" type="button" data-song-event="${escapeAttribute(entry.gig.id)}"><span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(gigDisplayName(entry.gig))}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([formatGigDate(entry.gig.date), entry.gig.venue].filter(Boolean).join(" · "))}</span></span></button>`).join("")}</div>` : "";
+  els.songEventsList.innerHTML = group("Upcoming", upcoming) + group("Past", past) || `<p class="board-col__empty">No events match.</p>`;
+  els.songEventsList.querySelectorAll("[data-song-event]").forEach((button) => button.addEventListener("click", () => {
+    const entry = entries.find((candidate) => candidate.gig.id === button.dataset.songEvent);
+    if (entry) goToSongEvent(entry);
+  }));
+}
+
+// ---- Back to the song you left from its page ----
+function rememberSongForReturn() {
+  const song = currentSong();
+  if (song) songBack = { songId: song.id, sig: null };
+}
+
+function songBackSignature() {
+  return `${workspaceMode}|${libraryMode}`;
+}
+
+function syncSongBackPill() {
+  if (songBack) {
+    const sig = songBackSignature();
+    if (!songBack.sig) songBack.sig = sig;
+    else if (songBack.sig !== sig) songBack = null;
+  }
+  const song = songBack && state.songs.find((item) => item.id === songBack.songId);
+  const show = Boolean(song) && selectedSongId !== song.id && !songEditMode;
+  els.backToSongPill.classList.toggle("hidden", !show);
+  if (show) els.backToSongLabel.textContent = `Back to ${song.title}`;
+}
+
+function returnToSong() {
+  if (!songBack) return;
+  const id = songBack.songId;
+  songBack = null;
+  workspaceMode = "library";
+  libraryMode = "category";
+  songReturnContext = null;
+  closeOverlays();
+  openSong(id);
 }
 
 // The header chip: open Details and bring the Locations & tags section into view.
@@ -8266,13 +8570,14 @@ function openSongLocations() {
 
 function renderSongCategoryButton(song) {
   const names = song.folderIds.map((id) => folderById(id)?.name).filter(Boolean);
-  const label = names.length ? `${names[0]}${names.length > 1 ? ` +${names.length - 1}` : ""}` : "Unfiled";
-  els.songCategoryBtn.querySelector("span").textContent = label;
-  els.songCategoryBtn.setAttribute("aria-label", names.length ? `In ${names.join(", ")}. Change folders` : "Not in any folder. Add to a folder");
+  // Just the folder icon and how many folders the song is in; the names are listed under More.
+  els.songCategoryBtn.querySelector("span").textContent = names.length ? String(names.length) : "Add";
+  els.songCategoryBtn.setAttribute("aria-label", names.length ? `In ${names.join(", ")}. Folders and lists` : "Not in any folder. Add to a folder");
 }
 
 function openArtistSongs(name) {
   if (!String(name || "").trim()) return;
+  if (mobileView === "song" || screenInfo.split || screenInfo.eventsTriple) rememberSongForReturn();
   libraryMode = "category";
   selectedSongId = null;
   openFolder(artistFolderId(name));
@@ -8346,6 +8651,7 @@ function backToLibrary() {
 }
 
 function openSong(id) {
+  songBack = null;
   selectedSongId = id;
   mobileView = "song";
   resetHistory();
@@ -8443,10 +8749,11 @@ function loadBoardPrefs() {
       panelText: BOARD_TEXT_SIZES.includes(saved.panelText) ? saved.panelText : "normal",
       cardText: BOARD_TEXT_SIZES.includes(saved.cardText) ? saved.cardText : "overview",
       density: saved.density === "roomy" ? "roomy" : "compact",
+      readerHeight: Number(saved.readerHeight) > 0 ? Math.round(Number(saved.readerHeight)) : 0,
       readerWidth: Math.min(900, Math.max(BOARD_READER_MIN, Number(saved.readerWidth) || BOARD_READER_DEFAULT))
     };
   } catch {
-    return { view: "list", size: "half", panelText: "normal", cardText: "overview", density: "compact", readerWidth: BOARD_READER_DEFAULT };
+    return { view: "list", size: "half", panelText: "normal", cardText: "overview", density: "compact", readerWidth: BOARD_READER_DEFAULT, readerHeight: 0 };
   }
 }
 
@@ -8712,6 +9019,8 @@ function renderBoardPanel() {
   const wrap = els.boardPanelWrap;
   wrap.dataset.size = boardPrefs.size;
   wrap.dataset.text = boardPrefs.panelText;
+  if (boardPrefs.readerHeight > 0) wrap.style.setProperty("--board-panel-h", `${boardPrefs.readerHeight}px`);
+  else wrap.style.removeProperty("--board-panel-h");
   els.boardColumns.dataset.cardText = boardPrefs.cardText;
   els.boardResults.dataset.cardText = boardPrefs.cardText;
   wrap.classList.toggle("is-collapsed", Boolean(song) && boardState.collapsed && !boardWide());
@@ -8741,7 +9050,7 @@ function renderBoardPanel() {
       </header>
       ${collapsed ? "" : `<div class="board-panel__body" tabindex="0">${boardLinesMarkup(boardLyricLines(song))}</div>`}
     </section>
-    ${collapsed || boardState.searchOpen ? "" : `<button class="board-handle" type="button" data-board-act="size" aria-label="Panel size: ${boardPrefs.size === "tall" ? "Tall" : "Half"}. Change size"><span class="board-handle__bar"></span><span>${boardPrefs.size === "tall" ? "Tall" : "Half"}</span><i data-lucide="${boardPrefs.size === "tall" ? "chevron-up" : "chevron-down"}"></i></button>`}
+    ${collapsed || boardState.searchOpen ? "" : `<button class="board-handle board-grip" type="button" data-board-act="size" aria-label="Resize the reader. Drag, or tap to switch between half and tall"><span class="board-grip__bar"></span></button>`}
   `;
   const body = wrap.querySelector(".board-panel__body");
   if (body) body.scrollTop = scrollTop;
@@ -8808,16 +9117,27 @@ function boardCardMarkup(song, column) {
   const current = boardState.panelSongId === song.id;
   const key = boardSongKey(song);
   const lyrics = open ? boardLinesMarkup(boardLyricLines(song)) : "";
+  // An open card keeps its header short: the key moves under the title (highlighted) and the right
+  // side holds only a small pin button.
+  const keyChip = key ? `<span class="board-card__keychip" dir="ltr">${escapeHtml(key)}</span>` : "";
+  const composerText = column?.type === "search" ? [song.composer, ...(song.artists || [])] : [song.composer];
+  const composer = [...new Set(composerText.map((part) => String(part || "").trim()).filter(Boolean))].join(" · ");
+  const openSub = songNeedsLyrics(song) ? `<span class="board-card__sub board-card__needs">Needs details</span>` : `<span class="board-card__sub board-card__sub--open">${composer ? `<span dir="auto">${escapeHtml(composer)}</span>` : ""}${keyChip}</span>`;
+  const sub = open ? openSub : (songNeedsLyrics(song) ? `<span class="board-card__sub board-card__needs">Needs details</span>` : boardCardSubline(song, column));
+  const pinTitle = boardWide() ? "Pin to side" : "Pin to top";
   return `<article class="board-card ${open ? "is-open" : ""} ${current ? "is-current" : ""}" data-song-id="${escapeAttribute(song.id)}" data-card-key="${escapeAttribute(cardKey)}">
-    <button class="board-card__head" type="button" aria-expanded="${open}" data-board-card>
-      ${selectMode.active ? selectCheckMarkup() : ""}
-      <span class="board-card__text">
-        <strong dir="auto">${escapeHtml(song.title)}</strong>
-        ${songNeedsLyrics(song) ? `<span class="board-card__sub board-card__needs">Needs details</span>` : boardCardSubline(song, column)}
-      </span>
-      ${key ? `<span class="slp-badge--key board-card__key" dir="ltr">${escapeHtml(key)}</span>` : ""}
-    </button>
-    ${open ? `<div class="board-card__lyrics" tabindex="0">${lyrics}</div><button class="board-card__pin" type="button" data-board-pin><i data-lucide="pin"></i><span class="pin-top">Pin to top</span><span class="pin-side">Pin to side</span></button>` : ""}
+    <div class="board-card__top">
+      <button class="board-card__head" type="button" aria-expanded="${open}" data-board-card>
+        ${selectMode.active ? selectCheckMarkup() : ""}
+        <span class="board-card__text">
+          <strong dir="auto">${escapeHtml(song.title)}</strong>
+          ${sub}
+        </span>
+        ${!open && key ? `<span class="slp-badge--key board-card__key" dir="ltr">${escapeHtml(key)}</span>` : ""}
+      </button>
+      ${open ? `<button class="board-card__pinbtn" type="button" data-board-pin aria-label="${pinTitle}" title="${pinTitle}"><i data-lucide="pin"></i></button>` : ""}
+    </div>
+    ${open ? `<div class="board-card__lyrics" tabindex="0">${lyrics}</div>` : ""}
   </article>`;
 }
 
@@ -8861,11 +9181,15 @@ function renderBoardColumnsScreen() {
       <button class="board-icon-btn" type="button" data-col-remove="${index}" aria-label="Remove ${escapeAttribute(boardColumnName(column))}"><i data-lucide="x"></i></button>
     </div>`).join("");
   els.boardColumnsBody.innerHTML = `
+    <div class="board-cols-left">
     <div class="slp-section-label-row"><span class="slp-section-label">ON THIS BOARD</span><span class="slp-section-label" id="boardColumnCounter">${board.columns.length}</span></div>
     <div id="boardColumnList" class="slp-card board-col-list">${rows || `<p class="board-col__empty">No columns yet. Add some below.</p>`}</div>
     <button id="boardSaveAsNewBtn" class="slp-btn slp-btn--soft board-save-new" type="button"><i data-lucide="copy-plus"></i><span>Save as new board</span></button>
+    </div>
+    <div class="board-cols-right">
     <div class="slp-section-label-row"><span class="slp-section-label">ADD A COLUMN</span></div>
-    <div id="boardPickArea" class="board-pick-area"></div>`;
+    <div id="boardPickArea" class="board-pick-area"></div>
+    </div>`;
   renderBoardPickArea();
   wireBoardColumnRows();
   els.boardColumnsBody.scrollTop = keepScroll;
@@ -9337,6 +9661,8 @@ function openBoardFilterSheet() {
   showOverlay(els.boardFilterSheet);
 }
 
+let boardGripMoved = false;
+
 function initBoardUi() {
   document.querySelectorAll("[data-songs-view]").forEach((button) => button.addEventListener("click", () => setSongsView(button.dataset.songsView)));
   els.boardPanelWrap.addEventListener("click", (event) => {
@@ -9346,8 +9672,42 @@ function initBoardUi() {
     else if (act === "collapse") { boardState.collapsed = !boardState.collapsed; renderBoard(); }
     else if (act === "close") { boardState.panelSongId = null; boardState.collapsed = false; renderBoard(); }
     else if (act === "text") openBoardTextMenu(event.target.closest("[data-board-act]"));
-    else if (act === "size") { boardPrefs.size = boardPrefs.size === "tall" ? "half" : "tall"; saveBoardPrefs(); renderBoard(); }
+    else if (act === "size") {
+      if (boardGripMoved) { boardGripMoved = false; return; }
+      boardPrefs.size = boardPrefs.size === "tall" ? "half" : "tall";
+      boardPrefs.readerHeight = 0;
+      saveBoardPrefs();
+      renderBoard();
+    }
   });
+  // Drag the grip under the reader to give it any height; the height is remembered. A plain tap
+  // still switches between half and tall.
+  let gripStart = null;
+  els.boardPanelWrap.addEventListener("pointerdown", (event) => {
+    const grip = event.target.closest(".board-grip");
+    if (!grip) return;
+    const panel = els.boardPanelWrap.querySelector(".board-panel");
+    if (!panel) return;
+    gripStart = { y: event.clientY, height: panel.getBoundingClientRect().height, id: event.pointerId };
+    boardGripMoved = false;
+    grip.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  });
+  els.boardPanelWrap.addEventListener("pointermove", (event) => {
+    if (!gripStart) return;
+    const delta = event.clientY - gripStart.y;
+    if (Math.abs(delta) > 4) boardGripMoved = true;
+    if (!boardGripMoved) return;
+    const next = Math.round(Math.min(Math.max(150, gripStart.height + delta), globalThis.innerHeight * 0.7));
+    boardPrefs.readerHeight = next;
+    els.boardPanelWrap.style.setProperty("--board-panel-h", `${next}px`);
+  });
+  const endGrip = () => {
+    if (!gripStart) return;
+    gripStart = null;
+    if (boardGripMoved) saveBoardPrefs();
+  };
+  ["pointerup", "pointercancel"].forEach((name) => els.boardPanelWrap.addEventListener(name, endGrip));
   els.boardColumns.addEventListener("click", (event) => {
     const card = event.target.closest(".board-card");
     if (!card) return;
@@ -9408,6 +9768,7 @@ function openBoardMenu() {
   els.boardMenu.innerHTML = `
     ${state.boards.map((board) => `<button class="slp-picker-item board-menu__item" type="button" role="option" aria-selected="${board.id === state.activeBoardId}" data-board-switch="${escapeAttribute(board.id)}"><span class="board-menu__check">${board.id === state.activeBoardId ? `<i data-lucide="check"></i>` : ""}</span><span dir="auto">${escapeHtml(board.name)}</span></button>`).join("")}
     <div class="board-menu__divider" role="separator"></div>
+    <button class="slp-picker-item board-menu__item" type="button" data-board-act-menu="new"><span class="board-menu__check"><i data-lucide="plus"></i></span><span>New board…</span></button>
     <button class="slp-picker-item board-menu__item" type="button" data-board-act-menu="save"><span class="board-menu__check"><i data-lucide="save"></i></span><span>Save current as board</span></button>
     <button class="slp-picker-item board-menu__item" type="button" data-board-act-menu="rename"><span class="board-menu__check"><i data-lucide="pencil"></i></span><span>Rename board</span></button>
     <button class="slp-picker-item board-menu__item ${onlyOne ? "is-dim" : ""}" type="button" data-board-act-menu="delete" aria-disabled="${onlyOne}"><span class="board-menu__check"><i data-lucide="trash-2"></i></span><span>Delete board</span></button>`;
@@ -9531,7 +9892,8 @@ function initBoardBoardsUi() {
     if (!act) return;
     if (act === "delete" && state.boards.length <= 1) return showToast("You need at least one board");
     closeBoardMenu();
-    if (act === "save") openGigStructureForm("board-save", null, `${activeBoard().name} copy`);
+    if (act === "new") openBoardNewSheet();
+    else if (act === "save") openGigStructureForm("board-save", null, `${activeBoard().name} copy`);
     else if (act === "rename") openGigStructureForm("board-rename", null, activeBoard().name);
     else requestDeleteBoard();
   });
@@ -9580,6 +9942,7 @@ function openBoardDestinationPicker() {
   dest.folders.forEach((id) => { const input = els.songAddToChoices.querySelector(`input[data-add-to-kind="folder"][value="${CSS.escape(id)}"]`); if (input) input.checked = true; });
   dest.sets.forEach((id) => { const input = els.songAddToChoices.querySelector(`input[data-add-to-kind="gig-set"][value="${CSS.escape(id)}"]`); if (input) input.checked = true; });
   dest.sections.forEach((id) => { const input = els.songAddToChoices.querySelector(`input[data-add-to-kind="gig-section"][value="${CSS.escape(id)}"]`); if (input) input.checked = true; });
+  openCheckedChoiceGroups();
   showOverlay(els.songAddToSheet);
 }
 
@@ -9686,6 +10049,35 @@ function initBoardSearchUi() {
   });
   els.boardUndoUndo.addEventListener("click", undoBoardAdd);
   els.boardUndoView.addEventListener("click", viewBoardAdded);
+}
+
+// "New board": a name and where to start from (nothing, a copy of this board, or the usual Style & Tempo columns).
+function openBoardNewSheet() {
+  els.boardNewNameInput.value = "";
+  els.boardNewSheet.querySelector('input[name="boardNewStart"][value="empty"]').checked = true;
+  showOverlay(els.boardNewSheet);
+  setTimeout(() => els.boardNewNameInput.focus(), 0);
+}
+
+function createNewBoard() {
+  const name = els.boardNewNameInput.value.trim() || "New board";
+  const start = els.boardNewSheet.querySelector('input[name="boardNewStart"]:checked')?.value || "empty";
+  const columns = start === "copy" ? activeBoard().columns.map((column) => ({ ...column })) : start === "style" ? boardDefaultColumns() : [];
+  const board = { id: makeId(), name, columns };
+  state.boards.push(board);
+  state.activeBoardId = board.id;
+  boardState.expanded.clear();
+  boardState.scrollX = 0;
+  boardState.scrollY = {};
+  closeOverlays();
+  render();
+  showToast(columns.length ? `Created “${name}”` : `Created “${name}”. Tap the columns button to add some.`);
+}
+
+function initBoardNewUi() {
+  els.boardNewCreateBtn.addEventListener("click", createNewBoard);
+  els.boardNewCancelBtn.addEventListener("click", closeOverlays);
+  els.boardNewNameInput.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); createNewBoard(); } });
 }
 function openFolderDialog(id = null, requestedParentId = null, explicitKind = null) {
   folderDialogId = id;
@@ -10663,27 +11055,70 @@ function openSongAddTo(songId = null) {
 // (Move to...), and `options.gigId` limits event destinations to a single event.
 function renderSongAddToChoices(song, options = {}) {
   els.songAddToChoices.innerHTML = "";
-  if (!options.eventsOnly) [["personal", "Folders"], ["category", "Categories"]].forEach(([kind, heading]) => {
-    const roots = childFolders(null).filter((folder) => folder.kind === kind);
-    if (!roots.length) return;
-    const groupLabel = document.createElement("div");
-    groupLabel.className = "folder-choice-heading";
-    groupLabel.textContent = heading;
-    els.songAddToChoices.append(groupLabel);
-    roots.forEach((root) => {
-      appendSongAddToChoice(root, song, false, options);
-      childFolders(root.id).forEach((folder) => appendSongAddToChoice(folder, song, true, options));
+  const search = document.createElement("input");
+  search.type = "search";
+  search.className = "choice-search";
+  search.placeholder = "Search folders and events";
+  search.setAttribute("aria-label", "Search folders and events");
+  search.addEventListener("input", () => filterSongAddToChoices(search.value));
+  if (!options.gigId) els.songAddToChoices.append(search);
+  if (!options.eventsOnly) {
+    const foldersWrap = document.createElement("details");
+    foldersWrap.className = "choice-group choice-group--top";
+    foldersWrap.open = !!options.foldersOnly;
+    els.songAddToChoices.append(foldersWrap);
+    let count = 0;
+    [["personal", "Folders"], ["category", "Categories"]].forEach(([kind, heading]) => {
+      const roots = childFolders(null).filter((folder) => folder.kind === kind);
+      if (!roots.length) return;
+      const groupLabel = document.createElement("div");
+      groupLabel.className = "folder-choice-heading";
+      groupLabel.textContent = heading;
+      foldersWrap.append(groupLabel);
+      roots.forEach((root) => {
+        count += 1;
+        appendSongAddToChoice(root, song, false, options, foldersWrap);
+        childFolders(root.id).forEach((folder) => { count += 1; appendSongAddToChoice(folder, song, true, options, foldersWrap); });
+      });
     });
-  });
+    const summary = document.createElement("summary");
+    summary.innerHTML = `<span>Folders &amp; categories</span><small>${count}</small>`;
+    foldersWrap.prepend(summary);
+    if (!count) foldersWrap.remove();
+  }
   if (!options.foldersOnly) appendSongEventChoices(song, els.songAddToChoices, true, options);
+  openCheckedChoiceGroups();
 }
 
-function appendSongAddToChoice(folder, song, child, options = {}) {
+// Groups that hold a ticked choice start open, so what is already chosen is never hidden.
+function openCheckedChoiceGroups() {
+  els.songAddToChoices.querySelectorAll("details.choice-group").forEach((group) => {
+    if (group.querySelector("input:checked:not(:disabled)")) group.open = true;
+  });
+}
+
+// Typing opens every group that has a match and hides rows that do not match.
+function filterSongAddToChoices(query) {
+  const q = query.trim().toLowerCase();
+  const root = els.songAddToChoices;
+  root.querySelectorAll("label.folder-choice").forEach((row) => {
+    const text = row.dataset.choiceText || row.textContent.toLowerCase();
+    row.hidden = !!q && !text.includes(q);
+  });
+  root.querySelectorAll("details.choice-group").forEach((group) => {
+    const anyShown = [...group.querySelectorAll("label.folder-choice")].some((row) => !row.hidden);
+    group.hidden = !!q && !anyShown;
+    if (q) group.open = anyShown;
+  });
+}
+
+function appendSongAddToChoice(folder, song, child, options = {}, parent = els.songAddToChoices) {
   if (options.excludeFolderId && folder.id === options.excludeFolderId) return;
   const label = document.createElement("label");
   label.className = `folder-choice ${child ? "child" : ""}`;
   label.innerHTML = `<input type="${options.radio ? "radio" : "checkbox"}" ${options.radio ? 'name="song-move-destination"' : ""} data-add-to-kind="folder" value="${folder.id}" ${song?.folderIds.includes(folder.id) ? "checked" : ""}><span>${escapeHtml(folder.name)}</span>`;
-  els.songAddToChoices.append(label);
+  label.dataset.choiceText = folder.name.toLowerCase();
+  parent.append(label);
 }
 
 function renderSongEventChoices(song) {
@@ -10697,31 +11132,51 @@ function renderSongEventChoices(song) {
 
 function appendSongEventChoices(song, container = els.songAddToChoices, withHeading = true, options = {}) {
   const gigs = [...state.gigs].filter((gig) => !options.gigId || gig.id === options.gigId).sort((a, b) => a.date.localeCompare(b.date));
-  const destinations = gigs.flatMap((gig) => state.gigSections
-    .filter((section) => section.gigId === gig.id && !section.isHidden)
-    .sort((a, b) => a.position - b.position)
-    .flatMap((section) => {
+  const existingSetIds = new Set(song ? state.gigSetItems.filter((item) => item.songId === song.id).map((item) => item.setId) : []);
+  const today = new Date().toISOString().slice(0, 10);
+  const radio = options.radio ? 'type="radio" name="song-move-destination"' : 'type="checkbox"';
+  const eventBlock = (gig, open) => {
+    const rows = [];
+    state.gigSections.filter((section) => section.gigId === gig.id && !section.isHidden).sort((a, b) => a.position - b.position).forEach((section) => {
       const sets = state.gigSets.filter((set) => set.sectionId === section.id).sort((a, b) => a.position - b.position);
       const directSet = sets.find((set) => set.isDirect) || null;
-      return [{ gig, section, set: directSet }, ...sets.filter((set) => !set.isDirect).map((set) => ({ gig, section, set }))];
-    }));
-  if (!destinations.length) return;
-  const existingSetIds = new Set(song ? state.gigSetItems.filter((item) => item.songId === song.id).map((item) => item.setId) : []);
-  if (withHeading) {
-    const heading = document.createElement("div");
-    heading.className = "folder-choice-heading";
-    heading.textContent = "Events & Setlists";
-    container.append(heading);
+      [{ set: directSet }, ...sets.filter((set) => !set.isDirect).map((set) => ({ set }))].forEach(({ set }) => {
+        const label = !set || set.isDirect ? section.name : `${section.name} · ${set.name}`;
+        const kind = set ? "gig-set" : "gig-section";
+        rows.push(`<label class="folder-choice event-choice" data-choice-text="${escapeHtml(`${gigDisplayName(gig)} ${label}`.toLowerCase())}"><input ${radio} data-add-to-kind="${kind}" value="${set?.id || section.id}" ${set && existingSetIds.has(set.id) ? "checked" : ""}><span><strong>${escapeHtml(label)}</strong></span></label>`);
+      });
+    });
+    if (!rows.length) return null;
+    const block = document.createElement("details");
+    block.className = "choice-group choice-group--event";
+    block.open = open;
+    block.innerHTML = `<summary><span>${escapeHtml(gigDisplayName(gig))}</span><small>${escapeHtml(formatGigDate(gig.date))} · ${rows.length}</small></summary>${rows.join("")}`;
+    return block;
+  };
+  const group = (title, list, open) => {
+    const blocks = list.map((gig) => eventBlock(gig, false)).filter(Boolean);
+    if (!blocks.length) return;
+    const wrap = document.createElement("details");
+    wrap.className = "choice-group choice-group--top";
+    wrap.open = open;
+    wrap.innerHTML = `<summary><span>${title}</span><small>${blocks.length}</small></summary>`;
+    blocks.forEach((block) => wrap.append(block));
+    container.append(wrap);
+  };
+  if (options.gigId) {
+    const gig = gigs[0];
+    const block = gig && eventBlock(gig, true);
+    if (block) {
+      block.querySelector("summary").remove();
+      container.append(block);
+    }
+    return;
   }
-  destinations.forEach(({ gig, section, set }) => {
-    const label = document.createElement("label");
-    label.className = "folder-choice event-choice";
-    const destination = !set || set.isDirect ? section.name : `${section.name} · ${set.name}`;
-    const kind = set ? "gig-set" : "gig-section";
-    const value = set?.id || section.id;
-    label.innerHTML = `<input type="${options.radio ? "radio" : "checkbox"}" ${options.radio ? 'name="song-move-destination"' : ""} data-add-to-kind="${kind}" value="${value}" ${set && existingSetIds.has(set.id) ? "checked" : ""}><i data-lucide="list-music"></i><span><strong>${escapeHtml(gigDisplayName(gig))}</strong><small>${escapeHtml(destination)}</small></span>`;
-    container.append(label);
-  });
+  const upcoming = gigs.filter((gig) => gig.date >= today);
+  const past = gigs.filter((gig) => gig.date < today).reverse();
+  if (!upcoming.length && !past.length) return;
+  group("Upcoming events", upcoming, true);
+  group("Past events", past, false);
 }
 
 function applySongEventChoices(song, container) {
@@ -12508,10 +12963,10 @@ function renderGigBuilder(gig) {
   els.gigKeyFilterBar.classList.toggle("hidden", !gigKeyFilter);
   els.gigKeyFilterLabel.textContent = compactKeyLabel(gigKeyFilter);
   els.gigDetailTitle.textContent = gigDisplayName(gig);
-  els.arrangeGigBtn.setAttribute("aria-pressed", String(gigReorderMode));
-  els.arrangeGigBtn.setAttribute("aria-label", gigReorderMode ? "Finish rearranging" : "Rearrange");
   els.gigStructureEditBtn.setAttribute("aria-pressed", String(gigStructureEditMode));
-  els.gigStructureEditBtn.setAttribute("aria-label", gigStructureEditMode ? "Done editing" : "Edit");
+  els.gigStructureEditBtn.setAttribute("aria-label", gigStructureEditMode ? "Done editing" : "Edit the setlist");
+  els.gigStructureEditBtn.textContent = gigStructureEditMode ? "Done" : "Edit";
+  els.gigStructureEditBtn.classList.toggle("is-on", gigStructureEditMode);
   els.addGigSectionBtn.classList.toggle("hidden", !gigStructureEditMode);
   renderGigDetailsPanel(gig);
   renderGigPlanSearchOptions(gig, sections);
@@ -12519,7 +12974,7 @@ function renderGigBuilder(gig) {
   const sectionMarkup = sections.map((section, sectionIndex) => gigSectionMarkup(section, sectionIndex, sections.length)).filter(Boolean);
   els.gigSectionList.innerHTML = sectionMarkup.join("") || (planQuery ? `<div class="gig-plan-search-empty"><i data-lucide="search-x"></i><strong>No matching songs</strong><span>Try another title, artist, key, or setlist.</span></div>` : "");
   els.gigSectionList.querySelectorAll("[data-add-gig-section-songs]").forEach((button) => button.addEventListener("click", () => openGigSectionSongPicker(button.dataset.addGigSectionSongs)));
-  els.gigSectionList.querySelectorAll("[data-add-gig-set]").forEach((button) => button.addEventListener("click", () => promptAddGigSet(button.dataset.addGigSet)));
+  els.gigSectionList.querySelectorAll("[data-add-gig-set]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); promptAddGigSet(button.dataset.addGigSet); }));
   els.gigSectionList.querySelectorAll("[data-rename-gig-section]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); promptRenameGigSection(button.dataset.renameGigSection); }));
   els.gigSectionList.querySelectorAll("[data-delete-gig-section]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); requestDeleteGigSection(button.dataset.deleteGigSection); }));
   els.gigSectionList.querySelectorAll("[data-rename-gig-set]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); promptRenameGigSet(button.dataset.renameGigSet); }));
@@ -12544,6 +12999,12 @@ function renderGigBuilder(gig) {
   els.gigSectionList.querySelectorAll("[data-gig-key-filter]").forEach((badge) => badge.addEventListener("click", () => setGigKeyFilter(badge.dataset.gigKeyFilter)));
   els.gigSectionList.querySelectorAll("[data-gig-sort-btn]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); openGigSortMenu(button.dataset.gigSortBtn, button); }));
   els.gigSectionList.querySelectorAll(".gig-drag-handle").forEach(wireGigDrag);
+  if (!gigStructureEditMode && !selectMode.active) {
+    els.gigSectionList.querySelectorAll(".gig-song-swipe").forEach((wrap) => {
+      const row = wrap.querySelector(".gig-song-reference");
+      if (row) wireSwipeAction(wrap, row, { label: "Remove", icon: "trash-2", danger: true, onTrigger: () => requestRemoveGigSong(row.dataset.gigSongRow) });
+    });
+  }
   // Rows can be long-pressed into Select mode, except while Rearrange / Edit own the gesture.
   if (selectMode.active || !(gigReorderMode || gigStructureEditMode)) {
     els.gigSectionList.querySelectorAll("[data-gig-song-row]").forEach((row) => wireSelectableRow(row, row.dataset.gigSongRow, () => eventSelectContext(gig.id)));
@@ -12616,10 +13077,18 @@ function setGigReorderMode(value) {
   showToast(gigReorderMode ? "Drag the handles to rearrange the plan" : "Song order saved");
 }
 
+// Edit = tidy the set: drag to reorder, tick songs to move / remove / add elsewhere, add songs,
+// and change sections. Ticking uses the same Select machinery, with the header's Done to leave.
 function setGigStructureEditMode(value) {
-  if (value) leaveSelectMode({ rerender: false });
+  leaveSelectMode({ rerender: false });
   gigStructureEditMode = value;
-  if (value) gigReorderMode = false;
+  gigReorderMode = false;
+  if (value && state.gigNavigation.gigId) {
+    selectMode.active = true;
+    selectMode.embedded = true;
+    selectMode.context = eventSelectContext(state.gigNavigation.gigId);
+    selectMode.ids = [];
+  }
   render();
 }
 
@@ -12678,22 +13147,19 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
   const searchActive = gigBuilderFilterActive();
   const visiblyExpanded = searchActive || !collapsed;
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("section", section.id, section.gigId, `Move ${section.name}`) : "";
-  const manageActions = gigStructureEditMode ? `
-    <button class="slp-btn slp-btn--icon" type="button" data-add-gig-section-songs="${section.id}" aria-label="Add songs directly to ${escapeAttribute(section.name)}"><i data-lucide="plus"></i></button>
-    <button class="slp-btn slp-btn--icon" type="button" data-add-gig-set="${section.id}" aria-label="Add optional song list to ${escapeAttribute(section.name)}"><i data-lucide="folder-plus"></i></button>
-    ${gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-section="${section.id}"><i data-lucide="pencil"></i><span>Rename section</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-section="${section.id}"><i data-lucide="trash-2"></i><span>Delete section</span></button>`, `More options for ${section.name}`)}
-  ` : "";
+  const manageActions = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-section="${section.id}"><i data-lucide="pencil"></i><span>Rename section</span></button><button class="slp-picker-item" type="button" data-add-gig-set="${section.id}"><i data-lucide="list-plus"></i><span>Add a list</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-section="${section.id}"><i data-lucide="trash-2"></i><span>Delete section</span></button>`, `More options for ${section.name}`) : "";
   const setMarkup = sets.map(gigSetMarkup).filter(Boolean);
-  const directSongs = directItems.length ? `<div class="gig-direct-songs" style="padding-inline-start:30px;">${directItems.map((item, index) => gigSongReferenceMarkup(item, index, directItems.length, true)).join("")}</div>` : "";
+  const addSongsBtn = gigStructureEditMode ? `<button class="gig-add-text" type="button" data-add-gig-section-songs="${section.id}"><i data-lucide="plus"></i><span>Add songs</span></button>` : "";
+  const directSongs = directItems.length ? `<div class="gig-direct-songs">${directItems.map((item, index) => gigSongReferenceMarkup(item, index, directItems.length, true)).join("")}</div>` : "";
   if (gigBuilderFilterActive() && !directSongs && !setMarkup.length) return "";
   return `<section class="slp-card gig-section-card" data-gig-drag-type="section" data-gig-drag-id="${section.id}" data-gig-parent-id="${section.gigId}">
     <div class="slp-row gig-toggle-row ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""}" role="button" tabindex="0" data-toggle-gig-section="${section.id}" aria-expanded="${visiblyExpanded}" aria-label="${visiblyExpanded ? "Collapse" : "Expand"} ${escapeAttribute(section.name)}">
       <span class="gig-order-number">${sectionIndex + 1}</span>
       <span class="slp-row__body">
         <span class="slp-row__title" dir="auto">${escapeHtml(section.name)}</span>
-        <span class="slp-row__subtitle">${sets.length} ${plural(sets.length, "list")} · ${songCount} ${plural(songCount, "song")}</span>
+        <span class="slp-row__subtitle">${sets.length ? `${sets.length} ${plural(sets.length, "list")} · ` : ""}${songCount} ${plural(songCount, "song")}</span>
       </span>
-      ${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${dragHandle}${manageActions}
+      ${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${addSongsBtn}${dragHandle}${manageActions}
     </div>
     <div class="gig-section-content ${visiblyExpanded ? "" : "hidden"}">${directSongs}${setMarkup.join("")}</div>
   </section>`;
@@ -12706,17 +13172,14 @@ function gigSetMarkup(set) {
   const collapsed = gigNavigationArray("collapsedSetIds").includes(set.id);
   const visiblyExpanded = searchActive || !collapsed;
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("set", set.id, set.sectionId, `Move ${set.name}`) : "";
-  const manageActions = gigStructureEditMode ? `
-    <button class="slp-btn slp-btn--icon" type="button" data-add-gig-songs="${set.id}" aria-label="Add songs to ${escapeAttribute(set.name)}"><i data-lucide="plus"></i></button>
-    ${gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-set="${set.id}"><i data-lucide="pencil"></i><span>Rename song list</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-set="${set.id}"><i data-lucide="trash-2"></i><span>Delete song list</span></button>`, `More options for ${set.name}`)}
-  ` : "";
+  const manageActions = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-set="${set.id}"><i data-lucide="pencil"></i><span>Rename list</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-set="${set.id}"><i data-lucide="trash-2"></i><span>Delete list</span></button>`, `More options for ${set.name}`) : "";
   return `<div class="gig-set-card" data-gig-drag-type="set" data-gig-drag-id="${set.id}" data-gig-parent-id="${set.sectionId}">
-    <div class="slp-row gig-toggle-row ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""}" role="button" tabindex="0" data-toggle-gig-set="${set.id}" aria-expanded="${visiblyExpanded}" aria-label="${visiblyExpanded ? "Collapse" : "Expand"} ${escapeAttribute(set.name)}" style="padding-inline-start:30px; background:var(--color-card-2);">
+    <div class="slp-row gig-toggle-row ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""}" role="button" tabindex="0" data-toggle-gig-set="${set.id}" aria-expanded="${visiblyExpanded}" aria-label="${visiblyExpanded ? "Collapse" : "Expand"} ${escapeAttribute(set.name)}" style="padding-inline-start:16px; background:var(--color-card-2);">
       <span class="slp-row__body">
         <span class="slp-row__title" dir="auto">${escapeHtml(set.name)}</span>
         <span class="slp-row__subtitle">${items.length} ${plural(items.length, "song")}</span>
       </span>
-      ${items.length > 1 ? gigListSortControl(set.id, set.name) : ""}${dragHandle}${manageActions}
+      ${items.length > 1 ? gigListSortControl(set.id, set.name) : ""}${gigStructureEditMode ? `<button class="gig-add-text" type="button" data-add-gig-songs="${set.id}"><i data-lucide="plus"></i><span>Add songs</span></button>` : ""}${dragHandle}${manageActions}
     </div>
     <div class="gig-set-songs ${visiblyExpanded ? "" : "hidden"}">${items.map((item, index) => gigSongReferenceMarkup(item, index, items.length)).join("")}</div>
   </div>`;
@@ -12727,8 +13190,7 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   if (!song) return "";
   const songKey = eventItemKey(item, song);
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("item", item.id, item.setId, `Move ${song.title}`) : "";
-  const moreMenu = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item danger-icon" type="button" data-remove-gig-item="${item.id}"><i data-lucide="list-x"></i><span>Remove from this event</span></button>`, `More options for ${song.title}`) : "";
-  return `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "30px" : "50px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
+  const row = `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "16px" : "28px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
     ${selectMode.active ? selectCheckMarkup() : ""}
     <span class="gig-song-number">${index + 1}</span>
     <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-song="${song.id}" data-open-gig-item="${item.id}">
@@ -12736,8 +13198,10 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
       <span class="slp-row__subtitle" dir="auto">${escapeHtml(song.artist || "Artist not added")}</span>
     </button>
     ${songKey ? `<button class="slp-badge--key ${gigKeyFilter === songKey ? "active" : ""}" type="button" dir="ltr" data-gig-key-filter="${escapeAttribute(songKey)}" aria-pressed="${gigKeyFilter === songKey}" aria-label="Show only songs in ${escapeAttribute(compactKeyLabel(songKey))} in this event">${escapeHtml(songKey)}</button>` : ""}
-    ${dragHandle}${moreMenu}
+    ${dragHandle}
   </div>`;
+  // Reading mode: swipe a song left to remove it. Edit mode has the circles and the bottom bar.
+  return gigStructureEditMode || selectMode.active ? row : `<div class="gig-song-swipe">${row}</div>`;
 }
 
 function gigDragHandleMarkup(type, id, parentId, label) {
@@ -12802,7 +13266,7 @@ function gigRowMarkup(gig) {
   // primary line; name (or event type) and venue are secondary.
   const identity = gigAutoTitle(gig);
   const subtitle = [identity, gig.venue].filter(Boolean).join(" · ") || "Event details not added";
-  return `<button class="slp-row ${state.gigNavigation.gigId === gig.id ? "selected" : ""}" type="button" data-gig-id="${gig.id}" style="flex-direction:column; align-items:flex-start; gap:2px;">
+  return `<button class="slp-row ${(state.gigNavigation.gigId || (gigPreviewActive() ? (gigPreviewId || defaultGigId()) : null)) === gig.id ? "selected" : ""}" type="button" data-gig-id="${gig.id}" style="flex-direction:column; align-items:flex-start; gap:2px;">
     <span class="slp-row__title" dir="auto">${escapeHtml(formatGigDate(gig.date))}</span>
     <span class="slp-row__subtitle" dir="auto">${escapeHtml(subtitle)}</span>
   </button>`;
@@ -12879,8 +13343,22 @@ function defaultGigId() {
   return [...state.gigs].sort((a, b) => b.date.localeCompare(a.date))[0]?.id || null;
 }
 
-function openGigRecord(gigId) {
+// On medium screens (600-1019px) the list of events stays on the left and a tap previews the event on
+// the right; "Open setlist" then opens it. Smaller and larger screens open it straight away.
+let gigPreviewId = null;
+let gigShareTargetId = null;
+
+function gigPreviewActive() {
+  return Boolean(screenInfo.eventsSplit) && !screenInfo.eventsTriple && workspaceMode === "gigs" && !state.gigNavigation.gigId && state.gigs.length > 0;
+}
+
+function openGigRecord(gigId, force = false) {
   if (!state.gigs.some((gig) => gig.id === gigId)) return;
+  if (!force && gigPreviewActive()) {
+    gigPreviewId = gigId;
+    render();
+    return;
+  }
   gigReorderMode = false;
   selectedSongId = null;
   gigReadItemId = null;
@@ -12960,6 +13438,15 @@ function setGigFormType(type) {
   syncGigTypeInput();
 }
 
+// The Chuppah tick belongs to weddings. Choosing Wedding ticks it (most weddings have one); the
+// choice then stays yours.
+function syncGigChuppahRow(keepChecked) {
+  const wedding = els.gigTypeSelect.value === "Wedding";
+  els.gigChuppahRow.hidden = !wedding;
+  if (!wedding) els.gigChuppahInput.checked = false;
+  else if (keepChecked === undefined) els.gigChuppahInput.checked = true;
+}
+
 function syncGigTypeInput() {
   els.gigEventTypeInput.hidden = els.gigTypeSelect.value !== "Other";
 }
@@ -12986,6 +13473,7 @@ function openNewGigForm(date = state.gigNavigation.selectedDate || todayDateStri
   els.gigFormTitle.textContent = "New Event";
   els.gigDateInput.value = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : todayDateString();
   setGigFormType("");
+  syncGigChuppahRow(false);
   els.gigDeleteZone.hidden = true;
   resetGigFormAccordion();
   updateGigFormSummaries();
@@ -13004,7 +13492,11 @@ function openEditGigForm() {
   els.gigPriceInput.value = gig.price;
   els.gigDepositInput.value = gig.deposit;
   els.gigPaidInput.checked = gig.paid;
-  els.gigDueDateInput.value = gig.dueDate;
+  els.gigDepositPaidInput.value = gig.depositPaidOn;
+  els.gigOvertimeStartInput.value = gig.overtimeStart;
+  els.gigOvertimeRateInput.value = gig.overtimeRate;
+  els.gigChuppahInput.checked = gig.hasChuppah === true;
+  syncGigChuppahRow(gig.hasChuppah === true);
   els.gigMoneyNoteInput.value = gig.moneyNote;
   els.gigEmailInput.value = gig.email;
   els.gigStartTimeInput.value = gig.startTime;
@@ -13044,6 +13536,9 @@ function createGigRecord(values) {
     deposit: String(values.deposit || "").trim(),
     paid: values.paid === true,
     dueDate: /^\d{4}-\d{2}-\d{2}$/.test(values.dueDate || "") ? values.dueDate : "",
+    depositPaidOn: /^\d{4}-\d{2}-\d{2}$/.test(values.depositPaidOn || "") ? values.depositPaidOn : "",
+    overtimeStart: /^\d{2}:\d{2}$/.test(values.overtimeStart || "") ? values.overtimeStart : "",
+    overtimeRate: String(values.overtimeRate || "").trim(),
     moneyNote: String(values.moneyNote || "").trim(),
     agentName: String(values.agentName || "").trim(),
     band: String(values.band || "").trim(),
@@ -13074,7 +13569,7 @@ function saveGig(event) {
   const values = {
     date: els.gigDateInput.value,
     eventType: gigFormEventType(),
-    hasChuppah: state.gigs.find((item) => item.id === editingGigId)?.hasChuppah === true,
+    hasChuppah: !els.gigChuppahRow.hidden && els.gigChuppahInput.checked,
     // The title is made from customer and type; an older hand-typed name stays until a customer is entered.
     name: els.gigClientInput.value.trim() ? "" : (state.gigs.find((item) => item.id === editingGigId)?.name || ""),
     startTime: els.gigStartTimeInput.value,
@@ -13087,7 +13582,9 @@ function saveGig(event) {
     price: els.gigPriceInput.value,
     deposit: els.gigDepositInput.value,
     paid: els.gigPaidInput.checked,
-    dueDate: els.gigDueDateInput.value,
+    depositPaidOn: els.gigDepositPaidInput.value,
+    overtimeStart: els.gigOvertimeStartInput.value,
+    overtimeRate: els.gigOvertimeRateInput.value,
     moneyNote: els.gigMoneyNoteInput.value,
     agentName: els.gigAgentInput.value,
     band: els.gigBandInput.value,
@@ -13146,6 +13643,18 @@ function addSongReferencesToGigSet(setId, songIds) {
   return additions;
 }
 
+function requestRemoveGigSong(itemId) {
+  const item = state.gigSetItems.find((candidate) => candidate.id === itemId);
+  const song = item && state.songs.find((candidate) => candidate.id === item.songId);
+  if (!song) return;
+  openConfirm("Remove song?", `Take “${song.title}” out of this event? It stays in your library.`, "Remove", () => {
+    removeGigSongReference(itemId);
+    closeOverlays();
+    render();
+    showToast("Removed from this event");
+  });
+}
+
 function removeGigSongReference(itemId) {
   const before = state.gigSetItems.length;
   state.gigSetItems = state.gigSetItems.filter((item) => item.id !== itemId);
@@ -13187,8 +13696,9 @@ function openSongFromGig(songId, itemId = null) {
   openSong(songId);
 }
 
-function openGigShare() {
-  if (!state.gigs.some((gig) => gig.id === state.gigNavigation.gigId)) return;
+function openGigShare(gigId = null) {
+  gigShareTargetId = typeof gigId === "string" ? gigId : state.gigNavigation.gigId;
+  if (!state.gigs.some((gig) => gig.id === gigShareTargetId)) return;
   els.shareGigSongsInput.checked = true;
   [els.shareGigLocationInput, els.shareGigCustomerInput, els.shareGigContactInput, els.shareGigBandInput, els.shareGigNotesInput, els.shareGigMoneyInput].forEach((input) => { input.checked = false; });
   showOverlay(els.gigShareSheet);
@@ -13201,7 +13711,16 @@ function buildGigShareText(gigId, options = {}) {
   if (options.location && (gig.venue || gig.address)) lines.push([gig.venue, gig.address].filter(Boolean).join(" — "));
   if (options.customer && gig.clientName) lines.push(`Customer: ${gig.clientName}`);
   if (options.contact && (gig.contactInfo || gig.email)) lines.push(...[gig.contactInfo && `Contact: ${gig.contactInfo}`, gig.email && `Email: ${gig.email}`].filter(Boolean));
-  if (options.money && parseGigMoney(gig.price) !== null) lines.push(...[`Price: ${formatGigMoney(parseGigMoney(gig.price))}`, parseGigMoney(gig.deposit) !== null && `Deposit: ${formatGigMoney(parseGigMoney(gig.deposit))}`, `Balance: ${gig.paid ? "paid in full" : formatGigMoney(gigBalance(gig))}`, gig.dueDate && `Due: ${formatGigDate(gig.dueDate)}`, gig.moneyNote].filter(Boolean));
+  if (options.money && parseGigMoney(gig.price) !== null) {
+    lines.push(...[
+      `Price: ${formatGigMoney(parseGigMoney(gig.price))}`,
+      parseGigMoney(gig.deposit) !== null && `Deposit: ${formatGigMoney(parseGigMoney(gig.deposit))}${gig.depositPaidOn ? ` (paid ${formatGigDate(gig.depositPaidOn)})` : ""}`,
+      `Balance: ${gig.paid ? "paid in full" : formatGigMoney(gigBalance(gig))}`,
+      gig.overtimeStart && `Overtime starts at ${new Date(`2000-01-01T${gig.overtimeStart}`).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`,
+      parseGigMoney(gig.overtimeRate) !== null && `Overtime: ${formatGigMoney(parseGigMoney(gig.overtimeRate))} per hour`,
+      gig.moneyNote
+    ].filter(Boolean));
+  }
   if (options.band) lines.push(...[gig.band && `Band: ${gig.band}`, gig.musicalDirector && `Band leader: ${gig.musicalDirector}`, gig.choir && `Choir: ${gig.choir}`, gig.agentName && `Agent: ${gig.agentName}`].filter(Boolean));
   if (options.notes && gig.notes) lines.push("", "Notes", gig.notes.trim());
   if (options.songs !== false) {
@@ -13225,7 +13744,7 @@ function buildGigShareText(gigId, options = {}) {
 }
 
 async function shareCurrentGig() {
-  const gig = state.gigs.find((item) => item.id === state.gigNavigation.gigId);
+  const gig = state.gigs.find((item) => item.id === (gigShareTargetId || state.gigNavigation.gigId));
   if (!gig) return;
   const text = buildGigShareText(gig.id, { songs: els.shareGigSongsInput.checked, location: els.shareGigLocationInput.checked, customer: els.shareGigCustomerInput.checked, contact: els.shareGigContactInput.checked, band: els.shareGigBandInput.checked, notes: els.shareGigNotesInput.checked, money: els.shareGigMoneyInput.checked });
   try {
@@ -13492,7 +14011,7 @@ function gigRelativeLabel(date) {
   return days > -14 ? `${-days} days ago` : `${Math.round(-days / 7)} weeks ago`;
 }
 
-function gigSideDetailsMarkup(gig) {
+function gigSideDetailsMarkup(gig, preview = false) {
   const row = (icon, value) => value ? `<div class="gig-side-details__row"><i data-lucide="${icon}"></i><span dir="auto">${escapeHtml(value)}</span></div>` : "";
   const day = gigDateParts(gig.date).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
   const when = [day, formatGigTimeRange(gig).replace("–", " to ")].filter(Boolean).join(" · ");
@@ -13503,9 +14022,9 @@ function gigSideDetailsMarkup(gig) {
       <h2 dir="auto">${escapeHtml(gigDisplayName(gig))}</h2>
       <p class="gig-side-details__when">${escapeHtml(when)}</p>
       <div class="gig-side-details__rows">${row("map-pin", [gig.venue, gig.address].filter(Boolean).join(", "))}${row("phone", gig.contactInfo)}${row("mail", gig.email)}${row("users", team)}${row("sticky-note", gig.notes.trim().split("\n")[0])}</div>
-      <div class="gig-side-details__actions">${first ? `<button id="gigSideStartBtn" class="slp-btn gig-side-details__primary" type="button"><i data-lucide="play"></i><span>Start the set</span></button>` : ""}<button id="gigSideShareBtn" class="slp-btn" type="button"><i data-lucide="share-2"></i><span>Share</span></button></div>
+      <div class="gig-side-details__actions">${preview ? `<button id="gigSideOpenBtn" class="slp-btn gig-side-details__primary" type="button"><i data-lucide="list-music"></i><span>Open setlist</span></button>` : first ? `<button id="gigSideStartBtn" class="slp-btn gig-side-details__primary" type="button"><i data-lucide="play"></i><span>Start the set</span></button>` : ""}<button id="gigSideShareBtn" class="slp-btn" type="button"><i data-lucide="share-2"></i><span>Share</span></button></div>
     </div>
-    <p class="gig-side-details__hint">Or tap a song on the left to read it here.</p>`;
+    ${preview ? "" : `<p class="gig-side-details__hint">Or tap a song on the left to read it here.</p>`}`;
 }
 
 // Fills in the right-hand side while an event is open: its details, or the song being read with
@@ -13513,6 +14032,19 @@ function gigSideDetailsMarkup(gig) {
 function renderGigSide() {
   const active = gigSplitActive();
   els.app.classList.toggle("gig-split", active);
+  const preview = gigPreviewActive();
+  els.app.classList.toggle("gig-preview", preview);
+  if (preview) {
+    if (!state.gigs.some((item) => item.id === gigPreviewId)) gigPreviewId = defaultGigId();
+    const previewGig = state.gigs.find((item) => item.id === gigPreviewId);
+    els.gigSideNav.classList.add("hidden");
+    els.gigSideDetails.classList.remove("hidden");
+    els.gigSideDetails.innerHTML = gigSideDetailsMarkup(previewGig, true);
+    document.getElementById("gigSideOpenBtn")?.addEventListener("click", () => openGigRecord(previewGig.id, true));
+    document.getElementById("gigSideShareBtn")?.addEventListener("click", () => openGigShare(previewGig.id));
+    refreshIcons();
+    return;
+  }
   if (!active) {
     els.gigSideDetails.classList.add("hidden");
     els.gigSideNav.classList.add("hidden");
@@ -13528,7 +14060,7 @@ function renderGigSide() {
   if (!reading) {
     els.gigSideDetails.innerHTML = gigSideDetailsMarkup(gig);
     document.getElementById("gigSideStartBtn")?.addEventListener("click", () => readGigSong(order[0].item.songId, order[0].item.id));
-    document.getElementById("gigSideShareBtn")?.addEventListener("click", openGigShare);
+    document.getElementById("gigSideShareBtn")?.addEventListener("click", () => openGigShare(gig.id));
     refreshIcons();
     return;
   }
@@ -13550,9 +14082,9 @@ let eventPrefs = loadEventPrefs();
 function loadEventPrefs() {
   try {
     const saved = JSON.parse(localStorage.getItem(EVENT_PREFS_KEY) || "{}");
-    return { leftWidth: Number(saved.leftWidth) > 0 ? Number(saved.leftWidth) : 0, listHidden: saved.listHidden === true, notesListHidden: saved.notesListHidden === true };
+    return { leftWidth: Number(saved.leftWidth) > 0 ? Number(saved.leftWidth) : 0, listHidden: saved.listHidden === true, notesListHidden: saved.notesListHidden === true, songsLeftWidth: Number(saved.songsLeftWidth) > 0 ? Number(saved.songsLeftWidth) : 0, songsListHidden: saved.songsListHidden === true };
   } catch {
-    return { leftWidth: 0, listHidden: false, notesListHidden: false };
+    return { leftWidth: 0, listHidden: false, notesListHidden: false, songsLeftWidth: 0, songsListHidden: false };
   }
 }
 
@@ -13567,6 +14099,11 @@ function saveEventPrefs() {
 function applyEventLeftWidth() {
   if (eventPrefs.leftWidth) els.app.style.setProperty?.("--gig-left-w", `${eventPrefs.leftWidth}px`);
   else els.app.style.removeProperty?.("--gig-left-w");
+}
+
+function applySongsLeftWidth() {
+  if (eventPrefs.songsLeftWidth) els.app.style.setProperty?.("--songs-left-w", `${eventPrefs.songsLeftWidth}px`);
+  else els.app.style.removeProperty?.("--songs-left-w");
 }
 
 function initGigSideUi() {
@@ -13610,6 +14147,31 @@ function initGigSideUi() {
     saveEventPrefs();
     render();
   });
+  els.songListToggleBtn.addEventListener("click", () => {
+    eventPrefs.songsListHidden = !eventPrefs.songsListHidden;
+    saveEventPrefs();
+    render();
+  });
+  // The divider between the song list and the lyrics (Songs on medium screens).
+  const songHandle = els.songsSideResizer;
+  const applySongsWidth = (value, save) => {
+    eventPrefs.songsLeftWidth = value ? Math.round(Math.min(Math.max(260, value), Math.max(260, els.app.getBoundingClientRect().width - 320))) : 0;
+    applySongsLeftWidth();
+    if (save) saveEventPrefs();
+  };
+  let songDragging = false;
+  songHandle.addEventListener("pointerdown", (event) => { songDragging = true; songHandle.setPointerCapture?.(event.pointerId); songHandle.classList.add("is-dragging"); event.preventDefault(); });
+  songHandle.addEventListener("pointermove", (event) => { if (songDragging) applySongsWidth(event.clientX - els.app.getBoundingClientRect().left, false); });
+  const songEnd = () => { if (!songDragging) return; songDragging = false; songHandle.classList.remove("is-dragging"); saveEventPrefs(); };
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach((name) => songHandle.addEventListener(name, songEnd));
+  songHandle.addEventListener("dblclick", () => applySongsWidth(0, true));
+  songHandle.addEventListener("keydown", (event) => {
+    const step = { ArrowLeft: -24, ArrowRight: 24 }[event.key];
+    if (!step) return;
+    event.preventDefault();
+    applySongsWidth((eventPrefs.songsLeftWidth || document.getElementById("libraryPane").getBoundingClientRect().width) + step, true);
+  });
+  applySongsLeftWidth();
   els.noteListToggleBtn.addEventListener("click", () => {
     eventPrefs.notesListHidden = !eventPrefs.notesListHidden;
     saveEventPrefs();
@@ -13904,7 +14466,12 @@ function initGigTemplatesUi() {
     const apply = event.target.closest("[data-template-apply]");
     if (apply) {
       const template = [...READY_GIG_TEMPLATES, ...(state.eventTemplates || [])].find((item) => item.id === apply.dataset.templateApply);
-      if (template) applyTemplateToGig(state.gigNavigation.gigId, template.sections, template.name);
+      if (template) {
+        // A wedding that has no chuppah does not get a Chuppah section from the Wedding template.
+        const gig = state.gigs.find((item) => item.id === state.gigNavigation.gigId);
+        const names = template.id === "wedding" && gig?.eventType === "Wedding" && !gig.hasChuppah ? template.sections.filter((name) => name !== "Chuppah") : template.sections;
+        applyTemplateToGig(state.gigNavigation.gigId, names, template.name);
+      }
       return;
     }
     const remove = event.target.closest("[data-template-delete]");
@@ -16581,7 +17148,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -17232,7 +17799,7 @@ function linkInfo(url) {
     ["vimeo.com", "Vimeo", "video"], ["facebook.com", "Facebook", "video"], ["fb.watch", "Facebook", "video"], ["tiktok.com", "TikTok", "video"]
   ];
   const site = sites.find(([domain]) => host === domain || host.endsWith(`.${domain}`));
-  if (site) return { label: site[1], kind: site[2], icon: site[2] === "video" ? "video" : "headphones", known: true };
+  if (site) return { label: site[1], kind: site[2], icon: site[2] === "video" ? "square-play" : "headphones", known: true };
   return { label: host || url, kind: "audio", icon: "link", known: false };
 }
 
@@ -17482,6 +18049,7 @@ function enterSelectMode(context, firstId = null) {
   gigReorderMode = false;
   gigStructureEditMode = false;
   selectMode.active = true;
+  selectMode.embedded = false;
   selectMode.context = context;
   selectMode.ids = firstId ? [firstId] : [];
   closeOverlays();
@@ -17493,6 +18061,7 @@ function enterSelectMode(context, firstId = null) {
 function leaveSelectMode({ rerender = true } = {}) {
   if (!selectMode.active) return;
   selectMode.active = false;
+  selectMode.embedded = false;
   selectMode.ids = [];
   selectMode.context = null;
   if (rerender) {
@@ -17556,9 +18125,33 @@ function selectContextStillValid() {
 function dropStaleSelectMode() {
   if (selectMode.active && !selectContextStillValid()) {
     selectMode.active = false;
+    selectMode.embedded = false;
     selectMode.ids = [];
     selectMode.context = null;
   }
+}
+
+// In the wide layouts the bars belong to the column being selected in, not the whole window.
+function fitSelectBarToColumn() {
+  const bars = [els.selectActionBar, els.selectTopBar];
+  const context = selectMode.context;
+  let column = null;
+  if (selectMode.active && context && els.app.dataset.tier !== "phone") {
+    column = selectMode.embedded ? els.app.querySelector(".gig-detail-view") : context.container?.closest?.(".browser-pane, .library-pane, .gig-detail-view") || null;
+  }
+  const box = column?.getBoundingClientRect?.();
+  const fits = box && box.width > 0 && box.width < window.innerWidth - 1;
+  bars.forEach((bar) => {
+    if (!bar?.style) return;
+    if (fits) {
+      bar.style.left = `${box.left}px`;
+      bar.style.right = "auto";
+      bar.style.width = `${box.width}px`;
+      bar.style.marginInline = "0";
+    } else {
+      ["left", "right", "width", "margin-inline"].forEach((prop) => bar.style.removeProperty?.(prop));
+    }
+  });
 }
 
 function syncSelectModeUi() {
@@ -17566,10 +18159,14 @@ function syncSelectModeUi() {
   const active = selectMode.active;
   const context = selectMode.context;
   els.app.classList.toggle("select-mode-active", active);
-  setElementVisible(els.selectTopBar, active);
-  setElementVisible(els.selectActionBar, active);
-  if (!active) return;
+  els.app.classList.toggle("select-mode-embedded", active && selectMode.embedded);
+  // Inside the event's Edit mode the header already says Done, and the action bar only appears once
+  // something is ticked.
   const count = selectMode.ids.length;
+  setElementVisible(els.selectTopBar, active && !selectMode.embedded);
+  setElementVisible(els.selectActionBar, active && (!selectMode.embedded || count > 0));
+  fitSelectBarToColumn();
+  if (!active) return;
   els.selectCount.textContent = `${count} selected`;
   const visible = visibleSelectableIds();
   const allSelected = visible.length > 0 && visible.every((id) => selectMode.ids.includes(id));
@@ -17601,6 +18198,8 @@ function wireSelectableRow(row, id, contextFactory) {
     row.classList.toggle("is-selected", selectMode.ids.includes(id));
     // Capture phase: runs before the row's own handlers (open song, expand, key filter...).
     row.addEventListener("click", (event) => {
+      // Drag grips and menus keep their own job while ticking.
+      if (event.target.closest(".slp-row__drag-handle, .slp-menu")) return;
       event.preventDefault();
       event.stopPropagation();
       if (Date.now() < selectMode.swallowClickUntil) return;
@@ -17691,6 +18290,8 @@ function initSelectModeUi() {
     if (gigId) enterSelectMode(eventSelectContext(gigId));
   });
 }
+
+window.addEventListener?.("resize", () => { if (selectMode.active) fitSelectBarToColumn(); });
 function refreshIcons() {
   globalThis.lucide?.createIcons?.({ attrs: { "aria-hidden": "true" } });
 }
@@ -17747,7 +18348,7 @@ els.newGigBtn.addEventListener("click", () => openNewGigForm());
 els.gigForm.addEventListener("submit", saveGig);
 els.deleteGigBtn.addEventListener("click", () => requestDeleteGig(editingGigId));
 els.gigForm.addEventListener("input", updateGigFormSummaries);
-els.gigTypeSelect.addEventListener("change", () => { syncGigTypeInput(); updateGigFormSummaries(); if (!els.gigEventTypeInput.hidden) els.gigEventTypeInput.focus(); });
+els.gigTypeSelect.addEventListener("change", () => { syncGigTypeInput(); syncGigChuppahRow(); updateGigFormSummaries(); if (!els.gigEventTypeInput.hidden) els.gigEventTypeInput.focus(); });
 els.cancelGigFormBtn.addEventListener("click", closeOverlays);
 els.backToGigsBtn.addEventListener("click", () => { gigReorderMode = false; selectedSongId = null; gigReadItemId = null; gigStructureEditMode = false; state.gigNavigation.gigId = null; state.gigNavigation.sectionId = null; state.gigNavigation.setId = null; render(); });
 els.editGigBtn.addEventListener("click", openEditGigForm);
@@ -17757,7 +18358,6 @@ els.closeGigPlanSearchBtn.addEventListener("click", () => { state.gigNavigation.
 els.gigPlanSearchInput.addEventListener("input", () => { state.gigNavigation.builderSearchQuery = els.gigPlanSearchInput.value; renderGigBuilder(state.gigs.find((gig) => gig.id === state.gigNavigation.gigId)); refreshIcons(); schedulePersist(); });
 els.gigPlanSearchScope.addEventListener("change", () => { state.gigNavigation.builderSearchSetId = els.gigPlanSearchScope.value; renderGigBuilder(state.gigs.find((gig) => gig.id === state.gigNavigation.gigId)); refreshIcons(); schedulePersist(); });
 els.clearGigKeyFilterBtn.addEventListener("click", () => setGigKeyFilter(gigKeyFilter));
-els.arrangeGigBtn.addEventListener("click", () => setGigReorderMode(!gigReorderMode));
 els.gigStructureEditBtn.addEventListener("click", () => setGigStructureEditMode(!gigStructureEditMode));
 els.gigDetailsCollapse.addEventListener("click", () => {
   const expanded = els.gigDetailsCollapse.getAttribute("aria-expanded") === "true";
@@ -17947,8 +18547,15 @@ els.showChordsToggle.addEventListener("change", () => {
   rerenderSongDocument();
 });
 els.insertChordBtn.addEventListener("click", openChordEditor);
-els.songCategoryBtn.addEventListener("click", openSongLocations);
-els.editSongLocationsBtn.addEventListener("click", () => openSongAddTo());
+els.songCategoryBtn.addEventListener("click", () => openSongAddTo());
+els.backToSongPill.addEventListener("click", (event) => {
+  if (event.target.closest("#dismissBackToSong")) { songBack = null; syncSongBackPill(); return; }
+  returnToSong();
+});
+els.closeSongEventsBtn.addEventListener("click", closeOverlays);
+els.songEventsSearch.addEventListener("input", renderSongEventsList);
+els.songArtistChip.addEventListener("click", () => els.songArtist.click());
+els.editSongDetailsBtn.addEventListener("click", () => openSongInfo(false));
 els.songMoreBtn.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -18353,6 +18960,7 @@ initBoardUi();
   initScreenTier();
   initGigSideUi();
   initBoardPosBar();
+  initBoardNewUi();
   initBoardResizer();
   // Narrow window <-> wide window: the Board only exists at phone width, so redraw when it flips.
   globalThis.matchMedia?.("(max-width: 900px)")?.addEventListener?.("change", () => render());
