@@ -4027,7 +4027,6 @@ input[type="time"].slp-input { min-width: 0; text-align: start; }
 #gigForm > .slp-form-section:first-of-type { padding-top: var(--space-4); }
 #gigForm { gap: var(--space-5); }
 .gig-type-chips { margin-top: var(--space-4); }
-.gig-details-edit { margin-top: var(--space-6); width: 100%; }
 
 /* Event detail page lays its children out with a flex gap, which would split an open
    Details row from its panel; pull the panel back up so they stay one card. */
@@ -5028,8 +5027,6 @@ a.slp-chip { min-height: 44px; }
 .app-shell.gig-split[data-library-mode="gigs"] .browser-pane { display: none; }
 .app-shell.gig-split[data-library-mode="gigs"] #songEmptyState { display: none; }
 .app-shell.gig-split[data-library-mode="gigs"] #backToFolderBtn { display: none; }
-.app-shell.gig-split[data-library-mode="gigs"] #gigDetailsCollapse,
-.app-shell.gig-split[data-library-mode="gigs"] #gigDetailsPanel { display: none; }
 .gig-song-reference.is-reading { background: var(--accent-soft-2); box-shadow: inset 3px 0 0 var(--accent); }
 .gig-side-resizer { display: none; }
 .app-shell.gig-split[data-library-mode="gigs"] .gig-side-resizer { display: block; position: relative; grid-column: 2; grid-row: 1; justify-self: start; width: 24px; margin-inline-start: -12px; z-index: 6; cursor: col-resize; touch-action: none; }
@@ -5037,17 +5034,6 @@ a.slp-chip { min-height: 44px; }
 .gig-side-resizer:hover::after, .gig-side-resizer:focus-visible::after, .gig-side-resizer.is-dragging::after { background: var(--accent); }
 .gig-side-details { padding: var(--space-9) var(--space-8); }
 .gig-side-details.hidden { display: none; }
-.gig-side-details__card { max-width: 440px; margin-inline: auto; padding: var(--space-8) var(--space-8) var(--space-7); border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-card); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); }
-.gig-side-details__tags { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--color-text-secondary); }
-.gig-side-details__tag { padding: 2px 10px; border-radius: var(--radius-md); background: var(--accent-soft-2); color: var(--accent); font-weight: var(--font-weight-semibold); }
-.gig-side-details__card h2 { margin: 0; font-size: 22px; font-weight: var(--font-weight-semibold); line-height: 1.2; }
-.gig-side-details__when { margin: var(--space-2) 0 var(--space-6); color: var(--color-text-secondary); font-size: 14px; }
-.gig-side-details__rows { display: grid; gap: var(--space-4); }
-.gig-side-details__row { display: flex; align-items: flex-start; gap: var(--space-5); font-size: 15px; line-height: 1.35; }
-.gig-side-details__row svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--color-text-secondary); }
-.gig-side-details__actions { display: flex; gap: var(--space-4); margin-top: var(--space-7); }
-.gig-side-details__actions .slp-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); padding-inline: var(--space-6); }
-.gig-side-details__primary { flex: 1; background: var(--color-text); color: var(--color-bg); border-color: var(--color-text); }
 .gig-side-details__hint { max-width: 440px; margin: var(--space-6) auto 0; text-align: center; color: var(--color-text-secondary); font-size: var(--text-sm); }
 .gig-side-nav { position: sticky; bottom: 0; z-index: 4; display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-6) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--color-border); background: var(--color-card); }
 .gig-side-nav.hidden { display: none; }
@@ -5259,6 +5245,96 @@ a.slp-chip { min-height: 44px; }
 .gig-add-text svg { width: 16px; height: 16px; flex: none; }
 .gig-section-card > .gig-toggle-row:has(.gig-add-text) .slp-row__subtitle { display: none; }
 .gig-toggle-row .slp-menu > summary { min-width: 44px; min-height: 44px; }
+
+/* Event key and notes, reader bar, set list jump sheet */
+.slp-badge--key.event-key { background: var(--color-warning-soft, #fbeed0); color: var(--color-warning-text, #7a4a00); }
+.slp-badge--key.empty { background: transparent; border: 1px dashed var(--color-border-strong, var(--color-border)); color: var(--color-text-secondary); }
+.gig-song-reference .slp-badge--key { min-width: 44px; min-height: 44px; }
+.gig-row-note { display: flex; align-items: center; gap: var(--space-2); min-width: 0; margin-top: 1px; color: var(--color-text-secondary); font-size: var(--text-sm); font-style: italic; }
+.gig-row-note svg { width: 14px; height: 14px; flex: none; }
+.gig-row-note span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gig-key-pill { position: relative; min-height: 44px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-card); color: var(--color-text); font: inherit; font-weight: var(--font-weight-semibold); cursor: pointer; }
+.gig-key-pill small { display: block; font-size: 10px; font-weight: var(--font-weight-regular, 400); color: var(--color-text-secondary); line-height: 1; }
+.gig-key-pill.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.gig-key-pill.on small { color: inherit; }
+.gig-reader-note { display: flex; align-items: flex-start; gap: var(--space-3); margin: var(--space-3) var(--space-6) 0; padding: var(--space-4) var(--space-5); min-height: 44px; border-radius: var(--radius-md); background: var(--color-warning-soft, #fbeed0); color: var(--color-warning-text, #7a4a00); font-size: var(--text-sm); cursor: pointer; }
+.gig-reader-note[hidden], .gig-reader-note.hidden { display: none; }
+.gig-reader-note svg { width: 16px; height: 16px; flex: none; margin-top: 2px; }
+.gig-reader-note span { flex: 1; min-width: 0; white-space: pre-line; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+.gig-reader-note.is-open span { -webkit-line-clamp: unset; display: block; }
+.gig-side-nav__list { flex: 1; min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-card); color: inherit; font: inherit; cursor: pointer; padding: 2px var(--space-3); }
+.gig-side-nav__list .gig-side-nav__label { flex: none; max-width: 100%; color: var(--color-text); font-weight: var(--font-weight-semibold); }
+.gig-side-nav__next { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); font-size: var(--text-xs, 12px); }
+.gig-side-nav .slp-btn { min-width: 44px; justify-content: center; }
+.gig-side-nav #gigSideNextBtn:not(:disabled) { background: var(--accent); color: #fff; }
+@media (max-width: 599px) { .gig-side-nav__word { display: none; } .gig-side-nav { padding-inline: var(--space-4); } }
+.gig-setlist-heading { padding: var(--space-5) var(--space-4) var(--space-2); color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+.gig-setlist-row.is-reading { background: var(--accent-soft-2); }
+.gig-setlist-row { text-align: start; }
+:root[data-color-mode="dark"] .slp-badge--key.event-key,
+:root[data-color-mode="dark"] .gig-reader-note { background: #4a3a14; color: #f5d98a; }
+
+/* Key/notes and set list sheets: small bottom sheets, content packed at the top. */
+.sheet.gig-item-sheet, .sheet.gig-setlist-sheet { top: auto; right: 0; bottom: 0; left: 0; margin-inline: auto; width: min(460px, 100%); max-height: 78dvh; border-radius: 16px 16px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); grid-template-rows: auto minmax(0, auto) auto; }
+.gig-item-sheet .sheet-header, .gig-setlist-sheet .sheet-header { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4) var(--space-3) var(--space-6); }
+.gig-item-sheet .sheet-header > div, .gig-setlist-sheet .sheet-header > div { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.gig-item-sheet .sheet-header h2, .gig-setlist-sheet .sheet-header h2 { margin: 0; font-size: var(--text-lg, 1.05rem); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gig-item-sheet .sheet-header span, .gig-setlist-sheet .sheet-header span { color: var(--color-text-secondary); font-size: var(--text-sm); text-transform: none; letter-spacing: 0; }
+.gig-item-sheet .sheet-header .icon-button, .gig-setlist-sheet .sheet-header .icon-button { background: transparent; border: 0; }
+.gig-item-body { display: grid; align-content: start; gap: var(--space-4); padding: var(--space-4) var(--space-6) var(--space-5); }
+.gig-item-hint { margin: 0 0 var(--space-3); color: var(--color-text-secondary); font-size: var(--text-sm); }
+.gig-key-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-3); }
+.gig-key-pill { min-height: 44px; padding: 0; font-size: var(--text-sm); }
+.gig-key-pill small { display: none; }
+.gig-key-pill:has(small) { border-color: var(--accent); }
+.gig-item-links { display: flex; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-2); }
+.gig-text-link { min-height: 44px; padding: 0 var(--space-2); border: 0; background: transparent; color: var(--accent); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+.gig-text-link[hidden] { display: none; }
+#gigItemFilterBtn { margin-inline-start: auto; }
+textarea.slp-input.gig-item-note { min-height: 44px; height: 44px; resize: none; overflow: hidden; padding: 10px var(--space-5); font-size: var(--text-base); line-height: 1.35; }
+.gig-item-sheet .sheet-footer { padding: var(--space-3) var(--space-6); gap: var(--space-4); background: transparent; border-top: 0; }
+.gig-item-sheet .sheet-footer button { flex: 1; min-height: 44px; }
+.gig-item-body, .gig-setlist-body { grid-template-columns: minmax(0, 1fr); }
+.gig-setlist-body { align-content: start; gap: 0; padding: 0 var(--space-4) var(--space-4); overflow-y: auto; }
+.gig-setlist-heading { padding: var(--space-5) var(--space-3) var(--space-2); }
+.gig-setlist-row { min-height: 48px; padding: 0 var(--space-3); gap: var(--space-4); border-bottom: 0; border-top: 1px solid var(--color-border); background: transparent; border-radius: 0; }
+.gig-setlist-row.is-reading { background: var(--accent-soft-2); border-radius: var(--radius-md); border-top-color: transparent; }
+.gig-setlist-row .gig-song-number { width: 18px; }
+.gig-setlist-text { display: flex; align-items: baseline; gap: var(--space-3); min-width: 0; overflow: hidden; }
+.gig-setlist-title { flex: none; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: var(--font-weight-semibold); }
+.gig-setlist-artist { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); font-size: var(--text-sm); }
+
+/* Event info: one look in the Details line and in the side card. Small text, tight rows,
+   Edit and Share as icons on the tag line. */
+.gig-info { padding: 0 var(--space-5) var(--space-2); }
+.gig-info-tag { display: flex; align-items: center; min-height: 44px; margin: 0; padding-inline-end: 96px; color: var(--color-text-secondary); font-size: var(--text-sm); }
+.gig-info-title { margin: -4px 0 var(--space-3); padding-inline-end: 96px; font-size: 18px; font-weight: var(--font-weight-semibold); line-height: 1.2; }
+.gig-info-tag + .gig-info-title { margin-top: -10px; }
+.gig-info-row { display: flex; align-items: flex-start; gap: var(--space-4); padding: 2px 0; font-size: var(--text-sm); line-height: 1.3; }
+.gig-info-row svg { flex: none; width: 16px; height: 16px; margin-top: 1px; color: var(--color-text-secondary); }
+.gig-info-row span { flex: 0 1 auto; min-width: 0; }
+.gig-info-row small { display: block; color: var(--color-text-secondary); font-size: 12px; }
+.gig-info-actions { position: absolute; top: 0; inset-inline-end: var(--space-2); display: flex; align-items: center; z-index: 1; }
+.gig-info-action { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: transparent; color: var(--accent); cursor: pointer; }
+.gig-info-action svg, .gig-info-primary svg { width: 18px; height: 18px; flex: none; }
+.gig-info-start { display: flex; padding: var(--space-2) var(--space-5) var(--space-3); }
+.gig-info-primary { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); flex: 1; min-height: 44px; padding: 0 var(--space-6); border: 0; border-radius: var(--radius-md); background: var(--color-text); color: var(--color-bg); font: inherit; font-size: var(--text-sm); font-weight: var(--font-weight-semibold); cursor: pointer; }
+.gig-info-card { position: relative; max-width: 400px; margin-inline: auto; padding: 0 0 var(--space-1); border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-card); }
+#gigDetailsPanel { position: relative; padding: 0 0 var(--space-1); margin-top: var(--space-2); }
+/* Open Details: the info sits right under its line, not a full gap away. */
+#gigDetailsCollapse[aria-expanded="true"] { margin-bottom: 0; }
+#gigDetailsCollapse[aria-expanded="true"] + #gigDetailsPanel { margin-top: calc(var(--space-2) - var(--space-6)); }
+
+/* Song details form: Save sits next to Delete so there is no scrolling back up. */
+.song-form-actions { display: flex; align-items: center; gap: var(--space-4); }
+.song-form-actions .danger-button { flex: 0 0 auto; }
+.song-form-actions .primary-button { flex: 1; min-height: 44px; }
+.song-form-actions .danger-button[hidden] { display: none; }
+.key-note-grid button { align-items: baseline; align-content: center; flex-wrap: wrap; }
+
+/* Line and letter spacing for lyrics (Aa panel). */
+.lyric-sheet .song-document { line-height: calc(1.42 * var(--line-scale, 1)); letter-spacing: calc(var(--letter-spacing, 0) * 1em); }
+.perf-view .song-document { line-height: calc(1.5 * var(--line-scale, 1)); letter-spacing: calc(var(--letter-spacing, 0) * 1em); }
 
 }
 
@@ -5588,6 +5664,7 @@ a.slp-chip { min-height: 44px; }
                 <details class="slp-menu">
                   <summary class="slp-btn slp-btn--icon" aria-label="More"><i data-lucide="more-horizontal"></i></summary>
                   <div class="slp-menu-panel">
+                    <button id="editGigMenuBtn" class="slp-picker-item" type="button"><i data-lucide="pencil"></i><span>Edit event details</span></button>
                     <button id="quickAddGigBtn" class="slp-picker-item" type="button"><i data-lucide="zap"></i><span>Type songs in</span></button>
                     <button id="gigTemplateMenuBtn" class="slp-picker-item" type="button"><i data-lucide="layout-template"></i><span>Add template</span></button>
 
@@ -5603,7 +5680,7 @@ a.slp-chip { min-height: 44px; }
             </div>
             <div id="gigDetailsPanel" class="slp-collapse__panel" hidden>
               <div id="gigDetailsFields"></div>
-              <button id="editGigBtn" class="slp-btn slp-btn--soft gig-details-edit" type="button"><i data-lucide="pencil"></i><span>Edit details</span></button>
+              <div class="gig-info-actions"><button id="editGigBtn" class="gig-info-action" type="button" aria-label="Edit event details" title="Edit details"><i data-lucide="pencil"></i></button><button id="gigDetailsShareBtn" class="gig-info-action" type="button" aria-label="Share event" title="Share"><i data-lucide="share-2"></i></button></div>
             </div>
             <div id="gigPlanSearchWrap" class="slp-search-bar hidden">
               <div class="gig-sort-chip"><select id="gigPlanSearchScope" aria-label="Search within"><option value="event">Entire event</option></select></div>
@@ -5760,6 +5837,7 @@ a.slp-chip { min-height: 44px; }
             <div class="song-details-foot"><span id="songEdited" class="slp-timestamp"></span><span id="songLinks" class="song-foot-links" aria-label="Song links" hidden></span><button id="editSongDetailsBtn" class="slp-btn slp-btn--icon song-foot-edit" type="button" aria-label="Edit song details" title="Edit song details"><i data-lucide="pencil"></i></button></div>
           </div>
 
+          <div id="gigReaderNote" class="gig-reader-note hidden" role="note"></div>
           <article id="lyricSheet" class="lyric-sheet theme-paper font-system">
             <div id="songDocument" class="song-document" contenteditable="false" role="textbox" aria-multiline="true" aria-label="Lyrics" data-placeholder="Tap to start typing or paste your lyrics here..." dir="auto"></div>
           </article>
@@ -5805,9 +5883,9 @@ a.slp-chip { min-height: 44px; }
           </nav>
         </div>
         <div id="gigSideNav" class="gig-side-nav hidden">
-          <button id="gigSidePrevBtn" class="slp-btn" type="button"><i data-lucide="chevron-left"></i><span>Previous</span></button>
-          <span id="gigSideNavLabel" class="gig-side-nav__label"></span>
-          <button id="gigSideNextBtn" class="slp-btn" type="button"><span>Next</span><i data-lucide="chevron-right"></i></button>
+          <button id="gigSidePrevBtn" class="slp-btn" type="button" aria-label="Previous song"><i data-lucide="chevron-left"></i><span class="gig-side-nav__word">Previous</span></button>
+          <button id="gigSideListBtn" class="gig-side-nav__list" type="button" aria-haspopup="dialog"><span id="gigSideNavLabel" class="gig-side-nav__label"></span><span id="gigSideNextTitle" class="gig-side-nav__next" dir="auto"></span></button>
+          <button id="gigSideNextBtn" class="slp-btn" type="button" aria-label="Next song"><span class="gig-side-nav__word">Next</span><i data-lucide="chevron-right"></i></button>
         </div>
       </section>
 
@@ -5964,8 +6042,9 @@ a.slp-chip { min-height: 44px; }
             </div>
           </div>
         </section>
-        <section id="songDeleteZone" class="slp-form-section" aria-label="Delete">
+        <section id="songDeleteZone" class="slp-form-section song-form-actions" aria-label="Delete or save">
           <button id="deleteSongBtn" class="danger-button" type="button"><i data-lucide="trash-2"></i> Delete</button>
+          <button id="saveSongInfoBottomBtn" class="primary-button" type="button">Save</button>
         </section>
       </div>
     </section>
@@ -6121,6 +6200,25 @@ a.slp-chip { min-height: 44px; }
 
     <button id="backToSongPill" class="song-back-pill hidden" type="button"><i data-lucide="undo-2"></i><span id="backToSongLabel">Back to song</span><span id="dismissBackToSong" class="song-back-pill__x" role="button" tabindex="0" aria-label="Dismiss"><i data-lucide="x"></i></span></button>
 
+    <section id="gigItemSheet" class="sheet compact-sheet gig-item-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="gigItemSong">
+      <div class="sheet-header"><div><h2 id="gigItemSong" dir="auto">Song</h2><span id="gigItemTitle">Key and notes for this event</span></div><button id="closeGigItemBtn" class="icon-button" type="button" aria-label="Close"><i data-lucide="x"></i></button></div>
+      <div class="sheet-body gig-item-body">
+        <div id="gigItemKeyGroup">
+          <p id="gigItemKeyHint" class="gig-item-hint"></p>
+          <div id="gigItemKeys" class="gig-key-grid" role="group" aria-label="Key for this event"></div>
+          <div class="gig-item-links"><button id="gigItemKeyResetBtn" class="gig-text-link" type="button">Use song's key</button><button id="gigItemFilterBtn" class="gig-text-link" type="button">Show songs in this key</button></div>
+        </div>
+        <textarea id="gigItemNoteInput" class="slp-input gig-item-note" rows="1" dir="auto" aria-label="Note for this song" placeholder="Note for this song"></textarea>
+        <textarea id="gigItemTransitionInput" class="slp-input gig-item-note" rows="1" dir="auto" aria-label="Note about moving into the next song" placeholder="Note about moving into the next song"></textarea>
+      </div>
+      <div class="sheet-footer"><button id="cancelGigItemBtn" class="secondary-button" type="button">Cancel</button><button id="saveGigItemBtn" class="primary-button" type="button">Save</button></div>
+    </section>
+
+    <section id="gigSetListSheet" class="sheet compact-sheet gig-setlist-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="gigSetListTitle">
+      <div class="sheet-header"><div><h2 id="gigSetListTitle" dir="auto">Set list</h2><span id="gigSetListCount">Set list</span></div><button id="closeGigSetListBtn" class="icon-button" type="button" aria-label="Close"><i data-lucide="x"></i></button></div>
+      <div id="gigSetListBody" class="sheet-body gig-setlist-body"></div>
+    </section>
+
     <section id="songEventsSheet" class="sheet compact-sheet song-events-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="songEventsTitle">
       <div class="sheet-header"><div><span id="songEventsSong">Song</span><h2 id="songEventsTitle">Events</h2></div><button id="closeSongEventsBtn" class="icon-button" type="button" aria-label="Close"><i data-lucide="x"></i></button></div>
       <div class="sheet-body song-events-body"><input id="songEventsSearch" class="slp-input" type="search" dir="auto" placeholder="Search by customer, hall or date" autocomplete="off"><div id="songEventsList"></div></div>
@@ -6259,6 +6357,22 @@ a.slp-chip { min-height: 44px; }
           <button id="decreaseHeadingBtn" type="button" aria-label="Smaller headings"><i data-lucide="minus"></i></button>
           <output id="headingSizeOutput">115%</output>
           <button id="increaseHeadingBtn" type="button" aria-label="Larger headings"><i data-lucide="plus"></i></button>
+        </div>
+      </div>
+      <div class="lyr-row">
+        <span class="lyr-row__label">Line spacing</span>
+        <div class="lyr-stepper">
+          <button id="decreaseLineBtn" type="button" aria-label="Less space between lines"><i data-lucide="minus"></i></button>
+          <output id="lineSpacingOutput">1.0</output>
+          <button id="increaseLineBtn" type="button" aria-label="More space between lines"><i data-lucide="plus"></i></button>
+        </div>
+      </div>
+      <div class="lyr-row">
+        <span class="lyr-row__label">Letter spacing</span>
+        <div class="lyr-stepper">
+          <button id="decreaseTrackBtn" type="button" aria-label="Less space between letters"><i data-lucide="minus"></i></button>
+          <output id="letterSpacingOutput">0</output>
+          <button id="increaseTrackBtn" type="button" aria-label="More space between letters"><i data-lucide="plus"></i></button>
         </div>
       </div>
       <div class="lyr-row lyr-row--chips">
@@ -6811,8 +6925,8 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
-    "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "appearancePopover", "decreaseFontBtn",
+    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
+    "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
     "exportLibraryBtn", "importLibraryBtn", "printLibraryBtn", "filterSheet", "closeFilterBtn", "filterArtistInput",
@@ -7015,7 +7129,7 @@ function createInitialState() {
     gigNavigation: {},
     appearanceMode: "system",
     accentTheme: "teal",
-    lyricPrefs: { fontSize: 34, headingScale: 1.15, headingBold: true, showChords: true, font: "system", theme: "paper", alignment: "auto" },
+    lyricPrefs: { fontSize: 34, headingScale: 1.15, lineSpacing: 1, letterSpacing: 0, headingBold: true, showChords: true, font: "system", theme: "paper", alignment: "auto" },
     notePrefs: { fontSize: 18, font: "system", theme: "paper" }
   });
 }
@@ -7332,6 +7446,8 @@ function normalizeState(raw) {
     lyricPrefs: {
       fontSize: clamp(Number(raw.lyricPrefs?.fontSize) || 34, 18, 64),
       headingScale: clamp(Number(raw.lyricPrefs?.headingScale) || 1.15, 1, 1.5),
+      lineSpacing: clamp(Math.round((Number(raw.lyricPrefs?.lineSpacing) || 1) * 10) / 10, 0.8, 1.8),
+      letterSpacing: clamp(Math.round((Number(raw.lyricPrefs?.letterSpacing) || 0) * 100) / 100, -0.02, 0.12),
       headingBold: raw.lyricPrefs?.headingBold !== false,
       showChords: raw.lyricPrefs?.showChords !== false,
       font: ["system", "serif", "rounded", "verdana", "arial", "georgia", "tahoma"].includes(raw.lyricPrefs?.font) ? raw.lyricPrefs.font : "system",
@@ -7858,6 +7974,7 @@ function render() {
   } else {
     renderFolder();
     renderSong();
+    renderGigSide();
   }
   els.app.dataset.mobileView = mobileView;
   syncSongBackPill();
@@ -8381,8 +8498,9 @@ function renderSong() {
   const shift = songTranspose(song);
   const currentKey = songCurrentKey(song);
   els.songKey.querySelector("span").textContent = compactKeyLabel(currentKey) || "No key";
+  const eventKey = Boolean(eventReadingItem(song)?.keyOverride);
   els.songKeyWas.hidden = !(shift && song.key);
-  els.songKeyWas.textContent = shift && song.key ? `was ${compactKeyLabel(song.key)}` : "";
+  els.songKeyWas.textContent = shift && song.key ? `${eventKey ? "event key · song " : "was "}${compactKeyLabel(song.key)}` : "";
   els.songKey.classList.toggle("missing", !song.key);
   els.songKey.setAttribute("aria-label", song.key
     ? `Key ${fullKeyLabel(currentKey)}${shift ? `, transposed from ${fullKeyLabel(song.key)}` : ""}. Change key`
@@ -8402,6 +8520,7 @@ function renderSong() {
   renderSongLinks(song);
   applyLyricPrefs();
   renderDocument(song);
+  renderGigReaderNote();
 }
 
 function renderSongSecondaryMeta(song) {
@@ -10211,7 +10330,8 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   els.songDirectionInput.value = song.direction;
   els.songLinksInput.value = [...song.audioLinks, ...song.videoLinks].join("\n");
   els.quickLocationForm.classList.add("hidden");
-  els.songDeleteZone.hidden = isNew;
+  // The bottom row always has Save; Delete only for a song that already exists.
+  els.deleteSongBtn.hidden = isNew;
   renderSongFolderChoices(song);
   renderSongEventChoices(song);
   if (focusKey) return;
@@ -11023,6 +11143,10 @@ function applyLyricPrefs() {
   els.lyricSheet.style.setProperty("--lyric-size", `${prefs.fontSize}px`);
   els.lyricSheet.style.setProperty("--heading-scale", prefs.headingScale);
   els.lyricSheet.style.setProperty("--heading-weight", prefs.headingBold ? "700" : "500");
+  els.lyricSheet.style.setProperty("--line-scale", prefs.lineSpacing);
+  els.lyricSheet.style.setProperty("--letter-spacing", prefs.letterSpacing);
+  els.lineSpacingOutput.textContent = prefs.lineSpacing.toFixed(1);
+  els.letterSpacingOutput.textContent = String(Math.round(prefs.letterSpacing * 100));
   els.fontSizeOutput.textContent = prefs.fontSize;
   els.headingSizeOutput.textContent = `${Math.round(prefs.headingScale * 100)}%`;
   els.headingBoldToggle.checked = prefs.headingBold;
@@ -11706,12 +11830,30 @@ function keyPrefersFlats(key) {
   return /^m(?!aj)/.test(parsed.suffix.trim()) ? FLAT_MINOR_ROOTS.has(root) : FLAT_MAJOR_ROOTS.has(root);
 }
 
-function songTranspose(song) {
-  return clamp(Math.round(Number(song?.transpose) || 0), -11, 11);
+// The setlist song being read from an event, when that appearance has its own key. The event's
+// key moves the chords and the key chip while it is open; the song's own shift is left alone.
+function eventReadingItem(song) {
+  if (!eventReaderActive() || !song || song.id !== selectedSongId) return null;
+  const item = state.gigSetItems.find((candidate) => candidate.id === gigReadItemId);
+  return item && item.songId === song.id ? item : null;
 }
 
-function songCurrentKey(song) {
-  return song?.key ? transposeKey(song.key, songTranspose(song)) : "";
+function eventKeyShift(song) {
+  const item = eventReadingItem(song);
+  const from = parseKey(song?.key);
+  const to = parseKey(item?.keyOverride);
+  if (!from || !to) return null;
+  const steps = (noteIndexOf(to.root) - noteIndexOf(from.root) + 12) % 12;
+  return steps > 6 ? steps - 12 : steps;
+}
+
+function songTranspose(song, { ignoreEvent = false } = {}) {
+  const eventShift = ignoreEvent ? null : eventKeyShift(song);
+  return eventShift ?? clamp(Math.round(Number(song?.transpose) || 0), -11, 11);
+}
+
+function songCurrentKey(song, options) {
+  return song?.key ? transposeKey(song.key, songTranspose(song, options)) : "";
 }
 
 function songHasChords(song) {
@@ -11847,7 +11989,7 @@ function refreshTransposePanel(song = currentSong()) {
   els.transposeDefaultKey.textContent = song.key ? compactKeyLabel(song.key) : "Not set";
   els.transposeCurrentKey.textContent = song.key ? compactKeyLabel(songCurrentKey(song)) : "—";
   els.transposeSteps.textContent = steps === 0 ? "0" : `${steps > 0 ? "+" : "−"}${Math.abs(steps)}`;
-  els.transposeResetBtn.disabled = steps === 0;
+  els.transposeResetBtn.disabled = steps === 0 && !eventReadingItem(song)?.keyOverride;
   els.transposeHint.textContent = songHasChords(song)
     ? "Chords and the key move together. The lyrics' saved chords stay in the original key."
     : song.key ? "This song has no chords yet; only its key moves." : "Set a key on the song to see the new key.";
@@ -11856,6 +11998,19 @@ function refreshTransposePanel(song = currentSong()) {
 function changeTranspose(delta) {
   const song = currentSong();
   if (!song) return;
+  // Opened from an event: the buttons change the key for that event only.
+  const eventItem = song.key ? eventReadingItem(song) : null;
+  if (eventItem) {
+    const own = songCurrentKey(song, { ignoreEvent: true });
+    const next = delta === null ? "" : transposeKey(eventItem.keyOverride || own, delta);
+    eventItem.keyOverride = next === own ? "" : next;
+    eventItem.updatedAt = new Date().toISOString();
+    persist();
+    renderSong();
+    refreshTransposePanel(song);
+    refreshIcons();
+    return;
+  }
   song.transpose = delta === null ? 0 : clamp(songTranspose(song) + delta, -11, 11);
   persist();
   renderSong();
@@ -12477,6 +12632,8 @@ function renderPerformanceDocument() {
   view.style.setProperty("--lyric-size", `${prefs.fontSize}px`);
   view.style.setProperty("--heading-scale", prefs.headingScale);
   view.style.setProperty("--heading-weight", prefs.headingBold ? "700" : "500");
+  view.style.setProperty("--line-scale", prefs.lineSpacing);
+  view.style.setProperty("--letter-spacing", prefs.letterSpacing);
   const scroll = els.perfScroll.scrollTop;
   els.perfDoc.innerHTML = song.documentHtml || "";
   els.perfDoc.querySelectorAll("[contenteditable]").forEach((node) => node.setAttribute("contenteditable", "false"));
@@ -12934,22 +13091,26 @@ function renderGigs() {
 // Note Detail's Date/Folder), so the chips and their reveal-on-tap
 // interaction are retired along with the old always-visible facts strip.
 function renderGigDetailsPanel(gig) {
-  const planSongCount = gigPlanSongCount(gig.id);
-  const field = (label, value) => value ? `<div class="slp-details-field"><span class="slp-section-label">${escapeHtml(label)}</span><span dir="auto">${escapeHtml(value)}</span></div>` : "";
-  const fields = [
-    field("Date", gig.date ? formatGigDate(gig.date) : ""),
-    field("Time", formatGigTimeRange(gig)),
-    field("Type", gig.eventType),
-    field("Venue", [gig.venue, gig.address].filter(Boolean).join(" — ")),
-    field("Customer", gig.clientName),
-    field("Phone", gig.contactInfo),
-    field("Email", gig.email),
-    field("Price", gigMoneyLine(gig)),
-    field("Songs", `${planSongCount} ${plural(planSongCount, "song")}`)
-  ].filter(Boolean);
-  els.gigDetailsFields.innerHTML = fields.join("");
+  els.gigDetailsFields.innerHTML = gigInfoMarkup(gig);
   // Closed, the row still tells you when and where.
-  els.gigDetailsSummary.textContent = [gig.date ? formatGigDate(gig.date) : "", gig.venue].filter(Boolean).join(" · ");
+  els.gigDetailsSummary.textContent = [gig.date ? gigDateParts(gig.date).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }) : "", gig.venue].filter(Boolean).join(" · ");
+  refreshIcons();
+}
+
+// One look for the event's facts, used in the Details line and in the side card: a quiet tag line,
+// then icon rows for only what the event has.
+function gigInfoMarkup(gig, { title = false } = {}) {
+  const row = (icon, main, sub = "") => main ? `<div class="gig-info-row"><i data-lucide="${icon}"></i><span dir="auto">${escapeHtml(main)}${sub ? `<small>${escapeHtml(sub)}</small>` : ""}</span></div>` : "";
+  const day = gig.date ? gigDateParts(gig.date).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "";
+  const time = formatGigTimeRange(gig).replace("–", " to ");
+  const lead = [gig.band, gig.musicalDirector && `Band leader: ${gig.musicalDirector}`].filter(Boolean).join(" · ");
+  const customer = gig.clientName && !gigDisplayName(gig).toLowerCase().includes(gig.clientName.toLowerCase()) ? gig.clientName : "";
+  const tag = [gig.eventType, gig.date ? gigRelativeLabel(gig.date) : ""].filter(Boolean).join(" · ");
+  return `<div class="gig-info">
+    ${tag ? `<div class="gig-info-tag">${escapeHtml(tag)}</div>` : ""}
+    ${title ? `<h2 class="gig-info-title" dir="auto">${escapeHtml(gigDisplayName(gig))}</h2>` : ""}
+    ${row("calendar", day, time)}${row("map-pin", [gig.venue, gig.address].filter(Boolean).join(", "))}${row("user", customer)}${row("phone", gig.contactInfo)}${row("mail", gig.email)}${row("users", lead || (gig.choir ? `Choir: ${gig.choir}` : ""), lead && gig.choir ? `Choir: ${gig.choir}` : "")}${row("wallet", gigMoneyLine(gig))}${row("sticky-note", String(gig.notes || "").trim().split("\n")[0])}
+  </div>`;
 }
 
 function renderGigBuilder(gig) {
@@ -12996,7 +13157,7 @@ function renderGigBuilder(gig) {
   });
   wireRowToggle("[data-toggle-gig-section]", toggleGigSection);
   wireRowToggle("[data-toggle-gig-set]", toggleGigSet);
-  els.gigSectionList.querySelectorAll("[data-gig-key-filter]").forEach((badge) => badge.addEventListener("click", () => setGigKeyFilter(badge.dataset.gigKeyFilter)));
+  els.gigSectionList.querySelectorAll("[data-gig-item-edit]").forEach((badge) => badge.addEventListener("click", () => openGigItemSheet(badge.dataset.gigItemEdit)));
   els.gigSectionList.querySelectorAll("[data-gig-sort-btn]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); openGigSortMenu(button.dataset.gigSortBtn, button); }));
   els.gigSectionList.querySelectorAll(".gig-drag-handle").forEach(wireGigDrag);
   if (!gigStructureEditMode && !selectMode.active) {
@@ -13190,14 +13351,21 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   if (!song) return "";
   const songKey = eventItemKey(item, song);
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("item", item.id, item.setId, `Move ${song.title}`) : "";
+  const ownKey = songDisplayKey(song);
+  const eventKey = Boolean(item.keyOverride);
+  const keyChip = songKey
+    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey && ownKey ? `${escapeHtml(compactKeyLabel(ownKey))} → ` : ""}${escapeHtml(compactKeyLabel(songKey))}</button>`
+    : gigStructureEditMode ? `<button class="slp-badge--key empty" type="button" data-gig-item-edit="${item.id}" aria-label="Add a key or note">Key</button>` : "";
+  const noteText = [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ");
   const row = `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "16px" : "28px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
     ${selectMode.active ? selectCheckMarkup() : ""}
     <span class="gig-song-number">${index + 1}</span>
     <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-song="${song.id}" data-open-gig-item="${item.id}">
       <span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span>
       <span class="slp-row__subtitle" dir="auto">${escapeHtml(song.artist || "Artist not added")}</span>
+      ${noteText ? `<span class="gig-row-note" dir="auto"><i data-lucide="sticky-note"></i><span>${escapeHtml(noteText)}</span></span>` : ""}
     </button>
-    ${songKey ? `<button class="slp-badge--key ${gigKeyFilter === songKey ? "active" : ""}" type="button" dir="ltr" data-gig-key-filter="${escapeAttribute(songKey)}" aria-pressed="${gigKeyFilter === songKey}" aria-label="Show only songs in ${escapeAttribute(compactKeyLabel(songKey))} in this event">${escapeHtml(songKey)}</button>` : ""}
+    ${keyChip}
     ${dragHandle}
   </div>`;
   // Reading mode: swipe a song left to remove it. Edit mode has the circles and the bottom bar.
@@ -13688,9 +13856,20 @@ function moveGigEntity(siblings, id, direction) {
   return true;
 }
 
+// True while a song is open from an event: beside the setlist on a wide screen, or on its own
+// page on a phone (where the Back button returns to the event).
+function eventReaderActive() {
+  return Boolean(gigReadItemId) && (workspaceMode === "gigs" || Boolean(songReturnContext?.gigId));
+}
+
+function eventReaderGigId() {
+  return songReturnContext?.gigId || state.gigNavigation.gigId;
+}
+
 function openSongFromGig(songId, itemId = null) {
   if (!state.songs.some((song) => song.id === songId)) return;
   if (gigSplitActive()) return readGigSong(songId, itemId);
+  gigReadItemId = itemId || null;
   songReturnContext = { gigId: state.gigNavigation.gigId, sectionId: state.gigNavigation.sectionId, setId: state.gigNavigation.setId };
   workspaceMode = "library";
   openSong(songId);
@@ -13995,7 +14174,7 @@ function readGigSong(songId, itemId) {
 }
 
 function stepGigSong(step) {
-  const order = gigReadingOrder(state.gigNavigation.gigId);
+  const order = gigReadingOrder(eventReaderGigId());
   const index = order.findIndex((entry) => entry.item.id === gigReadItemId);
   const next = order[index + step];
   if (next) readGigSong(next.item.songId, next.item.id);
@@ -14012,17 +14191,13 @@ function gigRelativeLabel(date) {
 }
 
 function gigSideDetailsMarkup(gig, preview = false) {
-  const row = (icon, value) => value ? `<div class="gig-side-details__row"><i data-lucide="${icon}"></i><span dir="auto">${escapeHtml(value)}</span></div>` : "";
-  const day = gigDateParts(gig.date).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
-  const when = [day, formatGigTimeRange(gig).replace("–", " to ")].filter(Boolean).join(" · ");
-  const team = [gig.band, gig.musicalDirector && `Band leader: ${gig.musicalDirector}`, gig.choir && `Choir: ${gig.choir}`].filter(Boolean).join(" · ");
   const first = gigReadingOrder(gig.id)[0];
-  return `<div class="gig-side-details__card">
-      <div class="gig-side-details__tags">${gig.eventType ? `<span class="gig-side-details__tag">${escapeHtml(gig.eventType)}</span>` : ""}<span>${escapeHtml(gigRelativeLabel(gig.date))}</span></div>
-      <h2 dir="auto">${escapeHtml(gigDisplayName(gig))}</h2>
-      <p class="gig-side-details__when">${escapeHtml(when)}</p>
-      <div class="gig-side-details__rows">${row("map-pin", [gig.venue, gig.address].filter(Boolean).join(", "))}${row("phone", gig.contactInfo)}${row("mail", gig.email)}${row("users", team)}${row("sticky-note", gig.notes.trim().split("\n")[0])}</div>
-      <div class="gig-side-details__actions">${preview ? `<button id="gigSideOpenBtn" class="slp-btn gig-side-details__primary" type="button"><i data-lucide="list-music"></i><span>Open setlist</span></button>` : first ? `<button id="gigSideStartBtn" class="slp-btn gig-side-details__primary" type="button"><i data-lucide="play"></i><span>Start the set</span></button>` : ""}<button id="gigSideShareBtn" class="slp-btn" type="button"><i data-lucide="share-2"></i><span>Share</span></button></div>
+  const icon = (id, name, label) => `<button id="${id}" class="gig-info-action" type="button" aria-label="${label}" title="${label}"><i data-lucide="${name}"></i></button>`;
+  const start = preview ? `<button id="gigSideOpenBtn" class="gig-info-primary" type="button"><i data-lucide="list-music"></i><span>Open setlist</span></button>` : first ? `<button id="gigSideStartBtn" class="gig-info-primary" type="button"><i data-lucide="play"></i><span>Start the set</span></button>` : "";
+  return `<div class="gig-info-card">
+      <div class="gig-info-actions">${preview ? "" : icon("gigSideEditBtn", "pencil", "Edit event details")}${icon("gigSideShareBtn", "share-2", "Share event")}</div>
+      ${gigInfoMarkup(gig, { title: true })}
+      ${start ? `<div class="gig-info-start">${start}</div>` : ""}
     </div>
     ${preview ? "" : `<p class="gig-side-details__hint">Or tap a song on the left to read it here.</p>`}`;
 }
@@ -14047,7 +14222,12 @@ function renderGigSide() {
   }
   if (!active) {
     els.gigSideDetails.classList.add("hidden");
-    els.gigSideNav.classList.add("hidden");
+    // On a phone the same bar sits under the lyrics while a song is open from an event.
+    const phoneGig = eventReaderActive() && mobileView === "song" && currentSong() ? state.gigs.find((item) => item.id === eventReaderGigId()) : null;
+    const phoneOrder = phoneGig ? gigReadingOrder(phoneGig.id) : [];
+    const phoneIndex = phoneOrder.findIndex((entry) => entry.item.id === gigReadItemId);
+    els.gigSideNav.classList.toggle("hidden", phoneIndex < 0);
+    if (phoneIndex >= 0) syncGigNavLabels(phoneOrder, phoneIndex);
     return;
   }
   const gig = state.gigs.find((item) => item.id === state.gigNavigation.gigId);
@@ -14061,16 +14241,11 @@ function renderGigSide() {
     els.gigSideDetails.innerHTML = gigSideDetailsMarkup(gig);
     document.getElementById("gigSideStartBtn")?.addEventListener("click", () => readGigSong(order[0].item.songId, order[0].item.id));
     document.getElementById("gigSideShareBtn")?.addEventListener("click", () => openGigShare(gig.id));
+    document.getElementById("gigSideEditBtn")?.addEventListener("click", openEditGigForm);
     refreshIcons();
     return;
   }
-  if (index >= 0) {
-    const section = order[index].section;
-    const inSection = order.filter((entry) => entry.section.id === section.id);
-    els.gigSideNavLabel.textContent = `${section.name} · ${inSection.findIndex((entry) => entry.item.id === gigReadItemId) + 1} of ${inSection.length}`;
-    els.gigSidePrevBtn.disabled = index === 0;
-    els.gigSideNextBtn.disabled = index === order.length - 1;
-  }
+  if (index >= 0) syncGigNavLabels(order, index);
 }
 
 // The divider between the setlist and the lyrics can be dragged; the width is remembered per device.
@@ -14106,7 +14281,129 @@ function applySongsLeftWidth() {
   else els.app.style.removeProperty?.("--songs-left-w");
 }
 
+function syncGigNavLabels(order, index) {
+  els.gigSideNavLabel.textContent = `${index + 1} of ${order.length} · Set list`;
+  const next = order[index + 1];
+  const nextSong = next && state.songs.find((song) => song.id === next.item.songId);
+  els.gigSideNextTitle.textContent = nextSong ? `Next: ${nextSong.title}` : "Last song";
+  els.gigSidePrevBtn.disabled = index === 0;
+  els.gigSideNextBtn.disabled = index === order.length - 1;
+}
+
+// The note strip above the lyrics: only when the event has a note for this song. One line;
+// tap to read all of it.
+function renderGigReaderNote() {
+  const item = eventReadingItem(currentSong());
+  const text = item ? [item.gigNote, item.transitionNote && `Into the next song: ${item.transitionNote}`].filter((value) => String(value || "").trim()).join("\n") : "";
+  els.gigReaderNote.classList.toggle("hidden", !text);
+  els.gigReaderNote.hidden = !text;
+  if (!text) return;
+  els.gigReaderNote.innerHTML = `<i data-lucide="sticky-note"></i><span dir="auto">${escapeHtml(text)}</span>`;
+  els.gigReaderNote.classList.remove("is-open");
+  els.gigReaderNote.setAttribute("role", "button");
+  els.gigReaderNote.tabIndex = 0;
+  els.gigReaderNote.setAttribute("aria-expanded", "false");
+  refreshIcons();
+}
+
+let gigItemDraft = null;
+
+function openGigItemSheet(itemId) {
+  const item = state.gigSetItems.find((candidate) => candidate.id === itemId);
+  const song = item && state.songs.find((candidate) => candidate.id === item.songId);
+  if (!song) return;
+  const own = songCurrentKey(song, { ignoreEvent: true }) || song.key || "";
+  gigItemDraft = { itemId, key: item.keyOverride || "", own };
+  els.gigItemSong.textContent = song.title;
+  els.gigItemNoteInput.value = item.gigNote || "";
+  els.gigItemTransitionInput.value = item.transitionNote || "";
+  [els.gigItemNoteInput, els.gigItemTransitionInput].forEach((box) => { box.style.height = ""; });
+  document.getElementById("gigItemKeyGroup").hidden = !own;
+  renderGigItemKeys();
+  showOverlay(els.gigItemSheet);
+  [els.gigItemNoteInput, els.gigItemTransitionInput].forEach(growNoteBox);
+}
+
+function growNoteBox(box) {
+  box.style.height = "auto";
+  box.style.height = `${Math.max(44, box.scrollHeight + 2)}px`;
+}
+
+function renderGigItemKeys() {
+  const draft = gigItemDraft;
+  if (!draft?.own) return;
+  const suffix = parseKey(draft.own)?.suffix || "";
+  const chosen = draft.key || draft.own;
+  els.gigItemKeys.innerHTML = KEY_NOTE_NAMES.map((root) => {
+    const key = `${root}${suffix}`;
+    const same = noteIndexOf(parseKey(key).root) === noteIndexOf(parseKey(chosen)?.root || "C") ;
+    const isOwn = noteIndexOf(parseKey(key).root) === noteIndexOf(parseKey(draft.own).root);
+    return `<button class="gig-key-pill ${same ? "on" : ""}" type="button" dir="ltr" data-gig-key="${escapeAttribute(key)}" aria-pressed="${same}">${escapeHtml(compactKeyLabel(key))}${isOwn ? '<small>song</small>' : ""}</button>`;
+  }).join("");
+  els.gigItemKeys.querySelectorAll("[data-gig-key]").forEach((button) => button.addEventListener("click", () => {
+    gigItemDraft.key = button.dataset.gigKey === draft.own ? "" : button.dataset.gigKey;
+    renderGigItemKeys();
+  }));
+  els.gigItemKeyHint.textContent = draft.key ? `Key for this event only · song stays in ${compactKeyLabel(draft.own)}` : `Key for this event · song is in ${compactKeyLabel(draft.own)}`;
+  els.gigItemKeyResetBtn.hidden = !draft.key;
+  els.gigItemFilterBtn.hidden = false;
+}
+
+function saveGigItemSheet() {
+  const draft = gigItemDraft;
+  const item = draft && state.gigSetItems.find((candidate) => candidate.id === draft.itemId);
+  if (!item) return closeOverlays();
+  item.keyOverride = draft.key || "";
+  item.gigNote = els.gigItemNoteInput.value.trim();
+  item.transitionNote = els.gigItemTransitionInput.value.trim();
+  item.updatedAt = new Date().toISOString();
+  gigItemDraft = null;
+  persist();
+  closeOverlays();
+  render();
+}
+
+// Every song of the event in play order, grouped by section, one tap to jump.
+function openGigSetListSheet() {
+  const gig = state.gigs.find((item) => item.id === eventReaderGigId());
+  if (!gig) return;
+  const order = gigReadingOrder(gig.id);
+  els.gigSetListTitle.textContent = gigDisplayName(gig);
+  els.gigSetListCount.textContent = `Set list · ${order.length} ${plural(order.length, "song")}`;
+  let lastSection = "";
+  els.gigSetListBody.innerHTML = order.map((entry, index) => {
+    const song = state.songs.find((candidate) => candidate.id === entry.item.songId);
+    const heading = entry.section.id !== lastSection ? `<div class="gig-setlist-heading" dir="auto">${escapeHtml(entry.section.name)}</div>` : "";
+    lastSection = entry.section.id;
+    const key = eventItemKey(entry.item, song);
+    return `${heading}<button class="slp-row gig-setlist-row ${entry.item.id === gigReadItemId ? "is-reading" : ""}" type="button" data-gig-jump="${entry.item.id}" data-gig-jump-song="${song.id}"><span class="gig-song-number">${index + 1}</span><span class="slp-row__body gig-setlist-text"><span class="gig-setlist-title" dir="auto">${escapeHtml(song.title)}</span>${song.artist ? `<span class="gig-setlist-artist" dir="auto">${escapeHtml(song.artist)}</span>` : ""}</span>${key ? `<span class="slp-badge--key ${entry.item.keyOverride ? "event-key" : ""}" dir="ltr">${escapeHtml(compactKeyLabel(key))}</span>` : ""}</button>`;
+  }).join("");
+  els.gigSetListBody.querySelectorAll("[data-gig-jump]").forEach((button) => button.addEventListener("click", () => {
+    closeOverlays();
+    readGigSong(button.dataset.gigJumpSong, button.dataset.gigJump);
+  }));
+  showOverlay(els.gigSetListSheet);
+  els.gigSetListBody.querySelector(".is-reading")?.scrollIntoView?.({ block: "center" });
+}
+
 function initGigSideUi() {
+  els.gigDetailsShareBtn.addEventListener("click", () => openGigShare());
+  els.editGigMenuBtn.addEventListener("click", () => { els.editGigMenuBtn.closest("details")?.removeAttribute("open"); openEditGigForm(); });
+  [els.gigItemNoteInput, els.gigItemTransitionInput].forEach((box) => box.addEventListener("input", () => growNoteBox(box)));
+  els.closeGigItemBtn.addEventListener("click", closeOverlays);
+  els.cancelGigItemBtn.addEventListener("click", closeOverlays);
+  els.saveGigItemBtn.addEventListener("click", saveGigItemSheet);
+  els.gigItemKeyResetBtn.addEventListener("click", () => { gigItemDraft.key = ""; renderGigItemKeys(); });
+  els.gigItemFilterBtn.addEventListener("click", () => {
+    const key = gigItemDraft?.key || gigItemDraft?.own;
+    closeOverlays();
+    if (key) setGigKeyFilter(key);
+  });
+  els.closeGigSetListBtn.addEventListener("click", closeOverlays);
+  els.gigSideListBtn.addEventListener("click", openGigSetListSheet);
+  const toggleNote = () => { const open = els.gigReaderNote.classList.toggle("is-open"); els.gigReaderNote.setAttribute("aria-expanded", String(open)); };
+  els.gigReaderNote.addEventListener("click", toggleNote);
+  els.gigReaderNote.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggleNote(); } });
   els.gigSidePrevBtn.addEventListener("click", () => stepGigSong(-1));
   els.gigSideNextBtn.addEventListener("click", () => stepGigSong(1));
   const handle = els.gigSideResizer;
@@ -17148,7 +17445,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigItemSheet, els.gigSetListSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -17818,7 +18115,7 @@ function songIsUnfiled(song) {
 // Every key chip, filter, search and sort uses this, so what you tap is what you see. (The
 // original key stays in song.key and in the song's Details.)
 function songDisplayKey(song) {
-  return songCurrentKey(song) || song.key || "";
+  return songCurrentKey(song, { ignoreEvent: true }) || song.key || "";
 }
 
 // In an event the key can also be overridden for that one appearance of the song.
@@ -18591,6 +18888,7 @@ els.cancelFolderBtn.addEventListener("click", closeOverlays);
 els.saveFolderBtn.addEventListener("click", saveFolder);
 els.closeSongInfoBtn.addEventListener("click", closeOverlays);
 els.saveSongInfoBtn.addEventListener("click", saveSongInfo);
+els.saveSongInfoBottomBtn.addEventListener("click", saveSongInfo);
 els.songDetailsCollapse.addEventListener("click", toggleSongDetailsCollapse);
 [els.songTitleInput, els.songArtistInput, els.songAlternateTitlesInput].forEach((input) => input.addEventListener("input", clearSongTitleNotice));
 els.songTitleNoticeOpenBtn.addEventListener("click", openExistingSongFromNotice);
@@ -18712,6 +19010,16 @@ els.increaseHeadingBtn.addEventListener("click", () => {
   applyLyricPrefs();
   persist();
 });
+const stepLyricPref = (key, delta, min, max, places) => {
+  const next = clamp(Math.round((state.lyricPrefs[key] + delta) * 10 ** places) / 10 ** places, min, max);
+  state.lyricPrefs[key] = next;
+  applyLyricPrefs();
+  persist();
+};
+els.decreaseLineBtn.addEventListener("click", () => stepLyricPref("lineSpacing", -0.1, 0.8, 1.8, 1));
+els.increaseLineBtn.addEventListener("click", () => stepLyricPref("lineSpacing", 0.1, 0.8, 1.8, 1));
+els.decreaseTrackBtn.addEventListener("click", () => stepLyricPref("letterSpacing", -0.01, -0.02, 0.12, 2));
+els.increaseTrackBtn.addEventListener("click", () => stepLyricPref("letterSpacing", 0.01, -0.02, 0.12, 2));
 els.headingBoldToggle.addEventListener("change", () => {
   state.lyricPrefs.headingBold = els.headingBoldToggle.checked;
   applyLyricPrefs();
