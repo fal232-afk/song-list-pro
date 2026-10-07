@@ -4582,7 +4582,6 @@ a.slp-chip { min-height: 44px; }
 
 /* ============ Songs Board (second view of the Songs tab) ============ */
 .songs-view-bar { display: flex; padding: 0 var(--space-11) var(--space-6); }
-@media (min-width: 901px) { .songs-view-bar { display: none; } }
 .board { position: absolute; inset: 0; display: flex; flex-direction: column; min-height: 0; background: var(--color-bg); }
 .board.hidden { display: none; }
 .board-toolbar { flex: none; padding: var(--space-4) 16px var(--space-4); }
@@ -4915,6 +4914,181 @@ a.slp-chip { min-height: 44px; }
 .gig-template-body textarea { width: 100%; min-height: 150px; }
 .slp-collapse__panel[hidden] { display: none; }
 
+/* Board on a wide window: its own full-width view. Columns keep their width and simply show
+   more of them; the category, song and lyrics panes stay away. Opening a song full page swaps
+   to the song pane alone, and Back to Board returns. */
+@media (min-width: 901px) {
+  .app-shell.board-full { grid-template-columns: minmax(0, 1fr); background: var(--color-bg); }
+  .app-shell.board-full .library-pane { border-right: 0; }
+  .app-shell.board-full .browser-pane,
+  .app-shell.board-full .song-pane { display: none; }
+  .app-shell.board-full[data-mobile-view="song"] .library-pane { display: none; }
+  .app-shell.board-full[data-mobile-view="song"] .song-pane { display: block; }
+  .board-panel-wrap { max-width: 1100px; width: 100%; margin-inline: auto; }
+  .board-name-btn { flex: 0 1 340px; }
+}
+
+/* ---- Board on larger screens ----
+   Side layout (data-board-side="true" on #app): large screens, medium screens that are not tall,
+   and short screens that are at least medium wide. Columns use the full width; pinning a song
+   opens a resizable reader on the right. Phones and tall medium screens (a foldable held
+   upright) keep the reader on top. Compact is the default density; Roomy is in the Aa menu. */
+.pin-side { display: none; }
+.board-resizer { display: none; }
+.app-shell[data-board-side="true"] .pin-top { display: none; }
+.app-shell[data-board-side="true"] .pin-side { display: inline; }
+.app-shell[data-board-side="true"] .board { --board-col-w: 300px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); padding-inline-end: 0; }
+.app-shell[data-board-side="true"] .board[data-density="roomy"] { --board-col-w: clamp(320px, 22vw, 380px); }
+.app-shell[data-board-side="true"] .board.has-reader { grid-template-columns: minmax(0, 1fr) min(var(--board-reader-w, 340px), 44%); column-gap: var(--space-6); padding-inline-end: 16px; }
+.app-shell[data-board-side="true"] .board-toolbar { grid-column: 1; grid-row: 1; }
+.app-shell[data-board-side="true"] .board-filters { grid-column: 1; grid-row: 2; }
+.app-shell[data-board-side="true"] .board-pos { grid-column: 1; grid-row: 3; }
+.app-shell[data-board-side="true"] .board-columns { grid-column: 1; grid-row: 4; min-width: 0; }
+.app-shell[data-board-side="true"] .board-results { grid-column: 1; grid-row: 3 / 5; min-width: 0; }
+.app-shell[data-board-side="true"] .board:not(.has-reader) .board-panel-wrap { display: none; }
+.app-shell[data-board-side="true"] .board-panel-wrap { grid-column: 2; grid-row: 1 / -1; max-width: none; margin: 0; padding: var(--space-4) 0 var(--space-6); display: flex; flex-direction: column; min-height: 0; width: auto; }
+.app-shell[data-board-side="true"] .board-panel-wrap .board-panel { flex: 1; height: auto; min-height: 0; }
+.app-shell[data-board-side="true"] .board-handle,
+.app-shell[data-board-side="true"] .board-panel [data-board-act="collapse"] { display: none; }
+.app-shell[data-board-side="true"] .board-menu { right: auto; width: 340px; max-width: calc(100% - 32px); }
+.app-shell[data-board-side="true"] .board-name-btn { flex: 0 1 340px; }
+.app-shell[data-board-side="true"] .board-col { flex: 0 0 var(--board-col-w); transition: flex-basis 0.18s ease; }
+.app-shell[data-board-side="true"] .board-col.has-open { flex-basis: calc(var(--board-col-w) * 1.2); }
+.app-shell[data-board-side="true"] .board-resizer { position: relative; grid-column: 2; grid-row: 1 / -1; justify-self: start; width: 24px; margin-inline-start: -20px; z-index: 6; cursor: col-resize; touch-action: none; }
+.app-shell[data-board-side="true"] .board.has-reader .board-resizer { display: block; }
+.app-shell[data-board-side="true"] .board-resizer::after { content: ""; position: absolute; top: 50%; left: 50%; width: 4px; height: 56px; transform: translate(-50%, -50%); border-radius: 2px; background: var(--color-border-strong, var(--color-border)); }
+.app-shell[data-board-side="true"] .board-resizer:hover::after,
+.app-shell[data-board-side="true"] .board-resizer:focus-visible::after,
+.app-shell[data-board-side="true"] .board-resizer.is-dragging::after { background: var(--accent); }
+.app-shell[data-board-side="true"] .board-panel__titles strong { font-size: 17px; }
+.app-shell[data-board-side="true"] .board-panel__body { padding: var(--space-6) var(--space-8); }
+.app-shell[data-board-side="true"] .board-panel-wrap[data-text="normal"] .board-lyric-line { font-size: 20px; line-height: 1.7; }
+.app-shell[data-board-side="true"] .board-panel-wrap[data-text="small"] .board-lyric-line { font-size: 16px; line-height: 1.6; }
+.app-shell[data-board-side="true"] .board-panel-wrap[data-text="overview"] .board-lyric-line { font-size: 12.5px; line-height: 1.5; }
+.app-shell[data-board-side="true"] .board[data-density="roomy"] .board-card__text strong { font-size: 16px; }
+.app-shell[data-board-side="true"] .board[data-density="roomy"] [data-card-text="normal"] .board-card__lyrics { max-height: 260px; }
+.app-shell[data-board-side="true"] .board[data-density="roomy"] [data-card-text="normal"] .board-card__lyrics .board-lyric-line { font-size: 18px; line-height: 1.6; }
+.app-shell[data-board-side="true"] .board[data-density="roomy"] [data-card-text="small"] .board-card__lyrics { max-height: 200px; }
+.app-shell[data-board-side="true"] .board[data-density="roomy"] [data-card-text="small"] .board-card__lyrics .board-lyric-line { font-size: 15px; line-height: 1.55; }
+.app-shell[data-board-side="true"] .board[data-density="roomy"] [data-card-text="overview"] .board-card__lyrics { max-height: 150px; }
+.app-shell[data-board-side="true"] .board[data-density="roomy"] [data-card-text="overview"] .board-card__lyrics .board-lyric-line { font-size: 12.5px; line-height: 1.5; }
+@media (min-width: 901px) {
+  .app-shell.board-full .slp-bottom-nav { justify-self: center; width: min(100%, 640px); }
+}
+
+/* Tall medium screens (a foldable held upright): reader on top like the phone, with room for
+   two columns underneath and a larger reader text. */
+.app-shell[data-tier="medium"][data-shape="tall"] .board-panel-wrap[data-text="normal"] .board-lyric-line { font-size: 20px; line-height: 1.65; }
+.app-shell[data-tier="medium"][data-shape="tall"] .board-col { flex-basis: 300px; }
+
+/* Short screens (a phone on its side): slim header, no jump bar, a slim icon-only tab bar. */
+.app-shell[data-short="true"] .board-toolbar { padding-block: var(--space-2); }
+.app-shell[data-short="true"] .board-filters { padding-block: 0; }
+.app-shell[data-short="true"] .board-pos { display: none; }
+.app-shell[data-short="true"] .board-columns { padding-block: var(--space-2) var(--space-3); }
+.app-shell[data-short="true"] .slp-bottom-nav button { min-height: 44px; padding-block: 0; }
+.app-shell[data-short="true"] .slp-bottom-nav button span { display: none; }
+
+/* ---- Songs on medium screens (600-1019px wide): list and lyrics side by side ----
+   Left: whichever list the phone would show (categories, or the song list). Right: the lyrics.
+   Notes, Events, Tools and the Board stay single pane. */
+@media (max-width: 1019px) {
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) { grid-template-columns: minmax(250px, 0.4fr) minmax(0, 1fr); }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .library-pane,
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .browser-pane { grid-column: 1; grid-row: 1; border-right: 1px solid var(--color-border); }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .song-pane { grid-column: 2; grid-row: 1; display: block; border-right: 0; }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="library"] .library-pane { display: block; }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="library"] .browser-pane,
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="folder"] .library-pane,
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="song"] .library-pane { display: none; }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="folder"] .browser-pane,
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full)[data-mobile-view="song"] .browser-pane { display: block; }
+  .app-shell[data-split="true"][data-library-mode="category"]:not(.board-full) .slp-bottom-nav { display: flex; grid-column: 1 / -1; }
+}
+
+/* ---- Events on screens 600px and wider: the setlist on the left, the open song on the right ----
+   Only while an event is open (the event list itself stays one pane). */
+.app-shell.gig-split[data-library-mode="gigs"] { grid-template-columns: var(--gig-left-w, minmax(340px, 0.42fr)) minmax(0, 1fr); justify-content: stretch; background: var(--color-card); }
+.app-shell.gig-split[data-library-mode="gigs"] .library-pane { grid-column: 1; grid-row: 1; display: block; box-shadow: none; border-right: 1px solid var(--color-border); }
+.app-shell.gig-split[data-library-mode="gigs"] .song-pane { grid-column: 2; grid-row: 1; display: block; border-right: 0; }
+.app-shell.gig-split[data-library-mode="gigs"] .browser-pane { display: none; }
+.app-shell.gig-split[data-library-mode="gigs"] #songEmptyState { display: none; }
+.app-shell.gig-split[data-library-mode="gigs"] #backToFolderBtn { display: none; }
+.app-shell.gig-split[data-library-mode="gigs"] #gigDetailsCollapse,
+.app-shell.gig-split[data-library-mode="gigs"] #gigDetailsPanel { display: none; }
+.gig-song-reference.is-reading { background: var(--accent-soft-2); box-shadow: inset 3px 0 0 var(--accent); }
+.gig-side-resizer { display: none; }
+.app-shell.gig-split[data-library-mode="gigs"] .gig-side-resizer { display: block; position: relative; grid-column: 2; grid-row: 1; justify-self: start; width: 24px; margin-inline-start: -12px; z-index: 6; cursor: col-resize; touch-action: none; }
+.app-shell.gig-split[data-library-mode="gigs"] .gig-side-resizer::after { content: ""; position: absolute; top: 50%; left: 50%; width: 4px; height: 56px; transform: translate(-50%, -50%); border-radius: 2px; background: var(--color-border-strong, var(--color-border)); }
+.gig-side-resizer:hover::after, .gig-side-resizer:focus-visible::after, .gig-side-resizer.is-dragging::after { background: var(--accent); }
+.gig-side-details { padding: var(--space-9) var(--space-8); }
+.gig-side-details.hidden { display: none; }
+.gig-side-details__card { max-width: 440px; margin-inline: auto; padding: var(--space-8) var(--space-8) var(--space-7); border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-card); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); }
+.gig-side-details__tags { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--color-text-secondary); }
+.gig-side-details__tag { padding: 2px 10px; border-radius: var(--radius-md); background: var(--accent-soft-2); color: var(--accent); font-weight: var(--font-weight-semibold); }
+.gig-side-details__card h2 { margin: 0; font-size: 22px; font-weight: var(--font-weight-semibold); line-height: 1.2; }
+.gig-side-details__when { margin: var(--space-2) 0 var(--space-6); color: var(--color-text-secondary); font-size: 14px; }
+.gig-side-details__rows { display: grid; gap: var(--space-4); }
+.gig-side-details__row { display: flex; align-items: flex-start; gap: var(--space-5); font-size: 15px; line-height: 1.35; }
+.gig-side-details__row svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--color-text-secondary); }
+.gig-side-details__actions { display: flex; gap: var(--space-4); margin-top: var(--space-7); }
+.gig-side-details__actions .slp-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); padding-inline: var(--space-6); }
+.gig-side-details__primary { flex: 1; background: var(--color-text); color: var(--color-bg); border-color: var(--color-text); }
+.gig-side-details__hint { max-width: 440px; margin: var(--space-6) auto 0; text-align: center; color: var(--color-text-secondary); font-size: var(--text-sm); }
+.gig-side-nav { position: sticky; bottom: 0; z-index: 4; display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-6) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--color-border); background: var(--color-card); }
+.gig-side-nav.hidden { display: none; }
+.gig-side-nav .slp-btn { min-height: 44px; display: inline-flex; align-items: center; gap: var(--space-2); }
+.gig-side-nav .slp-btn:disabled { opacity: 0.4; }
+.gig-side-nav__label { flex: 1; min-width: 0; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); font-size: var(--text-sm); }
+
+/* ---- Events, three columns (about 1020px and wider) ----
+   Left: the list of events (or calendar), always visible. Middle: the selected event's setlist.
+   Right: its details, or the lyrics of the song being read. The first two live inside the library
+   pane, which is why it is split into two inner columns here. */
+.gig-list-pane { display: contents; }
+.app-shell.gig-triple[data-library-mode="gigs"] .library-pane { overflow: hidden; }
+.app-shell.gig-triple[data-library-mode="gigs"] .gigs-workspace { display: grid; grid-template-columns: 280px minmax(0, 1fr); height: 100%; overflow: hidden; }
+.app-shell.gig-triple[data-library-mode="gigs"] .gig-list-pane { display: block; overflow: auto; min-width: 0; border-right: 1px solid var(--color-border); padding-bottom: var(--space-9); }
+.app-shell.gig-triple[data-library-mode="gigs"] .gig-detail-view { overflow: auto; min-width: 0; min-height: 0; height: 100%; }
+.app-shell.gig-triple[data-library-mode="gigs"] #backToGigsBtn { display: none; }
+.app-shell.gig-triple[data-library-mode="gigs"] .gig-list-pane .slp-header { padding-inline: var(--space-6); }
+.app-shell.gig-triple[data-library-mode="gigs"] .gigs-toolbar { padding-inline: var(--space-6); }
+.app-shell.gig-triple[data-library-mode="gigs"] .gig-sort-chip { flex: 1 1 100%; }
+.app-shell.gig-triple.gig-split[data-library-mode="gigs"] { grid-template-columns: calc(280px + var(--gig-left-w, 380px)) minmax(0, 1fr); }
+.app-shell.gig-triple[data-library-mode="gigs"] .slp-bottom-nav { display: flex; grid-column: 1 / -1; }
+.app-shell.gig-triple .gig-list-pane .slp-row.selected { background: var(--accent-soft-2); box-shadow: inset 3px 0 0 var(--accent); }
+
+/* ---- Notes, two columns (600px and wider): the list of notes beside the open note ---- */
+.note-editor-placeholder { display: none; }
+.app-shell.notes-dual[data-library-mode="notes"] { grid-template-columns: minmax(0, 1fr); justify-content: stretch; background: var(--color-card); }
+.app-shell.notes-dual[data-library-mode="notes"] .library-pane { overflow: hidden; border-right: 0; box-shadow: none; }
+.app-shell.notes-dual[data-library-mode="notes"] .notes-workspace { display: grid; grid-template-columns: clamp(280px, 34%, 400px) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); height: 100%; overflow: hidden; }
+.app-shell.notes-dual[data-library-mode="notes"] #notesHeader { grid-column: 1; grid-row: 1; padding-inline: var(--space-6); }
+.app-shell.notes-dual[data-library-mode="notes"] #notesBrowserContent { grid-column: 1; grid-row: 2; overflow: auto; min-width: 0; border-right: 1px solid var(--color-border); padding-bottom: var(--space-9); }
+.app-shell.notes-dual[data-library-mode="notes"] #noteEditor { grid-column: 2; grid-row: 1 / -1; min-width: 0; min-height: 0; overflow: auto; }
+.app-shell.notes-dual[data-library-mode="notes"] #backToNotesBtn { display: none; }
+.app-shell.notes-dual[data-library-mode="notes"] .note-editor-placeholder { grid-column: 2; grid-row: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); color: var(--color-text-secondary); background: var(--color-card-2, var(--color-bg)); text-align: center; padding: var(--space-8); }
+.app-shell.notes-dual[data-library-mode="notes"] .note-editor-placeholder.hidden { display: none; }
+.app-shell.notes-dual[data-library-mode="notes"] .note-editor-placeholder strong { color: var(--color-text); font-size: 17px; }
+.app-shell.notes-dual[data-library-mode="notes"] .note-editor-placeholder svg { width: 32px; height: 32px; }
+.app-shell.notes-dual[data-library-mode="notes"] .slp-bottom-nav { display: flex; grid-column: 1 / -1; }
+.note-row.is-open { background: var(--accent-soft-2); box-shadow: inset 3px 0 0 var(--accent); }
+
+/* ---- Tuck away the list column (Events, Notes) ---- */
+.gig-list-toggle, .note-list-toggle { display: none; }
+.app-shell.gig-triple[data-library-mode="gigs"] .gig-list-toggle,
+.app-shell.notes-dual[data-library-mode="notes"] .note-list-toggle { display: inline-flex; }
+.app-shell.gig-triple.gig-list-hidden[data-library-mode="gigs"] .gigs-workspace { grid-template-columns: minmax(0, 1fr); }
+.app-shell.gig-triple.gig-list-hidden[data-library-mode="gigs"] .gig-list-pane { display: none; }
+.app-shell.gig-triple.gig-list-hidden.gig-split[data-library-mode="gigs"] { grid-template-columns: var(--gig-left-w, 380px) minmax(0, 1fr); }
+.app-shell.notes-dual.notes-list-hidden[data-library-mode="notes"] .notes-workspace { grid-template-columns: minmax(0, 1fr); }
+.app-shell.notes-dual.notes-list-hidden[data-library-mode="notes"] #notesHeader,
+.app-shell.notes-dual.notes-list-hidden[data-library-mode="notes"] #notesBrowserContent { display: none; }
+.app-shell.notes-dual.notes-list-hidden[data-library-mode="notes"] #noteEditor { grid-column: 1; }
+/* The setlist header: the event title was flush against the divider. */
+.app-shell.gig-split[data-library-mode="gigs"] .gig-detail-view > .slp-header { padding-inline: var(--space-8); }
+.app-shell.notes-dual[data-library-mode="notes"] #noteEditorHeader { padding-inline: var(--space-6); }
+
 }
 
 </style>
@@ -5049,6 +5223,7 @@ a.slp-chip { min-height: 44px; }
           </div>
           <div id="boardMenu" class="board-menu hidden" role="listbox" aria-label="Boards"></div>
           <div id="boardPanelWrap" class="board-panel-wrap is-empty" data-size="half"></div>
+          <div id="boardResizer" class="board-resizer" role="separator" aria-orientation="vertical" aria-label="Resize the reader" tabindex="0"></div>
           <div id="boardFilterStrip" class="board-filters">
             <button id="boardAddFilterBtn" class="board-chip board-chip--add" type="button"><i data-lucide="plus"></i><span>Filter</span></button>
             <button id="boardSearchBtn" class="board-chip board-chip--icon" type="button" aria-label="Search the whole library"><i data-lucide="search"></i></button>
@@ -5112,11 +5287,13 @@ a.slp-chip { min-height: 44px; }
             <div id="noteFolderList" class="slp-card" aria-label="Note folders"></div>
             <div id="noteList" class="slp-card" aria-label="Notes"></div>
           </div>
+          <div id="noteEditorPlaceholder" class="note-editor-placeholder hidden"><i data-lucide="notebook-pen"></i><strong>Select a note</strong><span>Pick one from the list, or start a new note.</span></div>
           <form id="noteEditor" class="note-editor hidden slp-screen">
             <header id="noteEditorHeader" class="slp-header">
               <button id="backToNotesBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back to notes">
                 <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
+              <button id="noteListToggleBtn" class="slp-btn slp-btn--icon note-list-toggle" type="button" aria-label="Hide the note list" aria-pressed="false"><i data-lucide="panel-left-close"></i></button>
               <input id="noteTitleInput" class="slp-header__title note-title-input" type="text" dir="auto" placeholder="Note title" disabled>
               <div class="slp-header__actions">
                 <button id="pinNoteBtn" class="slp-btn slp-btn--icon" type="button" aria-pressed="false" aria-label="Pin note"><i data-lucide="pin"></i></button>
@@ -5186,6 +5363,7 @@ a.slp-chip { min-height: 44px; }
         </section>
 
         <section id="gigsWorkspace" class="gigs-workspace hidden slp-screen" aria-label="Events and setlists">
+          <div id="gigListPane" class="gig-list-pane">
           <header id="gigsHomeHeader" class="slp-header slp-header--screen-root">
             <h1 class="slp-header__title">Events</h1>
             <div class="slp-header__actions">
@@ -5224,11 +5402,13 @@ a.slp-chip { min-height: 44px; }
             <div id="gigCalendarGrid" class="gig-calendar-grid" role="grid" aria-label="Event calendar"></div>
             <section class="calendar-date-gigs" aria-live="polite"><div><strong id="selectedGigDateTitle">Select a date</strong><small id="selectedGigDateCount"></small></div><div id="selectedGigDateList"></div></section>
           </div>
+          </div>
           <section id="gigDetailView" class="gig-detail-view hidden" aria-label="Event and setlist builder">
             <header class="slp-header">
               <button id="backToGigsBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back to events">
                 <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
+              <button id="gigListToggleBtn" class="slp-btn slp-btn--icon gig-list-toggle" type="button" aria-label="Hide the event list" aria-pressed="false"><i data-lucide="panel-left-close"></i></button>
               <h1 id="gigDetailTitle" class="slp-header__title">Event</h1>
               <div class="slp-header__actions">
                 <button id="gigPlanSearchBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Search this event"><i data-lucide="search"></i></button>
@@ -5377,6 +5557,7 @@ a.slp-chip { min-height: 44px; }
           <h2>Select a song</h2>
           <p>Lyrics, notes, and performance details will open here.</p>
         </div>
+        <div id="gigSideDetails" class="gig-side-details hidden"></div>
 
         <div id="songReader" class="song-reader slp-screen hidden">
           <header class="slp-header song-header">
@@ -5453,7 +5634,14 @@ a.slp-chip { min-height: 44px; }
             <button id="finishImageBtn" class="icon-button" type="button" aria-label="Finish adjusting picture" title="Done"><i data-lucide="check"></i></button>
           </nav>
         </div>
+        <div id="gigSideNav" class="gig-side-nav hidden">
+          <button id="gigSidePrevBtn" class="slp-btn" type="button"><i data-lucide="chevron-left"></i><span>Previous</span></button>
+          <span id="gigSideNavLabel" class="gig-side-nav__label"></span>
+          <button id="gigSideNextBtn" class="slp-btn" type="button"><span>Next</span><i data-lucide="chevron-right"></i></button>
+        </div>
       </section>
+
+      <div id="gigSideResizer" class="gig-side-resizer" role="separator" aria-orientation="vertical" aria-label="Resize the lyrics" tabindex="0"></div>
 
       <nav id="primaryNav" class="slp-bottom-nav" aria-label="Primary navigation">
         <button id="appSongsNavBtn" class="selected" type="button" aria-current="page"><i data-lucide="music-2"></i><span>Songs</span></button>
@@ -5952,6 +6140,7 @@ a.slp-chip { min-height: 44px; }
         </button>
         <div class="slp-info-banner"><i data-lucide="shield-check"></i><span><strong>Automatic sync is not connected yet</strong><span>A hosted app and private provider sign-in are required before background syncing can be enabled safely.</span></span></div>
       </section>
+      <p class="slp-subtitle screen-info" aria-live="polite">Screen: <span id="screenInfoText"></span></p>
       <div class="slp-info-banner"><i data-lucide="hard-drive"></i><span id="storageStatusText">Your library is saved on this device. Exporting a backup protects it if the browser data is cleared.</span></div>
       </div>
       <div id="appearanceSettingsView" class="appearance-settings-view hidden">
@@ -6426,7 +6615,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
+    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "appearancePopover", "decreaseFontBtn",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -7446,6 +7635,8 @@ function render() {
     renderTools();
   } else if (workspaceMode === "gigs") {
     renderGigs();
+    if (gigSplitActive()) renderSong();
+    renderGigSide();
   } else if (libraryMode === "notes") {
     renderNotes();
   } else {
@@ -8209,6 +8400,8 @@ function saveExpandedFolders() {
 
 const BOARD_PREFS_KEY = "slp-board-prefs";
 
+const BOARD_READER_MIN = 280;
+const BOARD_READER_DEFAULT = 340;
 const BOARD_TEXT_SIZES = ["normal", "small", "overview"];
 
 const BOARD_FIELDS = [
@@ -8248,10 +8441,12 @@ function loadBoardPrefs() {
       view: saved.view === "board" ? "board" : "list",
       size: saved.size === "tall" ? "tall" : "half",
       panelText: BOARD_TEXT_SIZES.includes(saved.panelText) ? saved.panelText : "normal",
-      cardText: BOARD_TEXT_SIZES.includes(saved.cardText) ? saved.cardText : "overview"
+      cardText: BOARD_TEXT_SIZES.includes(saved.cardText) ? saved.cardText : "overview",
+      density: saved.density === "roomy" ? "roomy" : "compact",
+      readerWidth: Math.min(900, Math.max(BOARD_READER_MIN, Number(saved.readerWidth) || BOARD_READER_DEFAULT))
     };
   } catch {
-    return { view: "list", size: "half", panelText: "normal", cardText: "overview" };
+    return { view: "list", size: "half", panelText: "normal", cardText: "overview", density: "compact", readerWidth: BOARD_READER_DEFAULT };
   }
 }
 
@@ -8263,10 +8458,15 @@ function saveBoardPrefs() {
   }
 }
 
-// The Board is a phone-width layout: on a wide window the library pane is a narrow side
-// column, so the normal list stays.
+// The Board is available at every width. On a wide window it becomes a full-width view of its
+// own (see .board-full): no category list, song list or lyrics pane beside it.
+// Wide screens put the reader in a side pane, so there is no collapse, size handle or compact mode.
+function boardWide() {
+  return screenInfo.boardSide;
+}
+
 function boardAvailable() {
-  return Boolean(globalThis.matchMedia?.("(max-width: 900px)")?.matches);
+  return true;
 }
 
 function boardActive() {
@@ -8475,10 +8675,18 @@ function renderBoard() {
   els.boardWorkspace.classList.toggle("hidden", !active);
   els.songsViewToggleList?.querySelectorAll("button").forEach((button) => button.classList.toggle("selected", button.dataset.songsView === boardPrefs.view));
   els.songsViewToggleBoard?.querySelectorAll("button").forEach((button) => button.classList.toggle("selected", button.dataset.songsView === boardPrefs.view));
+  els.app.classList.toggle("board-full", active);
+  // On a wide screen the reader pane exists only while a song is pinned; otherwise the columns use the full width.
+  els.boardWorkspace.classList.toggle("has-reader", active && boardWide() && Boolean(boardState.panelSongId));
+  els.boardWorkspace.dataset.density = boardPrefs.density;
+  els.boardWorkspace.style.setProperty("--board-reader-w", `${boardPrefs.readerWidth}px`);
   const returning = Boolean(songReturnContext?.board) && mobileView === "song" && workspaceMode === "library";
   els.app.classList.toggle("board-return", returning);
   els.backToBoardPill.classList.toggle("hidden", !returning || songEditMode);
   if (!active) {
+    // Leaving the Board (a wide window, another tab): give the normal song list back, or the
+    // pane is left blank.
+    els.songLibraryContent.classList.toggle("hidden", libraryMode === "notes" || workspaceMode === "gigs" || workspaceMode === "tools");
     closeBoardMenu();
     return;
   }
@@ -8506,15 +8714,15 @@ function renderBoardPanel() {
   wrap.dataset.text = boardPrefs.panelText;
   els.boardColumns.dataset.cardText = boardPrefs.cardText;
   els.boardResults.dataset.cardText = boardPrefs.cardText;
-  wrap.classList.toggle("is-collapsed", Boolean(song) && boardState.collapsed);
+  wrap.classList.toggle("is-collapsed", Boolean(song) && boardState.collapsed && !boardWide());
   wrap.classList.toggle("is-empty", !song);
-  wrap.classList.toggle("is-compact", Boolean(song) && boardState.searchOpen && !boardState.collapsed);
+  wrap.classList.toggle("is-compact", Boolean(song) && boardState.searchOpen && !boardState.collapsed && !boardWide());
   if (!song) {
-    wrap.innerHTML = `<div class="board-panel-empty"><i data-lucide="music-2"></i><span>Tap a song to pin it here. Then tap others to read them in place.</span></div>`;
+    wrap.innerHTML = `<div class="board-panel-empty"><i data-lucide="music-2"></i><span><span class="pin-top">Tap a song to read it in its card. Use Pin to top to keep one up here.</span><span class="pin-side">Tap a song to read it in its card. Use Pin to side to keep one in view here.</span></span></div>`;
     refreshIcons();
     return;
   }
-  const collapsed = boardState.collapsed;
+  const collapsed = boardState.collapsed && !boardWide();
   const meta = [boardSongKey(song), song.composer].filter(Boolean).join(" · ");
   const keepScroll = wrap.querySelector(".board-panel__body");
   const scrollTop = keepScroll && wrap.dataset.songId === song.id ? keepScroll.scrollTop : 0;
@@ -8581,7 +8789,8 @@ function renderBoardColumns() {
   container.innerHTML = columns.map((column) => {
     const songs = boardSongsForColumn(column).filter((song) => column.type === "needs" || boardMatchesFilters(song));
     const cards = songs.map((song) => boardCardMarkup(song, column)).join("");
-    return `<section class="board-col ${column.type === "needs" ? "board-col--needs" : ""}" data-col-id="${escapeAttribute(column.id)}" aria-label="${escapeAttribute(column.name)}">
+    const hasOpen = songs.some((song) => boardState.expanded.has(`${column.id}:${song.id}`));
+    return `<section class="board-col ${column.type === "needs" ? "board-col--needs" : ""} ${hasOpen ? "has-open" : ""}" data-col-id="${escapeAttribute(column.id)}" aria-label="${escapeAttribute(column.name)}">
       <header class="board-col__head"><strong dir="auto">${escapeHtml(column.name)}</strong><span class="board-col__count">${songs.length}</span></header>
       <div class="board-col__body" data-col-body="${escapeAttribute(column.id)}">${cards || `<p class="board-col__empty">${boardActiveFilterCount() ? "No songs match these filters." : "No songs here yet."}</p>`}</div>
     </section>`;
@@ -8608,7 +8817,7 @@ function boardCardMarkup(song, column) {
       </span>
       ${key ? `<span class="slp-badge--key board-card__key" dir="ltr">${escapeHtml(key)}</span>` : ""}
     </button>
-    ${open ? `<div class="board-card__lyrics" tabindex="0">${lyrics}</div><button class="board-card__pin" type="button" data-board-pin><i data-lucide="pin"></i><span>Pin to top</span></button>` : ""}
+    ${open ? `<div class="board-card__lyrics" tabindex="0">${lyrics}</div><button class="board-card__pin" type="button" data-board-pin><i data-lucide="pin"></i><span class="pin-top">Pin to top</span><span class="pin-side">Pin to side</span></button>` : ""}
   </article>`;
 }
 
@@ -8722,7 +8931,9 @@ function boardColumnLabel(col) {
 
 function renderBoardPosBar() {
   const cols = boardColumnEls();
-  const show = cols.length > 1 && !boardState.searchOpen;
+  // Only worth showing when the columns do not all fit on screen.
+  const overflowing = els.boardColumns.scrollWidth > els.boardColumns.clientWidth + 2;
+  const show = cols.length > 1 && overflowing && !boardState.searchOpen;
   els.boardPosBar.classList.toggle("hidden", !show);
   if (!show) return;
   els.boardPosTicks.innerHTML = cols.map(() => "<i></i>").join("");
@@ -8789,6 +9000,44 @@ function initBoardPosBar() {
     boardJumpToColumn(Math.min(boardColumnEls().length - 1, Math.max(0, boardCurrentColumnIndex() + step * (rtl ? -1 : 1))));
   });
   els.boardColumns.addEventListener("scroll", updateBoardPosBar, { passive: true });
+  globalThis.addEventListener?.("resize", () => { if (boardActive()) renderBoardPosBar(); });
+}
+
+// Drag the left edge of the reader pane to make it wider or narrower. Double-click resets it.
+function initBoardResizer() {
+  const handle = els.boardResizer;
+  const clamp = (value) => Math.round(Math.min(Math.max(BOARD_READER_MIN, value), els.boardWorkspace.getBoundingClientRect().width * 0.5));
+  const apply = (value, save) => {
+    boardPrefs.readerWidth = clamp(value);
+    els.boardWorkspace.style.setProperty("--board-reader-w", `${boardPrefs.readerWidth}px`);
+    if (save) saveBoardPrefs();
+  };
+  let dragging = false;
+  handle.addEventListener("pointerdown", (event) => {
+    dragging = true;
+    handle.setPointerCapture?.(event.pointerId);
+    handle.classList.add("is-dragging");
+    event.preventDefault();
+  });
+  handle.addEventListener("pointermove", (event) => {
+    if (!dragging) return;
+    // 16px of padding sits to the right of the pane.
+    apply(els.boardWorkspace.getBoundingClientRect().right - 16 - event.clientX, false);
+  });
+  const end = () => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove("is-dragging");
+    saveBoardPrefs();
+  };
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach((name) => handle.addEventListener(name, end));
+  handle.addEventListener("dblclick", () => apply(BOARD_READER_DEFAULT, true));
+  handle.addEventListener("keydown", (event) => {
+    const step = { ArrowLeft: 24, ArrowRight: -24 }[event.key];
+    if (!step) return;
+    event.preventDefault();
+    apply(boardPrefs.readerWidth + step, true);
+  });
 }
 // Columns screen, "Add a column" part: one collapsible row per category (Folders, Keys,
 // Languages, Composers, Artists), one open at a time. Ticks persist across categories and one
@@ -8999,15 +9248,12 @@ function setSongsView(view) {
   refreshIcons();
 }
 
-// Every song opens inside its own card, whatever its length. The first tap while the top
-// panel is empty docks the song there instead; only one card per column is open at a time.
+// Every song opens inside its own card, whatever its length, and only one card per column is
+// open at a time. "Pin to top" on an open card moves it to the top panel.
 function boardOpenCard(songId, cardKey) {
   const song = boardSongById(songId);
   if (!song) return;
-  if (!boardState.panelSongId) {
-    boardState.panelSongId = song.id;
-    boardState.collapsed = false;
-  } else if (boardState.expanded.has(cardKey)) {
+  if (boardState.expanded.has(cardKey)) {
     boardState.expanded.delete(cardKey);
   } else {
     const columnPrefix = cardKey.slice(0, cardKey.length - song.id.length);
@@ -9017,7 +9263,7 @@ function boardOpenCard(songId, cardKey) {
   renderBoard();
 }
 
-const BOARD_TEXT_LABELS = { normal: "Normal", small: "Small", overview: "Overview" };
+const BOARD_TEXT_LABELS = { normal: "Normal", small: "Small", overview: "Overview", compact: "Compact", roomy: "Roomy" };
 
 function closeBoardTextMenu() {
   document.getElementById("boardTextMenu")?.remove();
@@ -9041,17 +9287,21 @@ function openBoardTextMenu(anchor) {
   menu.setAttribute("role", "dialog");
   menu.setAttribute("aria-label", "Text size");
   menu.innerHTML = boardTextGroupMarkup("TOP PANEL", "panel", ["normal", "small", "overview"], boardPrefs.panelText)
-    + boardTextGroupMarkup("CARD PREVIEWS", "card", ["overview", "small", "normal"], boardPrefs.cardText);
+    + boardTextGroupMarkup("CARD PREVIEWS", "card", ["overview", "small", "normal"], boardPrefs.cardText)
+    + (boardWide() ? boardTextGroupMarkup("COLUMNS", "density", ["compact", "roomy"], boardPrefs.density) : "");
   const rect = anchor.getBoundingClientRect();
   menu.style.top = `${Math.round(rect.bottom + 6)}px`;
   document.body.appendChild(menu);
   menu.addEventListener("click", (event) => {
     const button = event.target.closest("[data-text-size]");
     if (!button) return;
-    if (button.dataset.textGroup === "panel") boardPrefs.panelText = button.dataset.textSize;
+    const group = button.dataset.textGroup;
+    if (group === "panel") boardPrefs.panelText = button.dataset.textSize;
+    else if (group === "density") boardPrefs.density = button.dataset.textSize;
     else boardPrefs.cardText = button.dataset.textSize;
     saveBoardPrefs();
-    menu.querySelectorAll("[data-text-size]").forEach((item) => item.classList.toggle("selected", item.dataset.textSize === (item.dataset.textGroup === "panel" ? boardPrefs.panelText : boardPrefs.cardText)));
+    const current = (item) => (item.dataset.textGroup === "panel" ? boardPrefs.panelText : item.dataset.textGroup === "density" ? boardPrefs.density : boardPrefs.cardText);
+    menu.querySelectorAll("[data-text-size]").forEach((item) => item.classList.toggle("selected", item.dataset.textSize === current(item)));
     renderBoard();
   });
   document.addEventListener("pointerdown", boardTextMenuOutside, true);
@@ -12183,18 +12433,33 @@ function renderGigs() {
     return;
   }
   const navigation = state.gigNavigation;
+  // Wide screens keep the list of events on the left all the time, and always have one open.
+  const triple = Boolean(screenInfo.eventsTriple);
+  els.app.classList.toggle("gig-triple", triple);
+  // The list of events can be tucked away to leave just the setlist and the lyrics.
+  const listHidden = triple && eventPrefs.listHidden;
+  els.app.classList.toggle("gig-list-hidden", listHidden);
+  els.gigListToggleBtn.setAttribute("aria-label", listHidden ? "Show the event list" : "Hide the event list");
+  els.gigListToggleBtn.setAttribute("aria-pressed", String(listHidden));
+  const toggleIcon = listHidden ? "panel-left-open" : "panel-left-close";
+  if (els.gigListToggleBtn.dataset.icon !== toggleIcon) {
+    els.gigListToggleBtn.dataset.icon = toggleIcon;
+    els.gigListToggleBtn.innerHTML = `<i data-lucide="${toggleIcon}"></i>`;
+  }
+  if (triple && !state.gigs.some((gig) => gig.id === navigation.gigId) && state.gigs.length) navigation.gigId = defaultGigId();
   const openGig = state.gigs.find((gig) => gig.id === navigation.gigId);
   const inBuilder = Boolean(openGig);
+  const hideList = inBuilder && !triple;
   els.app.classList.toggle("gig-builder-active", inBuilder);
-  els.gigsHomeHeader.classList.toggle("hidden", inBuilder);
-  els.gigSearchWrap.classList.toggle("hidden", inBuilder || !navigation.searchQuery && els.gigSearchWrap.classList.contains("hidden"));
-  els.gigsToolbar.classList.toggle("hidden", inBuilder);
+  els.gigsHomeHeader.classList.toggle("hidden", hideList);
+  els.gigSearchWrap.classList.toggle("hidden", hideList || !navigation.searchQuery && els.gigSearchWrap.classList.contains("hidden"));
+  els.gigsToolbar.classList.toggle("hidden", hideList);
   els.gigDetailView.classList.toggle("hidden", !inBuilder);
-  els.gigListView.classList.toggle("hidden", inBuilder);
-  els.gigCalendarView.classList.toggle("hidden", inBuilder);
+  els.gigListView.classList.toggle("hidden", hideList);
+  els.gigCalendarView.classList.toggle("hidden", hideList);
   if (inBuilder) {
     renderGigBuilder(openGig);
-    return;
+    if (!triple) return;
   }
   const isCalendar = navigation.homeView === "calendar";
   els.gigListViewBtn.classList.toggle("selected", !isCalendar);
@@ -12261,7 +12526,7 @@ function renderGigBuilder(gig) {
   els.gigSectionList.querySelectorAll("[data-delete-gig-set]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); requestDeleteGigSet(button.dataset.deleteGigSet); }));
   els.gigSectionList.querySelectorAll("[data-add-gig-songs]").forEach((button) => button.addEventListener("click", () => openGigSongPicker(button.dataset.addGigSongs)));
   els.gigSectionList.querySelectorAll("[data-remove-gig-item]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); removeGigSongReference(button.dataset.removeGigItem); render(); showToast("Song removed from this event only"); }));
-  els.gigSectionList.querySelectorAll("[data-open-gig-song]").forEach((button) => button.addEventListener("click", () => openSongFromGig(button.dataset.openGigSong)));
+  els.gigSectionList.querySelectorAll("[data-open-gig-song]").forEach((button) => button.addEventListener("click", () => openSongFromGig(button.dataset.openGigSong, button.dataset.openGigItem)));
   // The whole header row is the open/close control; taps that land on a control inside
   // it (drag handle, add, menus, sort) keep doing their own job.
   const wireRowToggle = (selector, toggle) => els.gigSectionList.querySelectorAll(selector).forEach((row) => {
@@ -12463,10 +12728,10 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const songKey = eventItemKey(item, song);
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("item", item.id, item.setId, `Move ${song.title}`) : "";
   const moreMenu = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item danger-icon" type="button" data-remove-gig-item="${item.id}"><i data-lucide="list-x"></i><span>Remove from this event</span></button>`, `More options for ${song.title}`) : "";
-  return `<div class="slp-row gig-song-reference ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "30px" : "50px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
+  return `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "30px" : "50px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
     ${selectMode.active ? selectCheckMarkup() : ""}
     <span class="gig-song-number">${index + 1}</span>
-    <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-song="${song.id}">
+    <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-song="${song.id}" data-open-gig-item="${item.id}">
       <span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span>
       <span class="slp-row__subtitle" dir="auto">${escapeHtml(song.artist || "Artist not added")}</span>
     </button>
@@ -12606,9 +12871,19 @@ function sortGigs(gigs, sort = "soonest") {
   });
 }
 
+// The event to show when none is chosen: the next one coming up, else the most recent one.
+function defaultGigId() {
+  const today = todayDateString();
+  const upcoming = state.gigs.filter((gig) => gig.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+  if (upcoming.length) return upcoming[0].id;
+  return [...state.gigs].sort((a, b) => b.date.localeCompare(a.date))[0]?.id || null;
+}
+
 function openGigRecord(gigId) {
   if (!state.gigs.some((gig) => gig.id === gigId)) return;
   gigReorderMode = false;
+  selectedSongId = null;
+  gigReadItemId = null;
   state.gigNavigation.gigId = gigId;
   persist();
   render();
@@ -12904,8 +13179,9 @@ function moveGigEntity(siblings, id, direction) {
   return true;
 }
 
-function openSongFromGig(songId) {
+function openSongFromGig(songId, itemId = null) {
   if (!state.songs.some((song) => song.id === songId)) return;
+  if (gigSplitActive()) return readGigSong(songId, itemId);
   songReturnContext = { gigId: state.gigNavigation.gigId, sectionId: state.gigNavigation.sectionId, setId: state.gigNavigation.setId };
   workspaceMode = "library";
   openSong(songId);
@@ -13165,6 +13441,181 @@ function gigPlanSongCount(gigId) {
   const sectionIds = new Set(state.gigSections.filter((section) => section.gigId === gigId && !section.isHidden).map((section) => section.id));
   const setIds = new Set(state.gigSets.filter((set) => sectionIds.has(set.sectionId)).map((set) => set.id));
   return state.gigSetItems.filter((item) => setIds.has(item.setId)).length;
+}
+
+// ---- Events with the setlist and the open song side by side (screens 600px and wider) ----
+let gigReadItemId = null;
+
+function gigSplitActive() {
+  return Boolean(screenInfo.eventsSplit) && workspaceMode === "gigs" && Boolean(state.gigNavigation.gigId);
+}
+
+// Every song of the open event in the order it is played: sections top to bottom, a section's own
+// songs first, then its named lists.
+function gigReadingOrder(gigId) {
+  const order = [];
+  state.gigSections.filter((section) => section.gigId === gigId && !section.isHidden).sort((a, b) => a.position - b.position).forEach((section) => {
+    const sets = state.gigSets.filter((set) => set.sectionId === section.id);
+    const direct = sets.filter((set) => set.isDirect);
+    const named = sets.filter((set) => !set.isDirect).sort((a, b) => a.position - b.position);
+    [...direct, ...named].forEach((set) => {
+      sortedGigSetItems(state.gigSetItems.filter((item) => item.setId === set.id), set.id).forEach((item) => {
+        if (state.songs.some((song) => song.id === item.songId)) order.push({ item, section });
+      });
+    });
+  });
+  return order;
+}
+
+function readGigSong(songId, itemId) {
+  gigReadItemId = itemId || null;
+  selectedSongId = songId;
+  hideWritingToolbar();
+  render();
+  document.querySelector(".gig-song-reference.is-reading")?.scrollIntoView?.({ block: "nearest" });
+}
+
+function stepGigSong(step) {
+  const order = gigReadingOrder(state.gigNavigation.gigId);
+  const index = order.findIndex((entry) => entry.item.id === gigReadItemId);
+  const next = order[index + step];
+  if (next) readGigSong(next.item.songId, next.item.id);
+}
+
+// "today", "in 3 days", "yesterday", "2 weeks ago": how far away the event is.
+function gigRelativeLabel(date) {
+  const days = Math.round((gigDateParts(date) - gigDateParts(todayDateString())) / 86400000);
+  if (days === 0) return "today";
+  if (days === 1) return "tomorrow";
+  if (days === -1) return "yesterday";
+  if (days > 1) return days < 14 ? `in ${days} days` : `in ${Math.round(days / 7)} weeks`;
+  return days > -14 ? `${-days} days ago` : `${Math.round(-days / 7)} weeks ago`;
+}
+
+function gigSideDetailsMarkup(gig) {
+  const row = (icon, value) => value ? `<div class="gig-side-details__row"><i data-lucide="${icon}"></i><span dir="auto">${escapeHtml(value)}</span></div>` : "";
+  const day = gigDateParts(gig.date).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  const when = [day, formatGigTimeRange(gig).replace("–", " to ")].filter(Boolean).join(" · ");
+  const team = [gig.band, gig.musicalDirector && `Band leader: ${gig.musicalDirector}`, gig.choir && `Choir: ${gig.choir}`].filter(Boolean).join(" · ");
+  const first = gigReadingOrder(gig.id)[0];
+  return `<div class="gig-side-details__card">
+      <div class="gig-side-details__tags">${gig.eventType ? `<span class="gig-side-details__tag">${escapeHtml(gig.eventType)}</span>` : ""}<span>${escapeHtml(gigRelativeLabel(gig.date))}</span></div>
+      <h2 dir="auto">${escapeHtml(gigDisplayName(gig))}</h2>
+      <p class="gig-side-details__when">${escapeHtml(when)}</p>
+      <div class="gig-side-details__rows">${row("map-pin", [gig.venue, gig.address].filter(Boolean).join(", "))}${row("phone", gig.contactInfo)}${row("mail", gig.email)}${row("users", team)}${row("sticky-note", gig.notes.trim().split("\n")[0])}</div>
+      <div class="gig-side-details__actions">${first ? `<button id="gigSideStartBtn" class="slp-btn gig-side-details__primary" type="button"><i data-lucide="play"></i><span>Start the set</span></button>` : ""}<button id="gigSideShareBtn" class="slp-btn" type="button"><i data-lucide="share-2"></i><span>Share</span></button></div>
+    </div>
+    <p class="gig-side-details__hint">Or tap a song on the left to read it here.</p>`;
+}
+
+// Fills in the right-hand side while an event is open: its details, or the song being read with
+// Previous / Next. Called on every render; does nothing outside the Events split.
+function renderGigSide() {
+  const active = gigSplitActive();
+  els.app.classList.toggle("gig-split", active);
+  if (!active) {
+    els.gigSideDetails.classList.add("hidden");
+    els.gigSideNav.classList.add("hidden");
+    return;
+  }
+  const gig = state.gigs.find((item) => item.id === state.gigNavigation.gigId);
+  const order = gigReadingOrder(gig.id);
+  const index = order.findIndex((entry) => entry.item.id === gigReadItemId);
+  if (index < 0 && gigReadItemId) gigReadItemId = null;
+  const reading = Boolean(currentSong());
+  els.gigSideDetails.classList.toggle("hidden", reading);
+  els.gigSideNav.classList.toggle("hidden", !reading || index < 0);
+  if (!reading) {
+    els.gigSideDetails.innerHTML = gigSideDetailsMarkup(gig);
+    document.getElementById("gigSideStartBtn")?.addEventListener("click", () => readGigSong(order[0].item.songId, order[0].item.id));
+    document.getElementById("gigSideShareBtn")?.addEventListener("click", openGigShare);
+    refreshIcons();
+    return;
+  }
+  if (index >= 0) {
+    const section = order[index].section;
+    const inSection = order.filter((entry) => entry.section.id === section.id);
+    els.gigSideNavLabel.textContent = `${section.name} · ${inSection.findIndex((entry) => entry.item.id === gigReadItemId) + 1} of ${inSection.length}`;
+    els.gigSidePrevBtn.disabled = index === 0;
+    els.gigSideNextBtn.disabled = index === order.length - 1;
+  }
+}
+
+// The divider between the setlist and the lyrics can be dragged; the width is remembered per device.
+const EVENT_PREFS_KEY = "slp-event-prefs";
+const EVENT_LEFT_MIN = 300;
+const EVENT_LIST_WIDTH = 280;
+let eventPrefs = loadEventPrefs();
+
+function loadEventPrefs() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(EVENT_PREFS_KEY) || "{}");
+    return { leftWidth: Number(saved.leftWidth) > 0 ? Number(saved.leftWidth) : 0, listHidden: saved.listHidden === true, notesListHidden: saved.notesListHidden === true };
+  } catch {
+    return { leftWidth: 0, listHidden: false, notesListHidden: false };
+  }
+}
+
+function saveEventPrefs() {
+  try {
+    localStorage.setItem(EVENT_PREFS_KEY, JSON.stringify(eventPrefs));
+  } catch {
+    // The width just will not survive a relaunch.
+  }
+}
+
+function applyEventLeftWidth() {
+  if (eventPrefs.leftWidth) els.app.style.setProperty?.("--gig-left-w", `${eventPrefs.leftWidth}px`);
+  else els.app.style.removeProperty?.("--gig-left-w");
+}
+
+function initGigSideUi() {
+  els.gigSidePrevBtn.addEventListener("click", () => stepGigSong(-1));
+  els.gigSideNextBtn.addEventListener("click", () => stepGigSong(1));
+  const handle = els.gigSideResizer;
+  // On the three-column page the list of events sits left of the setlist and is not resizable.
+  const offset = () => (screenInfo.eventsTriple && !eventPrefs.listHidden ? EVENT_LIST_WIDTH : 0);
+  const clamp = (value) => Math.round(Math.min(Math.max(EVENT_LEFT_MIN, value), Math.max(EVENT_LEFT_MIN, els.app.getBoundingClientRect().width - 320 - offset())));
+  const apply = (value, save) => {
+    eventPrefs.leftWidth = value ? clamp(value) : 0;
+    applyEventLeftWidth();
+    if (save) saveEventPrefs();
+  };
+  let dragging = false;
+  handle.addEventListener("pointerdown", (event) => {
+    dragging = true;
+    handle.setPointerCapture?.(event.pointerId);
+    handle.classList.add("is-dragging");
+    event.preventDefault();
+  });
+  handle.addEventListener("pointermove", (event) => {
+    if (dragging) apply(event.clientX - els.app.getBoundingClientRect().left - offset(), false);
+  });
+  const end = () => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove("is-dragging");
+    saveEventPrefs();
+  };
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach((name) => handle.addEventListener(name, end));
+  handle.addEventListener("dblclick", () => apply(0, true));
+  handle.addEventListener("keydown", (event) => {
+    const step = { ArrowLeft: -24, ArrowRight: 24 }[event.key];
+    if (!step) return;
+    event.preventDefault();
+    apply((eventPrefs.leftWidth || document.getElementById("libraryPane").getBoundingClientRect().width - offset()) + step, true);
+  });
+  els.gigListToggleBtn.addEventListener("click", () => {
+    eventPrefs.listHidden = !eventPrefs.listHidden;
+    saveEventPrefs();
+    render();
+  });
+  els.noteListToggleBtn.addEventListener("click", () => {
+    eventPrefs.notesListHidden = !eventPrefs.notesListHidden;
+    saveEventPrefs();
+    render();
+  });
+  applyEventLeftWidth();
 }
 // Quick add: type song titles into an event's setlist, one after another.
 //
@@ -13474,8 +13925,21 @@ function initGigTemplatesUi() {
 }
 function renderNotes() {
   if (libraryMode !== "notes") {
-    els.app.classList.remove("note-editor-active");
+    els.app.classList.remove("note-editor-active", "notes-dual", "notes-list-hidden");
     return;
+  }
+  // From 600px wide the list of notes stays on the left and the open note sits beside it.
+  const dual = Boolean(screenInfo.eventsSplit);
+  els.app.classList.toggle("notes-dual", dual);
+  // With a note open the list can be tucked away for a full-width note.
+  const listHidden = dual && eventPrefs.notesListHidden && Boolean(selectedNoteId);
+  els.app.classList.toggle("notes-list-hidden", listHidden);
+  els.noteListToggleBtn.setAttribute("aria-label", listHidden ? "Show the note list" : "Hide the note list");
+  els.noteListToggleBtn.setAttribute("aria-pressed", String(listHidden));
+  const noteToggleIcon = listHidden ? "panel-left-open" : "panel-left-close";
+  if (els.noteListToggleBtn.dataset.icon !== noteToggleIcon) {
+    els.noteListToggleBtn.dataset.icon = noteToggleIcon;
+    els.noteListToggleBtn.innerHTML = `<i data-lucide="${noteToggleIcon}"></i>`;
   }
   if (selectedNoteFolderId !== "all" && !state.noteFolders.some((folder) => folder.id === selectedNoteFolderId)) selectedNoteFolderId = "all";
   const currentFolder = state.noteFolders.find((folder) => folder.id === selectedNoteFolderId);
@@ -13542,11 +14006,13 @@ function renderNotes() {
   // Wave 2: Note Detail now carries its own pushed header (back/title/pin/
   // more/done), same push pattern as Song List -> Artist, so the browse
   // header has to step aside rather than stack above it.
-  els.notesHeader.classList.toggle("hidden", Boolean(selectedNoteId));
-  els.notesBrowserContent.classList.toggle("hidden", Boolean(selectedNoteId));
-  els.noteList.classList.toggle("hidden", Boolean(selectedNoteId));
+  const hideList = Boolean(selectedNoteId) && !dual;
+  els.notesHeader.classList.toggle("hidden", hideList);
+  els.notesBrowserContent.classList.toggle("hidden", hideList);
+  els.noteList.classList.toggle("hidden", hideList);
   els.noteEditor.classList.toggle("hidden", !selectedNoteId);
-  if (selectedNoteId) return;
+  els.noteEditorPlaceholder.classList.toggle("hidden", !dual || Boolean(selectedNoteId));
+  if (hideList) return;
 
   els.noteList.innerHTML = "";
   if (!notes.length) {
@@ -13563,7 +14029,7 @@ function renderNotes() {
     button.className = "slp-row";
     button.dataset.noteId = note.id;
     // A compact row: title (with a small pin when pinned), at most two lines of preview, date at the end.
-    button.className = "slp-row note-row";
+    button.className = `slp-row note-row ${note.id === selectedNoteId ? "is-open" : ""}`;
     button.innerHTML = `
       <span class="slp-row__body">
         <span class="note-row__head"><span class="slp-row__title" dir="auto">${escapeHtml(note.title)}</span>${note.pinned ? `<i class="note-row__pin" data-lucide="pin" aria-label="Pinned"></i>` : ""}</span>
@@ -16867,6 +17333,80 @@ function downloadText(filename, text, type = "text/plain") {
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+// What kind of screen the app is on right now, from its width, height and shape - never from
+// the device name. A foldable changes this while the app is open, so it is re-measured on every
+// resize. Layouts read the result from data-* attributes on #app (see applyScreenTier).
+//
+//   tier   phone  under 600px wide      medium  600-839px      large  840px and up
+//          (the same lines as Google's compact / medium / expanded width classes)
+//   shape  tall   height over 1.25x width   square  about 1:1   wide  width over 1.25x height
+//   short  true when under 500px tall (a phone on its side)
+
+const SCREEN_PHONE_MAX = 599;
+const SCREEN_MEDIUM_MAX = 839;
+const SCREEN_SHORT_MAX = 499;
+
+let screenInfo = { width: 0, height: 0, tier: "phone", shape: "tall", short: false, boardSide: false, split: false, eventsSplit: false, eventsTriple: false };
+
+function measureScreen() {
+  const view = globalThis.visualViewport;
+  const width = Math.round(globalThis.innerWidth || view?.width || 0);
+  const height = Math.round(globalThis.innerHeight || view?.height || 0);
+  const ratio = width ? height / width : 1;
+  const tier = width <= SCREEN_PHONE_MAX ? "phone" : width <= SCREEN_MEDIUM_MAX ? "medium" : "large";
+  const shape = ratio > 1.25 ? "tall" : ratio < 0.8 ? "wide" : "square";
+  const short = height > 0 && height <= SCREEN_SHORT_MAX;
+  // Board: the reader sits beside the columns on large screens, on medium screens that are not
+  // tall, and on short screens that are at least medium wide. Phones and tall medium screens
+  // (a foldable held upright) keep the reader on top.
+  const boardSide = tier === "large" || (tier === "medium" && (shape !== "tall" || short));
+  // Songs: from 600px up to the width the desktop three-pane layout needs (about 1020px) the song
+  // list and the lyrics sit side by side. Under 600px it is one pane; wider is the desktop layout.
+  const split = width >= 600 && width <= 1019;
+  // Events: from 600px up, the setlist and the open song's lyrics sit side by side.
+  const eventsSplit = width >= 600;
+  // Events and Notes: the list of events (or notes) joins the setlist on wide screens.
+  const eventsTriple = width >= 1020;
+  return { width, height, tier, shape, short, boardSide, split, eventsSplit, eventsTriple };
+}
+
+function screenInfoLabel(info = screenInfo) {
+  return `${info.width} × ${info.height} · ${info.tier} · ${info.shape}${info.short ? " · short" : ""}`;
+}
+
+// Returns true when the tier, shape or "short" flag changed (a plain size nudge returns false).
+function applyScreenTier() {
+  const next = measureScreen();
+  const changed = next.tier !== screenInfo.tier || next.shape !== screenInfo.shape || next.short !== screenInfo.short || next.boardSide !== screenInfo.boardSide || next.split !== screenInfo.split || next.eventsSplit !== screenInfo.eventsSplit || next.eventsTriple !== screenInfo.eventsTriple;
+  screenInfo = next;
+  if (els.app) {
+    els.app.dataset.tier = next.tier;
+    els.app.dataset.shape = next.shape;
+    els.app.dataset.short = String(next.short);
+    els.app.dataset.boardSide = String(next.boardSide);
+    els.app.dataset.split = String(next.split);
+  }
+  if (els.screenInfoText) els.screenInfoText.textContent = screenInfoLabel(next);
+  return changed;
+}
+
+// Folding or unfolding fires resize (and sometimes orientationchange) several times in a row.
+// Wait one frame, then redraw only if the layout actually switched. Nothing is reset: the pinned
+// song, open cards and scroll positions live in memory and are put back by the redraw.
+function initScreenTier() {
+  applyScreenTier();
+  let queued = false;
+  const onChange = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      if (applyScreenTier()) render();
+    });
+  };
+  globalThis.addEventListener?.("resize", onChange);
+  globalThis.addEventListener?.("orientationchange", onChange);
+}
 // Select mode: choose several songs at once, in any song list.
 //
 // One component serves every list. A list opts in by:
@@ -17209,7 +17749,7 @@ els.deleteGigBtn.addEventListener("click", () => requestDeleteGig(editingGigId))
 els.gigForm.addEventListener("input", updateGigFormSummaries);
 els.gigTypeSelect.addEventListener("change", () => { syncGigTypeInput(); updateGigFormSummaries(); if (!els.gigEventTypeInput.hidden) els.gigEventTypeInput.focus(); });
 els.cancelGigFormBtn.addEventListener("click", closeOverlays);
-els.backToGigsBtn.addEventListener("click", () => { gigReorderMode = false; gigStructureEditMode = false; state.gigNavigation.gigId = null; state.gigNavigation.sectionId = null; state.gigNavigation.setId = null; render(); });
+els.backToGigsBtn.addEventListener("click", () => { gigReorderMode = false; selectedSongId = null; gigReadItemId = null; gigStructureEditMode = false; state.gigNavigation.gigId = null; state.gigNavigation.sectionId = null; state.gigNavigation.setId = null; render(); });
 els.editGigBtn.addEventListener("click", openEditGigForm);
 els.shareGigBtn.addEventListener("click", () => { els.shareGigBtn.closest("details")?.removeAttribute("open"); openGigShare(); });
 els.gigPlanSearchBtn.addEventListener("click", () => { els.gigPlanSearchWrap.classList.remove("hidden"); requestAnimationFrame(() => els.gigPlanSearchInput.focus()); });
@@ -17810,7 +18350,12 @@ els.songsEmptyAddBtn.addEventListener("click", () => els.folderAddBtn.click());
 initSelectModeUi();
 initQuickAddUi();
 initBoardUi();
+  initScreenTier();
+  initGigSideUi();
   initBoardPosBar();
+  initBoardResizer();
+  // Narrow window <-> wide window: the Board only exists at phone width, so redraw when it flips.
+  globalThis.matchMedia?.("(max-width: 900px)")?.addEventListener?.("change", () => render());
   initGigTemplatesUi();
   initBoardPicker();
 initBoardBoardsUi();
