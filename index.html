@@ -5336,6 +5336,119 @@ textarea.slp-input.gig-item-note { min-height: 44px; height: 44px; resize: none;
 .lyric-sheet .song-document { line-height: calc(1.42 * var(--line-scale, 1)); letter-spacing: calc(var(--letter-spacing, 0) * 1em); }
 .perf-view .song-document { line-height: calc(1.5 * var(--line-scale, 1)); letter-spacing: calc(var(--letter-spacing, 0) * 1em); }
 
+/* Swipe right (Played) reveals on the left edge; swipe left keeps the right edge. */
+.swipe-action--right { inset: 0 auto 0 0; background: var(--color-success, #2f7d5b); }
+.swipe-action--left { inset: 0 0 0 auto; }
+.gig-song-reference.is-played, .gig-song-swipe.swipeable > .slp-row.is-played { background: var(--color-card-2); }
+.gig-song-reference.is-played .slp-row__title { color: var(--color-text-secondary); text-decoration: line-through; text-decoration-thickness: 1px; }
+.gig-song-reference.is-played .slp-row__subtitle, .gig-song-reference.is-played .gig-song-number { color: var(--color-text-muted, var(--color-text-secondary)); opacity: 0.8; }
+.gig-song-reference.is-played .slp-badge--key { background: transparent; color: var(--color-text-secondary); }
+.gig-played-tick { flex: none; width: 18px; height: 18px; color: var(--accent); }
+
+/* Board zoom: a round button at the bottom right, and the overview it switches on. */
+.board-zoom-btn { position: absolute; right: 12px; bottom: 64px; z-index: 6; width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); border-radius: 999px; background: color-mix(in srgb, var(--color-card) 88%, transparent); color: var(--accent); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16); cursor: pointer; }
+.board-zoom-btn svg { width: 22px; height: 22px; }
+.board-zoom-btn[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+.board-zoom-btn.hidden, .board[data-searching="true"] .board-zoom-btn { display: none; }
+.board-columns { touch-action: pan-x pan-y; }
+.app-shell .board[data-zoom="out"] .board-col { flex: 0 0 var(--board-ov-w, 92px); cursor: zoom-in; }
+.app-shell .board[data-zoom="out"] .board-col__head { min-height: 44px; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; padding: 0 var(--space-3); }
+.app-shell .board[data-zoom="out"] .board-col__head strong { font-size: 12px; max-width: 100%; }
+.app-shell .board[data-zoom="out"] .board-col__count { padding: 0; min-width: 0; background: transparent; font-size: 11px; }
+.app-shell .board[data-zoom="out"] .board-col__body { gap: 0; padding: var(--space-1); overflow-y: auto; }
+.app-shell .board[data-zoom="out"] .board-card { pointer-events: none; border-width: 0; border-top: 1px solid var(--color-border); border-radius: 0; background: transparent; }
+.app-shell .board[data-zoom="out"] .board-card__head { min-height: 22px; padding: 0 var(--space-2); }
+.app-shell .board[data-zoom="out"] .board-card__text strong { font-size: 11px; line-height: 22px; }
+.app-shell .board[data-zoom="out"] .board-card__sub, .app-shell .board[data-zoom="out"] .board-card__key, .app-shell .board[data-zoom="out"] .board-card__pinbtn, .app-shell .board[data-zoom="out"] .board-card__lyrics, .app-shell .board[data-zoom="out"] .board-card__keychip { display: none; }
+.app-shell .board[data-zoom="out"] .board-col__empty { font-size: 11px; padding: var(--space-3); }
+
+/* Sheet music pictures: the Lyrics | Notes switch, the Notes view and the full-screen viewer. */
+.song-view-switch { display: flex; gap: var(--space-2); margin: var(--space-3) var(--space-6) 0; padding: 3px; border-radius: var(--radius-md); background: var(--color-chip-bg); }
+.song-view-switch.hidden { display: none; }
+.song-view-switch button { flex: 1; min-height: 44px; border: 0; border-radius: calc(var(--radius-md) - 2px); background: transparent; color: var(--color-text-secondary); font: inherit; font-weight: var(--font-weight-semibold); cursor: pointer; }
+.song-view-switch button[aria-selected="true"] { background: var(--color-card); color: var(--color-text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.song-notes-view { display: grid; gap: var(--space-5); padding: var(--space-4) var(--space-6) var(--space-9); }
+.song-notes-view.hidden { display: none; }
+.song-notes-pages { display: grid; gap: var(--space-4); }
+.song-notes-page { padding: 0; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: #fff; overflow: hidden; cursor: zoom-in; }
+.song-notes-page img { display: block; width: 100%; height: auto; }
+.song-notes-empty { margin: 0; padding: var(--space-6) 0; color: var(--color-text-secondary); text-align: center; }
+.song-notes-add { display: flex; gap: var(--space-4); }
+.song-notes-add__btn { flex: 1; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-card); color: var(--accent); font: inherit; font-weight: var(--font-weight-semibold); cursor: pointer; }
+.song-notes-add__btn svg { width: 18px; height: 18px; }
+.notes-viewer { position: fixed; inset: 0; z-index: 19; display: flex; flex-direction: column; background: #111; color: #fff; }
+.notes-viewer.hidden, .notes-viewer[hidden] { display: none; }
+.notes-viewer__bar { flex: none; display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 0px) var(--space-3) 0; min-height: calc(52px + env(safe-area-inset-top, 0px)); }
+.notes-viewer__btn { width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent; color: #fff; cursor: pointer; }
+.notes-viewer__count { font-size: var(--text-sm); color: #cfd6d3; }
+.notes-viewer__pages { flex: 1; min-height: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; touch-action: pan-x pan-y pinch-zoom; -webkit-overflow-scrolling: touch; }
+.notes-viewer__page { flex: 0 0 100%; scroll-snap-align: center; display: flex; align-items: center; justify-content: center; overflow: auto; touch-action: pan-x pan-y pinch-zoom; }
+.notes-viewer__page img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; background: #fff; }
+.board-card__notes { flex: none; display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; border-radius: var(--radius-md); background: var(--color-chip-bg); color: var(--color-text-secondary); font-size: 12px; }
+.board-card__notes svg { width: 12px; height: 12px; }
+.app-shell .board[data-zoom="out"] .board-card__notes { display: none; }
+
+/* Chart add buttons, original PDF link, and the sheet music on Board cards. */
+.song-notes-add { flex-wrap: wrap; }
+.song-notes-add__btn { min-width: 30%; }
+.notes-viewer__btn--text { width: auto; padding: 0 var(--space-5); font: inherit; font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+.notes-viewer__btn--text[hidden] { display: none; }
+.board-card__view { flex: none; display: inline-flex; margin-inline-end: var(--space-2); padding: 2px; border-radius: 8px; background: var(--color-chip-bg); align-self: center; }
+.board-card__view button { position: relative; min-width: 40px; height: 26px; padding: 0 var(--space-3); border: 0; border-radius: 6px; background: transparent; color: var(--color-text-secondary); font: inherit; font-size: 12px; font-weight: var(--font-weight-semibold); cursor: pointer; }
+.board-card__view button::after { content: ""; position: absolute; inset: -9px -2px; }
+.board-card__view button[aria-pressed="true"] { background: var(--color-card); color: var(--color-text); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14); }
+.board-card__strip { display: block; width: 100%; max-height: 56px; margin-top: var(--space-2); object-fit: contain; object-position: left center; background: #fff; border: 1px solid var(--color-border); border-radius: 6px; }
+.board-card__chart { display: grid; gap: var(--space-2); width: 100%; padding: var(--space-3); border: 0; border-top: 1px solid var(--color-border); background: transparent; cursor: zoom-in; text-align: center; }
+.board-card__chart img { display: block; width: 100%; height: auto; background: #fff; border: 1px solid var(--color-border); border-radius: 6px; }
+.board-card__chart.is-page img { max-height: 180px; object-fit: cover; object-position: top left; }
+.board-card__chart-hint { color: var(--accent); font-size: 12px; font-weight: var(--font-weight-semibold); }
+.app-shell .board[data-zoom="out"] .board-card__strip, .app-shell .board[data-zoom="out"] .board-card__view, .app-shell .board[data-zoom="out"] .board-card__chart { display: none; }
+
+/* Lyrics | Notes: small switches. On the song page it is a compact pill; on the Board it sits in the top reader's header. */
+.song-view-switch { display: inline-flex; gap: 0; width: auto; margin: var(--space-2) var(--space-6) 0; padding: 2px; border-radius: 9px; }
+.song-view-switch button { position: relative; flex: none; min-width: 64px; min-height: 28px; height: 28px; padding: 0 var(--space-4); font-size: 13px; }
+.song-view-switch button::after { content: ""; position: absolute; inset: -8px -2px; }
+.board-panel__view { flex: none; display: inline-flex; margin-inline-end: var(--space-2); padding: 2px; border-radius: 8px; background: var(--color-chip-bg); align-self: center; }
+.board-panel__view button { position: relative; min-width: 44px; height: 26px; padding: 0 var(--space-3); border: 0; border-radius: 6px; background: transparent; color: var(--color-text-secondary); font: inherit; font-size: 12px; font-weight: var(--font-weight-semibold); cursor: pointer; }
+.board-panel__view button::after { content: ""; position: absolute; inset: -9px -2px; }
+.board-panel__view button[aria-pressed="true"] { background: var(--color-card); color: var(--color-text); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14); }
+.board-panel__body .board-card__chart { border-top: 0; }
+
+.board-panel__subrow { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.board-panel__subrow > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-panel__subrow .board-panel__view { margin: 0; flex: none; }
+
+/* Charts grouped under a header with page count and options; the preview-bar picker. */
+.song-chart { display: grid; gap: var(--space-3); }
+.song-chart__head { display: flex; align-items: center; gap: var(--space-4); min-height: 44px; }
+.song-chart__head strong { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.song-chart__head span { color: var(--color-text-secondary); font-size: var(--text-sm); white-space: nowrap; }
+.song-chart__menu { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.song-notes-pages { gap: var(--space-5); }
+.chart-picker { position: fixed; inset: 0; z-index: 19; display: flex; flex-direction: column; background: var(--color-bg); }
+.chart-picker.hidden, .chart-picker[hidden] { display: none; }
+.chart-picker__bar { flex: none; display: flex; align-items: center; gap: var(--space-4); padding: calc(env(safe-area-inset-top, 0px) + var(--space-3)) var(--space-5) var(--space-3); border-bottom: 1px solid var(--color-border); background: var(--color-card); }
+.chart-picker__hint { flex: 1; min-width: 0; text-align: center; color: var(--color-text-secondary); font-size: var(--text-sm); }
+.chart-picker__btn { min-height: 44px; padding: 0 var(--space-5); border: 0; border-radius: var(--radius-md); background: transparent; color: var(--accent); font: inherit; font-weight: var(--font-weight-semibold); cursor: pointer; }
+.chart-picker__btn--primary { background: var(--accent); color: #fff; }
+.chart-picker__btn:disabled { opacity: 0.4; cursor: default; }
+.chart-picker__body { flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-5); display: grid; gap: var(--space-5); align-content: start; }
+.chart-picker__page { position: relative; border: 1px solid var(--color-border); background: #fff; }
+.chart-picker__page img { display: block; width: 100%; height: auto; }
+.chart-picker__cell { position: absolute; padding: 0; border: 1px dashed rgba(15, 118, 110, 0.55); background: rgba(15, 118, 110, 0.05); cursor: pointer; }
+.chart-picker__cell.is-picked { background: rgba(15, 118, 110, 0.22); border-style: solid; }
+.chart-picker__cell.is-start { background: rgba(15, 118, 110, 0.38); border-width: 2px; }
+.chart-picker__note { margin: 0; padding: var(--space-5); color: var(--color-text-secondary); text-align: center; }
+
+/* Chart flag in song lists; small chart preview on Board. */
+.song-chart-flag { flex: none; display: inline-flex; align-items: center; margin-inline: var(--space-2); color: var(--color-text-secondary); }
+.song-chart-flag svg { width: 16px; height: 16px; }
+.board-card__chart { padding: var(--space-2) var(--space-3); gap: var(--space-1); }
+.board-card__chart img { width: auto; max-width: 100%; max-height: 64px; margin-inline: auto; object-fit: contain; }
+.board-card__chart.is-page img { max-height: 120px; }
+.board-card__chart-hint { font-size: 11px; }
+.board-card__strip { max-height: 44px; object-fit: contain; object-position: left center; }
+
 }
 
 </style>
@@ -5487,6 +5600,7 @@ textarea.slp-input.gig-item-note { min-height: 44px; height: 44px; resize: none;
             <div id="boardPosBubble" class="board-pos__bubble hidden" aria-hidden="true"></div>
           </div>
           <div id="boardColumns" class="board-columns" tabindex="-1"></div>
+          <button id="boardZoomBtn" class="board-zoom-btn" type="button" aria-label="Zoom out to see more columns" aria-pressed="false" title="Zoom out"><i data-lucide="zoom-out"></i></button>
           <div id="boardResults" class="board-results hidden" aria-label="Search results"></div>
           <div id="boardUndoBar" class="board-undo hidden" role="status">
             <span id="boardUndoText"></span>
@@ -5668,6 +5782,8 @@ textarea.slp-input.gig-item-note { min-height: 44px; height: 44px; resize: none;
                     <button id="quickAddGigBtn" class="slp-picker-item" type="button"><i data-lucide="zap"></i><span>Type songs in</span></button>
                     <button id="gigTemplateMenuBtn" class="slp-picker-item" type="button"><i data-lucide="layout-template"></i><span>Add template</span></button>
 
+                    <button id="hidePlayedGigBtn" class="slp-picker-item hidden" type="button"><i data-lucide="eye-off"></i><span>Hide played songs</span></button>
+                    <button id="clearPlayedGigBtn" class="slp-picker-item hidden" type="button"><i data-lucide="rotate-ccw"></i><span>Clear played marks</span></button>
                     <button id="shareGigBtn" class="slp-picker-item" type="button"><i data-lucide="share-2"></i><span>Share event</span></button>
                   </div>
                 </details>
@@ -5824,6 +5940,7 @@ textarea.slp-input.gig-item-note { min-height: 44px; height: 44px; resize: none;
             <button id="songKey" class="slp-chip song-chip" type="button" aria-label="Change key"><i data-lucide="music-2"></i><span>No key</span><small id="songKeyWas" hidden></small></button>
             <button id="songTransposeBtn" class="slp-chip song-chip song-chip--icon" type="button" aria-label="Transpose" aria-haspopup="dialog" aria-pressed="false"><i data-lucide="arrow-up-down"></i></button>
             <button id="songArtistChip" class="slp-chip song-chip song-artist-chip" type="button" aria-label="Songs by this artist" hidden><span dir="auto"></span></button>
+            <button id="songNotesToggleBtn" class="slp-chip song-chip hidden" type="button" aria-label="Show the notes"><i data-lucide="file-music"></i><span>Notes</span></button>
             <button id="songCategoryBtn" class="slp-chip song-chip" type="button" aria-label="Change folders"><i data-lucide="folder"></i><span>Unfiled</span></button>
             <a id="songPracticeLink" class="slp-chip song-chip hidden" href="#" target="_blank" rel="noopener noreferrer" aria-label="Practice"><i data-lucide="headphones"></i><span>Practice</span></a>
             <button id="songDetailsViewCollapse" class="slp-chip song-chip" type="button" aria-expanded="false" aria-controls="songDetailsViewPanel"><span>More</span><svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -5838,6 +5955,15 @@ textarea.slp-input.gig-item-note { min-height: 44px; height: 44px; resize: none;
           </div>
 
           <div id="gigReaderNote" class="gig-reader-note hidden" role="note"></div>
+          <section id="songNotesView" class="song-notes-view hidden" aria-label="Sheet music pictures">
+            <div id="songNotesPages" class="song-notes-pages"></div>
+            <p id="songNotesEmpty" class="song-notes-empty">No pictures yet. Add a photo of the sheet music or a nigun.</p>
+            <div class="song-notes-add">
+              <button id="notePictureCameraBtn" class="song-notes-add__btn" type="button"><i data-lucide="camera"></i><span>Take photo</span></button>
+              <button id="notePictureFileBtn" class="song-notes-add__btn" type="button"><i data-lucide="image-plus"></i><span>Photos</span></button>
+              <button id="notePdfBtn" class="song-notes-add__btn" type="button"><i data-lucide="file-text"></i><span>PDF chart</span></button>
+            </div>
+          </section>
           <article id="lyricSheet" class="lyric-sheet theme-paper font-system">
             <div id="songDocument" class="song-document" contenteditable="false" role="textbox" aria-multiline="true" aria-label="Lyrics" data-placeholder="Tap to start typing or paste your lyrics here..." dir="auto"></div>
           </article>
@@ -6782,6 +6908,26 @@ textarea.slp-input.gig-item-note { min-height: 44px; height: 44px; resize: none;
     </section>
 
     <input id="imageFileInput" class="hidden" type="file" accept="image/*" />
+    <input id="notePictureCameraInput" class="hidden" type="file" accept="image/*" capture="environment" />
+    <input id="notePictureFileInput" class="hidden" type="file" accept="image/*" multiple />
+    <input id="notePdfInput" class="hidden" type="file" accept="application/pdf,.pdf" />
+    <section id="chartPicker" class="chart-picker hidden" hidden role="dialog" aria-modal="true" aria-label="Choose the preview bars">
+      <header class="chart-picker__bar">
+        <button id="chartPickerCancel" class="chart-picker__btn" type="button">Cancel</button>
+        <span id="chartPickerHint" class="chart-picker__hint">Tap the bar where the preview should start.</span>
+        <button id="chartPickerSave" class="chart-picker__btn chart-picker__btn--primary" type="button" disabled>Use these bars</button>
+      </header>
+      <div id="chartPickerBody" class="chart-picker__body"></div>
+    </section>
+    <section id="notesViewer" class="notes-viewer hidden" hidden role="dialog" aria-modal="true" aria-label="Sheet music">
+      <header class="notes-viewer__bar">
+        <button id="notesViewerClose" class="notes-viewer__btn" type="button" aria-label="Close"><i data-lucide="x"></i></button>
+        <span id="notesViewerCount" class="notes-viewer__count"></span>
+        <button id="notesViewerPdf" class="notes-viewer__btn notes-viewer__btn--text" type="button" hidden>Open PDF</button>
+        <button id="notesViewerDelete" class="notes-viewer__btn" type="button" aria-label="Remove this picture"><i data-lucide="trash-2"></i></button>
+      </header>
+      <div id="notesViewerPages" class="notes-viewer__pages"></div>
+    </section>
     <input id="backupFileInput" class="hidden" type="file" accept="application/json,.json" />
     <datalist id="artistSuggestions"></datalist>
     <datalist id="artistHebrewSuggestions"></datalist>
@@ -6845,7 +6991,7 @@ const ARTIST_PREFIX = "artist:";
 // A virtual list of Quick-added songs that still have no lyrics (opened from the banner).
 const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
-const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "bpm", "key", "lyrics", "language", "sourceUrl"];
+const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
@@ -6925,7 +7071,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
+    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -7554,6 +7700,18 @@ function normalizeSong(song) {
     importSourceUrl: String(song.importSourceUrl || oldSource || "").trim(),
     needsDetails: Boolean(song.needsDetails) && !songHasLyricText(documentHtml),
     transpose: clamp(Math.round(Number(song.transpose) || 0), -11, 11),
+    // Sheet-music pictures: only their ids are kept here; the bytes live in the image store.
+    notePictures: [...new Set((Array.isArray(song.notePictures) ? song.notePictures : []).map((id) => String(id || "").trim()).filter(Boolean))].slice(0, 12),
+    // The original PDF chart(s), and the automatic crop of the first bars (two rows of two bars).
+    // One entry per chart that was added: its pages, its original PDF (if any) and a name.
+    noteGroups: (Array.isArray(song.noteGroups) ? song.noteGroups : []).map((group) => ({
+      id: String(group?.id || ""),
+      name: String(group?.name || "").trim().slice(0, 80),
+      pages: [...new Set((Array.isArray(group?.pages) ? group.pages : []).map((id) => String(id || "").trim()).filter(Boolean))],
+      pdf: String(group?.pdf || "").trim()
+    })).filter((group) => group.id && group.pages.length).slice(0, 12),
+    notePdfs: [...new Set((Array.isArray(song.notePdfs) ? song.notePdfs : []).map((id) => String(id || "").trim()).filter(Boolean))].slice(0, 3),
+    notePreview: song.notePreview && typeof song.notePreview.a === "string" && song.notePreview.a ? { a: song.notePreview.a, b: typeof song.notePreview.b === "string" ? song.notePreview.b : "", group: typeof song.notePreview.group === "string" ? song.notePreview.group : "" } : null,
     audioLinks,
     videoLinks,
     alternateOfId: song.alternateOfId || null,
@@ -7837,7 +7995,10 @@ async function migrateInlineImages() {
 }
 
 function songImageRefs(song) {
-  return [...String(song.documentHtml || "").matchAll(/data-image-ref=["']([^"']+)["']/g)].map((match) => match[1]);
+  const inLyrics = [...String(song.documentHtml || "").matchAll(/data-image-ref=["']([^"']+)["']/g)].map((match) => match[1]);
+  const preview = song.notePreview ? [song.notePreview.a, song.notePreview.b].filter(Boolean) : [];
+  const groupPdfs = (Array.isArray(song.noteGroups) ? song.noteGroups : []).map((group) => group.pdf).filter(Boolean);
+  return [...inLyrics, ...(Array.isArray(song.notePictures) ? song.notePictures : []), ...(Array.isArray(song.notePdfs) ? song.notePdfs : []), ...groupPdfs, ...preview];
 }
 
 // Backups embed the pictures the songs actually reference, as data: URLs, so a
@@ -7860,7 +8021,7 @@ async function restoreBackupImages(images) {
   if (!images || typeof images !== "object" || !imageStoreAvailable()) return 0;
   let restored = 0;
   for (const [id, dataUrl] of Object.entries(images)) {
-    if (typeof dataUrl !== "string" || !dataUrl.startsWith("data:image/")) continue;
+    if (typeof dataUrl !== "string" || !/^data:(image\/|application\/pdf)/.test(dataUrl)) continue;
     try {
       await putImageBlob(id, dataUrlToBlob(dataUrl));
       imageUrlCache.delete(id);
@@ -8125,6 +8286,11 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
   }
 }
 
+// A small sheet-music icon in a song row when the song has a chart (a PDF or pictures).
+function songChartFlag(song) {
+  return (song.notePictures || []).length ? `<span class="song-chart-flag" role="img" aria-label="Has a chart" title="Has a chart"><i data-lucide="file-music"></i></span>` : "";
+}
+
 function renderLibrarySearchResults(rawQuery, scope = "all") {
   const query = rawQuery.toLocaleLowerCase();
   els.librarySearchResults.classList.toggle("hidden", !query);
@@ -8144,7 +8310,7 @@ function renderLibrarySearchResults(rawQuery, scope = "all") {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `slp-row ${selectMode.active ? "selecting" : ""}`;
-    button.innerHTML = `${selectMode.active ? selectCheckMarkup() : ""}<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([song.artist, songDisplayKey(song), song.language].filter(Boolean).join(" · ") || "Song")}</span></span><svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    button.innerHTML = `${selectMode.active ? selectCheckMarkup() : ""}<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([song.artist, songDisplayKey(song), song.language].filter(Boolean).join(" · ") || "Song")}</span></span>${songChartFlag(song)}<svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
     button.addEventListener("click", () => openSongFromSearch(song.id));
     wireSelectableRow(button, song.id, searchSelectContext);
     els.librarySearchSongList.append(button);
@@ -8417,7 +8583,8 @@ function renderSongList(sourceSongs, isArtistView = false) {
         <div class="slp-row ${selectedSongId === song.id ? "selected" : ""}" role="button" tabindex="0" aria-label="Open ${escapeAttribute(visibleTitle)}">
           ${selectMode.active ? selectCheckMarkup() : ""}
           <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></span>
-          ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
+          ${songChartFlag(song)}
+        ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
           <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
       `;
@@ -8445,6 +8612,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
           <button class="song-title-button" type="button"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></button>
           ${(song.artists || []).length ? `<span class="slp-row__artists">${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
         </div>
+        ${songChartFlag(song)}
         ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
       </div>
       ${expanded && !songReorderMode && !selectMode.active ? `<div class="song-details">
@@ -8486,6 +8654,10 @@ function renderSong() {
     els.songReader.classList.add("hidden");
     return;
   }
+  if (songViewFor !== song.id) {
+    songViewFor = song.id;
+    songView = "lyrics";
+  }
 
   els.songEmptyState.classList.add("hidden");
   els.songReader.classList.remove("hidden");
@@ -8521,6 +8693,7 @@ function renderSong() {
   applyLyricPrefs();
   renderDocument(song);
   renderGigReaderNote();
+  renderSongNotesUi(song);
 }
 
 function renderSongSecondaryMeta(song) {
@@ -8843,12 +9016,16 @@ let boardPrefs = loadBoardPrefs();
 
 // What the Board is showing right now. Kept in memory so it survives a trip to the full
 // lyrics page; only the view choice and the panel size are saved across launches.
+// Zoomed out: every column shown narrow with titles only (not remembered between launches).
+let boardZoomedOut = false;
+
 const boardState = {
   filters: {},
   key: "",
   panelSongId: null,
   collapsed: false,
   expanded: new Set(),
+  panelView: "lyrics",
   scrollX: 0,
   scrollY: {},
   filterField: null,
@@ -8868,11 +9045,13 @@ function loadBoardPrefs() {
       panelText: BOARD_TEXT_SIZES.includes(saved.panelText) ? saved.panelText : "normal",
       cardText: BOARD_TEXT_SIZES.includes(saved.cardText) ? saved.cardText : "overview",
       density: saved.density === "roomy" ? "roomy" : "compact",
+      zoomHintSeen: saved.zoomHintSeen === true,
+      chartStrip: saved.chartStrip === "on" ? "on" : "off",
       readerHeight: Number(saved.readerHeight) > 0 ? Math.round(Number(saved.readerHeight)) : 0,
       readerWidth: Math.min(900, Math.max(BOARD_READER_MIN, Number(saved.readerWidth) || BOARD_READER_DEFAULT))
     };
   } catch {
-    return { view: "list", size: "half", panelText: "normal", cardText: "overview", density: "compact", readerWidth: BOARD_READER_DEFAULT, readerHeight: 0 };
+    return { view: "list", size: "half", panelText: "normal", cardText: "overview", density: "compact", zoomHintSeen: false, chartStrip: "off", readerWidth: BOARD_READER_DEFAULT, readerHeight: 0 };
   }
 }
 
@@ -9105,6 +9284,7 @@ function renderBoard() {
   // On a wide screen the reader pane exists only while a song is pinned; otherwise the columns use the full width.
   els.boardWorkspace.classList.toggle("has-reader", active && boardWide() && Boolean(boardState.panelSongId));
   els.boardWorkspace.dataset.density = boardPrefs.density;
+  applyBoardZoom();
   els.boardWorkspace.style.setProperty("--board-reader-w", `${boardPrefs.readerWidth}px`);
   const returning = Boolean(songReturnContext?.board) && mobileView === "song" && workspaceMode === "library";
   els.app.classList.toggle("board-return", returning);
@@ -9154,25 +9334,31 @@ function renderBoardPanel() {
   const meta = [boardSongKey(song), song.composer].filter(Boolean).join(" · ");
   const keepScroll = wrap.querySelector(".board-panel__body");
   const scrollTop = keepScroll && wrap.dataset.songId === song.id ? keepScroll.scrollTop : 0;
+  if (wrap.dataset.songId !== song.id) boardState.panelView = "lyrics";
   wrap.dataset.songId = song.id;
+  const hasChart = (song.notePictures || []).length > 0;
+  const showingNotes = hasChart && boardState.panelView === "notes" && !collapsed;
+  // The Lyrics | Notes switch lives here, at the top, and only for a song that has a chart.
+  const panelSwitch = hasChart ? `<span class="board-panel__view" role="group" aria-label="Show lyrics or notes"><button type="button" data-panel-view="lyrics" aria-pressed="${!showingNotes}">Lyrics</button><button type="button" data-panel-view="notes" aria-pressed="${showingNotes}">Notes</button></span>` : "";
   wrap.innerHTML = `
     <section class="board-panel" aria-label="Lyrics">
       <header class="board-panel__head">
         <div class="board-panel__titles" dir="auto">
           <strong>${escapeHtml(song.title)}</strong>
-          ${meta ? `<span>${escapeHtml(meta)}</span>` : ""}
+          ${meta || panelSwitch ? `<span class="board-panel__subrow">${meta ? `<span>${escapeHtml(meta)}</span>` : ""}${panelSwitch}</span>` : ""}
         </div>
         <button class="board-icon-btn board-aa-btn" type="button" data-board-act="text" aria-label="Text size">Aa</button>
         <button class="board-icon-btn" type="button" data-board-act="full" aria-label="Open full page"><i data-lucide="maximize-2"></i></button>
         <button class="board-icon-btn" type="button" data-board-act="collapse" aria-expanded="${!collapsed}" aria-label="${collapsed ? "Expand lyrics panel" : "Collapse lyrics panel"}"><i data-lucide="${collapsed ? "chevron-down" : "chevron-up"}"></i></button>
         <button class="board-icon-btn" type="button" data-board-act="close" aria-label="Close lyrics panel"><i data-lucide="x"></i></button>
       </header>
-      ${collapsed ? "" : `<div class="board-panel__body" tabindex="0">${boardLinesMarkup(boardLyricLines(song))}</div>`}
+      ${collapsed ? "" : `<div class="board-panel__body" tabindex="0">${showingNotes ? boardChartMarkup(song) : boardLinesMarkup(boardLyricLines(song))}</div>`}
     </section>
     ${collapsed || boardState.searchOpen ? "" : `<button class="board-handle board-grip" type="button" data-board-act="size" aria-label="Resize the reader. Drag, or tap to switch between half and tall"><span class="board-grip__bar"></span></button>`}
   `;
   const body = wrap.querySelector(".board-panel__body");
   if (body) body.scrollTop = scrollTop;
+  hydrateNotePictures(wrap);
   refreshIcons();
 }
 
@@ -9206,6 +9392,43 @@ function renderBoardFilterStrip() {
   refreshIcons();
 }
 
+// Overview: the columns shrink so about four (more on a wide screen) fit at once; only titles are
+// shown and a tap on a column zooms back into it.
+function applyBoardZoom() {
+  const workspace = els.boardWorkspace;
+  workspace.dataset.zoom = boardZoomedOut ? "out" : "normal";
+  els.boardZoomBtn.setAttribute("aria-pressed", String(boardZoomedOut));
+  els.boardZoomBtn.setAttribute("aria-label", boardZoomedOut ? "Zoom back in" : "Zoom out to see more columns");
+  els.boardZoomBtn.title = boardZoomedOut ? "Zoom in" : "Zoom out";
+  els.boardZoomBtn.innerHTML = `<i data-lucide="${boardZoomedOut ? "zoom-in" : "zoom-out"}"></i>`;
+  workspace.dataset.searching = String(boardState.searchOpen);
+  const width = els.boardColumns.clientWidth || workspace.clientWidth || globalThis.innerWidth || 390;
+  const target = Math.max(4, Math.floor(width / 120));
+  // A one-time tip the first time the Board has more columns than fit.
+  if (!boardPrefs.zoomHintSeen && !workspace.classList.contains("hidden") && els.boardColumns.scrollWidth > els.boardColumns.clientWidth + 8) {
+    boardPrefs.zoomHintSeen = true;
+    saveBoardPrefs();
+    setTimeout(() => showToast("Tip: pinch or tap the magnifier to see more columns"), 600);
+  }
+  workspace.style.setProperty("--board-ov-w", `${Math.max(72, Math.floor((width - 32 - (target - 1) * 6) / target))}px`);
+}
+
+function setBoardZoom(out, focusColumnId = "") {
+  if (boardZoomedOut === out) return;
+  boardZoomedOut = out;
+  renderBoard();
+  refreshIcons();
+  if (!out && focusColumnId) {
+    const column = [...els.boardColumns.querySelectorAll(".board-col")].find((node) => node.dataset.colId === focusColumnId);
+    if (column) els.boardColumns.scrollLeft = Math.max(0, column.offsetLeft - 16);
+    boardState.scrollX = els.boardColumns.scrollLeft;
+  }
+  if (out && !boardPrefs.zoomHintSeen) {
+    boardPrefs.zoomHintSeen = true;
+    saveBoardPrefs();
+  }
+}
+
 function renderBoardColumns() {
   const container = els.boardColumns;
   const columns = boardAllColumns();
@@ -9224,10 +9447,19 @@ function renderBoardColumns() {
     </section>`;
   }).join("");
   wireBoardCardsForSelect(container);
+  hydrateNotePictures(container);
   container.scrollLeft = boardState.scrollX;
   renderBoardPosBar();
   container.querySelectorAll("[data-col-body]").forEach((body) => { body.scrollTop = boardState.scrollY[body.dataset.colBody] || 0; });
   refreshIcons();
+}
+
+// The notes view of an open card: the first four bars as two rows, or the first picture when no bars
+// were found. Tapping it opens the full chart.
+function boardChartMarkup(song) {
+  const preview = song.notePreview;
+  const pieces = preview ? [preview.a, preview.b].filter(Boolean).map((id, index) => `<img alt="First bars" data-note-ref="${escapeAttribute(id)}">`).join("") : `<img alt="Sheet music" data-note-ref="${escapeAttribute(song.notePictures[0])}">`;
+  return `<button class="board-card__chart ${preview ? "" : "is-page"}" type="button" data-card-chart aria-label="Open the full chart">${pieces}<span class="board-card__chart-hint">Tap to open the full chart</span></button>`;
 }
 
 function boardCardMarkup(song, column) {
@@ -9235,7 +9467,9 @@ function boardCardMarkup(song, column) {
   const open = boardState.expanded.has(cardKey);
   const current = boardState.panelSongId === song.id;
   const key = boardSongKey(song);
+  const hasChart = (song.notePictures || []).length > 0;
   const lyrics = open ? boardLinesMarkup(boardLyricLines(song)) : "";
+  const strip = !open && hasChart && boardPrefs.chartStrip === "on" && song.notePreview ? `<img class="board-card__strip" alt="First bars" data-note-ref="${escapeAttribute(song.notePreview.a)}">` : "";
   // An open card keeps its header short: the key moves under the title (highlighted) and the right
   // side holds only a small pin button.
   const keyChip = key ? `<span class="board-card__keychip" dir="ltr">${escapeHtml(key)}</span>` : "";
@@ -9251,7 +9485,9 @@ function boardCardMarkup(song, column) {
         <span class="board-card__text">
           <strong dir="auto">${escapeHtml(song.title)}</strong>
           ${sub}
+          ${strip}
         </span>
+        ${!open && (song.notePictures || []).length ? `<span class="board-card__notes" aria-label="${song.notePictures.length} sheet music ${song.notePictures.length === 1 ? "picture" : "pictures"}"><i data-lucide="file-music"></i>${song.notePictures.length}</span>` : ""}
         ${!open && key ? `<span class="slp-badge--key board-card__key" dir="ltr">${escapeHtml(key)}</span>` : ""}
       </button>
       ${open ? `<button class="board-card__pinbtn" type="button" data-board-pin aria-label="${pinTitle}" title="${pinTitle}"><i data-lucide="pin"></i></button>` : ""}
@@ -9339,6 +9575,7 @@ function renderBoardResults() {
   const bodyEl = els.boardResults.querySelector(".board-col__body");
   if (bodyEl) bodyEl.scrollTop = keep;
   wireBoardCardsForSelect(els.boardResults);
+  hydrateNotePictures(els.boardResults);
   refreshIcons();
 }
 
@@ -9706,7 +9943,7 @@ function boardOpenCard(songId, cardKey) {
   renderBoard();
 }
 
-const BOARD_TEXT_LABELS = { normal: "Normal", small: "Small", overview: "Overview", compact: "Compact", roomy: "Roomy" };
+const BOARD_TEXT_LABELS = { normal: "Normal", small: "Small", overview: "Overview", compact: "Compact", roomy: "Roomy", on: "Show", off: "Hide" };
 
 function closeBoardTextMenu() {
   document.getElementById("boardTextMenu")?.remove();
@@ -9731,6 +9968,7 @@ function openBoardTextMenu(anchor) {
   menu.setAttribute("aria-label", "Text size");
   menu.innerHTML = boardTextGroupMarkup("TOP PANEL", "panel", ["normal", "small", "overview"], boardPrefs.panelText)
     + boardTextGroupMarkup("CARD PREVIEWS", "card", ["overview", "small", "normal"], boardPrefs.cardText)
+    + boardTextGroupMarkup("SHEET MUSIC ON CARDS", "chart", ["off", "on"], boardPrefs.chartStrip)
     + (boardWide() ? boardTextGroupMarkup("COLUMNS", "density", ["compact", "roomy"], boardPrefs.density) : "");
   const rect = anchor.getBoundingClientRect();
   menu.style.top = `${Math.round(rect.bottom + 6)}px`;
@@ -9741,9 +9979,10 @@ function openBoardTextMenu(anchor) {
     const group = button.dataset.textGroup;
     if (group === "panel") boardPrefs.panelText = button.dataset.textSize;
     else if (group === "density") boardPrefs.density = button.dataset.textSize;
+    else if (group === "chart") boardPrefs.chartStrip = button.dataset.textSize;
     else boardPrefs.cardText = button.dataset.textSize;
     saveBoardPrefs();
-    const current = (item) => (item.dataset.textGroup === "panel" ? boardPrefs.panelText : item.dataset.textGroup === "density" ? boardPrefs.density : boardPrefs.cardText);
+    const current = (item) => (item.dataset.textGroup === "panel" ? boardPrefs.panelText : item.dataset.textGroup === "density" ? boardPrefs.density : item.dataset.textGroup === "chart" ? boardPrefs.chartStrip : boardPrefs.cardText);
     menu.querySelectorAll("[data-text-size]").forEach((item) => item.classList.toggle("selected", item.dataset.textSize === current(item)));
     renderBoard();
   });
@@ -9785,6 +10024,9 @@ let boardGripMoved = false;
 function initBoardUi() {
   document.querySelectorAll("[data-songs-view]").forEach((button) => button.addEventListener("click", () => setSongsView(button.dataset.songsView)));
   els.boardPanelWrap.addEventListener("click", (event) => {
+    const view = event.target.closest("[data-panel-view]");
+    if (view) { boardState.panelView = view.dataset.panelView; renderBoard(); return; }
+    if (event.target.closest("[data-card-chart]")) { openNotesViewer(0, boardState.panelSongId); return; }
     const act = event.target.closest("[data-board-act]")?.dataset.boardAct;
     if (!act) return;
     if (act === "full") openBoardSongFullPage();
@@ -9827,6 +10069,33 @@ function initBoardUi() {
     if (boardGripMoved) saveBoardPrefs();
   };
   ["pointerup", "pointercancel"].forEach((name) => els.boardPanelWrap.addEventListener(name, endGrip));
+  els.boardZoomBtn.addEventListener("click", () => setBoardZoom(!boardZoomedOut));
+  // Zoomed out, a tap anywhere on a column zooms into it.
+  els.boardColumns.addEventListener("click", (event) => {
+    if (!boardZoomedOut) return;
+    const column = event.target.closest(".board-col");
+    if (column) setBoardZoom(false, column.dataset.colId);
+  }, true);
+  // Two-finger pinch: fingers together zooms out, apart zooms back in. It only reacts to a clear
+  // change (a quarter of the starting distance) and fires once per gesture.
+  const pinch = { points: new Map(), start: 0, done: false };
+  const pinchDistance = () => { const [a, b] = [...pinch.points.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+  els.boardColumns.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch") return;
+    pinch.points.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pinch.points.size === 2) { pinch.start = pinchDistance(); pinch.done = false; }
+  });
+  els.boardColumns.addEventListener("pointermove", (event) => {
+    if (!pinch.points.has(event.pointerId)) return;
+    pinch.points.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pinch.points.size !== 2 || pinch.done || !pinch.start) return;
+    const ratio = pinchDistance() / pinch.start;
+    if (ratio < 0.75 && !boardZoomedOut) { pinch.done = true; setBoardZoom(true); }
+    else if (ratio > 1.3 && boardZoomedOut) { pinch.done = true; setBoardZoom(false); }
+  });
+  ["pointerup", "pointercancel"].forEach((name) => els.boardColumns.addEventListener(name, (event) => { pinch.points.delete(event.pointerId); if (pinch.points.size < 2) pinch.start = 0; }));
+  // iOS Safari reports a pinch as a "gesture"; keep it from zooming the whole page.
+  ["gesturestart", "gesturechange"].forEach((name) => els.boardColumns.addEventListener(name, (event) => event.preventDefault()));
   els.boardColumns.addEventListener("click", (event) => {
     const card = event.target.closest(".board-card");
     if (!card) return;
@@ -11630,6 +11899,7 @@ function showSongMenu() {
     { icon: "pencil", label: "Edit song details", action: () => openSongInfo(false) },
     { icon: "folder-plus", label: "Add to folder or event", action: openSongAddTo },
     { icon: "music", label: songHasChords(song) ? "Edit chords" : "Add chords", action: openChordEditor },
+    { icon: "file-music", label: (song.notePictures || []).length ? "Sheet music" : "Add sheet music", action: openSongNotes },
     { icon: "maximize-2", label: "Performance mode", action: openPerformanceMode },
     { icon: "share-2", label: "Share lyrics", action: shareCurrentSong },
     { icon: "printer", label: "Print", action: () => { closeOverlays(); window.print(); } }
@@ -12177,6 +12447,526 @@ function convertChordLinesToInline(text) {
     index += 1;
   }
   return output.join("\n");
+}
+// Sheet-music pictures on a song ("Notes" next to "Lyrics"). The pictures are shrunk when added
+// and kept in the image store (IndexedDB), like lyric pictures; the song keeps only their ids.
+// song.notePictures is the flat list of every page in order; song.noteGroups says which pages belong
+// to which chart (a PDF, or one batch of photos). Backups include everything through songImageRefs.
+
+const NOTE_PICTURE_LIMIT = 12;
+let songView = "lyrics";
+let songViewFor = "";
+let notesViewerIndex = 0;
+let notesViewerSongId = "";
+
+function openSongNotes() {
+  const song = currentSong();
+  if (!song) return;
+  songView = "notes";
+  renderSong();
+}
+
+// The charts of a song: the stored groups, plus one "Pictures" group for pages added before groups existed.
+function songChartGroups(song) {
+  const groups = (song.noteGroups || []).map((group) => ({ ...group }));
+  const known = new Set(groups.flatMap((group) => group.pages));
+  const loose = (song.notePictures || []).filter((id) => !known.has(id));
+  if (loose.length) groups.unshift({ id: "legacy", name: "Pictures", pages: loose, pdf: "" });
+  return groups;
+}
+
+function pageCountLabel(count) {
+  return `${count} ${count === 1 ? "page" : "pages"}`;
+}
+
+// Called from renderSong: shows the Lyrics | Notes switch only for songs with pictures (or while
+// the Notes view is open), and swaps the lyrics for the pictures.
+function renderSongNotesUi(song) {
+  const pictures = song.notePictures || [];
+  const showNotes = songView === "notes";
+  // One small chip in the row of chips (no row of its own): "Notes" while reading lyrics, "Lyrics" while reading notes.
+  els.songNotesToggleBtn.classList.toggle("hidden", !pictures.length && !showNotes);
+  els.songNotesToggleBtn.querySelector("span").textContent = showNotes ? "Lyrics" : "Notes";
+  els.songNotesToggleBtn.setAttribute("aria-label", showNotes ? "Show the lyrics" : "Show the notes");
+  const icon = els.songNotesToggleBtn.querySelector("svg, i");
+  if (icon) icon.outerHTML = `<i data-lucide="${showNotes ? "align-left" : "file-music"}"></i>`;
+  els.songNotesView.classList.toggle("hidden", !showNotes);
+  els.lyricSheet.classList.toggle("hidden", showNotes);
+  if (!showNotes) return;
+  els.songNotesEmpty.hidden = pictures.length > 0;
+  els.songNotesPages.innerHTML = songChartGroups(song).map((group) => `<section class="song-chart" data-chart-id="${escapeAttribute(group.id)}">
+    <header class="song-chart__head"><strong dir="auto">${escapeHtml(group.name || "Chart")}</strong><span>${pageCountLabel(group.pages.length)}</span><button class="song-chart__menu" type="button" data-chart-menu="${escapeAttribute(group.id)}" aria-label="Options for ${escapeAttribute(group.name || "this chart")}"><i data-lucide="more-horizontal"></i></button></header>
+    ${group.pages.map((id) => { const index = pictures.indexOf(id); return `<button class="song-notes-page" type="button" data-note-index="${index}" aria-label="Open sheet music page ${index + 1} of ${pictures.length}"><img alt="Sheet music page ${index + 1}" data-note-ref="${escapeAttribute(id)}"></button>`; }).join("")}
+  </section>`).join("");
+  hydrateNotePictures(els.songNotesPages);
+  refreshIcons();
+}
+
+function hydrateNotePictures(root) {
+  root.querySelectorAll("img[data-note-ref]").forEach(async (image) => {
+    try {
+      const url = await imageUrlFor(image.dataset.noteRef);
+      if (url && image.isConnected) image.src = url;
+      else if (!url) image.alt = "Picture not found on this device";
+    } catch {
+      image.alt = "Picture could not be loaded";
+    }
+  });
+}
+
+// ---------- adding ----------
+
+async function addNotePictures(files) {
+  const song = currentSong();
+  const list = [...(files || [])].filter((file) => /^image\//.test(file.type || ""));
+  if (!song || !list.length) return;
+  if (!imageStoreAvailable()) return showToast("Pictures cannot be saved in this browser");
+  const batch = [];
+  for (const file of list) {
+    if ((song.notePictures || []).length + batch.length >= NOTE_PICTURE_LIMIT) {
+      showToast(`A song can have up to ${NOTE_PICTURE_LIMIT} pictures`);
+      break;
+    }
+    let blob;
+    try {
+      blob = await compressSongImage(file);
+    } catch {
+      showToast("One picture could not be prepared");
+      continue;
+    }
+    try {
+      const id = makeId();
+      await putImageBlob(id, blob);
+      batch.push({ id, blob });
+    } catch {
+      showToast("Pictures cannot be saved here. In a private window, open the app normally.");
+      break;
+    }
+  }
+  if (!batch.length) return;
+  const group = { id: makeId(), name: batch.length === 1 ? "Photo" : "Photos", pages: batch.map((item) => item.id), pdf: "" };
+  song.noteGroups = [...(song.noteGroups || []), group];
+  song.notePictures = [...(song.notePictures || []), ...group.pages];
+  if (!song.notePreview) await makeNotePreviewFromBlob(song, batch[0].blob, group.id);
+  song.updatedAt = new Date().toISOString();
+  songView = "notes";
+  persist();
+  render();
+  showToast(batch.length === 1 ? "Picture added" : `${batch.length} pictures added`);
+}
+
+async function addNotePdf(file) {
+  const song = currentSong();
+  if (!song || !file) return;
+  if (!imageStoreAvailable()) return showToast("Pictures cannot be saved in this browser");
+  if (file.size > 30_000_000) return showToast("That PDF is larger than 30 MB");
+  showToast("Reading the PDF…");
+  try {
+    const pdfjs = await loadPdfModule();
+    const buffer = await readFileBuffer(file);
+    const pdf = await pdfjs.getDocument({ data: new Uint8Array(buffer.slice(0)) }).promise;
+    const room = Math.max(0, NOTE_PICTURE_LIMIT - (song.notePictures || []).length);
+    const pages = Math.min(pdf.numPages, room, 8);
+    if (!pages) { await pdf.destroy(); return showToast(`A song can have up to ${NOTE_PICTURE_LIMIT} pictures`); }
+    const ids = [];
+    let firstCanvas = null;
+    for (let number = 1; number <= pages; number += 1) {
+      const page = await pdf.getPage(number);
+      const viewport = page.getViewport({ scale: 2 });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(viewport.width);
+      canvas.height = Math.round(viewport.height);
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvasContext: context, viewport }).promise;
+      if (!firstCanvas) firstCanvas = canvas;
+      const id = makeId();
+      await putImageBlob(id, await canvasToJpeg(canvas, 0.85));
+      ids.push(id);
+    }
+    await pdf.destroy();
+    const pdfId = makeId();
+    await putImageBlob(pdfId, new Blob([buffer], { type: "application/pdf" }));
+    const group = { id: makeId(), name: String(file.name || "Chart").replace(/\.pdf$/i, "").slice(0, 80), pages: ids, pdf: pdfId };
+    song.noteGroups = [...(song.noteGroups || []), group];
+    song.notePictures = [...(song.notePictures || []), ...ids];
+    song.notePdfs = [...(song.notePdfs || []), pdfId].slice(0, 3);
+    if (!song.notePreview && firstCanvas) await makeNotePreviewFromCanvas(song, firstCanvas, group.id);
+    song.updatedAt = new Date().toISOString();
+    songView = "notes";
+    persist();
+    render();
+    showToast(song.notePreview ? "Chart added. First bars found." : "Chart added");
+  } catch {
+    showToast("This PDF could not be read");
+  }
+}
+
+function canvasToJpeg(canvas, quality = 0.85) {
+  return new Promise((resolve, reject) => canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("encode"))), "image/jpeg", quality));
+}
+
+// ---------- the viewer ----------
+
+function notesViewerSong() {
+  return state.songs.find((song) => song.id === notesViewerSongId) || currentSong();
+}
+
+function openNotesViewer(index, songId = "") {
+  notesViewerSongId = songId || currentSong()?.id || "";
+  const song = notesViewerSong();
+  const pictures = song?.notePictures || [];
+  if (!pictures.length) return;
+  notesViewerIndex = Math.min(Math.max(0, index), pictures.length - 1);
+  els.notesViewerPages.innerHTML = pictures.map((id, i) => `<div class="notes-viewer__page" data-page="${i}"><img alt="Sheet music page ${i + 1}" data-note-ref="${escapeAttribute(id)}"></div>`).join("");
+  hydrateNotePictures(els.notesViewerPages);
+  setElementVisible(els.notesViewer, true);
+  els.notesViewerPages.scrollLeft = notesViewerIndex * els.notesViewerPages.clientWidth;
+  updateNotesViewerCount();
+  refreshIcons();
+}
+
+function updateNotesViewerCount() {
+  const song = notesViewerSong();
+  const total = song?.notePictures?.length || 0;
+  const width = els.notesViewerPages.clientWidth || 1;
+  notesViewerIndex = Math.min(Math.max(0, Math.round(els.notesViewerPages.scrollLeft / width)), Math.max(0, total - 1));
+  els.notesViewerCount.textContent = total ? `${notesViewerIndex + 1} of ${total}` : "";
+  const id = song?.notePictures?.[notesViewerIndex];
+  els.notesViewerPdf.hidden = !songChartGroups(song || { notePictures: [], noteGroups: [] }).some((group) => group.pdf && group.pages.includes(id));
+}
+
+function closeNotesViewer() {
+  setElementVisible(els.notesViewer, false);
+}
+
+async function openOriginalNotePdf() {
+  const song = notesViewerSong();
+  const id = song?.notePictures?.[notesViewerIndex];
+  const group = songChartGroups(song || { notePictures: [], noteGroups: [] }).find((item) => item.pdf && item.pages.includes(id));
+  if (!group) return;
+  try {
+    const blob = await getImageBlob(group.pdf);
+    if (!blob) return showToast("The original PDF is not on this device");
+    window.open(URL.createObjectURL(blob), "_blank");
+  } catch {
+    showToast("The original PDF could not be opened");
+  }
+}
+
+// ---------- removing ----------
+
+function dropEmptyGroups(song) {
+  const alive = new Set(song.notePictures || []);
+  song.noteGroups = (song.noteGroups || []).map((group) => ({ ...group, pages: group.pages.filter((id) => alive.has(id)) })).filter((group) => group.pages.length);
+  const pdfs = new Set(song.noteGroups.map((group) => group.pdf).filter(Boolean));
+  song.notePdfs = (song.notePdfs || []).filter((id) => pdfs.has(id));
+  if (song.notePreview?.group && !song.noteGroups.some((group) => group.id === song.notePreview.group) && song.notePreview.group !== "legacy") song.notePreview = null;
+  if (!song.notePictures.length) { song.noteGroups = []; song.notePdfs = []; song.notePreview = null; }
+}
+
+function requestRemoveNotePicture() {
+  const song = notesViewerSong();
+  const id = song?.notePictures?.[notesViewerIndex];
+  if (!id) return;
+  openConfirm("Remove picture?", "This picture is taken off the song. The song itself stays.", "Remove", () => {
+    song.notePictures = song.notePictures.filter((value) => value !== id);
+    dropEmptyGroups(song);
+    song.updatedAt = new Date().toISOString();
+    persist();
+    closeOverlays();
+    if (song.notePictures.length) openNotesViewer(Math.min(notesViewerIndex, song.notePictures.length - 1), song.id);
+    else closeNotesViewer();
+    render();
+  });
+}
+
+function requestRemoveChart(groupId) {
+  const song = currentSong();
+  const group = song && songChartGroups(song).find((item) => item.id === groupId);
+  if (!group) return;
+  openConfirm("Remove this chart?", `“${group.name || "This chart"}” (${pageCountLabel(group.pages.length)}) is taken off the song. The song itself stays.`, "Remove chart", () => {
+    const drop = new Set(group.pages);
+    song.notePictures = song.notePictures.filter((id) => !drop.has(id));
+    if (song.notePreview && (song.notePreview.group === groupId || groupId === "legacy")) song.notePreview = null;
+    dropEmptyGroups(song);
+    song.updatedAt = new Date().toISOString();
+    persist();
+    closeOverlays();
+    render();
+    showToast("Chart removed");
+  });
+}
+
+function showChartMenu(groupId, anchor) {
+  const song = currentSong();
+  const group = song && songChartGroups(song).find((item) => item.id === groupId);
+  if (!group) return;
+  showActionMenu([
+    { icon: "crop", label: "Choose the preview bars…", action: () => openChartPicker(groupId) },
+    { icon: "trash-2", label: "Remove this chart", danger: true, action: () => requestRemoveChart(groupId) }
+  ], anchor);
+}
+
+// ---------- the first-bars preview ----------
+
+async function makeNotePreviewFromBlob(song, blob, groupId = "") {
+  const canvas = await canvasFromBlob(blob);
+  if (canvas) await makeNotePreviewFromCanvas(song, canvas, groupId);
+}
+
+async function canvasFromBlob(blob) {
+  const url = URL.createObjectURL(blob);
+  try {
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    const scale = Math.min(1, 2400 / Math.max(image.naturalWidth, 1));
+    canvas.width = Math.round(image.naturalWidth * scale);
+    canvas.height = Math.round(image.naturalHeight * scale);
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    return canvas;
+  } catch {
+    return null;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+// The automatic choice: the first line of music, bars 1 to 4.
+async function makeNotePreviewFromCanvas(song, canvas, groupId = "") {
+  const systems = findSystems(canvas);
+  if (!systems.length) return;
+  await saveNotePreview(song, canvas, systems[0], 0, groupId);
+}
+
+// Cuts four bars starting at bar `startBar` of one line of music into ONE picture (the whole line when
+// it starts at the beginning and has four bars or fewer, so it runs across the full page width).
+async function saveNotePreview(song, canvas, system, startBar, groupId) {
+  const edges = [Math.max(0, system.left - 70), ...system.bars];
+  const start = Math.max(0, Math.min(startBar, edges.length - 2));
+  const end = Math.min(start + 4, edges.length - 1);
+  const left = Math.max(0, edges[start] - (start ? 4 : 0));
+  const right = Math.min(canvas.width, edges[end] + 6);
+  const out = document.createElement("canvas");
+  out.width = Math.max(1, Math.round(right - left));
+  out.height = Math.max(1, system.bottom - system.top);
+  const context = out.getContext("2d");
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, out.width, out.height);
+  context.drawImage(canvas, left, system.top, out.width, out.height, 0, 0, out.width, out.height);
+  const id = makeId();
+  await putImageBlob(id, await canvasToJpeg(out, 0.85));
+  song.notePreview = { a: id, b: "", group: groupId || "" };
+}
+
+// Every line of music on a page picture, found with plain pixel analysis (no AI): staff lines are long
+// thin rows of dark pixels, grouped five at a time; a barline is a thin dark column that spans the
+// staff exactly and has bare paper beside it in the gaps (a note stem has a note head next to it).
+// Each system is { top, bottom (the crop), staffTop, staffBottom, left, right, bars: [x of each barline] }.
+function findSystems(canvas) {
+  const W = canvas.width;
+  const H = canvas.height;
+  const pixels = canvas.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, W, H).data;
+  const gray = (x, y) => pixels[(y * W + x) * 4];
+  const dark = (x, y) => gray(x, y) < 140;
+  // A thin line drawn between two pixel rows is spread over both as light grey, so the staff lines
+  // are looked for with a lighter threshold, and a barline's ink is counted over two neighbouring columns.
+  const ink = (x, y) => 255 - gray(x, y);
+  const strong = (x, y) => ink(x, y) + (x + 1 < W ? ink(x + 1, y) : 0) >= 200;
+  const rows = [];
+  for (let y = 0; y < H; y += 1) {
+    let run = 0;
+    let best = 0;
+    for (let x = 0; x < W; x += 1) {
+      if (gray(x, y) < 200) { run += 1; if (run > best) best = run; } else run = 0;
+    }
+    if (best > W * 0.45) rows.push(y);
+  }
+  const lines = [];
+  rows.forEach((y) => {
+    const last = lines[lines.length - 1];
+    if (last && y - last.end <= 2) last.end = y; else lines.push({ start: y, end: y });
+  });
+  const centers = lines.map((line) => (line.start + line.end) / 2);
+  const staves = [];
+  for (let i = 0; i + 4 < centers.length;) {
+    const gaps = [1, 2, 3, 4].map((k) => centers[i + k] - centers[i + k - 1]);
+    const average = gaps.reduce((sum, gap) => sum + gap, 0) / 4;
+    if (average >= 5 && average < 40 && gaps.every((gap) => Math.abs(gap - average) < average * 0.25)) {
+      staves.push({ top: centers[i], bottom: centers[i + 4], space: average });
+      i += 5;
+    } else i += 1;
+  }
+  const runWidth = (x, y) => {
+    let a = x;
+    let b = x;
+    while (a > 0 && dark(a - 1, y)) a -= 1;
+    while (b < W - 1 && dark(b + 1, y)) b += 1;
+    return b - a + 1;
+  };
+  return staves.map((staff) => {
+    const top = Math.round(staff.top);
+    const bottom = Math.round(staff.bottom);
+    const height = bottom - top;
+    // The staff itself is the longest unbroken dark run on its top line (a rehearsal-mark box can touch that row too).
+    let left = 0;
+    let right = 0;
+    let best = 0;
+    const onLine = (x) => gray(x, top) < 200 || gray(x, Math.max(0, top - 1)) < 200 || gray(x, Math.min(H - 1, top + 1)) < 200;
+    for (let x = 0, start = 0; x <= W; x += 1) {
+      if (x < W && onLine(x)) { if (!(x > 0 && onLine(x - 1))) start = x; continue; }
+      if (x > 0 && onLine(x - 1) && x - start > best) { best = x - start; left = start; right = x - 1; }
+    }
+    const sampleRows = [];
+    for (let k = 0; k < 5; k += 1) {
+      const lineY = staff.top + k * staff.space;
+      sampleRows.push(Math.round(lineY - staff.space * 0.38), Math.round(lineY + staff.space * 0.38));
+    }
+    const groups = [];
+    for (let x = 0; x < W; x += 1) {
+      let count = 0;
+      for (let y = top; y <= bottom; y += 1) if (strong(x, y)) count += 1;
+      if (count < height * 0.92) continue;
+      const last = groups[groups.length - 1];
+      if (last && x - last.end <= 3) last.end = x; else groups.push({ start: x, end: x });
+    }
+    const bars = groups
+      .filter((group) => group.start > left + 10 && group.end - group.start <= 6)
+      .filter((group) => { const x = Math.round((group.start + group.end) / 2); return sampleRows.every((y) => y < top - 2 || y > bottom + 2 || runWidth(x, y) <= 6); })
+      .map((group) => group.end);
+    // Keep only dark, well-spaced barlines: an inked column in the gaps between staff lines, and no bar
+    // narrower than about eight staff spaces (that would be a note stem or a faint stray hairline).
+    const gapRows = [0.5, 1.5, 2.5, 3.5].map((k) => Math.round(top + (height * k) / 4));
+    const peak = (x) => Math.max(...[x - 2, x - 1, x, x + 1, x + 2].filter((xx) => xx >= 0 && xx < W).map((xx) => gapRows.reduce((sum, y) => sum + ink(xx, y), 0) / gapRows.length));
+    const minWidth = staff.space * 8;
+    const kept = [];
+    bars.forEach((x) => {
+      if (peak(x) < 164) return;
+      if (kept.length && x - kept[kept.length - 1] < minWidth) return;
+      kept.push(x);
+    });
+    // A closing double barline sits right at the end of the line: count it as the line's last barline.
+    if (kept.length && right - kept[kept.length - 1] < minWidth) kept[kept.length - 1] = right;
+    else if (kept.length && right - kept[kept.length - 1] >= minWidth && !kept.includes(right)) kept.push(right);
+    bars.length = 0;
+    kept.forEach((x) => bars.push(x));
+    // A line that starts with a repeat or double barline would otherwise count the clef as a bar.
+    while (bars.length && bars[0] - left < staff.space * 10) bars.shift();
+    return { left, right, bars, staffTop: top, staffBottom: bottom, top: Math.max(0, Math.round(staff.top - staff.space * 5.2)), bottom: Math.min(H, Math.round(staff.bottom + staff.space * 3)) };
+  }).filter((system) => system.bars.length >= 1);
+}
+
+// ---------- choosing the preview bars ----------
+
+let chartPicker = null;
+
+// A full-screen picker: the chart's pages with each line of music split into tappable bars. Tap the
+// bar the preview should start on; the four bars from there become the card preview.
+async function openChartPicker(groupId) {
+  const song = currentSong();
+  const group = song && songChartGroups(song).find((item) => item.id === groupId);
+  if (!group) return;
+  chartPicker = { songId: song.id, groupId, pages: [], choice: null };
+  els.chartPickerBody.innerHTML = '<p class="chart-picker__note">Reading the chart…</p>';
+  els.chartPickerSave.disabled = true;
+  setElementVisible(els.chartPicker, true);
+  for (const id of group.pages) {
+    const blob = await getImageBlob(id).catch(() => null);
+    const canvas = blob ? await canvasFromBlob(blob) : null;
+    if (!canvas) continue;
+    chartPicker.pages.push({ id, canvas, systems: findSystems(canvas), url: await imageUrlFor(id) });
+  }
+  renderChartPicker();
+}
+
+function renderChartPicker() {
+  const picker = chartPicker;
+  if (!picker) return;
+  const html = picker.pages.map((page, pageIndex) => {
+    const W = page.canvas.width;
+    const H = page.canvas.height;
+    const cells = page.systems.flatMap((system, systemIndex) => {
+      const edges = [Math.max(0, system.left - 70), ...system.bars];
+      return edges.slice(0, -1).map((edge, bar) => {
+        const picked = picker.choice && picker.choice.page === pageIndex && picker.choice.system === systemIndex;
+        const inRun = picked && bar >= picker.choice.bar && bar < picker.choice.bar + 4;
+        return `<button type="button" class="chart-picker__cell ${inRun ? "is-picked" : ""} ${picked && bar === picker.choice.bar ? "is-start" : ""}" data-pick="${pageIndex}:${systemIndex}:${bar}" aria-label="Start the preview at bar ${bar + 1} of line ${systemIndex + 1}" style="left:${(edge / W) * 100}%;top:${(system.top / H) * 100}%;width:${((edges[bar + 1] - edge) / W) * 100}%;height:${((system.bottom - system.top) / H) * 100}%"></button>`;
+      });
+    }).join("");
+    return `<div class="chart-picker__page"><img alt="Chart page ${pageIndex + 1}" src="${escapeAttribute(page.url || "")}">${cells}${page.systems.length ? "" : '<p class="chart-picker__note">No lines of music were found on this page.</p>'}</div>`;
+  }).join("");
+  els.chartPickerBody.innerHTML = html || '<p class="chart-picker__note">This chart could not be read.</p>';
+  els.chartPickerSave.disabled = !picker.choice;
+  els.chartPickerHint.textContent = picker.choice ? "Four bars from the highlighted bar will be the preview." : "Tap the bar where the preview should start.";
+}
+
+async function saveChartPicker() {
+  const picker = chartPicker;
+  const song = state.songs.find((item) => item.id === picker?.songId);
+  if (!picker?.choice || !song) return;
+  const page = picker.pages[picker.choice.page];
+  const system = page.systems[picker.choice.system];
+  els.chartPickerSave.disabled = true;
+  try {
+    await saveNotePreview(song, page.canvas, system, picker.choice.bar, picker.groupId);
+    song.updatedAt = new Date().toISOString();
+    persist();
+    closeChartPicker();
+    render();
+    showToast("Preview updated");
+  } catch {
+    showToast("The preview could not be saved");
+    els.chartPickerSave.disabled = false;
+  }
+}
+
+function closeChartPicker() {
+  chartPicker = null;
+  setElementVisible(els.chartPicker, false);
+}
+
+// ---------- wiring ----------
+
+function initNotePicturesUi() {
+  els.songNotesToggleBtn.addEventListener("click", () => { songView = songView === "notes" ? "lyrics" : "notes"; renderSong(); });
+  els.notePictureCameraBtn.addEventListener("click", () => els.notePictureCameraInput.click());
+  els.notePictureFileBtn.addEventListener("click", () => els.notePictureFileInput.click());
+  [els.notePictureCameraInput, els.notePictureFileInput].forEach((input) => input.addEventListener("change", () => {
+    addNotePictures(input.files);
+    input.value = "";
+  }));
+  els.notePdfBtn.addEventListener("click", () => els.notePdfInput.click());
+  els.notePdfInput.addEventListener("change", () => { addNotePdf(els.notePdfInput.files[0]); els.notePdfInput.value = ""; });
+  els.songNotesPages.addEventListener("click", (event) => {
+    const menu = event.target.closest("[data-chart-menu]");
+    if (menu) return showChartMenu(menu.dataset.chartMenu, menu);
+    const page = event.target.closest("[data-note-index]");
+    if (page) openNotesViewer(Number(page.dataset.noteIndex));
+  });
+  els.notesViewerPdf.addEventListener("click", openOriginalNotePdf);
+  els.notesViewerClose.addEventListener("click", closeNotesViewer);
+  els.notesViewerDelete.addEventListener("click", requestRemoveNotePicture);
+  els.notesViewerPages.addEventListener("scroll", updateNotesViewerCount, { passive: true });
+  els.chartPickerBody.addEventListener("click", (event) => {
+    const cell = event.target.closest("[data-pick]");
+    if (!cell || !chartPicker) return;
+    const [page, system, bar] = cell.dataset.pick.split(":").map(Number);
+    chartPicker.choice = { page, system, bar };
+    renderChartPicker();
+  });
+  els.chartPickerSave.addEventListener("click", saveChartPicker);
+  els.chartPickerCancel.addEventListener("click", closeChartPicker);
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (!els.chartPicker.hidden) closeChartPicker();
+    else if (!els.notesViewer.hidden) closeNotesViewer();
+  });
 }
 // Chord editor: place chords over the exact letter they belong to.
 //
@@ -13121,6 +13911,14 @@ function renderGigBuilder(gig) {
     gigKeyFilter = "";
     gigKeyFilterFor = gig.id;
   }
+  if (gigHidePlayedFor !== gig.id) {
+    gigHidePlayed = false;
+    gigHidePlayedFor = gig.id;
+  }
+  const playedTotal = state.gigSetItems.filter((item) => item.performanceStatus === "played" && state.gigSets.some((set) => set.id === item.setId && state.gigSections.some((section) => section.id === set.sectionId && section.gigId === gig.id))).length;
+  els.hidePlayedGigBtn.classList.toggle("hidden", !playedTotal && !gigHidePlayed);
+  els.clearPlayedGigBtn.classList.toggle("hidden", !playedTotal);
+  els.hidePlayedGigBtn.querySelector("span").textContent = gigHidePlayed ? "Show played songs" : "Hide played songs";
   els.gigKeyFilterBar.classList.toggle("hidden", !gigKeyFilter);
   els.gigKeyFilterLabel.textContent = compactKeyLabel(gigKeyFilter);
   els.gigDetailTitle.textContent = gigDisplayName(gig);
@@ -13163,7 +13961,7 @@ function renderGigBuilder(gig) {
   if (!gigStructureEditMode && !selectMode.active) {
     els.gigSectionList.querySelectorAll(".gig-song-swipe").forEach((wrap) => {
       const row = wrap.querySelector(".gig-song-reference");
-      if (row) wireSwipeAction(wrap, row, { label: "Remove", icon: "trash-2", danger: true, onTrigger: () => requestRemoveGigSong(row.dataset.gigSongRow) });
+      if (row) wireSwipeAction(wrap, row, { label: "Remove", icon: "trash-2", danger: true, onTrigger: () => requestRemoveGigSong(row.dataset.gigSongRow), right: { label: row.classList.contains("is-played") ? "Not played" : "Played", icon: row.classList.contains("is-played") ? "undo-2" : "check", onTrigger: () => toggleGigSongPlayed(row.dataset.gigSongRow) } });
     });
   }
   // Rows can be long-pressed into Select mode, except while Rearrange / Edit own the gesture.
@@ -13196,8 +13994,13 @@ function setGigKeyFilter(key) {
   render();
 }
 
+// View-only: hide the songs already played, per event, never saved.
+let gigHidePlayed = false;
+let gigHidePlayedFor = "";
+
 function gigSetItemsForDisplay(setId) {
-  const items = sortedGigSetItems(state.gigSetItems.filter((item) => item.setId === setId), setId);
+  let items = sortedGigSetItems(state.gigSetItems.filter((item) => item.setId === setId), setId);
+  if (gigHidePlayed && !gigStructureEditMode) items = items.filter((item) => item.performanceStatus !== "played");
   const query = normalizeComparisonText(state.gigNavigation.builderSearchQuery);
   if (!query && !gigKeyFilter) return items;
   const scope = state.gigNavigation.builderSearchSetId || "event";
@@ -13304,6 +14107,7 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
   const sets = allSets.filter((set) => !set.isDirect).sort((a, b) => a.position - b.position);
   const directItems = directSet ? gigSetItemsForDisplay(directSet.id) : [];
   const songCount = allSets.reduce((count, set) => count + state.gigSetItems.filter((item) => item.setId === set.id).length, 0);
+  const sectionPlayed = allSets.reduce((count, set) => count + state.gigSetItems.filter((item) => item.setId === set.id && item.performanceStatus === "played").length, 0);
   const collapsed = gigNavigationArray("collapsedSectionIds").includes(section.id);
   const searchActive = gigBuilderFilterActive();
   const visiblyExpanded = searchActive || !collapsed;
@@ -13318,7 +14122,7 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
       <span class="gig-order-number">${sectionIndex + 1}</span>
       <span class="slp-row__body">
         <span class="slp-row__title" dir="auto">${escapeHtml(section.name)}</span>
-        <span class="slp-row__subtitle">${sets.length ? `${sets.length} ${plural(sets.length, "list")} · ` : ""}${songCount} ${plural(songCount, "song")}</span>
+        <span class="slp-row__subtitle">${sets.length ? `${sets.length} ${plural(sets.length, "list")} · ` : ""}${songCount} ${plural(songCount, "song")}${sectionPlayed ? ` · ${sectionPlayed} played` : ""}</span>
       </span>
       ${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${addSongsBtn}${dragHandle}${manageActions}
     </div>
@@ -13357,9 +14161,9 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
     ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey && ownKey ? `${escapeHtml(compactKeyLabel(ownKey))} → ` : ""}${escapeHtml(compactKeyLabel(songKey))}</button>`
     : gigStructureEditMode ? `<button class="slp-badge--key empty" type="button" data-gig-item-edit="${item.id}" aria-label="Add a key or note">Key</button>` : "";
   const noteText = [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ");
-  const row = `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "16px" : "28px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
+  const row = `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${item.performanceStatus === "played" ? "is-played" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "16px" : "28px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
     ${selectMode.active ? selectCheckMarkup() : ""}
-    <span class="gig-song-number">${index + 1}</span>
+    ${item.performanceStatus === "played" ? `<i class="gig-played-tick" data-lucide="check" aria-label="Played"></i>` : `<span class="gig-song-number">${index + 1}</span>`}
     <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-song="${song.id}" data-open-gig-item="${item.id}">
       <span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span>
       <span class="slp-row__subtitle" dir="auto">${escapeHtml(song.artist || "Artist not added")}</span>
@@ -13809,6 +14613,32 @@ function addSongReferencesToGigSet(setId, songIds) {
   const additions = validSongIds.map((songId, index) => ({ id: makeId(), setId, songId, position: start + index, performanceStatus: "planned", keyOverride: "", transitionNote: "", gigNote: "", createdAt: now, updatedAt: now }));
   state.gigSetItems.push(...additions);
   return additions;
+}
+
+// Swipe right on a song: mark it played (it stays in place, dimmed) or undo that.
+function toggleGigSongPlayed(itemId) {
+  const item = state.gigSetItems.find((candidate) => candidate.id === itemId);
+  if (!item) return;
+  item.performanceStatus = item.performanceStatus === "played" ? "planned" : "played";
+  item.updatedAt = new Date().toISOString();
+  persist();
+  render();
+  showToast(item.performanceStatus === "played" ? "Marked as played" : "Marked as not played");
+}
+
+function requestClearPlayed() {
+  const gig = state.gigs.find((item) => item.id === state.gigNavigation.gigId);
+  if (!gig) return;
+  const setIds = new Set(state.gigSets.filter((set) => state.gigSections.some((section) => section.id === set.sectionId && section.gigId === gig.id)).map((set) => set.id));
+  const played = state.gigSetItems.filter((item) => setIds.has(item.setId) && item.performanceStatus === "played");
+  if (!played.length) return;
+  openConfirm("Clear played marks?", `Mark all ${played.length} songs in this event as not played again?`, "Clear marks", () => {
+    played.forEach((item) => { item.performanceStatus = "planned"; item.updatedAt = new Date().toISOString(); });
+    gigHidePlayed = false;
+    persist();
+    closeOverlays();
+    render();
+  });
 }
 
 function requestRemoveGigSong(itemId) {
@@ -14387,6 +15217,8 @@ function openGigSetListSheet() {
 }
 
 function initGigSideUi() {
+  els.hidePlayedGigBtn.addEventListener("click", () => { els.hidePlayedGigBtn.closest("details")?.removeAttribute("open"); gigHidePlayed = !gigHidePlayed; render(); });
+  els.clearPlayedGigBtn.addEventListener("click", () => { els.clearPlayedGigBtn.closest("details")?.removeAttribute("open"); requestClearPlayed(); });
   els.gigDetailsShareBtn.addEventListener("click", () => openGigShare());
   els.editGigMenuBtn.addEventListener("click", () => { els.editGigMenuBtn.closest("details")?.removeAttribute("open"); openEditGigForm(); });
   [els.gigItemNoteInput, els.gigItemTransitionInput].forEach((box) => box.addEventListener("input", () => growNoteBox(box)));
@@ -15428,11 +16260,13 @@ function parseCopiedJyricsPage() {
     ...genericDraft,
     ...jyricsDraft,
     title: jyricsDraft.title || genericDraft.title,
-    alternateTitles: jyricsDraft.alternateTitles.length ? jyricsDraft.alternateTitles : genericDraft.alternateTitles,
-    artist: jyricsDraft.artist || genericDraft.artist,
-    composer: jyricsDraft.composer || genericDraft.composer,
-    lyricist: jyricsDraft.lyricist || genericDraft.lyricist,
-    album: jyricsDraft.album || genericDraft.album,
+    // The Jyrics reader is the authority on the title, credits and album: a field it could not
+    // find stays empty (shown as "Not found") rather than being guessed from a random line.
+    alternateTitles: jyricsDraft.alternateTitles,
+    artist: jyricsDraft.artist,
+    composer: jyricsDraft.composer,
+    lyricist: jyricsDraft.lyricist,
+    album: jyricsDraft.album,
     lyrics: jyricsDraft.lyrics || genericDraft.lyrics,
     language: jyricsDraft.language || genericDraft.language,
     sourceUrl: sourceUrl || jyricsDraft.sourceUrl || genericDraft.sourceUrl,
@@ -15494,34 +16328,84 @@ function parseJyricsHtml(html, sourceUrl) {
   return parseJyricsPageText(documentPage.body?.innerText || documentPage.body?.textContent || "", heading, sourceUrl);
 }
 
+// The credit line Jyrics prints under the heading: "TITLE- Artist & Artist- Composed by Name,
+// Lyrics by Name- Album". The pieces are separated by "- " (a hyphen then a space, or a hyphen at
+// the end), so a hyphen inside a name ("Ben-David") is left alone. Older pages put the
+// "Composed by ..." part on its own line, and the album is often missing.
+function parseJyricsCreditLine(lines, titleKey) {
+  const clean = (value) => String(value || "").replace(/[^\p{L}\p{N}]+/gu, " ").trim().toLocaleLowerCase();
+  const splitParts = (line) => line.split(/-(?:\s+|$)/).map((part) => part.trim()).filter(Boolean);
+  const looksLikeCredit = (line) => /^[^\n]{1,160}?-\s+\S/.test(line) && !/^(?:Artists?|Album|Genres?|Composer)\s*:/i.test(line);
+  let index = lines.findIndex((line) => looksLikeCredit(line) && titleKey && clean(splitParts(line)[0]) === titleKey);
+  if (index < 0) index = lines.findIndex((line) => looksLikeCredit(line) && /\bComposed by\b/i.test(line));
+  if (index < 0) index = lines.findIndex((line) => /^[A-Z0-9 '’&.!?,]{3,}-\s/.test(line) && splitParts(line).length >= 2);
+  if (index < 0) return null;
+  let parts = splitParts(lines[index]);
+  if (!parts.some((part) => /^Composed by\b/i.test(part)) && /^Composed by\b/i.test(lines[index + 1] || "")) {
+    parts = [...parts, ...splitParts(lines[index + 1])];
+  }
+  const creditIndex = parts.findIndex((part) => /^(?:Composed|Written|Music) by\b/i.test(part));
+  const artistsText = parts[1] && parts.indexOf(parts[1]) !== creditIndex ? parts[1] : "";
+  let composer = "";
+  let lyricist = "";
+  let album = "";
+  if (creditIndex >= 0) {
+    const credit = parts[creditIndex].replace(/^(?:Composed|Written|Music) by\s*/i, "");
+    [composer = "", lyricist = ""] = credit.split(/,?\s*Lyrics by\s*/i);
+    const rest = parts.slice(creditIndex + 1);
+    const lyricsPart = rest.findIndex((part) => /^Lyrics by\b/i.test(part));
+    if (lyricsPart >= 0) lyricist = lyricist || rest[lyricsPart].replace(/^Lyrics by\s*/i, "");
+    album = rest.filter((part, i) => i !== lyricsPart && !/^Lyrics by\b/i.test(part)).join(" - ");
+  }
+  return { index: index + (creditIndex >= 0 && !/Composed by/i.test(lines[index]) ? 1 : 0), title: parts[0] || "", artistsText, composer: composer.trim(), lyricist: lyricist.trim(), album: album.trim() };
+}
+
+// ALL-CAPS Latin titles from the credit line become ordinary capitals ("KOL DODI" -> "Kol Dodi").
+function jyricsTitleCase(value) {
+  const text = String(value || "").trim();
+  return /[a-z]/.test(text) || !/[A-Z]/.test(text) ? text : text.toLocaleLowerCase().replace(/(^|[\s'’(-])([a-z])/g, (match, lead, letter) => `${lead}${letter.toLocaleUpperCase()}`);
+}
+
+const JYRICS_MENU_LINES = /^(?:Search in Hebrew and English|Explore Here|ALL|ALL Lyrics Albums Artists|Lyrics|Albums|Artists|LYRIC|Print|LOG IN SIGN UP|LOG IN|SIGN UP|Related Lyrics|HOME|SONGS|ARTISTS|ALBUMS|SETLISTS|COMPOSERS|GENRES|CONTACT)$/i;
+
 function parseJyricsPageText(pageText, heading = "", sourceUrl = "") {
   const text = String(pageText || "").replace(/\r\n?/g, "\n").replace(/\u00a0/g, " ");
   const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
   const inferredTitle = lines.find((line, index) => /Search in Hebrew and English/i.test(lines[index + 1] || ""))
-    || lines.find((line) => /\s[–—]\s/.test(line) && !/Composer|Lyrics by/i.test(line))
+    || lines.find((line) => /\s[–—]\s/.test(line) && !/Composer|Lyrics by|Composed by/i.test(line) && !JYRICS_MENU_LINES.test(line))
     || lines.find((line) => /^[A-Z0-9 '’]+-/.test(line))?.split(/-\s*/)[0]
     || "";
-  const title = String(heading || inferredTitle).replace(/^Jyrics\s*/i, "").trim();
+  let title = String(heading || inferredTitle).replace(/^Jyrics\s*/i, "").trim();
+  const titleKey = String(title.split(/\s+[–—]\s+/)[0] || "").replace(/[^\p{L}\p{N}]+/gu, " ").trim().toLocaleLowerCase();
+  const credit = parseJyricsCreditLine(lines, titleKey);
+  if (!title && credit?.title) title = credit.title;
+  title = jyricsTitleCase(title);
   const metaValue = (label) => {
     const nextLabel = String.raw`(?:Artists?|Album|Genres?|Composer)`;
     const pattern = new RegExp(`${label}\\s*:\\s*(.*?)(?=\\s+${nextLabel}\\s*:|$)`, "i");
     return lines.map((line) => line.match(pattern)).find(Boolean)?.[1]?.trim() || "";
   };
-  const artistsText = metaValue("Artists?");
-  const artists = artistsText.split(/\s*,\s*|\s+ft\.?\s+/i).map((value) => value.trim()).filter(Boolean);
-  const album = metaValue("Album");
+  // The labelled block at the bottom of the page is exact, so it wins; the credit line fills in
+  // what it left out (a partial copy often has only the credit line).
+  const artistsText = metaValue("Artists?") || credit?.artistsText || "";
+  const artists = artistsText.split(/\s*,\s*|\s+&\s+|\s+ft\.?\s+/i).map((value) => value.trim()).filter(Boolean);
+  const album = metaValue("Album") || credit?.album || "";
   const genresText = metaValue("Genres?");
   const bpm = genresText.match(/Tempo\s*(\d{2,3})/i)?.[1] || "";
-  const style = genresText.split(/-\s*Tempo/i)[0].trim();
+  const timeSignature = genresText.match(/(?:^|[\s,-])(\d{1,2}\/\d{1,2})(?=$|[\s,-])/)?.[1] || "";
+  const style = genresText.split(/-\s*Tempo/i)[0].replace(/(?:^|[\s,-])\d{1,2}\/\d{1,2}(?=$|[\s,-])/, " ").replace(/\s+/g, " ").trim().replace(/^[-,\s]+|[-,\s]+$/g, "");
   const language = ["English", "Hebrew", "Yiddish"].filter((name) => new RegExp(`\\b${name}\\b`, "i").test(genresText)).join(" / ");
-  const credits = metaValue("Composer");
-  const [composer = "", lyricist = ""] = credits.split(/,?\s*Lyrics by\s*/i);
+  const labelledCredits = metaValue("Composer");
+  const [labelledComposer = "", labelledLyricist = ""] = labelledCredits.split(/,?\s*Lyrics by\s*/i);
+  const composer = labelledComposer.trim() || credit?.composer || "";
+  const lyricist = labelledLyricist.trim() || credit?.lyricist || "";
   const printIndex = lines.findIndex((line) => /^Print$/i.test(line));
   const titleIndex = lines.indexOf(inferredTitle);
-  const lyricStart = printIndex >= 0 ? printIndex + 1 : titleIndex >= 0 ? titleIndex + 1 : 0;
+  let lyricStart = printIndex >= 0 ? printIndex + 1 : titleIndex >= 0 ? titleIndex + 1 : 0;
+  if (credit && credit.index + 1 > lyricStart) lyricStart = credit.index + 1;
   const metadataIndex = lines.findIndex((line, index) => index >= lyricStart && /(?:Artists?|Album|Genres?|Composer)\s*:|^Related Lyrics$/i.test(line));
   const lyricEnd = metadataIndex >= 0 ? metadataIndex : lines.length;
-  let lyricLines = lines.slice(lyricStart, lyricEnd).filter((line) => !/^(?:Search in Hebrew and English|Explore Here|ALL|Lyrics|Albums|Artists|LYRIC|Print)$/i.test(line));
+  let lyricLines = lines.slice(lyricStart, lyricEnd).filter((line) => !JYRICS_MENU_LINES.test(line));
   while (lyricLines[0] && (/Composed by|Lyrics by/i.test(lyricLines[0]) || /^[A-Z0-9 '’]+-/.test(lyricLines[0]) || /^[A-Z\s'’&-]{8,}$/.test(lyricLines[0]))) lyricLines.shift();
   while (lyricLines.length && isLikelyJyricsSuggestion(lyricLines[lyricLines.length - 1])) lyricLines.pop();
   const titleParts = title.split(/\s+[–—]\s+/).map((value) => value.trim()).filter(Boolean);
@@ -15531,10 +16415,11 @@ function parseJyricsPageText(pageText, heading = "", sourceUrl = "") {
     alternateTitles: titleParts,
     artist: artists[0] || "",
     featuredArtist: artists.slice(1).join(", "),
-    composer: composer.trim(),
-    lyricist: lyricist.trim(),
+    composer,
+    lyricist,
     album,
     style,
+    timeSignature,
     bpm,
     language,
     lyrics: lyricLines.join("\n").trim(),
@@ -16165,6 +17050,7 @@ function makeImportCandidate(source) {
     lyricist: String(source.lyricist || "").trim(),
     album: String(source.album || "").trim(),
     style: String(source.style || source.genre || "").trim(),
+    timeSignature: String(source.timeSignature || "").trim(),
     bpm: String(source.bpm || "").trim(),
     language: String(source.language || "").trim(),
     sourceUrl: String(source.sourceUrl || "").trim(),
@@ -16627,6 +17513,7 @@ function importSelectedSongs() {
     lyricist: candidate.lyricist.trim(),
     album: candidate.album.trim(),
     style: candidate.style.trim(),
+    timeSignature: String(candidate.timeSignature || "").trim(),
     bpm: candidate.bpm ? clamp(Number(candidate.bpm), 20, 300) : "",
     language: candidate.language.trim(),
     importSourceUrl: /^https?:\/\//i.test(candidate.sourceUrl.trim()) ? candidate.sourceUrl.trim() : "",
@@ -17886,14 +18773,20 @@ function gigDragRowSelector(type) {
 // Drag a row sideways (touch or mouse) to reveal an action behind it; past the threshold the
 // action runs and the row springs back. The row keeps vertical scrolling, and a swipe never
 // counts as a tap. ArrowLeft on a focused row does the same thing for keyboard users.
-function wireSwipeAction(item, row, { label, icon, onTrigger, danger = false }) {
+function wireSwipeAction(item, row, { label, icon, onTrigger, danger = false, right = null }) {
   // Needs pointer events (every current phone and desktop browser has them).
   if (!globalThis.PointerEvent) return;
-  const reveal = document.createElement("div");
-  reveal.className = `swipe-action${danger ? " swipe-action--danger" : ""}`;
-  reveal.setAttribute("aria-hidden", "true");
-  reveal.innerHTML = `<i data-lucide="${icon}"></i><span>${escapeHtml(label)}</span>`;
-  item.prepend(reveal);
+  // `right` adds a second action for a swipe to the right (for example "Played"); the left swipe
+  // keeps its own action.
+  const makeReveal = (action, side, isDanger) => {
+    const node = document.createElement("div");
+    node.className = `swipe-action swipe-action--${side}${isDanger ? " swipe-action--danger" : ""}`;
+    node.setAttribute("aria-hidden", "true");
+    node.innerHTML = `<i data-lucide="${action.icon}"></i><span>${escapeHtml(action.label)}</span>`;
+    item.prepend(node);
+    return node;
+  };
+  const reveals = { left: makeReveal({ label, icon }, "left", danger), right: right ? makeReveal(right, "right", false) : null };
   item.classList.add("swipeable");
   const THRESHOLD = 72;
   const LIMIT = 132;
@@ -17903,11 +18796,12 @@ function wireSwipeAction(item, row, { label, icon, onTrigger, danger = false }) 
   let swiping = false;
   let active = false;
   let swallowClick = false;
+  let side = "left";
 
   const settle = () => {
     row.style.transition = "transform 180ms cubic-bezier(.2,.8,.2,1)";
     row.style.transform = "";
-    reveal.style.opacity = "0";
+    Object.values(reveals).forEach((node) => { if (node) node.style.opacity = "0"; });
     setTimeout(() => { row.style.transition = ""; }, 200);
   };
   row.addEventListener("pointerdown", (event) => {
@@ -17924,14 +18818,17 @@ function wireSwipeAction(item, row, { label, icon, onTrigger, danger = false }) 
     const moveY = event.clientY - startY;
     if (!swiping) {
       if (Math.abs(moveY) > 12 && Math.abs(moveY) > Math.abs(moveX)) { active = false; return; }
-      if (moveX > -10 || Math.abs(moveX) < Math.abs(moveY) * 1.5) return;
+      if (Math.abs(moveX) < 10 || Math.abs(moveX) < Math.abs(moveY) * 1.5) return;
+      if (moveX > 0 && !reveals.right) return;
+      side = moveX < 0 ? "left" : "right";
       swiping = true;
       row.setPointerCapture?.(event.pointerId);
       row.style.transition = "none";
       row.classList.add("swiping");
     }
-    dx = Math.max(-LIMIT, Math.min(0, moveX));
+    dx = side === "left" ? Math.max(-LIMIT, Math.min(0, moveX)) : Math.min(LIMIT, Math.max(0, moveX));
     row.style.transform = `translateX(${dx}px)`;
+    const reveal = reveals[side];
     reveal.style.opacity = String(Math.min(1, Math.abs(dx) / THRESHOLD));
     reveal.classList.toggle("armed", Math.abs(dx) >= THRESHOLD);
   });
@@ -17943,10 +18840,10 @@ function wireSwipeAction(item, row, { label, icon, onTrigger, danger = false }) 
     swallowClick = true;
     setTimeout(() => { swallowClick = false; }, 60);
     row.classList.remove("swiping");
-    reveal.classList.remove("armed");
+    Object.values(reveals).forEach((node) => node?.classList.remove("armed"));
     const fire = !cancelled && Math.abs(dx) >= THRESHOLD;
     settle();
-    if (fire) onTrigger();
+    if (fire) (side === "left" ? onTrigger : right.onTrigger)();
   };
   row.addEventListener("pointerup", () => end(false));
   row.addEventListener("pointercancel", () => end(true));
@@ -17956,9 +18853,13 @@ function wireSwipeAction(item, row, { label, icon, onTrigger, danger = false }) 
     event.preventDefault();
   }, true);
   row.addEventListener("keydown", (event) => {
-    if (event.target === row && event.key === "ArrowLeft") {
+    if (event.target !== row) return;
+    if (event.key === "ArrowLeft") {
       event.preventDefault();
       onTrigger();
+    } else if (event.key === "ArrowRight" && right) {
+      event.preventDefault();
+      right.onTrigger();
     }
   });
 }
@@ -19267,6 +20168,7 @@ initQuickAddUi();
 initBoardUi();
   initScreenTier();
   initGigSideUi();
+  initNotePicturesUi();
   initBoardPosBar();
   initBoardNewUi();
   initBoardResizer();
