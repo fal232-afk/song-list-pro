@@ -2709,6 +2709,88 @@ textarea.slp-input { resize: vertical; }
    so the Settings drawer was permanently open. */
 .tool-details[hidden] { display: none; }
 
+/* Chord Lab: chord-type chips, note tiles, one-octave display keyboard, progression slots. */
+.chord-types { display: flex; gap: var(--space-3); overflow-x: auto; scrollbar-width: none; padding-block: var(--space-1); }
+.chord-types::-webkit-scrollbar { display: none; }
+.chord-types--wrap, .chord-modes { flex-wrap: wrap; overflow: visible; }
+.chord-modes { display: flex; gap: var(--space-3); }
+.chord-type {
+  flex: 0 0 auto;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 52px;
+  padding: 0 var(--space-6);
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-chip-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+.chord-type small { color: var(--color-text-secondary); font-size: var(--text-xs); font-weight: var(--font-weight-regular, 400); }
+.chord-type.selected { background: var(--accent-soft, var(--color-chip-bg)); box-shadow: inset 0 0 0 2px var(--accent); color: var(--accent); }
+.chord-type.selected small { color: var(--accent); }
+.chord-notes { display: flex; justify-content: center; gap: var(--space-4); flex-wrap: wrap; }
+.chord-note {
+  display: grid;
+  place-items: center;
+  min-width: 56px;
+  min-height: 56px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-chip-bg);
+}
+.chord-note strong { font-size: var(--text-xl); }
+.chord-note span { color: var(--color-text-secondary); font-size: var(--text-xs); }
+.chord-keyboard { position: relative; display: flex; height: 120px; }
+.chord-key--white {
+  flex: 1 1 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0 0 var(--radius-md, 6px) var(--radius-md, 6px);
+  background: #fff;
+}
+.chord-key--black {
+  position: absolute;
+  top: 0;
+  left: calc(var(--after) * 100% / var(--whites));
+  width: calc(100% / var(--whites) * 0.6);
+  height: 62%;
+  transform: translateX(-50%);
+  border-radius: 0 0 4px 4px;
+  background: #1c2230;
+}
+.chord-key--white.lit { background: color-mix(in srgb, var(--accent) 35%, #fff); }
+.chord-key--black.lit { background: var(--accent); }
+.chord-slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); direction: ltr; }
+.chord-slot {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 64px;
+  padding: var(--space-3) 0;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-chip-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  cursor: pointer;
+}
+.chord-slot strong { font-size: var(--text-lg); }
+.chord-slot span { color: var(--color-text-secondary); font-size: var(--text-xs); }
+.chord-slot.picked { box-shadow: inset 0 0 0 2px var(--accent); }
+.chord-slot.playing { background: color-mix(in srgb, var(--accent) 22%, var(--color-chip-bg)); }
+.chord-slot--add { color: var(--accent); background: transparent; box-shadow: inset 0 0 0 1px var(--color-border); }
+.chord-slot--add svg { width: 22px; height: 22px; }
+.chord-tempo-value { text-align: center; color: var(--color-text-secondary); font-size: var(--text-md); font-variant-numeric: tabular-nums; }
+.chord-slot { min-width: 0; padding-inline: var(--space-2); text-align: center; }
+.chord-slot strong { max-width: 100%; font-size: var(--text-md); overflow-wrap: anywhere; line-height: 1.15; }
+.chord-slot span { max-width: 100%; overflow-wrap: anywhere; }
+
 }
 @layer product {
 /* Song List Pro — Component Patterns
@@ -8486,6 +8568,42 @@ Object.assign(HEBREW_UI, {
  "Expand lyrics panel": "הרחבת לוח המילים",
  "Language": "שפה"
 });
+
+Object.assign(HEBREW_UI, {
+ "Chord Lab": "מעבדת אקורדים",
+ "See and hear chords, and try a progression.": "לראות ולשמוע אקורדים, ולנסות מהלך אקורדים.",
+ "Chord": "אקורד",
+ "Progression": "מהלך אקורדים",
+ "Root": "צליל יסוד",
+ "Chord type": "סוג אקורד",
+ "Add a chord": "הוספת אקורד",
+ "Change this chord": "החלפת האקורד הזה",
+ "Remove this chord": "הסרת האקורד הזה",
+ "Triads": "משולשים",
+ "7ths": "ספטימות",
+ "Major": "מז׳ור",
+ "Minor": "מינור",
+ "Dorian": "דורי",
+ "Freygish": "פרייגיש",
+ "Mi Sheberach": "מי שברך",
+ "Slower": "איטי יותר",
+ "Faster": "מהיר יותר",
+ "Tempo in beats per minute": "טמפו בפעמות לדקה"
+});
+
+Object.assign(HEBREW_UI, {
+ "Any chord": "כל אקורד",
+ "Pick any root and type": "בחירת צליל יסוד וסוג חופשיים",
+ "Bass note": "צליל בס",
+ "Same as root": "כמו צליל היסוד",
+ "Basic": "בסיסיים",
+ "9ths": "נונות",
+ "Altered": "משתנים",
+ "11 · 13": "11 · 13",
+ "Piano": "פסנתר",
+ "Guitar": "גיטרה",
+ "Organ": "עוגב"
+});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -10813,7 +10931,7 @@ function setBoardZoom(out, focusColumnId = "") {
   refreshIcons();
   if (!out && focusColumnId) {
     const column = [...els.boardColumns.querySelectorAll(".board-col")].find((node) => node.dataset.colId === focusColumnId);
-    if (column) els.boardColumns.scrollLeft = Math.max(0, column.offsetLeft - 16);
+    if (column) boardScrollToColumnEl(column);
     boardState.scrollX = els.boardColumns.scrollLeft;
   }
   if (out && !boardPrefs.zoomHintSeen) {
@@ -10984,15 +11102,33 @@ function boardColumnEls() {
   return [...els.boardColumns.querySelectorAll(":scope > .board-col")];
 }
 
-// The column whose left edge is nearest the scroll position.
+// The columns start on the left in English and on the right in Hebrew, and the scroll position counts
+// the other way round there. These helpers measure where the columns really are on screen instead.
+function boardColumnsAreRtl() {
+  return getComputedStyle(els.boardColumns).direction === "rtl";
+}
+
+// How far a column's starting edge sits from the starting edge of the strip (16px of padding is normal).
+function boardColumnOffset(col) {
+  const strip = els.boardColumns.getBoundingClientRect();
+  const box = col.getBoundingClientRect();
+  return boardColumnsAreRtl() ? strip.right - box.right : box.left - strip.left;
+}
+
+// Scrolls so the column's starting edge sits just inside the strip's starting edge.
+function boardScrollToColumnEl(col) {
+  const offset = boardColumnOffset(col) - 16;
+  els.boardColumns.scrollLeft += boardColumnsAreRtl() ? -offset : offset;
+}
+
+// The column whose starting edge is nearest the starting edge of the strip.
 function boardCurrentColumnIndex() {
   const cols = boardColumnEls();
   if (!cols.length) return -1;
-  const x = els.boardColumns.scrollLeft;
   let best = 0;
   let bestDist = Infinity;
   cols.forEach((col, index) => {
-    const dist = Math.abs(col.offsetLeft - 16 - x);
+    const dist = Math.abs(boardColumnOffset(col) - 16);
     if (dist < bestDist) { best = index; bestDist = dist; }
   });
   return best;
@@ -11019,7 +11155,7 @@ function updateBoardPosBar() {
   if (cols.length < 2) return;
   const index = Math.max(0, boardCurrentColumnIndex());
   els.boardPosName.textContent = boardColumnLabel(cols[index]);
-  els.boardPosCount.textContent = `${index + 1} of ${cols.length}`;
+  els.boardPosCount.textContent = t(`${index + 1} of ${cols.length}`);
   els.boardPosBar.setAttribute("aria-valuenow", String(index + 1));
   els.boardPosTicks.querySelectorAll("i").forEach((tick, i) => tick.classList.toggle("is-current", i === index));
 }
@@ -11027,7 +11163,7 @@ function updateBoardPosBar() {
 function boardJumpToColumn(index) {
   const col = boardColumnEls()[index];
   if (!col) return;
-  els.boardColumns.scrollLeft = Math.max(0, col.offsetLeft - 16);
+  boardScrollToColumnEl(col);
   updateBoardPosBar();
 }
 
@@ -11037,7 +11173,9 @@ function initBoardPosBar() {
   const indexAt = (clientX) => {
     const rect = ticks.getBoundingClientRect();
     const count = boardColumnEls().length;
-    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / Math.max(1, rect.width)));
+    // The first tick is on the right in Hebrew, so the finger's distance is measured from that side.
+    const from = boardColumnsAreRtl() ? rect.right - clientX : clientX - rect.left;
+    const ratio = Math.min(1, Math.max(0, from / Math.max(1, rect.width)));
     return Math.min(count - 1, Math.floor(ratio * count));
   };
   const move = (event) => {
@@ -15882,7 +16020,7 @@ function currentAppearanceDraft() {
   };
 }
 
-function showSettingsMain(title = "Settings & Backup") {
+function showSettingsMain(title = t("Settings & Backup")) {
   els.app?.classList.remove("context-editor-open");
   els.settingsMainView.classList.remove("hidden");
   els.appearanceSettingsView.classList.add("hidden");
@@ -19829,6 +19967,231 @@ function importSelectedSongs() {
   render();
   showToast(importMode === "paste" ? "Song imported" : `${imported.length} ${plural(imported.length, "song")} imported`);
 }
+// Instrument sounds for the Tools. No sample files: each note is computed on the fly from a
+// small physical model, so the sounds work offline and add no download weight.
+//   piano       additive partials that are slightly out of tune (like real strings), each
+//               fading at its own rate, two strings beating, plus a soft hammer thump
+//   guitar      a plucked string (Karplus-Strong loop) shaped by a small wooden-body resonance
+// The renderers are plain functions of (sampleRate, frequency, seconds) so they can be
+// tested outside a browser. Results are cached per note.
+
+const INSTRUMENTS = [["piano", "Piano"], ["guitar", "Guitar"], ["organ", "Organ"], ["triangle", "Soft"]];
+const SAMPLED_INSTRUMENTS = ["piano", "guitar"];
+
+function instrumentNoise(seed) {
+  let state = seed >>> 0 || 1;
+  return () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 2147483648 - 1;
+  };
+}
+
+function instrumentNormalize(data, peak = 0.9) {
+  let max = 0;
+  for (let index = 0; index < data.length; index += 1) max = Math.max(max, Math.abs(data[index]));
+  if (!max) return data;
+  const scale = peak / max;
+  for (let index = 0; index < data.length; index += 1) data[index] *= scale;
+  return data;
+}
+
+function instrumentFadeTail(data, fadeSeconds, sampleRate) {
+  const fade = Math.min(data.length, Math.floor(fadeSeconds * sampleRate));
+  for (let index = 0; index < fade; index += 1) data[data.length - 1 - index] *= index / fade;
+  return data;
+}
+
+function renderPianoNote(sampleRate, frequency, seconds = 3.6) {
+  const length = Math.floor(sampleRate * seconds);
+  const data = new Float32Array(length);
+  const inharmonicity = 0.00012 * (1 + Math.pow(frequency / 450, 2));
+  const partialCount = Math.max(4, Math.min(14, Math.floor(Math.min(9500, sampleRate * 0.45) / frequency)));
+  const baseDecay = Math.max(1.1, Math.min(7, 5.2 * Math.pow(261 / frequency, 0.55)));
+  for (let n = 1; n <= partialCount; n += 1) {
+    const partial = frequency * n * Math.sqrt(1 + inharmonicity * n * n);
+    if (partial > sampleRate * 0.45) break;
+    const strike = 0.35 + Math.abs(Math.sin(Math.PI * n * 0.125));
+    const amplitude = strike * Math.pow(n, -0.85) * Math.exp(-n * frequency / 9000);
+    const tau = baseDecay / (1 + 0.55 * (n - 1));
+    // Two strings per note, a hair apart: a slow beat that makes the sound feel alive.
+    const beatHz = Math.min(2.4, partial * 0.0009);
+    const w = (2 * Math.PI * partial) / sampleRate;
+    const wBeat = (2 * Math.PI * beatHz) / sampleRate;
+    const rc = Math.cos(w);
+    const rs = Math.sin(w);
+    const bc = Math.cos(wBeat);
+    const bs = Math.sin(wBeat);
+    let cosP = 1;
+    let sinP = 0;
+    let cosB = 1;
+    let sinB = 0;
+    const fast = Math.exp(-1 / (sampleRate * tau * 0.16));
+    const slow = Math.exp(-1 / (sampleRate * tau));
+    let fastEnv = 0.36;
+    let slowEnv = 0.64;
+    for (let index = 0; index < length; index += 1) {
+      data[index] += amplitude * (fastEnv + slowEnv) * sinP * (0.72 + 0.28 * cosB);
+      const nextCos = cosP * rc - sinP * rs;
+      sinP = sinP * rc + cosP * rs;
+      cosP = nextCos;
+      const nextCosB = cosB * bc - sinB * bs;
+      sinB = sinB * bc + cosB * bs;
+      cosB = nextCosB;
+      fastEnv *= fast;
+      slowEnv *= slow;
+      if ((index & 1023) === 1023) {
+        const norm = Math.hypot(cosP, sinP);
+        cosP /= norm;
+        sinP /= norm;
+        const normB = Math.hypot(cosB, sinB);
+        cosB /= normB;
+        sinB /= normB;
+      }
+    }
+  }
+  // Hammer thump: a few milliseconds of softened noise at the very start.
+  const noise = instrumentNoise(Math.floor(frequency * 7) + 11);
+  const thump = Math.floor(sampleRate * 0.014);
+  const thumpLevel = 0.22 * Math.min(1, 300 / frequency);
+  let softened = 0;
+  for (let index = 0; index < thump; index += 1) {
+    softened += 0.35 * (noise() - softened);
+    data[index] += thumpLevel * softened * (1 - index / thump) * 2;
+  }
+  // The sound mellows as it rings: a gentle low-pass that closes slowly.
+  let state = 0;
+  for (let index = 0; index < length; index += 1) {
+    const cutoff = Math.max(3200, 11000 - (index / sampleRate) * 2400);
+    const a = 1 - Math.exp((-2 * Math.PI * cutoff) / sampleRate);
+    state += a * (data[index] - state);
+    data[index] = state;
+  }
+  const attack = Math.floor(sampleRate * 0.003);
+  for (let index = 0; index < attack; index += 1) data[index] *= index / attack;
+  return instrumentFadeTail(instrumentNormalize(data), 0.25, sampleRate);
+}
+
+function instrumentBiquadPeak(data, sampleRate, centerHz, q, gainDb) {
+  const a = Math.pow(10, gainDb / 40);
+  const w0 = (2 * Math.PI * centerHz) / sampleRate;
+  const alpha = Math.sin(w0) / (2 * q);
+  const b0 = 1 + alpha * a;
+  const b1 = -2 * Math.cos(w0);
+  const b2 = 1 - alpha * a;
+  const a0 = 1 + alpha / a;
+  const a2 = 1 - alpha / a;
+  let x1 = 0;
+  let x2 = 0;
+  let y1 = 0;
+  let y2 = 0;
+  for (let index = 0; index < data.length; index += 1) {
+    const x = data[index];
+    const y = (b0 * x + b1 * x1 + b2 * x2 - b1 * y1 - a2 * y2) / a0;
+    x2 = x1; x1 = x; y2 = y1; y1 = y;
+    data[index] = y;
+  }
+}
+
+function renderGuitarNote(sampleRate, frequency, seconds = 3.4) {
+  const length = Math.floor(sampleRate * seconds);
+  const data = new Float32Array(length);
+  const period = sampleRate / frequency;
+  const delay = Math.max(2, Math.floor(period - 0.5));
+  const fraction = period - 0.5 - delay;
+  const eta = (1 - fraction) / (1 + fraction);
+  const t60 = Math.max(1.6, Math.min(5, 4 * Math.pow(110 / frequency, 0.3)));
+  const loopGain = Math.exp(-6.9 / (t60 * frequency));
+  const line = new Float32Array(delay);
+  // The pluck: noise, softened, with a comb that mimics picking near the bridge.
+  const noise = instrumentNoise(Math.floor(frequency * 13) + 5);
+  let soft = 0;
+  for (let index = 0; index < delay; index += 1) {
+    soft += 0.85 * (noise() - soft);
+    line[index] = soft;
+  }
+  const pickAt = Math.max(1, Math.floor(delay * 0.14));
+  const shaped = new Float32Array(delay);
+  for (let index = 0; index < delay; index += 1) shaped[index] = line[index] - line[(index - pickAt + delay) % delay] * 0.9;
+  line.set(shaped);
+  let last = 0;
+  let apIn = 0;
+  let apOut = 0;
+  let position = 0;
+  for (let index = 0; index < length; index += 1) {
+    const out = line[position];
+    data[index] = out;
+    const averaged = 0.46 * out + 0.46 * last + 0.08 * out;
+    last = out;
+    const tuned = eta * averaged + apIn - eta * apOut;
+    apIn = averaged;
+    apOut = tuned;
+    line[position] = tuned * loopGain;
+    position = position + 1 === delay ? 0 : position + 1;
+  }
+  // A guitar's body adds warmth at the low end and a little presence higher up.
+  instrumentBiquadPeak(data, sampleRate, 98, 6, 7);
+  instrumentBiquadPeak(data, sampleRate, 205, 5, 5);
+  instrumentBiquadPeak(data, sampleRate, 410, 3, 3);
+  instrumentBiquadPeak(data, sampleRate, 3200, 1.2, 4);
+  // The pick: a tiny click at the start.
+  const click = Math.floor(sampleRate * 0.004);
+  const clickNoise = instrumentNoise(Math.floor(frequency * 3) + 99);
+  for (let index = 0; index < click; index += 1) data[index] += 0.35 * clickNoise() * (1 - index / click);
+  const attack = Math.floor(sampleRate * 0.0015);
+  for (let index = 0; index < attack; index += 1) data[index] *= index / attack;
+  return instrumentFadeTail(instrumentNormalize(data), 0.2, sampleRate);
+}
+
+const INSTRUMENT_RENDERERS = { piano: renderPianoNote, guitar: renderGuitarNote };
+const instrumentCache = new Map();
+
+function instrumentBuffer(context, instrument, frequency) {
+  const key = `${instrument}:${context.sampleRate}:${frequency.toFixed(2)}`;
+  const cached = instrumentCache.get(key);
+  if (cached) {
+    instrumentCache.delete(key);
+    instrumentCache.set(key, cached);
+    return cached;
+  }
+  const samples = INSTRUMENT_RENDERERS[instrument](context.sampleRate, frequency);
+  const buffer = context.createBuffer(1, samples.length, context.sampleRate);
+  buffer.getChannelData(0).set(samples);
+  instrumentCache.set(key, buffer);
+  if (instrumentCache.size > 40) instrumentCache.delete(instrumentCache.keys().next().value);
+  return buffer;
+}
+
+// Same voice shape as startToolTone: { setFrequency, stop }, registered in toolVoices.
+function startInstrumentVoice(context, instrument, frequency, level) {
+  const source = context.createBufferSource();
+  source.buffer = instrumentBuffer(context, instrument, frequency);
+  const gain = context.createGain();
+  gain.gain.value = level * 1.6;
+  source.connect(gain);
+  gain.connect(toolOutput(context));
+  source.start();
+  const voice = {
+    setFrequency(next) { source.playbackRate.setTargetAtTime(next / frequency, context.currentTime, 0.02); },
+    stop() {
+      const now = context.currentTime;
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(gain.gain.value, now);
+      gain.gain.setTargetAtTime(0, now, 0.09);
+      try { source.stop(now + 0.6); } catch { /* already stopped */ }
+      toolVoices = toolVoices.filter((item) => item !== voice);
+    }
+  };
+  source.onended = () => { toolVoices = toolVoices.filter((item) => item !== voice); };
+  toolVoices.push(voice);
+  return voice;
+}
+
+// An organ-ish tone: a few harmonics at drawbar-like strengths on one oscillator.
+function organWave(context) {
+  const real = new Float32Array([0, 1, 0.75, 0.5, 0.45, 0, 0.3, 0, 0.22]);
+  const imag = new Float32Array(real.length);
+  return context.createPeriodicWave(real, imag);
+}
 // Tools (design rationale "Phase 2 -- Tools"): a hub of peer utilities, each built on
 // one shared chassis -- header, hero readout, grouped control cards, and one
 // persistent circular transport button. All sound is synthesized with Web Audio;
@@ -19839,7 +20202,7 @@ function importSelectedSongs() {
 
 const TOOL_PREFS_KEY = "slp-tool-prefs";
 const TOOL_NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
-const TOOL_WAVES = [["sine", "Sine"], ["triangle", "Soft"], ["sawtooth", "Bright"]];
+const TOOL_WAVES = [["sine", "Sine"], ["triangle", "Soft"], ["sawtooth", "Bright"], ["organ", "Organ"]];
 const TOOL_TUNINGS = [415, 432, 440, 442];
 const TOOL_SCALES = { major: [0, 2, 4, 5, 7, 9, 11], minor: [0, 2, 3, 5, 7, 8, 10] };
 const TOOL_DEFS = [
@@ -19849,7 +20212,7 @@ const TOOL_DEFS = [
   { id: "reference", get name() { return t("Reference Tones"); }, icon: "audio-lines", get blurb() { return t("Hold a key's root and fifth to sing against."); }, transport: true },
   { id: "tuner", get name() { return t("Tuner"); }, icon: "mic", get blurb() { return t("Sing or play and see how close you are."); }, transport: true }
 ];
-const TOOL_DEFAULT_PREFS = { wave: "triangle", octave: 4, a4: 440, bpm: 96, beats: 4, accent: true, pipeNote: 0, refKey: 0, refMode: "major", pianoOctave: 4 };
+const TOOL_DEFAULT_PREFS = { wave: "triangle", octave: 4, a4: 440, bpm: 96, beats: 4, accent: true, instrument: "piano", pipeNote: 0, refKey: 0, refMode: "major", pianoOctave: 4 };
 
 let toolPrefs = loadToolPrefs();
 let activeToolId = null;
@@ -19961,9 +20324,11 @@ function toolPitchName(midi) {
 function startToolTone(frequency, { level = 0.4, wave = toolPrefs.wave, decay = 0 } = {}) {
   const context = toolAudio();
   if (!context) return null;
+  if (SAMPLED_INSTRUMENTS.includes(wave)) return startInstrumentVoice(context, wave, frequency, level);
   const oscillator = context.createOscillator();
   const gain = context.createGain();
-  oscillator.type = wave;
+  if (wave === "organ") oscillator.setPeriodicWave(organWave(context));
+  else oscillator.type = wave;
   oscillator.frequency.value = frequency;
   gain.gain.setValueAtTime(0, context.currentTime);
   gain.gain.linearRampToValueAtTime(level, context.currentTime + 0.03);
@@ -20034,7 +20399,8 @@ function toolSettingsSummary() {
   const tuning = `A${toolPrefs.a4}`;
   switch (activeToolId) {
     case "metronome": return `${toolPrefs.beats} beats per bar · accent ${String(toolPrefs.accent) === "true" ? "on" : "off"}`;
-    case "piano": return `${wave} sound · from octave ${toolPrefs.pianoOctave} · ${tuning}`;
+    case "piano": return `${(INSTRUMENTS.find(([id]) => id === toolPrefs.instrument) || INSTRUMENTS[0])[1]} sound · from octave ${toolPrefs.pianoOctave} · ${tuning}`;
+    case "chord-lab": return `${(INSTRUMENTS.find(([id]) => id === toolPrefs.instrument) || INSTRUMENTS[0])[1]} sound · octave ${toolPrefs.octave} · ${tuning}`;
     case "tuner": return `Tuned to ${tuning}`;
     default: return `${wave} sound · octave ${toolPrefs.octave} · ${tuning}`;
   }
@@ -20062,6 +20428,10 @@ function tuningSetting() {
 
 function waveSetting() {
   return `<div class="tool-field"><span class="slp-section-label">${t("Sound")}</span>${toolSegmented("wave", TOOL_WAVES, toolPrefs.wave)}</div>`;
+}
+
+function instrumentSetting() {
+  return `<div class="tool-field"><span class="slp-section-label">${t("Sound")}</span>${toolSegmented("instrument", INSTRUMENTS.map(([id, name]) => [id, t(name)]), toolPrefs.instrument)}</div>`;
 }
 
 function setToolRunning(running) {
@@ -20255,7 +20625,7 @@ const TOOL_VIEWS = {
     render() {
       return `${toolHero("—", "Press and hold a key")}
       <section class="slp-card tool-controls"><div id="toolKeyboard" class="tool-keyboard" role="group" aria-label="Piano keyboard" style="--white-count:8">${pianoKeysHtml(8)}</div></section>
-      ${toolDetails(`${waveSetting()}<div class="tool-field"><span class="slp-section-label">${t("Lowest octave")}</span>${toolStepper("pianoOctave", toolPrefs.pianoOctave, "lowest octave", 1, 5)}</div>${tuningSetting()}`)}`;
+      ${toolDetails(`${instrumentSetting()}<div class="tool-field"><span class="slp-section-label">${t("Lowest octave")}</span>${toolStepper("pianoOctave", toolPrefs.pianoOctave, "lowest octave", 1, 5)}</div>${tuningSetting()}`)}`;
     },
     start() {},
     stop() {},
@@ -20554,6 +20924,7 @@ function initToolsUi() {
   });
   els.toolBody.addEventListener("input", (event) => {
     if (event.target.id === "toolTempoSlider") setMetronomeTempo(Number(event.target.value));
+    if (event.target.id === "chordTempoSlider") setChordTempo(Number(event.target.value));
   });
   // Each finger (pointer) owns the key under it. As it slides, the note under the old
   // key stops and the one under the new key starts, so a glissando plays every key it
@@ -20571,7 +20942,7 @@ function initToolsUi() {
     if (key) {
       const midi = Number(key.dataset.midi);
       const frequency = toolFrequency(midi % 12, Math.floor(midi / 12) - 1);
-      finger.voice = startToolTone(frequency, { level: 0.45, decay: 1.2 });
+      finger.voice = startToolTone(frequency, { level: 0.45, decay: 1.2, wave: toolPrefs.instrument });
       key.classList.add("down");
       setToolHero(toolPitchName(midi), `${frequency.toFixed(1)} Hz`);
     }
@@ -20611,6 +20982,438 @@ function initToolsUi() {
     showSettingsMain();
     showOverlay(els.settingsSheet);
   });
+}
+// Chord Lab (a Tools card). Two tabs on the shared tool chassis:
+//   Chord        -- pick a root and a chord type, see its notes on a one-octave keyboard, hear it.
+//   Progression  -- pick a key and mode, build a short loop of chords from that key, hear it loop.
+// All sound goes through the same synthesized voices as the other tools (no samples).
+// Notes are spelled with the app's flat/sharp names; playback is block chords with a tiny strum.
+
+const CHORD_CATEGORIES = [["basic", "Basic"], ["seventh", "7ths"], ["ninth", "9ths"], ["altered", "Altered"], ["big", "11 · 13"]];
+const CHORD_DEGREE_LABELS = { 0: "1", 1: "♭2", 2: "2", 3: "♭3", 4: "3", 5: "4", 6: "♭5", 7: "5", 8: "♯5", 9: "6", 10: "♭7", 11: "7", 13: "♭9", 14: "9", 15: "♯9", 17: "11", 18: "♯11", 20: "♭13", 21: "13" };
+// [id, symbol shown, suffix written, category, semitones above the root]
+const CHORD_TYPE_ROWS = [
+  ["maj", "maj", "", "basic", [0, 4, 7]],
+  ["m", "m", "m", "basic", [0, 3, 7]],
+  ["dim", "dim", "dim", "basic", [0, 3, 6]],
+  ["aug", "aug", "aug", "basic", [0, 4, 8]],
+  ["sus2", "sus2", "sus2", "basic", [0, 2, 7]],
+  ["sus4", "sus4", "sus4", "basic", [0, 5, 7]],
+  ["6", "6", "6", "seventh", [0, 4, 7, 9]],
+  ["m6", "m6", "m6", "seventh", [0, 3, 7, 9]],
+  ["7", "7", "7", "seventh", [0, 4, 7, 10]],
+  ["m7", "m7", "m7", "seventh", [0, 3, 7, 10]],
+  ["maj7", "maj7", "maj7", "seventh", [0, 4, 7, 11]],
+  ["m7b5", "m7♭5", "m7b5", "seventh", [0, 3, 6, 10]],
+  ["dim7", "dim7", "dim7", "seventh", [0, 3, 6, 9]],
+  ["mMaj7", "m(maj7)", "mMaj7", "seventh", [0, 3, 7, 11]],
+  ["7sus4", "7sus4", "7sus4", "seventh", [0, 5, 7, 10]],
+  ["add9", "add9", "add9", "ninth", [0, 4, 7, 14]],
+  ["madd9", "m(add9)", "madd9", "ninth", [0, 3, 7, 14]],
+  ["9", "9", "9", "ninth", [0, 4, 7, 10, 14]],
+  ["m9", "m9", "m9", "ninth", [0, 3, 7, 10, 14]],
+  ["maj9", "maj9", "maj9", "ninth", [0, 4, 7, 11, 14]],
+  ["7b9", "7♭9", "7b9", "altered", [0, 4, 7, 10, 13]],
+  ["7#9", "7♯9", "7#9", "altered", [0, 4, 7, 10, 15]],
+  ["7b5", "7♭5", "7b5", "altered", [0, 4, 6, 10]],
+  ["7#5", "7♯5", "7#5", "altered", [0, 4, 8, 10]],
+  ["7#11", "7♯11", "7#11", "altered", [0, 4, 7, 10, 18]],
+  ["7b13", "7♭13", "7b13", "altered", [0, 4, 7, 10, 20]],
+  ["11", "11", "11", "big", [0, 4, 7, 10, 14, 17]],
+  ["m11", "m11", "m11", "big", [0, 3, 7, 10, 14, 17]],
+  ["13", "13", "13", "big", [0, 4, 7, 10, 14, 21]],
+  ["maj13", "maj13", "maj13", "big", [0, 4, 7, 11, 14, 21]],
+  ["maj7#11", "maj7♯11", "maj7#11", "big", [0, 4, 7, 11, 18]]
+];
+const CHORD_TYPES = CHORD_TYPE_ROWS.map(([id, label, suffix, category, semitones]) => ({
+  id, label, suffix, category,
+  notes: semitones.map((semitone) => [semitone, semitone === 2 && id !== "sus2" ? "9" : (id === "6" || id === "m6") && semitone === 9 ? "6" : CHORD_DEGREE_LABELS[semitone]])
+}));
+
+// Scales as semitones above the key note. Chords in a progression are stacked thirds
+// built from the scale, so every mode gets its own chords automatically.
+const CHORD_MODES = [
+  { id: "major", name: "Major", scale: [0, 2, 4, 5, 7, 9, 11] },
+  { id: "minor", name: "Minor", scale: [0, 2, 3, 5, 7, 8, 10] },
+  { id: "dorian", name: "Dorian", scale: [0, 2, 3, 5, 7, 9, 10] },
+  { id: "freygish", name: "Freygish", scale: [0, 1, 4, 5, 7, 8, 10] },
+  { id: "misheberach", name: "Mi Sheberach", scale: [0, 2, 3, 6, 7, 9, 10] }
+];
+const CHORD_MAJOR_SCALE = [0, 2, 4, 5, 7, 9, 11];
+const CHORD_TRIADS = { "0,4,7": ["", "maj"], "0,3,7": ["m", "min"], "0,3,6": ["dim", "dim"], "0,4,8": ["aug", "aug"] };
+const CHORD_SEVENTHS = { "0,4,7,11": "maj7", "0,3,7,10": "m7", "0,4,7,10": "7", "0,3,6,10": "m7b5", "0,3,6,9": "dim7", "0,4,8,11": "maj7#5", "0,3,7,11": "mMaj7", "0,4,8,10": "7#5" };
+const CHORD_ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII"];
+const CHORD_MAX_SLOTS = 8;
+const CHORD_DEFAULT_SLOTS = [0, 5, 3, 4];
+
+const CHORD_DEFAULT_PREFS = {
+  chordTab: "chord", chordRoot: 5, chordType: "m9", chordCat: "ninth", chordBass: -1,
+  chordKey: 5, chordMode: "minor", chordSevenths: "triads", chordSlots: CHORD_DEFAULT_SLOTS, chordSlotPick: 0
+};
+Object.assign(TOOL_DEFAULT_PREFS, CHORD_DEFAULT_PREFS);
+toolPrefs = { ...CHORD_DEFAULT_PREFS, ...toolPrefs };
+if (!Array.isArray(toolPrefs.chordSlots) || !toolPrefs.chordSlots.length) toolPrefs.chordSlots = [...CHORD_DEFAULT_SLOTS];
+
+TOOL_DEFS.splice(3, 0, { id: "chord-lab", get name() { return t("Chord Lab"); }, icon: "music-2", get blurb() { return t("See and hear chords, and try a progression."); }, transport: true });
+
+let chordLoopTimer = null;
+let chordPlayingSlot = -1;
+
+function chordType(id = toolPrefs.chordType) {
+  return CHORD_TYPES.find((type) => type.id === id) || CHORD_TYPES[0];
+}
+
+function chordMode(id = toolPrefs.chordMode) {
+  return CHORD_MODES.find((mode) => mode.id === id) || CHORD_MODES[0];
+}
+
+// A chord is { root (0-11), suffix, notes: [[semitones above root, degree label]], roman? }.
+function chordFromType(root, type, bass = -1) {
+  const notes = type.notes.slice();
+  const below = bass >= 0 && bass !== root ? ((bass - root + 12) % 12) - 12 : null;
+  if (below !== null) notes.unshift([below, "bass"]);
+  return { root, suffix: type.suffix, notes, bass: below !== null ? bass : -1 };
+}
+
+const CHORD_CHROMATIC = ["I", "♭II", "II", "♭III", "III", "IV", "♯IV", "V", "♭VI", "VI", "♭VII", "VII"];
+
+// A slot is either a number (a chord built from that step of the key and mode) or an
+// object { r, t, b } for any chord the user picked: root, type id, optional bass note.
+function chordSlotChord(slot) {
+  if (slot && typeof slot === "object") {
+    const type = chordType(slot.t);
+    const chord = chordFromType(slot.r, type, slot.b ?? -1);
+    const steps = (slot.r - toolPrefs.chordKey + 12) % 12;
+    const lower = /^dim/.test(type.suffix) || /^m(?!aj)/.test(type.suffix);
+    let rest = type.suffix.replace(/^m(?!aj)/, "").replace("maj", "Δ");
+    let numeral = lower ? CHORD_CHROMATIC[steps].toLowerCase() : CHORD_CHROMATIC[steps];
+    if (/^dim/.test(type.suffix)) { numeral += "°"; rest = rest.replace(/^dim/, ""); }
+    chord.roman = numeral + rest.replace(/b/g, "♭").replace(/#/g, "♯");
+    return chord;
+  }
+  return chordDegreeChord(slot);
+}
+
+function chordSlotCustom(slot) {
+  if (slot && typeof slot === "object") return { ...slot };
+  const chord = chordDegreeChord(slot);
+  const type = CHORD_TYPES.find((item) => item.suffix === chord.suffix) || CHORD_TYPES[0];
+  return { r: chord.root, t: type.id, b: -1 };
+}
+
+function chordDegreeChord(degreeIndex) {
+  const mode = chordMode();
+  const scale = mode.scale;
+  const stack = [0, 2, 4].concat(toolPrefs.chordSevenths === "sevenths" ? [6] : []).map((step) => {
+    const index = degreeIndex + step;
+    return scale[index % 7] + (index >= 7 ? 12 : 0) - scale[degreeIndex];
+  });
+  const key = stack.join(",");
+  const triad = CHORD_TRIADS[stack.slice(0, 3).join(",")] || ["", "maj"];
+  const suffix = stack.length === 4 ? (CHORD_SEVENTHS[key] || triad[0] + "7") : triad[0];
+  const root = (toolPrefs.chordKey + scale[degreeIndex]) % 12;
+  const labels = ["1", "3", "5", "7"];
+  const notes = stack.map((semitone, index) => [semitone, labels[index]]);
+  const quality = triad[1];
+  const flat = scale[degreeIndex] - CHORD_MAJOR_SCALE[degreeIndex];
+  let roman = CHORD_ROMAN[degreeIndex];
+  if (quality === "min" || quality === "dim") roman = roman.toLowerCase();
+  roman = (flat < 0 ? "♭" : flat > 0 ? "♯" : "") + roman + (quality === "dim" ? "°" : quality === "aug" ? "+" : "");
+  if (stack.length === 4) roman += { maj7: "Δ7", 7: "7", m7: "7", m7b5: "ø7", dim7: "7", "7#5": "7", "maj7#5": "Δ7", mMaj7: "Δ7" }[suffix] || "7";
+  return { root, suffix, notes, roman, preferFlat: flat < 0 };
+}
+
+function chordName(chord) {
+  const base = TOOL_NOTE_NAMES[chord.root];
+  const spelled = chord.preferFlat ? ({ "C#": "Db", "F#": "Gb" }[base] || base) : base;
+  const bass = chord.bass >= 0 ? `/${toolNoteLabel(TOOL_NOTE_NAMES[chord.bass])}` : "";
+  return `${toolNoteLabel(spelled)}${chord.suffix.replace(/b/g, "♭").replace(/#/g, "♯")}${bass}`;
+}
+
+function chordNoteNames(chord) {
+  return chord.notes.map(([semitone]) => toolNoteLabel(TOOL_NOTE_NAMES[(((chord.root + semitone) % 12) + 12) % 12]));
+}
+
+// Plays the chord as a block with a very short strum, then lets it ring and fade.
+function playChordSound(chord, seconds = 1.8) {
+  const voices = chord.notes.map(([semitone], index) => {
+    const midi = 12 * 4 + chord.root + semitone - (chord.root > 6 ? 12 : 0);
+    const frequency = toolFrequency(((midi % 12) + 12) % 12, Math.floor(midi / 12) - 1);
+    const voice = startToolTone(frequency, { level: 0.14, decay: 0.9, wave: toolPrefs.instrument });
+    return voice;
+  }).filter(Boolean);
+  if (!voices.length) {
+    showToast("Sound isn't available on this device");
+    return false;
+  }
+  setTimeout(() => voices.forEach((voice) => voice.stop()), seconds * 1000);
+  return true;
+}
+
+function chordKeyboardHtml(chord) {
+  const lit = new Set(chord.notes.map(([semitone]) => (((chord.root + semitone) % 12) + 12) % 12));
+  const whites = [0, 2, 4, 5, 7, 9, 11];
+  const blackAfter = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };
+  let html = "";
+  whites.forEach((pc, index) => {
+    html += `<span class="chord-key chord-key--white ${lit.has(pc) ? "lit" : ""}"></span>`;
+    if (blackAfter[index] != null) html += `<span class="chord-key chord-key--black ${lit.has(blackAfter[index]) ? "lit" : ""}" style="--after:${index + 1}"></span>`;
+  });
+  return `<div class="chord-keyboard" dir="ltr" aria-hidden="true" style="--whites:7">${html}</div>`;
+}
+
+function chordNoteTiles(chord) {
+  const names = chordNoteNames(chord);
+  return `<div class="chord-notes" dir="ltr">${chord.notes.map(([, label], index) => `<div class="chord-note"><strong>${names[index]}</strong><span>${label}</span></div>`).join("")}</div>`;
+}
+
+function chordCollapse(label, valueHtml, bodyHtml, keep = "") {
+  return `<div class="slp-collapse tool-settings" role="button" tabindex="0" aria-expanded="false" data-tool-collapse ${keep ? `data-keep="${keep}"` : ""}><span class="tool-settings__label">${label}</span><span class="tool-settings__summary" dir="auto">${valueHtml}</span><svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="slp-collapse__panel tool-details" hidden>${bodyHtml}</div>`;
+}
+
+function chordRootGrid(setting, current) {
+  return `<div class="tool-note-grid" role="group" data-chord-root="${setting}">${TOOL_NOTE_NAMES.map((name, index) => `<button type="button" class="tool-note ${index === current ? "selected" : ""}" data-value="${index}">${toolNoteLabel(name)}</button>`).join("")}</div>`;
+}
+
+function chordCategoryOf(typeId) {
+  return chordType(typeId).category;
+}
+
+function chordTypeChips(attr, currentId) {
+  const rows = CHORD_TYPES.filter((type) => type.category === toolPrefs.chordCat);
+  return `<div class="chord-types" role="group" aria-label="${escapeAttribute(t("Chord type"))}">${rows.map((type) => `<button type="button" class="chord-type ${type.id === currentId ? "selected" : ""}" ${attr}="${type.id}" dir="ltr">${type.label}</button>`).join("")}</div>`;
+}
+
+function chordCategoryTabs() {
+  return toolSegmented("chordCat", CHORD_CATEGORIES.map(([id, name]) => [id, t(name)]), toolPrefs.chordCat);
+}
+
+function chordBassChips(attr, current) {
+  const chips = [[-1, t("Same as root")]].concat(TOOL_NOTE_NAMES.map((name, index) => [index, toolNoteLabel(name)]));
+  return `<div class="chord-types" role="group" aria-label="${escapeAttribute(t("Bass note"))}">${chips.map(([value, label]) => `<button type="button" class="chord-type ${Number(value) === Number(current) ? "selected" : ""}" ${attr}="${value}" dir="auto">${label}</button>`).join("")}</div>`;
+}
+
+function chordTabs() {
+  return toolSegmented("chordTab", [["chord", t("Chord")], ["progression", t("Progression")]], toolPrefs.chordTab);
+}
+
+function chordCurrentLabel() {
+  const chord = chordFromType(toolPrefs.chordRoot, chordType(), toolPrefs.chordBass);
+  return { chord, name: chordName(chord) };
+}
+
+function renderChordTab() {
+  const { chord, name } = chordCurrentLabel();
+  const rootName = toolNoteLabel(TOOL_NOTE_NAMES[toolPrefs.chordRoot]);
+  const bassValue = toolPrefs.chordBass >= 0 ? `<span dir="ltr">${toolNoteLabel(TOOL_NOTE_NAMES[toolPrefs.chordBass])}</span>` : t("Same as root");
+  return `${chordTabs()}
+  ${chordCollapse(t("Root"), `<span dir="ltr">${rootName}</span>`, chordRootGrid("chordRoot", toolPrefs.chordRoot))}
+  ${chordCategoryTabs()}
+  ${chordTypeChips("data-chord-type", toolPrefs.chordType)}
+  ${chordCollapse(t("Bass note"), bassValue, chordBassChips("data-chord-bass", toolPrefs.chordBass), "bass")}
+  ${toolHero(`<span dir="ltr">${name}</span>`, "")}
+  ${chordNoteTiles(chord)}
+  <section class="slp-card tool-controls">${chordKeyboardHtml(chord)}</section>
+  ${toolDetails(`${instrumentSetting()}<div class="tool-field"><span class="slp-section-label">${t("Octave")}</span>${toolStepper("octave", toolPrefs.octave, "octave", 2, 6)}</div>${tuningSetting()}`)}`;
+}
+
+function chordProgressionChords() {
+  return toolPrefs.chordSlots.map((degree) => chordSlotChord(degree));
+}
+
+function chordSlotsHtml() {
+  const chords = chordProgressionChords();
+  const cells = chords.map((chord, index) => `<button type="button" class="chord-slot ${index === toolPrefs.chordSlotPick ? "picked" : ""} ${index === chordPlayingSlot ? "playing" : ""}" data-slot="${index}" dir="ltr"><strong>${chordName(chord)}</strong><span>${chord.roman}</span></button>`);
+  if (chords.length < CHORD_MAX_SLOTS) cells.push(`<button type="button" class="chord-slot chord-slot--add" data-slot-add aria-label="${escapeAttribute(t("Add a chord"))}"><i data-lucide="plus"></i></button>`);
+  return cells.join("");
+}
+
+function chordDegreeChoicesHtml() {
+  const slot = toolPrefs.chordSlots[toolPrefs.chordSlotPick];
+  const picked = typeof slot === "number" ? slot : -1;
+  return Array.from({ length: 7 }, (_, degree) => {
+    const chord = chordSlotChord(degree);
+    return `<button type="button" class="chord-type ${degree === picked ? "selected" : ""}" data-degree-choice="${degree}" dir="ltr">${chordName(chord)}<small>${chord.roman}</small></button>`;
+  }).join("");
+}
+
+function renderProgressionTab() {
+  const mode = chordMode();
+  const keyName = toolNoteLabel(TOOL_NOTE_NAMES[toolPrefs.chordKey]);
+  const keyPanel = `${chordRootGrid("chordKey", toolPrefs.chordKey)}
+    <div class="chord-modes" role="group" data-tool-setting="chordMode">${CHORD_MODES.map((item) => `<button type="button" data-value="${item.id}" class="chord-type ${item.id === mode.id ? "selected" : ""}">${t(item.name)}</button>`).join("")}</div>
+    ${toolSegmented("chordSevenths", [["triads", t("Triads")], ["sevenths", t("7ths")]], toolPrefs.chordSevenths)}`;
+  const picked = chordSlotChord(toolPrefs.chordSlots[toolPrefs.chordSlotPick]);
+  const custom = chordSlotCustom(toolPrefs.chordSlots[toolPrefs.chordSlotPick]);
+  const isCustom = typeof toolPrefs.chordSlots[toolPrefs.chordSlotPick] === "object";
+  const anyPanel = `<span class="slp-section-label">${t("Root")}</span>${chordRootGrid("slotRoot", custom.r)}
+    ${chordCategoryTabs()}
+    ${chordTypeChips("data-slot-type", custom.t)}
+    <span class="slp-section-label">${t("Bass note")}</span>${chordBassChips("data-slot-bass", custom.b ?? -1)}`;
+  return `${chordTabs()}
+  ${chordCollapse(t("Key"), `<span dir="ltr">${keyName}</span> · ${t(mode.name)}`, keyPanel)}
+  ${toolHero(`<span dir="ltr">${chordName(picked)}</span>`, "")}
+  <div class="chord-slots" id="chordSlots">${chordSlotsHtml()}</div>
+  <section class="slp-card tool-controls">
+    <span class="slp-section-label">${t("Change this chord")}</span>
+    <div class="chord-types chord-types--wrap" id="chordDegreeChoices">${chordDegreeChoicesHtml()}</div>
+    ${chordCollapse(t("Any chord"), isCustom ? `<span dir="ltr">${chordName(picked)}</span>` : t("Pick any root and type"), anyPanel, "any")}
+    ${toolPrefs.chordSlots.length > 1 ? `<button type="button" class="slp-btn slp-btn--soft" data-slot-remove>${t("Remove this chord")}</button>` : ""}
+    <div class="tool-tempo-row">
+      <button type="button" class="tool-round" data-chord-tempo="-1" aria-label="${escapeAttribute(t("Slower"))}"><i data-lucide="minus"></i></button>
+      <input id="chordTempoSlider" type="range" min="40" max="200" step="1" value="${toolPrefs.bpm}" aria-label="${escapeAttribute(t("Tempo in beats per minute"))}">
+      <button type="button" class="tool-round" data-chord-tempo="1" aria-label="${escapeAttribute(t("Faster"))}"><i data-lucide="plus"></i></button>
+    </div>
+    <div class="chord-tempo-value" id="chordTempoValue" dir="ltr">${toolPrefs.bpm} BPM</div>
+  </section>
+  ${toolDetails(`${instrumentSetting()}<div class="tool-field"><span class="slp-section-label">${t("Octave")}</span>${toolStepper("octave", toolPrefs.octave, "octave", 2, 6)}</div>${tuningSetting()}`)}`;
+}
+
+function refreshChordLab() {
+  const keep = new Set([...els.toolBody.querySelectorAll("[data-keep]")].filter((element) => element.getAttribute("aria-expanded") === "true").map((element) => element.dataset.keep));
+  els.toolBody.innerHTML = TOOL_VIEWS["chord-lab"].render();
+  els.toolBody.querySelectorAll("[data-keep]").forEach((element) => {
+    if (!keep.has(element.dataset.keep)) return;
+    element.setAttribute("aria-expanded", "true");
+    element.nextElementSibling.hidden = false;
+  });
+  refreshIcons();
+}
+
+function chordLoopStep(index) {
+  const chords = chordProgressionChords();
+  if (!chords.length || !toolRunning) return;
+  const slot = index % chords.length;
+  chordPlayingSlot = slot;
+  const strip = document.getElementById("chordSlots");
+  if (strip) strip.querySelectorAll("[data-slot]").forEach((button) => button.classList.toggle("playing", Number(button.dataset.slot) === slot));
+  const heroValue = document.getElementById("toolHeroValue");
+  if (heroValue) heroValue.innerHTML = `<span dir="ltr">${chordName(chords[slot])}</span>`;
+  const barSeconds = (60 / toolPrefs.bpm) * 4;
+  playChordSound(chords[slot], barSeconds * 0.92);
+  chordLoopTimer = setTimeout(() => chordLoopStep(slot + 1), barSeconds * 1000);
+}
+
+function clearChordLoop() {
+  clearTimeout(chordLoopTimer);
+  chordLoopTimer = null;
+  chordPlayingSlot = -1;
+  document.querySelectorAll("#chordSlots .playing").forEach((button) => button.classList.remove("playing"));
+}
+
+TOOL_VIEWS["chord-lab"] = {
+  render() {
+    return toolPrefs.chordTab === "progression" ? renderProgressionTab() : renderChordTab();
+  },
+  start() {
+    if (toolPrefs.chordTab === "progression") {
+      chordLoopStep(0);
+      return;
+    }
+    const { chord } = chordCurrentLabel();
+    if (playChordSound(chord) === false) return false;
+    chordLoopTimer = setTimeout(() => { if (toolRunning) stopActiveTool(); }, 1900);
+  },
+  stop() {
+    clearChordLoop();
+  },
+  onClick(event) {
+    const slotEdit = event.target.closest("[data-slot-type], [data-slot-bass], [data-chord-root=slotRoot]");
+    if (slotEdit) {
+      const custom = chordSlotCustom(toolPrefs.chordSlots[toolPrefs.chordSlotPick]);
+      if (slotEdit.dataset.slotType) custom.t = slotEdit.dataset.slotType;
+      else if (slotEdit.dataset.slotBass !== undefined) custom.b = Number(slotEdit.dataset.slotBass);
+      else {
+        const rootButton = event.target.closest(".tool-note");
+        if (!rootButton) return;
+        custom.r = Number(rootButton.dataset.value);
+      }
+      toolPrefs.chordSlots = toolPrefs.chordSlots.map((slot, index) => (index === toolPrefs.chordSlotPick ? custom : slot));
+      saveToolPrefs();
+      stopActiveTool();
+      refreshChordLab();
+      playChordSound(chordProgressionChords()[toolPrefs.chordSlotPick], 1.2);
+      return;
+    }
+    const bassChip = event.target.closest("[data-chord-bass]");
+    if (bassChip) {
+      stopActiveTool();
+      toolPrefs.chordBass = Number(bassChip.dataset.chordBass);
+      saveToolPrefs();
+      refreshChordLab();
+      toggleToolTransport();
+      return;
+    }
+    const rootGrid = event.target.closest("[data-chord-root]");
+    const rootButton = rootGrid && event.target.closest(".tool-note");
+    if (rootButton) {
+      stopActiveTool();
+      toolPrefs[rootGrid.dataset.chordRoot] = Number(rootButton.dataset.value);
+      saveToolPrefs();
+      refreshChordLab();
+      if (rootGrid.dataset.chordRoot === "chordRoot") toggleToolTransport();
+      return;
+    }
+    const typeButton = event.target.closest("[data-chord-type]");
+    if (typeButton) {
+      stopActiveTool();
+      toolPrefs.chordType = typeButton.dataset.chordType;
+      saveToolPrefs();
+      refreshChordLab();
+      toggleToolTransport();
+      return;
+    }
+    const slot = event.target.closest("[data-slot]");
+    if (slot) {
+      toolPrefs.chordSlotPick = Number(slot.dataset.slot);
+      saveToolPrefs();
+      if (!toolRunning) {
+        refreshChordLab();
+        playChordSound(chordProgressionChords()[toolPrefs.chordSlotPick], 1.2);
+      }
+      return;
+    }
+    if (event.target.closest("[data-slot-add]")) {
+      toolPrefs.chordSlots = [...toolPrefs.chordSlots, toolPrefs.chordSlots[toolPrefs.chordSlots.length - 1] ?? 0];
+      toolPrefs.chordSlotPick = toolPrefs.chordSlots.length - 1;
+      saveToolPrefs();
+      refreshChordLab();
+      return;
+    }
+    if (event.target.closest("[data-slot-remove]")) {
+      toolPrefs.chordSlots = toolPrefs.chordSlots.filter((_, index) => index !== toolPrefs.chordSlotPick);
+      toolPrefs.chordSlotPick = Math.min(toolPrefs.chordSlotPick, toolPrefs.chordSlots.length - 1);
+      saveToolPrefs();
+      refreshChordLab();
+      return;
+    }
+    const choice = event.target.closest("[data-degree-choice]");
+    if (choice) {
+      toolPrefs.chordSlots = toolPrefs.chordSlots.map((degree, index) => (index === toolPrefs.chordSlotPick ? Number(choice.dataset.degreeChoice) : degree));
+      saveToolPrefs();
+      refreshChordLab();
+      if (!toolRunning) playChordSound(chordProgressionChords()[toolPrefs.chordSlotPick], 1.2);
+      return;
+    }
+    const nudge = event.target.closest("[data-chord-tempo]");
+    if (nudge) setChordTempo(toolPrefs.bpm + Number(nudge.dataset.chordTempo));
+  },
+  onSetting(key) {
+    if (["chordTab", "chordMode", "chordSevenths", "chordCat"].includes(key)) {
+      if (key === "chordTab" && toolPrefs.chordTab === "chord") toolPrefs.chordCat = chordCategoryOf(toolPrefs.chordType);
+      stopActiveTool();
+      refreshChordLab();
+    }
+  }
+};
+
+function setChordTempo(value) {
+  toolPrefs.bpm = clamp(Math.round(value), 40, 200);
+  saveToolPrefs();
+  const slider = document.getElementById("chordTempoSlider");
+  if (slider) slider.value = toolPrefs.bpm;
+  const label = document.getElementById("chordTempoValue");
+  if (label) label.textContent = `${toolPrefs.bpm} BPM`;
 }
 function showOverlay(element) {
   closeOverlays();
