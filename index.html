@@ -5670,6 +5670,27 @@ html[dir="rtl"] .lyr-switch input:checked + .lyr-switch__track::after { transfor
 /* Dates, times and numbers read left to right even in a right-to-left screen (the field box itself still mirrors). */
 html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir="rtl"] input[type="number"], html[dir="rtl"] input[type="tel"], html[dir="rtl"] input[type="email"] { direction: ltr; text-align: end; }
 
+/* Recovery screen: shown when the saved library cannot be read. Sits above the app, below the
+   scrim (20) and dialogs (25) so the restore confirmation can still appear over it. */
+.recovery-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 18;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  padding: var(--space-9);
+  overflow-y: auto;
+  background: var(--color-bg);
+}
+.recovery-screen.hidden, .recovery-screen[hidden] { display: none; }
+.recovery-card { display: grid; gap: var(--space-6); width: min(100%, 460px); }
+.recovery-title { margin: 0; font-size: var(--text-2xl, 24px); font-weight: var(--font-weight-bold); color: var(--color-text); }
+.recovery-text { margin: 0; color: var(--color-text-secondary); font-size: var(--text-md); line-height: 1.45; }
+.recovery-btn { width: 100%; min-height: 48px; justify-content: center; }
+.recovery-fresh { display: grid; gap: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
+.recovery-fresh.hidden, .recovery-fresh[hidden] { display: none; }
+
 }
 
 </style>
@@ -6278,6 +6299,20 @@ html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir
       </div>
     </main>
 
+    <section id="recoveryScreen" class="recovery-screen hidden" hidden role="alertdialog" aria-modal="true" aria-labelledby="recoveryTitle">
+      <div class="recovery-card">
+        <h1 id="recoveryTitle" class="recovery-title">Your library could not be opened</h1>
+        <p id="recoveryMessage" class="recovery-text"></p>
+        <button id="recoveryRestoreBtn" class="slp-btn slp-btn--primary recovery-btn" type="button">Restore a backup</button>
+        <button id="recoveryExportBtn" class="slp-btn slp-btn--soft recovery-btn" type="button">Export unreadable data</button>
+        <button id="recoveryFreshBtn" class="slp-btn slp-btn--ghost recovery-btn" type="button">Start fresh</button>
+        <div id="recoveryFreshPanel" class="recovery-fresh hidden" hidden>
+          <p id="recoveryFreshText" class="recovery-text"></p>
+          <button id="recoveryFreshConfirmBtn" class="slp-btn slp-btn--soft recovery-btn" type="button">Start a new empty library</button>
+          <button id="recoveryFreshCancelBtn" class="slp-btn slp-btn--ghost recovery-btn" type="button">Back</button>
+        </div>
+      </div>
+    </section>
     <div id="scrim" class="scrim hidden" hidden></div>
 
     <section id="folderDialog" class="modal folder-dialog hidden" hidden role="dialog" aria-modal="true" aria-labelledby="folderDialogTitle">
@@ -6816,6 +6851,16 @@ html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir
           <span class="slp-row__body"><span class="slp-row__title">Restore backup</span><span class="slp-row__subtitle">Import a Song List Pro backup</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
+        <button id="undoRestoreBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="undo-2"></i></span>
+          <span class="slp-row__body"><span id="undoRestoreTitle" class="slp-row__title">Undo restore</span><span id="undoRestoreSubtitle" class="slp-row__subtitle">No restore to undo</span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <button id="damagedCopyBtn" class="slp-row hidden" type="button" hidden>
+          <span class="slp-row__icon-tile"><i data-lucide="file-warning"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Unreadable library copy</span><span class="slp-row__subtitle">Export the damaged data kept on this device</span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
         <button id="printLibraryBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="printer"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Print song index</span><span class="slp-row__subtitle">A clean list of your repertoire</span></span>
@@ -7332,7 +7377,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn",
+    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "languageSettingsBtn", "languageSettingsValue", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -7377,6 +7422,10 @@ function trackStateMutations(value) {
   return proxy;
 }
 
+// Set by loadState() when the saved library cannot be read: the raw text, kept exactly, and a
+// block on saving so the damaged record is not overwritten before the user chooses what to do.
+let startupDamage = null;
+let persistBlocked = false;
 let state = trackStateMutations(loadState());
 let lastPersistedSnapshot = readStorage(STORAGE_KEY);
 let workspaceMode = "library";
@@ -8604,6 +8653,48 @@ Object.assign(HEBREW_UI, {
  "Guitar": "גיטרה",
  "Organ": "עוגב"
 });
+
+Object.assign(HEBREW_UI, {
+ "Undo restore": "ביטול שחזור",
+ "Redo restore": "שחזור מחדש",
+ "Undo restore?": "לבטל את השחזור?",
+ "Redo restore?": "לשחזר מחדש?",
+ "No restore to undo": "אין שחזור לביטול",
+ "Library before the last restore": "הספרייה לפני השחזור האחרון",
+ "Library from": "ספרייה מתאריך",
+ "There is no restore to undo.": "אין שחזור לביטול.",
+ "Restore undone": "השחזור בוטל",
+ "Restore redone": "השחזור בוצע מחדש",
+ "Could not save a safety copy, so nothing was changed. Export a backup first.": "לא ניתן היה לשמור עותק ביטחון, ולכן שום דבר לא השתנה. כדאי לייצא גיבוי קודם.",
+ "The restore could not be completed. Your library was not changed.": "לא ניתן היה להשלים את השחזור. הספרייה לא השתנתה.",
+ "The restore could not be saved on this device. Your library was not changed.": "לא ניתן היה לשמור את השחזור במכשיר. הספרייה לא השתנתה.",
+ "The saved copy could not be read, so nothing was changed.": "לא ניתן היה לקרוא את העותק השמור, ולכן שום דבר לא השתנה.",
+ "This file could not be read. Your library was not changed.": "לא ניתן היה לקרוא את הקובץ. הספרייה לא השתנתה.",
+ "Unreadable library copy": "עותק ספרייה שלא ניתן לקרוא",
+ "Export the damaged data kept on this device": "ייצוא הנתונים הפגומים שנשמרו במכשיר",
+ "No unreadable library copy is saved on this device.": "אין במכשיר עותק של ספרייה שלא ניתן לקרוא.",
+ "Saved the unreadable data as a file": "הנתונים שלא ניתן לקרוא נשמרו כקובץ",
+ "Your library could not be opened": "לא ניתן היה לפתוח את הספרייה",
+ "Restore a backup": "שחזור מגיבוי",
+ "Export unreadable data": "ייצוא הנתונים שלא ניתן לקרוא",
+ "Start fresh": "התחלה מחדש",
+ "Start a new empty library": "פתיחת ספרייה ריקה חדשה",
+ "Back": "חזרה",
+ "Started a new empty library": "נפתחה ספרייה ריקה חדשה",
+ "The library saved in this browser could not be read.": "לא ניתן היה לקרוא את הספרייה ששמורה בדפדפן הזה.",
+ "The original is kept untouched on this device.": "המקור נשמר במכשיר ללא שינוי.",
+ "A second safety copy could not be made on this device, so export the unreadable data before doing anything else.": "לא ניתן היה ליצור עותק ביטחון נוסף במכשיר, ולכן יש לייצא את הנתונים לפני כל פעולה אחרת.",
+ "Nothing new is being saved until you choose an option below.": "שום דבר חדש לא נשמר עד שתבחר באחת האפשרויות למטה.",
+ "This starts an empty library. The unreadable data stays saved on this device and in Settings, so it can still be exported later.": "זה פותח ספרייה ריקה. הנתונים שלא ניתן לקרוא נשארים שמורים במכשיר ובהגדרות, ואפשר לייצא אותם גם אחר כך.",
+ "The unreadable data could not be kept on this device and has not been exported. Starting fresh will erase it for good.": "לא ניתן היה לשמור את הנתונים במכשיר והם לא יוצאו. התחלה מחדש תמחק אותם לצמיתות.",
+ "Export the unreadable data first. This device could not keep a safety copy of it.": "יש לייצא קודם את הנתונים שלא ניתן לקרוא. המכשיר לא הצליח לשמור מהם עותק ביטחון.",
+ "This device could not save. Your unreadable data was not changed.": "המכשיר לא הצליח לשמור. הנתונים שלא ניתן לקרוא לא השתנו.",
+ "The saved text is not valid data.": "הטקסט השמור אינו נתונים תקינים.",
+ "The saved data is not a library.": "הנתונים השמורים אינם ספרייה.",
+ "The saved library is from a different version.": "הספרייה השמורה היא מגרסה אחרת.",
+ "The saved library is missing its songs or folders.": "בספרייה השמורה חסרים שירים או תיקיות.",
+ "The saved library could not be opened.": "לא ניתן היה לפתוח את הספרייה השמורה."
+});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -8705,14 +8796,46 @@ function makeId() {
   return globalThis.crypto?.randomUUID?.() || `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+// Reads the saved record without changing it. A record that is not valid JSON, is not a library
+// of the current version, or has damaged lists is reported as unreadable; it is never repaired.
+// (The list is local on purpose: loadState() runs while runtime.js loads, before this file's own
+// top-level constants exist.)
+function checkStoredLibrary(raw) {
+  const arrayFields = ["folders", "songs", "savedSearches", "noteFolders", "notes", "noteLocationLinks", "gigs", "gigSections", "gigSets", "gigSetItems", "setTemplates", "setTemplateItems"];
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return { ok: false, reason: "The saved text is not valid data." };
+  }
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return { ok: false, reason: "The saved data is not a library." };
+  if (parsed.version != null && Number(parsed.version) !== 4) return { ok: false, reason: "The saved library is from a different version." };
+  if (!Array.isArray(parsed.songs) || !Array.isArray(parsed.folders)) return { ok: false, reason: "The saved library is missing its songs or folders." };
+  for (const field of arrayFields) {
+    if (parsed[field] == null) continue;
+    if (!Array.isArray(parsed[field]) || parsed[field].some((record) => !record || typeof record !== "object" || Array.isArray(record))) {
+      return { ok: false, reason: `The saved ${field} list is damaged.` };
+    }
+  }
+  return { ok: true, parsed };
+}
+
 function loadState() {
   const current = readStorage(STORAGE_KEY);
   if (current) {
-    try {
-      return normalizeState(JSON.parse(current));
-    } catch {
-      // A damaged save falls through to a legacy save or a fresh library.
+    const check = checkStoredLibrary(current);
+    if (check.ok) {
+      try {
+        return normalizeState(check.parsed);
+      } catch {
+        check.ok = false;
+        check.reason = "The saved library could not be opened.";
+      }
     }
+    // Do not fall back to an older save or an empty library and then save over this record.
+    startupDamage = { raw: current, reason: check.reason, kept: false, exported: false };
+    persistBlocked = true;
+    return createInitialState();
   }
 
   for (const key of LEGACY_KEYS) {
@@ -9278,6 +9401,7 @@ function markStateDirty() {
 function persist(force = true) {
   clearTimeout(pendingStorageTimer);
   pendingStorageTimer = null;
+  if (persistBlocked) return false;
   if (!force && !stateDirty) return true;
   const snapshot = JSON.stringify(state);
   if (snapshot === lastPersistedSnapshot) {
@@ -9533,7 +9657,9 @@ function deleteImageBlob(id) {
 // be undone. It only runs when the library loaded with songs in it: an empty library plus
 // stored pictures more likely means the library failed to load than that the pictures are junk.
 async function cleanUnusedImages() {
-  if (!imageStoreAvailable() || !state.songs.length) return 0;
+  // While a damaged library is waiting for a recovery choice, the in-memory library is not the
+  // real one: its pictures must not be treated as unused.
+  if (persistBlocked || !imageStoreAvailable() || !state.songs.length) return 0;
   const inUse = new Set(state.songs.flatMap(songImageRefs));
   let removed = 0;
   for (const id of await listImageIds()) {
@@ -9549,6 +9675,127 @@ async function cleanUnusedImages() {
     }
   }
   return removed;
+}
+// Safety copies kept in IndexedDB (not localStorage: the library record may already sit close to
+// the browser's ~5 MB localStorage limit, and a full copy would not fit beside it).
+//
+// Two kinds of record live in one small database, "slp-safety":
+//   "undo"                the whole library as it was just before the last restore (or undo),
+//                         in the same format as a backup file, pictures included.
+//   "damaged:<iso time>"  the exact raw text of a repertoire-studio-v4 record that could not be
+//                         read at startup. Kept so nothing is lost; never deleted automatically.
+//
+// Retention: the undo copy stays until the next restore (or undo) replaces it, or the browser's
+// site data is cleared. Damaged copies stay until the site data is cleared.
+
+const SAFETY_DB_NAME = "slp-safety";
+const SAFETY_STORE_NAME = "records";
+const SAFETY_UNDO_KEY = "undo";
+const SAFETY_DAMAGED_PREFIX = "damaged:";
+
+// Tests swap in a plain in-memory backend; the app uses IndexedDB.
+let safetyBackendOverride = null;
+let safetyDbPromise = null;
+
+function safetyStoreAvailable() {
+  return Boolean(safetyBackendOverride || globalThis.indexedDB);
+}
+
+function openSafetyDb() {
+  if (!safetyDbPromise) {
+    safetyDbPromise = new Promise((resolve, reject) => {
+      const request = globalThis.indexedDB.open(SAFETY_DB_NAME, 1);
+      request.onupgradeneeded = () => request.result.createObjectStore(SAFETY_STORE_NAME);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    }).catch((error) => {
+      safetyDbPromise = null;
+      throw error;
+    });
+  }
+  return safetyDbPromise;
+}
+
+// Resolves only when the transaction has committed, so a quota failure rejects here instead
+// of looking like a successful write.
+async function safetyTransaction(mode, run) {
+  const db = await openSafetyDb();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(SAFETY_STORE_NAME, mode);
+    let result;
+    const request = run(transaction.objectStore(SAFETY_STORE_NAME));
+    request.onsuccess = () => { result = request.result; };
+    transaction.oncomplete = () => resolve(result);
+    transaction.onerror = () => reject(transaction.error || request.error);
+    transaction.onabort = () => reject(transaction.error || request.error || new Error("Safety store write was aborted"));
+  });
+}
+
+const idbSafetyBackend = {
+  put: (key, value) => safetyTransaction("readwrite", (store) => store.put(value, key)),
+  get: (key) => safetyTransaction("readonly", (store) => store.get(key)),
+  delete: (key) => safetyTransaction("readwrite", (store) => store.delete(key)),
+  keys: () => safetyTransaction("readonly", (store) => store.getAllKeys())
+};
+
+function safetyBackend() {
+  if (!safetyStoreAvailable()) throw new Error("Safety storage is unavailable on this device");
+  return safetyBackendOverride || idbSafetyBackend;
+}
+
+function libraryCounts(source) {
+  return {
+    songCount: source.songs?.length || 0,
+    folderCount: source.folders?.length || 0,
+    noteCount: source.notes?.length || 0,
+    gigCount: source.gigs?.length || 0
+  };
+}
+
+// Stores the current library (with pictures) as the single undo copy. Rejects when it cannot
+// be written; callers must not go on to replace the library in that case.
+async function saveUndoSnapshot(reason) {
+  const payload = backupPayload(await collectBackupImages());
+  const record = { reason, createdAt: new Date().toISOString(), ...libraryCounts(state), payload };
+  await safetyBackend().put(SAFETY_UNDO_KEY, record);
+  return record;
+}
+
+async function readUndoSnapshot() {
+  try {
+    return (await safetyBackend().get(SAFETY_UNDO_KEY)) || null;
+  } catch {
+    return null;
+  }
+}
+
+// Keeps the unreadable text exactly as found. The same text is stored only once, so reloading
+// a damaged library does not pile up copies.
+async function quarantineRawLibrary(raw, reason) {
+  const backend = safetyBackend();
+  for (const key of await backend.keys()) {
+    if (!String(key).startsWith(SAFETY_DAMAGED_PREFIX)) continue;
+    if ((await backend.get(key))?.raw === raw) return key;
+  }
+  const createdAt = new Date().toISOString();
+  const key = `${SAFETY_DAMAGED_PREFIX}${createdAt}`;
+  await backend.put(key, { raw, reason, createdAt, length: raw.length });
+  return key;
+}
+
+async function listQuarantinedLibraries() {
+  try {
+    const backend = safetyBackend();
+    const records = [];
+    for (const key of await backend.keys()) {
+      if (!String(key).startsWith(SAFETY_DAMAGED_PREFIX)) continue;
+      const record = await backend.get(key);
+      if (record) records.push({ key, ...record });
+    }
+    return records.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  } catch {
+    return [];
+  }
 }
 const LIBRARY_SCOPE_LABELS = { all: "Everything", artist: "Artist", key: "Key", lyrics: "Lyrics", composer: "Composer", style: "Style · Genre" };
 
@@ -16027,6 +16274,7 @@ function showSettingsMain(title = t("Settings & Backup")) {
   els.settingsTitle.textContent = title;
   appearanceDraft = null;
   refreshBackupStatus();
+  refreshSafetyRows();
 }
 
 function openAppearanceSettings() {
@@ -16097,22 +16345,12 @@ function importLibrary(file) {
       const message = appLanguage === "he"
         ? `הגיבוי כולל ${hebrewCount(review.songCount, "song")}, ${hebrewCount(review.folderCount, "folder")}, ${hebrewCount(review.noteCount, "note")} ו${hebrewCount(review.gigCount, "gig")}.${review.rejectedCount ? ` ${review.rejectedCount} רשומות פגומות או הפניות שבורות יידחו.` : " לא נמצאו רשומות פגומות."} הספרייה הנוכחית במכשיר הזה תוחלף רק לאחר האישור שלך.`
         : englishMessage;
-      openConfirm("Restore this backup?", message, "Restore backup", async () => {
-        await restoreBackupImages(parsedBackup.images);
-        state = trackStateMutations(review.restored);
-        markStateDirty();
-        currentFolderId = ALL_SONGS;
-        selectedSongId = null;
-        mobileView = "library";
-        closeOverlays();
-        render();
-        migrateInlineImages();
-        showToast("Library restored");
-      });
+      openConfirm("Restore this backup?", message, "Restore backup", () => replaceLibrary(parsedBackup, review, "before-restore"));
     } catch {
       showToast("This file is not a valid Song List Pro backup");
     }
   });
+  reader.addEventListener("error", () => showToast("This file could not be read. Your library was not changed."));
   reader.readAsText(file);
 }
 
@@ -16255,6 +16493,188 @@ async function refreshBackupStatus() {
   els.storageStatusText.textContent = persisted === true
     ? t("Your browser has agreed to keep this app's storage. Backups are still the best protection.")
     : t("Your songs are saved on this device. If you clear this site's data or delete the app, they are gone, so keep a backup.");
+}
+// Safe restore and safe start.
+//   * Before a restore replaces the library, the current one is saved as an undo copy
+//     (src/data/safety-store.js). If that copy cannot be saved, nothing is replaced.
+//   * "Undo restore" in Settings puts that copy back, and saves what it replaces, so it can be
+//     switched back (it then reads "Redo restore").
+//   * If the saved library cannot be read at startup, it is kept untouched, saving is blocked,
+//     and a recovery screen offers: restore a backup, export the unreadable data, or start fresh.
+
+function formatSafetyDate(iso) {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  try {
+    return date.toLocaleString(appLocale?.() || undefined, { dateStyle: "medium", timeStyle: "short" });
+  } catch {
+    return date.toISOString().slice(0, 16).replace("T", " ");
+  }
+}
+
+function safetyCountsText(record) {
+  return `${record.songCount || 0} ${plural(record.songCount || 0, "song")}`;
+}
+
+// Replaces the whole library with an already-validated backup. Returns true only when the new
+// library is in place AND saved; on any failure the current library is left exactly as it was.
+async function replaceLibrary(parsedBackup, review, snapshotReason, doneMessage = "Library restored") {
+  closeOverlays();
+  if (persistBlocked && startupDamage && !startupDamage.kept && !startupDamage.exported) {
+    showToast("Export the unreadable data first. This device could not keep a safety copy of it.");
+    return false;
+  }
+  if (!persistBlocked) {
+    try {
+      await saveUndoSnapshot(snapshotReason);
+    } catch {
+      showToast("Could not save a safety copy, so nothing was changed. Export a backup first.");
+      return false;
+    }
+  }
+  try {
+    await restoreBackupImages(parsedBackup.images);
+  } catch {
+    showToast("The restore could not be completed. Your library was not changed.");
+    return false;
+  }
+  const previous = state;
+  const previousDirty = stateDirty;
+  const previousBlocked = persistBlocked;
+  state = trackStateMutations(review.restored);
+  persistBlocked = false;
+  markStateDirty();
+  if (!persist(true)) {
+    state = previous;
+    persistBlocked = previousBlocked;
+    stateDirty = previousDirty;
+    showToast("The restore could not be saved on this device. Your library was not changed.");
+    return false;
+  }
+  startupDamage = null;
+  els.app.inert = false;
+  els.recoveryScreen?.classList.add("hidden");
+  if (els.recoveryScreen) els.recoveryScreen.hidden = true;
+  currentFolderId = ALL_SONGS;
+  selectedSongId = null;
+  mobileView = "library";
+  closeOverlays();
+  render();
+  migrateInlineImages();
+  showToast(doneMessage);
+  return true;
+}
+
+async function requestUndoRestore() {
+  const record = await readUndoSnapshot();
+  if (!record) {
+    showToast("There is no restore to undo.");
+    return;
+  }
+  let parsed;
+  let review;
+  try {
+    parsed = JSON.parse(record.payload);
+    review = prepareBackupRestore(parsed);
+  } catch {
+    showToast("The saved copy could not be read, so nothing was changed.");
+    return;
+  }
+  const redo = record.reason === "before-undo";
+  const when = formatSafetyDate(record.createdAt);
+  const message = appLanguage === "he"
+    ? `הספרייה תחזור למצב שבו הייתה ב-${when} (${safetyCountsText(record)}). הספרייה הנוכחית נשמרת קודם, כך שאפשר לחזור אליה.`
+    : `Your library will go back to how it was on ${when} (${safetyCountsText(record)}). The library you have now is saved first, so you can switch back.`;
+  openConfirm(redo ? "Redo restore?" : "Undo restore?", message, redo ? "Redo restore" : "Undo restore", async () => {
+    await replaceLibrary(parsed, review, redo ? "before-restore" : "before-undo", redo ? "Restore redone" : "Restore undone");
+    refreshSafetyRows();
+  });
+}
+
+async function refreshSafetyRows() {
+  if (!els.undoRestoreBtn) return;
+  const record = await readUndoSnapshot();
+  const redo = record?.reason === "before-undo";
+  els.undoRestoreTitle.textContent = t(redo ? "Redo restore" : "Undo restore");
+  els.undoRestoreSubtitle.textContent = record
+    ? `${t(redo ? "Library from" : "Library before the last restore")} ${formatSafetyDate(record.createdAt)} · ${safetyCountsText(record)}`
+    : t("No restore to undo");
+  const damaged = await listQuarantinedLibraries();
+  els.damagedCopyBtn.hidden = !damaged.length;
+  els.damagedCopyBtn.classList.toggle("hidden", !damaged.length);
+}
+
+async function exportDamagedCopy() {
+  const [latest] = await listQuarantinedLibraries();
+  if (!latest) {
+    showToast("No unreadable library copy is saved on this device.");
+    return;
+  }
+  downloadText(`song-list-pro-unreadable-library-${latest.createdAt.slice(0, 10)}.txt`, latest.raw, "text/plain");
+  showToast("Saved the unreadable data as a file");
+}
+
+// ---------- unreadable library at startup ----------
+
+function recoveryMessageText() {
+  const kept = startupDamage?.kept
+    ? t("The original is kept untouched on this device.")
+    : t("A second safety copy could not be made on this device, so export the unreadable data before doing anything else.");
+  return `${t("The library saved in this browser could not be read.")} ${t(startupDamage?.reason || "")} ${kept} ${t("Nothing new is being saved until you choose an option below.")}`.replace(/\s+/g, " ").trim();
+}
+
+async function initSafetyRecovery() {
+  if (!startupDamage) return;
+  els.app.inert = true;
+  els.recoveryScreen.hidden = false;
+  els.recoveryScreen.classList.remove("hidden");
+  els.recoveryMessage.textContent = recoveryMessageText();
+  try {
+    await quarantineRawLibrary(startupDamage.raw, startupDamage.reason);
+    startupDamage.kept = true;
+  } catch {
+    startupDamage.kept = false;
+  }
+  els.recoveryMessage.textContent = recoveryMessageText();
+}
+
+function initRecoveryUi() {
+  els.undoRestoreBtn?.addEventListener("click", requestUndoRestore);
+  els.damagedCopyBtn?.addEventListener("click", exportDamagedCopy);
+  els.recoveryRestoreBtn?.addEventListener("click", () => els.backupFileInput.click());
+  els.recoveryExportBtn?.addEventListener("click", () => {
+    if (!startupDamage) return;
+    downloadText(`song-list-pro-unreadable-library-${new Date().toISOString().slice(0, 10)}.txt`, startupDamage.raw, "text/plain");
+    startupDamage.exported = true;
+    showToast("Saved the unreadable data as a file");
+  });
+  els.recoveryFreshBtn?.addEventListener("click", () => {
+    els.recoveryFreshText.textContent = startupDamage?.kept || startupDamage?.exported
+      ? t("This starts an empty library. The unreadable data stays saved on this device and in Settings, so it can still be exported later.")
+      : t("The unreadable data could not be kept on this device and has not been exported. Starting fresh will erase it for good.");
+    els.recoveryFreshPanel.hidden = false;
+    els.recoveryFreshPanel.classList.remove("hidden");
+  });
+  els.recoveryFreshCancelBtn?.addEventListener("click", () => {
+    els.recoveryFreshPanel.hidden = true;
+    els.recoveryFreshPanel.classList.add("hidden");
+  });
+  els.recoveryFreshConfirmBtn?.addEventListener("click", () => {
+    if (!startupDamage) return;
+    persistBlocked = false;
+    markStateDirty();
+    if (!persist(true)) {
+      persistBlocked = true;
+      showToast("This device could not save. Your unreadable data was not changed.");
+      return;
+    }
+    startupDamage = null;
+    els.app.inert = false;
+    els.recoveryScreen.hidden = true;
+    els.recoveryScreen.classList.add("hidden");
+    render();
+    showToast("Started a new empty library");
+  });
 }
 function renderGigs() {
   if (workspaceMode !== "gigs") {
@@ -23261,6 +23681,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 initToolsUi();
+initRecoveryUi();
 initPerformanceUi();
 initChordEditorUi();
 // Return in the Artist field starts the next artist name instead of submitting anything.
@@ -23291,7 +23712,8 @@ initBoardBoardsUi();
 initBoardSearchUi();
 applyAppLanguage();
 render();
-migrateInlineImages().then(cleanUnusedImages).catch(() => {});
+initSafetyRecovery();
+if (!persistBlocked) migrateInlineImages().then(cleanUnusedImages).catch(() => {});
 registerOfflineSupport();
 
 </script>
