@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#f4f5f3" />
@@ -5691,66 +5692,118 @@ html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir
 .recovery-fresh { display: grid; gap: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
 .recovery-fresh.hidden, .recovery-fresh[hidden] { display: none; }
 
-/* ============ Practice view (reuses the Performance view's dark stage styling) ============ */
+/* ============ Practice view (reuses the Performance view's dark stage styling) ============
+   Phone portrait: the player sits above the lyrics. An audio file's controls fold into a slim bar at the
+   bottom when the lyrics are scrolled up. A YouTube video stays visible beside its controls.
+   Phone landscape: the player on the left (about 40%), the lyrics on the right.
+   Wide screens (iPad, computer): the player in a column beside the lyrics. */
 body.practice-open { overflow: hidden; }
-.practice-view.hidden, .practice-view[hidden] { display: none; }
+.practice-view[hidden], .practice-view.hidden { display: none; }
+.practice-view:focus { outline: none; }
 .practice-bar .perf-bar__row { justify-content: flex-start; }
 .practice-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 600; color: #F2F2EE; }
-.practice-player { flex-shrink: 0; display: grid; gap: 10px; padding: 10px 12px; background: #0E1116; }
-.practice-view .perf-scroll { padding-bottom: 40vh; }
+.practice-bar a.perf-btn { text-decoration: none; flex-shrink: 0; }
+a.perf-btn[hidden] { display: none; }
+.practice-body { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
+.practice-player { flex-shrink: 0; display: grid; gap: 6px; padding: 8px 12px; background: #0E1116; }
+.practice-view .perf-scroll { flex: 1; min-height: 0; padding: 10px 22px 45vh; }
+.practice-stage { display: grid; gap: 8px; direction: ltr; }
 .practice-video { width: 100%; max-width: 640px; margin-inline: auto; aspect-ratio: 16 / 9; min-width: 200px; min-height: 200px; background: #000; border-radius: 12px; overflow: hidden; }
 .practice-video[hidden] { display: none; }
 .practice-video iframe { width: 100%; height: 100%; border: 0; display: block; }
-.practice-message { margin: 0; padding: 10px 12px; border-radius: 12px; background: #232A33; color: #D7DDE6; font-size: 14px; line-height: 1.4; }
+.practice-file-card { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; background: #151A21; color: #F2F2EE; }
+.practice-file-card[hidden] { display: none; }
+.practice-file-card svg { width: 22px; height: 22px; color: #FFC857; flex-shrink: 0; }
+.practice-file-card span { min-width: 0; overflow-wrap: anywhere; font-size: 13px; font-weight: 600; }
+.practice-message { margin: 0; padding: 8px 12px; border-radius: 12px; background: #232A33; color: #D7DDE6; font-size: 14px; line-height: 1.4; }
 .practice-message[hidden] { display: none; }
-.practice-transport { display: flex; align-items: center; justify-content: center; gap: 18px; }
-.practice-btn { position: relative; display: grid; place-items: center; width: 56px; height: 56px; border: none; border-radius: 50%; background: #232A33; color: #F2F2EE; font-family: inherit; cursor: pointer; }
-.practice-btn:disabled { opacity: 0.4; cursor: default; }
-.practice-btn svg { width: 24px; height: 24px; }
-.practice-btn span { position: absolute; font-size: 11px; font-weight: 700; pointer-events: none; }
-.practice-btn--play { width: 68px; height: 68px; background: #FFC857; color: #0E1116; }
-.practice-btn--play svg { width: 30px; height: 30px; }
+.practice-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px; }
+.practice-transport, .practice-speed, .practice-loop { display: flex; align-items: center; }
+.practice-transport { gap: 6px; }
+.practice-btn { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border: none; border-radius: 50%; background: #232A33; color: #F2F2EE; font-family: inherit; cursor: pointer; }
+.practice-btn:disabled, .practice-speed button:disabled, .practice-chip:disabled { opacity: 0.4; cursor: default; }
+.practice-btn svg { width: 22px; height: 22px; }
+.practice-btn span { position: absolute; font-size: 10px; font-weight: 700; pointer-events: none; }
+.practice-btn--play { width: 52px; height: 52px; background: #FFC857; color: #0E1116; }
+.practice-btn--play svg { width: 26px; height: 26px; }
 .practice-btn--play .practice-pause-icon, .practice-btn--play.playing .practice-play-icon { display: none; }
 .practice-btn--play.playing .practice-pause-icon { display: block; }
-.practice-scrub { display: flex; align-items: center; gap: 10px; }
-.practice-clock { min-width: 44px; color: #8FA3B8; font-size: 13px; font-variant-numeric: tabular-nums; text-align: center; }
-.practice-seek { flex: 1; min-width: 0; height: 44px; accent-color: #FFC857; }
-.practice-chips, .practice-loop { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
-.practice-chip { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; min-width: 56px; padding: 0 14px; border: none; border-radius: 999px; background: #232A33; color: #D7DDE6; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.practice-btn--mini { width: 44px; height: 44px; }
+.practice-speed { background: #232A33; border-radius: 999px; overflow: hidden; }
+.practice-speed button { height: 44px; min-width: 44px; border: none; background: transparent; color: #F2F2EE; font-family: inherit; font-size: 20px; font-weight: 600; cursor: pointer; }
+.practice-speed .practice-speed__value { min-width: 64px; padding: 0 4px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.practice-loop { gap: 6px; }
+.practice-chip { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 0 12px; border: none; border-radius: 999px; background: #232A33; color: #D7DDE6; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
 .practice-chip[hidden] { display: none; }
-.practice-chip:disabled { opacity: 0.4; cursor: default; }
 .practice-chip[aria-pressed="true"], .practice-chip.set { background: #FFC857; color: #0E1116; }
-.practice-chip svg { width: 16px; height: 16px; }
-.practice-loop-read { display: block; text-align: center; color: #8FA3B8; font-size: 13px; font-variant-numeric: tabular-nums; }
+.practice-chip svg { width: 18px; height: 18px; }
+.practice-seg { display: flex; justify-content: center; gap: 8px; }
+.practice-seg[hidden] { display: none; }
+.practice-seg .practice-chip { font-size: 14px; font-weight: 600; }
+.practice-scrub { display: flex; align-items: center; gap: 8px; }
+.practice-clock { min-width: 40px; color: #8FA3B8; font-size: 12px; font-variant-numeric: tabular-nums; text-align: center; }
+.practice-track { position: relative; flex: 1; min-width: 0; height: 44px; display: grid; align-items: center; }
+.practice-loopband { position: absolute; top: 50%; height: 12px; margin-top: -6px; left: var(--loop-start, 0%); width: var(--loop-width, 0%); border-radius: 4px; background: rgba(255, 200, 87, 0.5); pointer-events: none; }
+.practice-loopband.off { background: rgba(143, 163, 184, 0.35); }
+.practice-loopband[hidden] { display: none; }
+.practice-seek { -webkit-appearance: none; appearance: none; position: relative; width: 100%; height: 44px; margin: 0; background: transparent; }
+.practice-seek::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(to right, #FFC857 var(--p, 0%), #394150 var(--p, 0%)); }
+.practice-seek::-moz-range-track { height: 4px; border-radius: 2px; background: #394150; }
+.practice-seek::-moz-range-progress { height: 4px; border-radius: 2px; background: #FFC857; }
+.practice-seek::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -7px; border-radius: 50%; background: #FFC857; border: 2px solid #0E1116; }
+.practice-seek::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #FFC857; border: 2px solid #0E1116; }
+.practice-mini { position: absolute; inset: auto 0 0 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px)); background: #151A21; border-top: 1px solid #232A33; }
+.practice-mini[hidden] { display: none; }
+.practice-view[data-mini="true"] .practice-player { display: none; }
+.practice-view[data-mini="true"] .practice-body { flex-direction: column; }
+.practice-view[data-mini="true"] .perf-scroll { padding-bottom: 96px; }
+.practice-view .practice-pitch[hidden] { display: none; }
+
+/* Phone portrait, YouTube: the video (never smaller than 200 x 200) beside its controls, on the side the lyrics do not start from. */
+@media (max-width: 520px) and (orientation: portrait) {
+  .practice-view[data-source="youtube"] .practice-stage { grid-template-columns: 1fr 200px; align-items: stretch; }
+  .practice-view[data-source="youtube"][data-lyrics-dir="rtl"] .practice-stage { grid-template-columns: 200px 1fr; }
+  .practice-view[data-source="youtube"] .practice-video { grid-row: 1; grid-column: 2; width: 200px; height: 200px; aspect-ratio: auto; margin: 0; max-width: none; }
+  .practice-view[data-source="youtube"][data-lyrics-dir="rtl"] .practice-video { grid-column: 1; }
+  .practice-view[data-source="youtube"] .practice-controls { grid-row: 1; grid-column: 1; flex-direction: column; justify-content: center; gap: 6px; }
+  .practice-view[data-source="youtube"][data-lyrics-dir="rtl"] .practice-controls { grid-column: 2; }
+  .practice-view[data-source="youtube"] .practice-loop { display: grid; grid-template-columns: repeat(2, 1fr); width: 100%; max-width: 150px; }
+}
+
+/* Phone landscape: player on the left (about 40%), lyrics on the right. Never overlapping. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .practice-body { flex-direction: row; direction: ltr; }          /* the player stays on the left in Hebrew too */
+  .practice-player { width: 40%; max-width: 440px; overflow-y: auto; align-content: start; border-right: 1px solid #232A33; }
+  .practice-view[data-mini="true"] .practice-player { display: none; }
+  .practice-view[data-mini="true"] .practice-body { flex-direction: row; }
+  .practice-video { max-width: none; aspect-ratio: auto; height: 200px; }
+  .practice-view .perf-scroll { flex: 1; min-width: 0; padding-bottom: 30vh; }
+  .practice-view[data-mini="true"] .perf-scroll { padding-bottom: 96px; }
+  .practice-controls { gap: 4px 8px; }
+}
+
+/* Wide, tall screens (iPad, computer): the player in a column beside the lyrics (no collapsing there).
+   A landscape phone is wide but short, so it takes the landscape rule above instead. */
+@media (min-width: 900px) and (min-height: 521px) {
+  .practice-body { flex-direction: row; }
+  .practice-player { width: clamp(360px, 36vw, 480px); overflow-y: auto; align-content: start; border-right: 1px solid #232A33; padding: 12px; }
+  .practice-view .perf-scroll { flex: 1; min-width: 0; }
+  .practice-video { max-width: none; }
+  .practice-view[data-mini="true"] .practice-player { display: grid; }
+}
+
 .practice-file-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .practice-file-name { flex: 1 1 140px; min-width: 0; overflow-wrap: anywhere; white-space: normal; color: var(--color-text-secondary); font-size: var(--text-md); }
 .practice-file-row .slp-btn { min-height: 44px; }
 .practice-file-hint { margin: 4px 0 var(--space-6); color: var(--color-text-secondary); font-size: var(--text-sm); }
-.practice-seg { display: flex; justify-content: center; gap: 8px; }
-.practice-seg[hidden] { display: none; }
-.practice-file-card { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 12px; background: #151A21; color: #F2F2EE; }
-.practice-file-card[hidden] { display: none; }
-.practice-file-card svg { width: 28px; height: 28px; color: #FFC857; flex-shrink: 0; }
-.practice-file-card span { min-width: 0; overflow-wrap: anywhere; font-size: 14px; font-weight: 600; }
-/* Short phones: tighter spacing so the lyrics keep room under the player (targets stay 44px+). */
-@media (max-height: 740px) {
-  .practice-player { gap: 6px; padding-block: 6px; }
-  .practice-btn { width: 48px; height: 48px; }
-  .practice-btn--play { width: 56px; height: 56px; }
-  .practice-transport { gap: 14px; }
-  .practice-video { max-width: 300px; }
-}
-/* Wide screens: the player on one side, the lyrics beside it. */
-@media (min-width: 900px) {
-  .practice-view:not(.hidden) { display: grid; grid-template-columns: minmax(360px, 480px) 1fr; grid-template-rows: auto 1fr; }
-  .practice-view .practice-bar { grid-column: 1 / -1; }
-  .practice-view .practice-player { grid-row: 2; grid-column: 1; overflow-y: auto; align-content: start; border-inline-end: 1px solid #232A33; }
-  .practice-view .perf-scroll { grid-row: 2; grid-column: 2; }
-  .practice-video { max-width: none; }
-}
-.practice-view:focus { outline: none; }
-a.perf-btn[hidden] { display: none; }
-.practice-bar a.perf-btn { text-decoration: none; flex-shrink: 0; }
+/* Banner: another window saved, or this device cannot save. Above the app, below dialogs (scrim 20, dialogs 25). */
+.save-banner { position: fixed; inset: env(safe-area-inset-top, 0px) 0 auto 0; z-index: 17; display: grid; gap: var(--space-4); padding: var(--space-5) var(--space-7); background: color-mix(in srgb, #F59E0B 24%, var(--color-card)); color: var(--color-text); border-bottom: 1px solid color-mix(in srgb, #F59E0B 50%, var(--color-border)); box-shadow: var(--shadow-card); }
+.save-banner[hidden] { display: none; }
+.save-banner__text { margin: 0; font-size: var(--text-md); line-height: 1.4; }
+.save-banner__actions { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.save-banner__actions .slp-btn { min-height: 44px; }
+.save-banner__actions .slp-btn[hidden] { display: none; }
+.save-banner .slp-btn--soft { background: var(--color-card); color: var(--color-text); box-shadow: inset 0 0 0 1px var(--color-border); }
 
 }
 
@@ -6369,11 +6422,18 @@ a.perf-btn[hidden] { display: none; }
         <button id="recoveryFreshBtn" class="slp-btn slp-btn--ghost recovery-btn" type="button">Start fresh</button>
         <div id="recoveryFreshPanel" class="recovery-fresh hidden" hidden>
           <p id="recoveryFreshText" class="recovery-text"></p>
-          <button id="recoveryFreshConfirmBtn" class="slp-btn slp-btn--soft recovery-btn" type="button">Start a new empty library</button>
+          <button id="recoveryFreshConfirmBtn" class="slp-btn slp-btn--soft recovery-btn" type="button">Start a new library with no songs</button>
           <button id="recoveryFreshCancelBtn" class="slp-btn slp-btn--ghost recovery-btn" type="button">Back</button>
         </div>
       </div>
     </section>
+    <aside id="saveBanner" class="save-banner" role="alert" hidden>
+      <p id="saveBannerText" class="save-banner__text"></p>
+      <div class="save-banner__actions">
+        <button id="saveBannerPrimary" class="slp-btn slp-btn--primary" type="button">Reload</button>
+        <button id="saveBannerSecondary" class="slp-btn slp-btn--soft" type="button">Keep this window's version</button>
+      </div>
+    </aside>
     <div id="scrim" class="scrim hidden" hidden></div>
 
     <section id="folderDialog" class="modal folder-dialog hidden" hidden role="dialog" aria-modal="true" aria-labelledby="folderDialogTitle">
@@ -6927,7 +6987,7 @@ a.perf-btn[hidden] { display: none; }
         </button>
         <button id="damagedCopyBtn" class="slp-row hidden" type="button" hidden>
           <span class="slp-row__icon-tile"><i data-lucide="file-warning"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Unreadable library copy</span><span class="slp-row__subtitle">Export the damaged data kept on this device</span></span>
+          <span class="slp-row__body"><span class="slp-row__title">Set-aside library copy</span><span class="slp-row__subtitle">Export a copy the app set aside (damaged, or replaced by another window)</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         <div id="practiceAudioRow" hidden>
@@ -7135,43 +7195,68 @@ a.perf-btn[hidden] { display: none; }
           <a id="practiceOpenExternal" class="perf-btn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open in YouTube" title="Open in YouTube" hidden><i data-lucide="external-link"></i></a>
         </div>
       </header>
-      <div id="practicePlayer" class="practice-player">
-        <div id="practiceSourceToggle" class="practice-seg" role="group" aria-label="Practice source" hidden>
-          <button class="practice-chip" type="button" data-source="file" aria-pressed="false">Audio file</button>
-          <button class="practice-chip" type="button" data-source="youtube" aria-pressed="false">YouTube</button>
+      <div id="practiceBody" class="practice-body">
+        <div id="practicePlayer" class="practice-player">
+          <div id="practiceSourceToggle" class="practice-seg" role="group" aria-label="Practice source" hidden>
+            <button class="practice-chip" type="button" data-source="file" aria-pressed="false">Audio file</button>
+            <button class="practice-chip" type="button" data-source="youtube" aria-pressed="false">YouTube</button>
+          </div>
+          <div class="practice-stage">
+            <div id="practiceFileCard" class="practice-file-card" hidden><i data-lucide="headphones"></i><span id="practiceFileLabel" dir="auto"></span></div>
+            <div id="practiceVideo" class="practice-video" hidden></div>
+            <div class="practice-controls" dir="ltr">
+              <div class="practice-transport">
+                <button id="practiceBackBtn" class="practice-btn" type="button" aria-label="Back 5 seconds" disabled><i data-lucide="rotate-ccw"></i><span>5</span></button>
+                <button id="practicePlayBtn" class="practice-btn practice-btn--play" type="button" aria-label="Play" aria-pressed="false" disabled>
+                  <svg class="practice-play-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                  <svg class="practice-pause-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                </button>
+                <button id="practiceFwdBtn" class="practice-btn" type="button" aria-label="Forward 5 seconds" disabled><i data-lucide="rotate-cw"></i><span>5</span></button>
+              </div>
+              <div class="practice-speed" role="group" aria-label="Speed">
+                <button id="practiceSlowerBtn" type="button" aria-label="Slower" disabled>&minus;</button>
+                <button id="practiceSpeedValue" class="practice-speed__value" type="button" aria-label="Speed. Tap to go back to 1x" disabled>1x</button>
+                <button id="practiceFasterBtn" type="button" aria-label="Faster" disabled>+</button>
+              </div>
+              <div id="practicePitch" class="practice-speed practice-pitch" role="group" aria-label="Pitch in semitones" hidden>
+                <button id="practicePitchDown" type="button" aria-label="Lower the pitch" disabled>&minus;</button>
+                <button id="practicePitchValue" class="practice-speed__value" type="button" aria-label="Pitch. Tap to reset" disabled>0</button>
+                <button id="practicePitchUp" type="button" aria-label="Raise the pitch" disabled>+</button>
+              </div>
+              <div class="practice-loop" role="group" aria-label="Loop between two points">
+                <button id="practiceSetABtn" class="practice-chip" type="button" aria-label="Set point A" disabled><span translate="no">A</span></button>
+                <button id="practiceSetBBtn" class="practice-chip" type="button" aria-label="Set point B" disabled><span translate="no">B</span></button>
+                <button id="practiceLoopBtn" class="practice-chip" type="button" aria-label="Loop" aria-pressed="false" disabled><i data-lucide="repeat"></i></button>
+                <button id="practiceClearBtn" class="practice-chip" type="button" aria-label="Clear the loop" disabled>&times;</button>
+              </div>
+            </div>
+          </div>
+          <p id="practiceMessage" class="practice-message" role="status" hidden></p>
+          <div class="practice-scrub" dir="ltr">
+            <span id="practiceTime" class="practice-clock">0:00</span>
+            <div class="practice-track">
+              <div id="practiceLoopBand" class="practice-loopband" hidden></div>
+              <input id="practiceSeek" class="practice-seek" type="range" min="0" max="1" step="0.1" value="0" aria-label="Position in the song" disabled>
+            </div>
+            <span id="practiceDuration" class="practice-clock">0:00</span>
+          </div>
         </div>
-        <div id="practiceFileCard" class="practice-file-card" hidden><i data-lucide="headphones"></i><span id="practiceFileLabel" dir="auto"></span></div>
-        <div id="practiceVideo" class="practice-video" hidden></div>
-        <p id="practiceMessage" class="practice-message" role="status" hidden></p>
-        <div class="practice-transport" dir="ltr">
-          <button id="practiceBackBtn" class="practice-btn" type="button" aria-label="Back 5 seconds" disabled><i data-lucide="rotate-ccw"></i><span>5</span></button>
-          <button id="practicePlayBtn" class="practice-btn practice-btn--play" type="button" aria-label="Play" aria-pressed="false" disabled>
+        <div id="practiceScroll" class="perf-scroll">
+          <div id="practiceDoc" class="perf-doc song-document" dir="auto"></div>
+        </div>
+        <div id="practiceMini" class="practice-mini" dir="ltr" hidden>
+          <button id="practiceMiniPlay" class="practice-btn practice-btn--play practice-btn--mini" type="button" aria-label="Play" aria-pressed="false" disabled>
             <svg class="practice-play-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             <svg class="practice-pause-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
           </button>
-          <button id="practiceFwdBtn" class="practice-btn" type="button" aria-label="Forward 5 seconds" disabled><i data-lucide="rotate-cw"></i><span>5</span></button>
+          <div class="practice-speed" role="group" aria-label="Speed">
+            <button id="practiceMiniSlower" type="button" aria-label="Slower" disabled>&minus;</button>
+            <button id="practiceMiniSpeed" class="practice-speed__value" type="button" aria-label="Speed. Tap to go back to 1x" disabled>1x</button>
+            <button id="practiceMiniFaster" type="button" aria-label="Faster" disabled>+</button>
+          </div>
+          <button id="practiceMiniLoop" class="practice-chip" type="button" aria-label="Loop" aria-pressed="false" disabled><i data-lucide="repeat"></i></button>
+          <button id="practiceMiniExpand" class="practice-chip practice-chip--icon" type="button" aria-label="Show the player"><i data-lucide="chevron-up"></i></button>
         </div>
-        <div id="practiceSpeed" class="practice-chips" role="group" aria-label="Speed" dir="ltr">
-          <button class="practice-chip" type="button" data-rate="0.5" aria-pressed="false" disabled>0.5×</button>
-          <button class="practice-chip" type="button" data-rate="0.75" aria-pressed="false" disabled>0.75×</button>
-          <button class="practice-chip" type="button" data-rate="1" aria-pressed="true" disabled>1×</button>
-          <button class="practice-chip" type="button" data-rate="1.25" aria-pressed="false" disabled>1.25×</button>
-        </div>
-        <div class="practice-scrub" dir="ltr">
-          <span id="practiceTime" class="practice-clock">0:00</span>
-          <input id="practiceSeek" class="practice-seek" type="range" min="0" max="1" step="0.1" value="0" aria-label="Position in the song" disabled>
-          <span id="practiceDuration" class="practice-clock">0:00</span>
-        </div>
-        <div class="practice-loop" role="group" aria-label="Loop between two points">
-          <button id="practiceSetABtn" class="practice-chip" type="button" disabled>Set A</button>
-          <button id="practiceSetBBtn" class="practice-chip" type="button" disabled>Set B</button>
-          <button id="practiceLoopBtn" class="practice-chip" type="button" aria-pressed="false" disabled><i data-lucide="repeat"></i><span>Loop</span></button>
-          <button id="practiceClearBtn" class="practice-chip" type="button" disabled>Clear</button>
-        </div>
-        <output id="practiceLoopRead" class="practice-loop-read" dir="ltr">No loop set</output>
-      </div>
-      <div id="practiceScroll" class="perf-scroll">
-        <div id="practiceDoc" class="perf-doc song-document" dir="auto"></div>
       </div>
     </section>
 
@@ -7490,7 +7575,7 @@ const els = Object.fromEntries(
     "artistSection", "artistCount", "artistList", "songsSection", "subfolderSection", "subfolderCount", "subfolderList", "attachedNotesSection", "attachedNoteCount", "attachedNoteList", "songSortSelect", "sortMenuBtn", "sortMenuLabel", "songList", "songEmptyState",
     "editSubfoldersBtn", "newSubfolderBtn",
     "songReader", "backToFolderBtn", "songTitle", "songAppearanceBtn", "songMoreBtn",
-    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceSpeed", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceLoopRead", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
+    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceBody", "practiceSlowerBtn", "practiceSpeedValue", "practiceFasterBtn", "practicePitch", "practiceLoopBand", "practiceMini", "practiceMiniPlay", "practiceMiniSlower", "practiceMiniSpeed", "practiceMiniFaster", "practiceMiniLoop", "practiceMiniExpand", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
     "insertDisclosureBtn", "textFormatMenu", "boldTextBtn", "underlineTextBtn", "clearTextFormatBtn", "insertImageBtn", "undoBtn", "redoBtn", "finishWritingBtn",
     "imageToolbar", "imageWidthInput", "imageWidthOutput", "imageAlignLeftBtn", "imageAlignCenterBtn",
     "imageAlignRightBtn", "deleteImageBtn", "finishImageBtn",
@@ -7501,7 +7586,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
+    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "languageSettingsBtn", "languageSettingsValue", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -7550,6 +7635,12 @@ function trackStateMutations(value) {
 // block on saving so the damaged record is not overwritten before the user chooses what to do.
 let startupDamage = null;
 let persistBlocked = false;
+// Set when another window saved a different library, and when this device cannot write (see persist()).
+// Set by loadState() when saved records shared ids: how many were dropped, and the text as it was saved.
+let startupDuplicatesRemoved = 0;
+let startupDuplicateRaw = "";
+let externalChange = false;
+let saveFailing = false;
 let state = trackStateMutations(loadState());
 let lastPersistedSnapshot = readStorage(STORAGE_KEY);
 let workspaceMode = "library";
@@ -7731,7 +7822,7 @@ function collectStaticStrings() {
   while (walker.nextNode()) {
     const node = walker.currentNode;
     const parent = node.parentElement;
-    if (!parent || /^(SCRIPT|STYLE|TEXTAREA)$/.test(parent.tagName)) continue;
+    if (!parent || /^(SCRIPT|STYLE|TEXTAREA)$/.test(parent.tagName) || parent.closest("[translate=no]")) continue;
     const text = node.nodeValue.trim();
     if (text && /[A-Za-z]/.test(text)) i18nStatic.push({ target: node, attr: null, source: text, raw: node.nodeValue });
   }
@@ -8802,14 +8893,14 @@ Object.assign(HEBREW_UI, {
  "Restore a backup": "שחזור מגיבוי",
  "Export unreadable data": "ייצוא הנתונים שלא ניתן לקרוא",
  "Start fresh": "התחלה מחדש",
- "Start a new empty library": "פתיחת ספרייה ריקה חדשה",
+ "Start a new library with no songs": "פתיחת ספרייה חדשה ללא שירים",
  "Back": "חזרה",
- "Started a new empty library": "נפתחה ספרייה ריקה חדשה",
+ "Started a new library with no songs": "נפתחה ספרייה חדשה ללא שירים",
  "The library saved in this browser could not be read.": "לא ניתן היה לקרוא את הספרייה ששמורה בדפדפן הזה.",
  "The original is kept untouched on this device.": "המקור נשמר במכשיר ללא שינוי.",
  "A second safety copy could not be made on this device, so export the unreadable data before doing anything else.": "לא ניתן היה ליצור עותק ביטחון נוסף במכשיר, ולכן יש לייצא את הנתונים לפני כל פעולה אחרת.",
  "Nothing new is being saved until you choose an option below.": "שום דבר חדש לא נשמר עד שתבחר באחת האפשרויות למטה.",
- "This starts an empty library. The unreadable data stays saved on this device and in Settings, so it can still be exported later.": "זה פותח ספרייה ריקה. הנתונים שלא ניתן לקרוא נשארים שמורים במכשיר ובהגדרות, ואפשר לייצא אותם גם אחר כך.",
+ "This starts a new library with no songs. The unreadable data stays saved on this device and in Settings, so it can still be exported later.": "זה פותח ספרייה ריקה. הנתונים שלא ניתן לקרוא נשארים שמורים במכשיר ובהגדרות, ואפשר לייצא אותם גם אחר כך.",
  "The unreadable data could not be kept on this device and has not been exported. Starting fresh will erase it for good.": "לא ניתן היה לשמור את הנתונים במכשיר והם לא יוצאו. התחלה מחדש תמחק אותם לצמיתות.",
  "Export the unreadable data first. This device could not keep a safety copy of it.": "יש לייצא קודם את הנתונים שלא ניתן לקרוא. המכשיר לא הצליח לשמור מהם עותק ביטחון.",
  "This device could not save. Your unreadable data was not changed.": "המכשיר לא הצליח לשמור. הנתונים שלא ניתן לקרוא לא השתנו.",
@@ -8879,6 +8970,43 @@ Object.assign(HEBREW_UI, {
  "Every audio file is attached to a song.": "כל קבצי השמע מחוברים לשירים.",
  "Remove unused audio?": "להסיר שמע שאינו בשימוש?",
  "Unused audio removed": "השמע שאינו בשימוש הוסר"
+});
+
+Object.assign(HEBREW_UI, {
+ "Another window saved changes to your library. Reload to see them.": "חלון אחר שמר שינויים בספרייה שלך. אפשר לרענן כדי לראות אותם.",
+ "Another window saved changes to your library. What you changed here is not saved yet.": "חלון אחר שמר שינויים בספרייה שלך. מה ששינית כאן עדיין לא נשמר.",
+ "Reload": "רענון",
+ "Keep this window's version": "להשאיר את הגרסה של החלון הזה",
+ "This device could not save your changes (its storage may be full). Back up now so nothing is lost.": "המכשיר לא הצליח לשמור את השינויים (ייתכן שהאחסון מלא). כדאי לגבות עכשיו כדי שלא יאבד דבר.",
+ "Back up now": "גיבוי עכשיו",
+ "Replace the other window's changes?": "להחליף את השינויים של החלון האחר?",
+ "This window's version will be saved over the library the other window saved. The other version is set aside first, and you can export it from Settings.": "הגרסה של החלון הזה תישמר במקום הספרייה שהחלון האחר שמר. הגרסה האחרת נשמרת בצד קודם, ואפשר לייצא אותה מההגדרות.",
+ "Could not set the other version aside, so nothing was changed.": "לא ניתן היה לשמור בצד את הגרסה האחרת, ולכן שום דבר לא השתנה.",
+ "Saved. The other version was set aside in Settings.": "נשמר. הגרסה האחרת נשמרה בצד בהגדרות.",
+ "Not saved. See the message at the top of the screen.": "לא נשמר. ראו את ההודעה בראש המסך.",
+ "Set-aside library copy": "עותק ספרייה שנשמר בצד",
+ "Export a copy the app set aside (damaged, or replaced by another window)": "ייצוא עותק שהאפליקציה שמרה בצד (פגום, או שהוחלף על ידי חלון אחר)"
+});
+
+Object.assign(HEBREW_UI, {
+ "The restore could not be completed. Your library was not changed.": "לא ניתן היה להשלים את השחזור. הספרייה לא השתנתה."
+});
+
+Object.assign(HEBREW_UI, {
+ "Slower": "איטי יותר",
+ "Faster": "מהיר יותר",
+ "Speed. Tap to go back to 1x": "מהירות. לחיצה מחזירה ל-1x",
+ "Set point A": "נקודה A",
+ "Set point B": "נקודה B",
+ "Clear the loop": "ניקוי הלולאה",
+ "on": "פועלת",
+ "off": "כבויה",
+ "Show the player": "הצגת הנגן",
+ "Pitch in semitones": "גובה צליל בחצאי טונים",
+ "Lower the pitch": "הורדת הצליל",
+ "Raise the pitch": "העלאת הצליל",
+ "Pitch. Tap to reset": "גובה צליל. לחיצה מאפסת",
+ "YouTube needs the https version of the app. Open the website link instead.": "YouTube דורש את גרסת ה-https של האפליקציה. כדאי לפתוח את קישור האתר."
 });
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
@@ -9005,12 +9133,37 @@ function checkStoredLibrary(raw) {
   return { ok: true, parsed };
 }
 
+// Removes later records that repeat an earlier record's id, in every list. Returns how many went.
+function dropRepeatedIds(library) {
+  const lists = ["folders", "songs", "savedSearches", "noteFolders", "notes", "noteLocationLinks", "gigs", "gigSections", "gigSets", "gigSetItems", "setTemplates", "setTemplateItems"];
+  let removed = 0;
+  lists.forEach((field) => {
+    if (!Array.isArray(library[field])) return;
+    const seen = new Set();
+    library[field] = library[field].filter((record) => {
+      const id = String(record?.id || "").trim();
+      if (!id) return true;
+      if (seen.has(id)) { removed += 1; return false; }
+      seen.add(id);
+      return true;
+    });
+  });
+  return removed;
+}
+
 function loadState() {
   const current = readStorage(STORAGE_KEY);
   if (current) {
     const check = checkStoredLibrary(current);
     if (check.ok) {
       try {
+        // Records that share an id cannot be told apart by anything that looks them up by id. The first
+        // of each is kept; the saved text as found is set aside afterwards (see initSafetyRecovery).
+        const removed = dropRepeatedIds(check.parsed);
+        if (removed) {
+          startupDuplicatesRemoved = removed;
+          startupDuplicateRaw = current;
+        }
         return normalizeState(check.parsed);
       } catch {
         check.ok = false;
@@ -9037,10 +9190,10 @@ function loadState() {
   return createInitialState();
 }
 
-function createInitialState() {
+function createInitialState({ starterSongs = true } = {}) {
   const base = createFolderFoundation();
   const folderIdByName = Object.fromEntries(base.folders.map((folder) => [folder.name, folder.id]));
-  const songs = STARTER_SONGS.map((song) => normalizeSong({
+  const songs = (starterSongs ? STARTER_SONGS : []).map((song) => normalizeSong({
     ...song,
     id: makeId(),
     folderIds: song.folderNames.map((name) => folderIdByName[name]).filter(Boolean)
@@ -9315,7 +9468,7 @@ function normalizeState(raw) {
     songId: item.songId,
     position: Number.isFinite(Number(item.position)) ? Number(item.position) : index,
     performanceStatus: performanceStatuses.has(item.performanceStatus) ? item.performanceStatus : "planned",
-    keyOverride: String(item.keyOverride || ""),
+    keyOverride: eventKeyFor(songs.find((song) => song.id === item.songId), String(item.keyOverride || "")),
     transitionNote: String(item.transitionNote || ""),
     gigNote: String(item.gigNote || ""),
     createdAt: item.createdAt || new Date().toISOString(),
@@ -9584,6 +9737,15 @@ function markStateDirty() {
   stateDirty = true;
 }
 
+// True when another window (or tab) of this app has saved a different library since this one loaded
+// or last saved. Saving then would overwrite its changes, so this window must not write.
+function anotherWindowSaved() {
+  if (readStorage(STORAGE_KEY) === lastPersistedSnapshot) return false;
+  externalChange = true;
+  showSaveBanner("external");          // also refreshes the wording: this window now has unsaved changes
+  return true;
+}
+
 function persist(force = true) {
   clearTimeout(pendingStorageTimer);
   pendingStorageTimer = null;
@@ -9594,17 +9756,30 @@ function persist(force = true) {
     stateDirty = false;
     return true;
   }
+  if (anotherWindowSaved()) return false;
   const saved = writeStorage(STORAGE_KEY, snapshot);
-  if (!saved && !storageWarningShown) {
-    storageWarningShown = true;
-    showToast("This device could not save. Export a backup before continuing.");
+  if (!saved) {
+    if (!saveFailing) {
+      saveFailing = true;
+      showSaveBanner("failing");
+    }
     if (els.noteSaveStatus) els.noteSaveStatus.textContent = t("Not saved - storage is full");
-  }
-  if (saved) {
+  } else {
     lastPersistedSnapshot = snapshot;
     storageWarningShown = false;
     stateDirty = false;
+    if (saveFailing) {
+      saveFailing = false;
+      hideSaveBanner("failing");
+    }
   }
+  return saved;
+}
+
+// Saves, then says so only if it worked.
+function persistThenToast(message) {
+  const saved = persist();
+  showToast(saved ? message : "Not saved. See the message at the top of the screen.");
   return saved;
 }
 
@@ -9809,34 +9984,61 @@ function songImageRefs(song) {
 
 // Backups embed the pictures the songs actually reference, as data: URLs, so a
 // backup file stays self-contained and restores on any device.
+// What the last collectBackupImages() could not include: ids the songs refer to whose bytes were
+// missing or unreadable. Callers use it to say so, instead of claiming a complete backup.
+let lastBackupMissingImages = [];
+const mediaCountText = (count) => `${count} ${count === 1 ? "picture or PDF" : "pictures or PDFs"}`;
+
 async function collectBackupImages() {
   const images = {};
+  const missing = [];
+  lastBackupMissingImages = missing;
   if (!imageStoreAvailable()) return images;
   for (const id of new Set(state.songs.flatMap(songImageRefs))) {
     try {
       const blob = await getImageBlob(id);
       if (blob) images[id] = await blobToDataUrl(blob);
+      else missing.push(id);
     } catch {
-      // A picture missing from this device is skipped rather than failing the backup.
+      missing.push(id);
     }
   }
   return images;
 }
 
+// Writes the backup's pictures into the store. Before overwriting an id it remembers the old bytes,
+// so a restore that fails later can put everything back (rollbackRestoredImages).
 async function restoreBackupImages(images) {
-  if (!images || typeof images !== "object" || !imageStoreAvailable()) return 0;
-  let restored = 0;
+  const outcome = { restored: 0, failed: [], previous: new Map() };
+  if (!images || typeof images !== "object" || !imageStoreAvailable()) return outcome;
   for (const [id, dataUrl] of Object.entries(images)) {
-    if (typeof dataUrl !== "string" || !/^data:(image\/|application\/pdf)/.test(dataUrl)) continue;
+    if (typeof dataUrl !== "string" || !/^data:(image\/|application\/pdf)/.test(dataUrl)) {
+      outcome.failed.push(id);
+      continue;
+    }
     try {
+      if (!outcome.previous.has(id)) outcome.previous.set(id, (await getImageBlob(id)) || null);
       await putImageBlob(id, dataUrlToBlob(dataUrl));
       imageUrlCache.delete(id);
-      restored += 1;
+      outcome.restored += 1;
     } catch {
-      // Keep restoring the rest.
+      outcome.failed.push(id);
     }
   }
-  return restored;
+  return outcome;
+}
+
+// Undo what restoreBackupImages wrote: old bytes go back, ids that did not exist before are removed.
+async function rollbackRestoredImages(outcome) {
+  for (const [id, blob] of outcome?.previous || []) {
+    try {
+      if (blob) await putImageBlob(id, blob);
+      else await deleteImageBlob(id);
+      imageUrlCache.delete(id);
+    } catch {
+      // Nothing more can be done for this one.
+    }
+  }
 }
 
 function listImageIds() {
@@ -12892,7 +13094,7 @@ function saveSongInfo() {
   markStateDirty();
   closeOverlays();
   render();
-  showToast("Song details saved");
+  persistThenToast("Song details saved");
 }
 
 function addSong(folderId = currentFolderId, presetArtist = "") {
@@ -13993,9 +14195,19 @@ async function shareCurrentSong() {
   }
 }
 
+function backupMissingNote(count) {
+  return `${mediaCountText(count)} could not be read from this device and ${count === 1 ? "is" : "are"} not in the file.`;
+}
+
 async function exportLibrary() {
   const payload = backupPayload(await collectBackupImages());
+  const missing = lastBackupMissingImages.length;
   downloadText(`song-list-pro-backup-${new Date().toISOString().slice(0, 10)}.json`, payload, "application/json");
+  if (missing) {
+    // An incomplete backup is not counted as a backup: the reminder stays.
+    showToast(`Backup file saved, but incomplete: ${backupMissingNote(missing)}`);
+    return;
+  }
   recordBackupMade();
   showToast("Backup saved. Keep the file somewhere safe, like iCloud or email.");
 }
@@ -14009,9 +14221,11 @@ async function shareCloudBackup(provider) {
   const FileType = globalThis.File;
   if (FileType && navigator.share) {
     const file = new FileType([backupPayload(await collectBackupImages())], filename, { type: "application/json" });
+    const missing = lastBackupMissingImages.length;
     if (!navigator.canShare || navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({ title: "Song List Pro backup", text: `Save this backup in ${provider}.`, files: [file] });
+        if (missing) { showToast(`Sent, but incomplete: ${backupMissingNote(missing)}`); return; }
         recordBackupMade();
         showToast(`Backup sent to the share menu for ${provider}`);
         return;
@@ -16541,14 +16755,23 @@ const YOUTUBE_NOT_EMBEDDABLE = [101, 150];
 // Every engine calls handlers.onState(playing) and handlers.onError(code) as things happen.
 async function createYouTubeEngine(videoId, handlers) {
   await loadYouTubeApi();
-  els.practiceVideo.innerHTML = "<div></div>";
+  // The frame is built here (not by the API) so it can send the page address to YouTube. Without that
+  // referrer YouTube refuses with "Error 153, video player configuration error".
+  const frame = document.createElement("iframe");
+  const query = new URLSearchParams({ enablejsapi: "1", playsinline: "1", rel: "0" });
+  if (/^https?:$/.test(globalThis.location?.protocol || "")) {
+    query.set("origin", globalThis.location.origin);
+    query.set("widget_referrer", globalThis.location.href.split("#")[0]);
+  }
+  frame.src = `https://www.youtube.com/embed/${videoId}?${query}`;
+  frame.referrerPolicy = "strict-origin-when-cross-origin";
+  frame.allow = "encrypted-media; picture-in-picture; fullscreen";
+  frame.allowFullscreen = true;
+  frame.title = "YouTube video player";
+  els.practiceVideo.replaceChildren(frame);
   let playing = false;
   const player = await new Promise((resolve, reject) => {
-    const instance = new globalThis.YT.Player(els.practiceVideo.firstElementChild, {
-      videoId,
-      width: "100%",
-      height: "100%",
-      playerVars: { playsinline: 1, rel: 0, controls: 1 },
+    const instance = new globalThis.YT.Player(frame, {
       events: {
         onReady: () => resolve(instance),
         onStateChange: (event) => {
@@ -16569,6 +16792,7 @@ async function createYouTubeEngine(videoId, handlers) {
     duration: () => Number(player.getDuration?.()) || 0,
     isPlaying: () => playing,
     setRate: (rate) => { try { player.setPlaybackRate(rate); } catch { /* keeps the current speed */ } },
+    getRate: () => { try { return Number(player.getPlaybackRate?.()); } catch { return NaN; } },
     availableRates: () => { try { return player.getAvailablePlaybackRates?.() || []; } catch { return []; } },
     destroy: () => { try { player.destroy(); } catch { /* already gone */ } els.practiceVideo.innerHTML = ""; }
   };
@@ -16577,13 +16801,23 @@ async function createYouTubeEngine(videoId, handlers) {
 
 // ---------- speed, loop and what is remembered ----------
 
-const PRACTICE_RATES = [0.5, 0.75, 1, 1.25];
+const PRACTICE_RATE_MIN = 0.25;
+const PRACTICE_RATE_MAX = 2;
+const PRACTICE_RATE_STEP = 0.05;
 const PRACTICE_PREFS_KEY = "slp-practice-prefs";
 
-// The speeds to offer: ours, limited to what the player says it can do (all of ours if it cannot say).
-function practiceRateOptions(available) {
-  const list = Array.isArray(available) ? available : [];
-  return list.length ? PRACTICE_RATES.filter((rate) => list.includes(rate)) : [...PRACTICE_RATES];
+const roundRate = (rate) => Math.round(rate * 100) / 100;
+const formatPracticeRate = (rate) => `${roundRate(rate)}x`;
+
+// One tap on - or +. An audio file can play at any speed, so it moves 5% at a time. A player that only
+// offers certain speeds (YouTube) moves to the next one it offers.
+function nextPracticeRate(current, direction, available) {
+  const list = (Array.isArray(available) ? available : []).filter((rate) => rate >= PRACTICE_RATE_MIN && rate <= PRACTICE_RATE_MAX).sort((x, y) => x - y);
+  if (list.length) {
+    const next = direction > 0 ? list.find((rate) => rate > current + 0.001) : [...list].reverse().find((rate) => rate < current - 0.001);
+    return next ?? current;
+  }
+  return roundRate(Math.min(PRACTICE_RATE_MAX, Math.max(PRACTICE_RATE_MIN, current + direction * PRACTICE_RATE_STEP)));
 }
 
 // While a loop is on and the clock has reached B, play from A again. Returns where to seek, or null.
@@ -16635,7 +16869,7 @@ function practiceRemember() {
 // first version had one flat loop: that belonged to the YouTube video.)
 function loadPracticeSettings(songId) {
   const saved = loadPracticePrefs()[songId] || {};
-  practiceRate = PRACTICE_RATES.includes(saved.rate) ? saved.rate : 1;
+  practiceRate = Number.isFinite(saved.rate) && saved.rate >= PRACTICE_RATE_MIN && saved.rate <= PRACTICE_RATE_MAX ? roundRate(saved.rate) : 1;
   practiceLoops = {
     file: cleanLoop(saved.loops?.file),
     youtube: cleanLoop(saved.loops?.youtube || (saved.loops ? null : { a: saved.a, b: saved.b, on: saved.on }))
@@ -16648,32 +16882,58 @@ function usePracticeLoopFor(kind) {
 }
 
 function renderPracticeSpeed() {
-  const offered = practiceEngine ? practiceRateOptions(practiceEngine.availableRates?.()) : PRACTICE_RATES;
-  els.practiceSpeed.querySelectorAll("[data-rate]").forEach((button) => {
-    const rate = Number(button.dataset.rate);
-    button.hidden = !offered.includes(rate);
-    button.disabled = !practiceEngine;
-    button.setAttribute("aria-pressed", String(rate === practiceRate));
-  });
+  const text = formatPracticeRate(practiceRate);
+  [els.practiceSpeedValue, els.practiceMiniSpeed].forEach((button) => { button.textContent = text; button.disabled = !practiceEngine; });
+  [els.practiceSlowerBtn, els.practiceFasterBtn, els.practiceMiniSlower, els.practiceMiniFaster].forEach((button) => { button.disabled = !practiceEngine; });
+}
+
+// The highlighted stretch of the progress line between A and B.
+function updatePracticeLoopBand() {
+  const duration = practiceEngine?.duration() || 0;
+  const { a, b, on } = practiceLoop;
+  const show = duration > 0 && a != null && b != null;
+  els.practiceLoopBand.hidden = !show;
+  if (!show) return;
+  els.practiceLoopBand.style.setProperty("--loop-start", `${Math.min(100, (a / duration) * 100)}%`);
+  els.practiceLoopBand.style.setProperty("--loop-width", `${Math.max(0, Math.min(100, ((b - a) / duration) * 100))}%`);
+  els.practiceLoopBand.classList.toggle("off", !on);
 }
 
 function renderPracticeLoop() {
   const { a, b, on } = practiceLoop;
-  els.practiceLoopRead.textContent = a == null && b == null
-    ? t("No loop set")
-    : `A ${a == null ? "–" : formatPracticeTime(a)} · B ${b == null ? "–" : formatPracticeTime(b)}`;
-  els.practiceLoopBtn.setAttribute("aria-pressed", String(on));
-  [els.practiceSetABtn, els.practiceSetBBtn, els.practiceLoopBtn, els.practiceClearBtn].forEach((button) => { button.disabled = !practiceEngine; });
+  const range = a != null && b != null ? `A ${formatPracticeTime(a)} - B ${formatPracticeTime(b)}` : a != null ? `A ${formatPracticeTime(a)}` : "";
+  const label = `${t("Loop")}: ${on ? t("on") : t("off")}${range ? `, ${range}` : ""}`;
+  [els.practiceLoopBtn, els.practiceMiniLoop].forEach((button) => {
+    button.setAttribute("aria-pressed", String(on));
+    button.setAttribute("aria-label", label);
+    button.title = label;
+  });
+  els.practiceMiniLoop.disabled = !practiceEngine || a == null || b == null;
+  [els.practiceSetABtn, els.practiceSetBBtn, els.practiceLoopBtn].forEach((button) => { button.disabled = !practiceEngine; });
   els.practiceSetABtn.classList.toggle("set", a != null);
   els.practiceSetBBtn.classList.toggle("set", b != null);
+  els.practiceSetABtn.title = a != null ? `A ${formatPracticeTime(a)}` : t("Set point A");
+  els.practiceSetBBtn.title = b != null ? `B ${formatPracticeTime(b)}` : t("Set point B");
   els.practiceClearBtn.disabled = !practiceEngine || (a == null && b == null);
+  updatePracticeLoopBand();
 }
 
 function setPracticeRate(rate) {
-  practiceRate = rate;
-  practiceEngine?.setRate(rate);
+  practiceRate = roundRate(Math.min(PRACTICE_RATE_MAX, Math.max(PRACTICE_RATE_MIN, rate)));
+  practiceEngine?.setRate(practiceRate);
   renderPracticeSpeed();
   practiceRemember();
+  // YouTube only plays certain speeds: show what it really settled on.
+  if (practiceEngine?.kind === "youtube") {
+    setTimeout(() => {
+      const real = Number(practiceEngine?.getRate?.());
+      if (Number.isFinite(real) && real > 0 && roundRate(real) !== practiceRate) { practiceRate = roundRate(real); renderPracticeSpeed(); practiceRemember(); }
+    }, 150);
+  }
+}
+
+function stepPracticeRate(direction) {
+  setPracticeRate(nextPracticeRate(practiceRate, direction, practiceEngine?.availableRates?.()));
 }
 
 function setLoopPoint(which) {
@@ -16742,6 +17002,7 @@ async function createAudioEngine(source, handlers) {
     duration: () => (Number.isFinite(audio.duration) ? audio.duration : 0),
     isPlaying: () => !audio.paused && !audio.ended,
     setRate: (rate) => { audio.playbackRate = rate; },
+    getRate: () => audio.playbackRate,
     availableRates: () => [],
     destroy: () => { audio.onplay = audio.onpause = audio.onended = audio.onerror = null; audio.pause(); audio.removeAttribute("src"); audio.load(); }
   };
@@ -16759,14 +17020,16 @@ function setPracticeMessage(text) {
 }
 
 function practiceControlsEnabled(enabled) {
-  [els.practiceBackBtn, els.practicePlayBtn, els.practiceFwdBtn, els.practiceSeek].forEach((control) => { control.disabled = !enabled; });
+  [els.practiceBackBtn, els.practicePlayBtn, els.practiceFwdBtn, els.practiceSeek, els.practiceMiniPlay].forEach((control) => { control.disabled = !enabled; });
 }
 
 function renderPracticeTransport() {
   const playing = Boolean(practiceEngine?.isPlaying());
-  els.practicePlayBtn.classList.toggle("playing", playing);
-  els.practicePlayBtn.setAttribute("aria-label", t(playing ? "Pause" : "Play"));
-  els.practicePlayBtn.setAttribute("aria-pressed", String(playing));
+  [els.practicePlayBtn, els.practiceMiniPlay].forEach((button) => {
+    button.classList.toggle("playing", playing);
+    button.setAttribute("aria-label", t(playing ? "Pause" : "Play"));
+    button.setAttribute("aria-pressed", String(playing));
+  });
 }
 
 function renderPracticeTime() {
@@ -16777,6 +17040,8 @@ function renderPracticeTime() {
   els.practiceDuration.textContent = formatPracticeTime(duration);
   els.practiceSeek.max = String(duration || 1);
   if (!practiceDragging) els.practiceSeek.value = String(time);
+  els.practiceSeek.style.setProperty("--p", `${duration ? Math.min(100, (Number(els.practiceSeek.value) / duration) * 100) : 0}%`);
+  updatePracticeLoopBand();
 }
 
 function startPracticeTick(milliseconds = 100) {
@@ -16800,10 +17065,11 @@ function stopPracticeEngine() {
   practiceTick = 0;
   practiceEngine?.destroy();
   practiceEngine = null;
-  if (els.practiceSpeed) { renderPracticeSpeed(); renderPracticeLoop(); }
+  if (els.practiceSpeedValue) { renderPracticeSpeed(); renderPracticeLoop(); }
 }
 
 function practiceErrorText(code) {
+  if (code === 153) return "YouTube could not confirm which page is asking to play this video (error 153). A privacy setting or extension that hides the referring page can cause this. Open it in YouTube instead.";
   if (YOUTUBE_NOT_EMBEDDABLE.includes(code)) return "The owner of this video does not allow it to play here. Open it in YouTube instead.";
   if (code === 100) return "This video was removed or is private. Open it in YouTube to check.";
   return "This video could not be played here. Open it in YouTube instead.";
@@ -16813,6 +17079,8 @@ async function startPracticeSource(source) {
   stopPracticeEngine();
   practiceControlsEnabled(false);
   renderPracticeTransport();
+  els.practiceView.dataset.source = source.kind;
+  setPracticeMini(false);
   els.practiceVideo.hidden = source.kind !== "youtube";
   els.practiceFileCard.hidden = source.kind !== "file";
   els.practiceOpenExternal.hidden = source.kind !== "youtube";
@@ -16844,6 +17112,12 @@ async function startPracticeSource(source) {
     return;
   }
   if (source.kind === "youtube") {
+    // Opened from a file (file:// or a "null" origin) there is no web address to give YouTube, which then
+    // refuses with error 153. The https version of the app works.
+    if (!/^https?:$/.test(globalThis.location?.protocol || "") || globalThis.location?.origin === "null") {
+      setPracticeMessage("YouTube needs the https version of the app. Open the website link instead.");
+      return;
+    }
     if (globalThis.navigator && navigator.onLine === false) {
       setPracticeMessage("YouTube needs an internet connection. Open it in YouTube when you are back online.");
       return;
@@ -16983,6 +17257,7 @@ function renderSongPracticeFile() {
 
 async function choosePracticeFile(file) {
   if (!songInfoDraft) return;
+  const draft = songInfoDraft;                       // the form this file was chosen in
   const problem = practiceFileProblem(file);
   if (problem) { showToast(problem); return; }
   if (!practiceAudioAvailable()) { showToast("This browser cannot keep audio files on this device."); return; }
@@ -16993,7 +17268,7 @@ async function choosePracticeFile(file) {
     showToast("Could not store the file on this device. There may not be enough space.");
     return;
   }
-  if (!songInfoDraft) { releasePracticeAudio([id]); return; }       // the form was closed meanwhile
+  if (songInfoDraft !== draft) { releasePracticeAudio([id]); return; }       // that form was closed (or another opened) meanwhile
   // A file added earlier in this same form and then replaced is not kept.
   const previous = songInfoDraft.song.practiceFile;
   if (previous && songInfoDraft.audioAdded?.includes(previous.id)) releasePracticeAudio([previous.id]);
@@ -17054,6 +17329,40 @@ async function requestClearUnusedPracticeAudio() {
   });
 }
 
+
+// ---------- the collapsing player (audio files) ----------
+// Scrolling the lyrics up folds the controls into a slim bar at the bottom; tapping the bar, or scrolling
+// back to the top, opens them again. A YouTube video never collapses: it has to stay visible while it plays.
+
+let practiceMini = false;
+let practiceLastScroll = 0;
+let practiceMiniLockUntil = 0;
+
+function practiceMiniAllowed() {
+  return practiceSourceKind === "file" && !globalThis.matchMedia?.("(min-width: 900px) and (min-height: 521px)")?.matches;
+}
+
+function setPracticeMini(on) {
+  practiceMini = Boolean(on) && practiceMiniAllowed();
+  els.practiceView.dataset.mini = String(practiceMini);
+  els.practiceMini.hidden = !practiceMini;
+}
+
+function expandPractice() {
+  practiceMiniLockUntil = Date.now() + 900;           // the layout change itself must not fold it again
+  setPracticeMini(false);
+}
+
+function onPracticeScroll() {
+  const top = els.practiceScroll.scrollTop;
+  const down = top > practiceLastScroll;
+  practiceLastScroll = top;
+  if (Date.now() < practiceMiniLockUntil) return;
+  if (!practiceMini && down && top > 48 && practiceMiniAllowed()) setPracticeMini(true);
+  else if (practiceMini && top <= 6) setPracticeMini(false);
+}
+
+
 // ---------- the view ----------
 
 function openPractice() {
@@ -17068,6 +17377,7 @@ function openPractice() {
   els.practiceView.hidden = false;
   els.practiceView.classList.remove("hidden");
   els.practiceScroll.scrollTop = 0;
+  practiceLastScroll = 0;
   renderPracticeView();
   refreshIcons();
   els.practiceView.focus({ preventScroll: true });      // not the Close button: Space must play, not close
@@ -17108,6 +17418,7 @@ function closePractice() {
   practiceActive = false;
   practiceSongId = null;
   practiceSourceKind = "";
+  setPracticeMini(false);
   document.body.classList.remove("practice-open");
   els.practiceView.hidden = true;
   els.practiceView.classList.add("hidden");
@@ -17117,6 +17428,7 @@ function renderPracticeView() {
   const song = state.songs.find((item) => item.id === practiceSongId);
   if (!song) return;
   els.practiceView.className = `perf-view practice-view font-${state.lyricPrefs.font}`;
+  els.practiceView.dataset.lyricsDir = resolvedDocumentDirection(song);       // the video sits on the side the lyrics do not start from
   applyReadOnlyTypography(els.practiceView);
   fillReadOnlyLyrics(els.practiceDoc, song);
   els.practiceTitle.textContent = [song.title, song.artist].filter(Boolean).join(" · ");
@@ -17137,10 +17449,17 @@ function initPracticeUi() {
   els.practicePlayBtn.addEventListener("click", practiceToggle);
   els.practiceBackBtn.addEventListener("click", () => practiceSkip(-5));
   els.practiceFwdBtn.addEventListener("click", () => practiceSkip(5));
-  els.practiceSpeed.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-rate]");
-    if (button) setPracticeRate(Number(button.dataset.rate));
-  });
+  els.practiceSlowerBtn.addEventListener("click", () => stepPracticeRate(-1));
+  els.practiceFasterBtn.addEventListener("click", () => stepPracticeRate(1));
+  els.practiceSpeedValue.addEventListener("click", () => setPracticeRate(1));
+  els.practiceMiniSlower.addEventListener("click", () => stepPracticeRate(-1));
+  els.practiceMiniFaster.addEventListener("click", () => stepPracticeRate(1));
+  els.practiceMiniSpeed.addEventListener("click", () => setPracticeRate(1));
+  els.practiceMiniPlay.addEventListener("click", practiceToggle);
+  els.practiceMiniLoop.addEventListener("click", togglePracticeLoop);
+  els.practiceMiniExpand.addEventListener("click", expandPractice);
+  els.practiceMini.addEventListener("click", (event) => { if (event.target === els.practiceMini) expandPractice(); });
+  els.practiceScroll.addEventListener("scroll", onPracticeScroll, { passive: true });
   els.practiceSourceToggle.addEventListener("click", (event) => {
     const button = event.target.closest("[data-source]");
     if (button) switchPracticeSource(button.dataset.source);
@@ -17267,7 +17586,9 @@ function importLibrary(file) {
       const message = appLanguage === "he"
         ? `הגיבוי כולל ${hebrewCount(review.songCount, "song")}, ${hebrewCount(review.folderCount, "folder")}, ${hebrewCount(review.noteCount, "note")} ו${hebrewCount(review.gigCount, "gig")}.${review.rejectedCount ? ` ${review.rejectedCount} רשומות פגומות או הפניות שבורות יידחו.` : " לא נמצאו רשומות פגומות."} הספרייה הנוכחית במכשיר הזה תוחלף רק לאחר האישור שלך.`
         : englishMessage;
-      openConfirm("Restore this backup?", message, "Restore backup", () => replaceLibrary(parsedBackup, review, "before-restore"));
+      const absentMedia = [...new Set(review.restored.songs.flatMap(songImageRefs))].filter((id) => !(id in (parsedBackup.images || {}))).length;
+      const mediaNote = absentMedia ? (appLanguage === "he" ? ` ${absentMedia} תמונות או קבצי PDF לא כלולים בגיבוי הזה.` : ` ${mediaCountText(absentMedia)} ${absentMedia === 1 ? "is" : "are"} not in this backup file.`) : "";
+      openConfirm("Restore this backup?", message + mediaNote, "Restore backup", () => replaceLibrary(parsedBackup, review, "before-restore"));
     } catch {
       showToast("This file is not a valid Song List Pro backup");
     }
@@ -17282,6 +17603,9 @@ function prepareBackupRestore(parsed) {
   const entityFields = ["folders", "songs", "savedSearches", "noteFolders", "notes", "noteLocationLinks", "gigs", "gigSections", "gigSets", "gigSetItems", "setTemplates", "setTemplateItems"];
   const recognized = [3, 4].includes(Number(parsed.version)) || entityFields.some((field) => Array.isArray(parsed[field]));
   if (!recognized) throw new Error("Unrecognized backup");
+  // A current-format backup always carries its songs and folders (an empty library has empty lists).
+  // Without them the file is cut off or damaged, not an intentionally empty library.
+  if ([3, 4].includes(Number(parsed.version)) && (!Array.isArray(parsed.songs) || !Array.isArray(parsed.folders))) throw new Error("Backup is missing its songs or folders");
   const sanitized = structuredCloneSafe(parsed);
   let invalidRecords = 0;
   entityFields.forEach((field) => {
@@ -17299,6 +17623,11 @@ function prepareBackupRestore(parsed) {
     invalidRecords += sanitized[field].length - valid.length;
     sanitized[field] = valid;
   });
+  // A song's links to folders that are not in the file are dropped inside the record by normalization, so the
+  // record counts above do not see them. (Whole records dropped for pointing nowhere are already counted.)
+  const folderIds = new Set((sanitized.folders || []).map((record) => String(record?.id || "")));
+  let droppedLinks = 0;
+  (sanitized.songs || []).forEach((song) => { droppedLinks += (Array.isArray(song?.folderIds) ? song.folderIds : []).filter((id) => !folderIds.has(id)).length; });
   const restored = Number(sanitized.version) === 4
     ? normalizeState(sanitized)
     : Number(sanitized.version) === 3
@@ -17310,7 +17639,7 @@ function prepareBackupRestore(parsed) {
   }, 0);
   return {
     restored,
-    rejectedCount: invalidRecords + normalizedDrops,
+    rejectedCount: invalidRecords + normalizedDrops + droppedLinks,
     songCount: restored.songs.length,
     folderCount: restored.folders.length,
     noteCount: restored.notes.length,
@@ -17454,10 +17783,18 @@ async function replaceLibrary(parsedBackup, review, snapshotReason, doneMessage 
       return false;
     }
   }
+  let imageOutcome = { restored: 0, failed: [], previous: new Map() };
   try {
-    await restoreBackupImages(parsedBackup.images);
+    imageOutcome = await restoreBackupImages(parsedBackup.images);
   } catch {
+    await rollbackRestoredImages(imageOutcome);
     showToast("The restore could not be completed. Your library was not changed.");
+    return false;
+  }
+  if (imageOutcome.failed.length) {
+    // A restore with some pictures missing would look complete but not be. Put everything back instead.
+    await rollbackRestoredImages(imageOutcome);
+    showToast(`${mediaCountText(imageOutcome.failed.length)} in this backup could not be saved on this device, so nothing was changed. Free some space and try again.`);
     return false;
   }
   const previous = state;
@@ -17470,6 +17807,7 @@ async function replaceLibrary(parsedBackup, review, snapshotReason, doneMessage 
     state = previous;
     persistBlocked = previousBlocked;
     stateDirty = previousDirty;
+    await rollbackRestoredImages(imageOutcome);          // the pictures this restore overwrote come back too
     showToast("The restore could not be saved on this device. Your library was not changed.");
     return false;
   }
@@ -17483,7 +17821,13 @@ async function replaceLibrary(parsedBackup, review, snapshotReason, doneMessage 
   closeOverlays();
   render();
   migrateInlineImages();
-  showToast(doneMessage);
+  // Pictures the songs refer to that are neither in the backup nor already on this device.
+  let absent = 0;
+  for (const id of new Set(state.songs.flatMap(songImageRefs))) {
+    if (id in (parsedBackup.images || {})) continue;
+    try { if (!(await getImageBlob(id))) absent += 1; } catch { absent += 1; }
+  }
+  showToast(absent ? `${doneMessage}, but ${mediaCountText(absent)} ${absent === 1 ? "was" : "were"} not in the backup and ${absent === 1 ? "is" : "are"} not on this device.` : doneMessage);
   return true;
 }
 
@@ -17546,6 +17890,17 @@ function recoveryMessageText() {
 }
 
 async function initSafetyRecovery() {
+  if (startupDuplicatesRemoved) {
+    const count = startupDuplicatesRemoved;
+    try {
+      await quarantineRawLibrary(startupDuplicateRaw, "Records with repeated ids were removed at startup");
+      showToast(`Removed ${count} repeated ${count === 1 ? "record" : "records"}. The original is set aside in Settings.`);
+    } catch {
+      showToast(`Removed ${count} repeated ${count === 1 ? "record" : "records"} (could not set the original aside).`);
+    }
+    startupDuplicatesRemoved = 0;
+    startupDuplicateRaw = "";
+  }
   if (!startupDamage) return;
   els.app.inert = true;
   els.recoveryScreen.hidden = false;
@@ -17572,7 +17927,7 @@ function initRecoveryUi() {
   });
   els.recoveryFreshBtn?.addEventListener("click", () => {
     els.recoveryFreshText.textContent = startupDamage?.kept || startupDamage?.exported
-      ? t("This starts an empty library. The unreadable data stays saved on this device and in Settings, so it can still be exported later.")
+      ? t("This starts a new library with no songs. The unreadable data stays saved on this device and in Settings, so it can still be exported later.")
       : t("The unreadable data could not be kept on this device and has not been exported. Starting fresh will erase it for good.");
     els.recoveryFreshPanel.hidden = false;
     els.recoveryFreshPanel.classList.remove("hidden");
@@ -17583,6 +17938,7 @@ function initRecoveryUi() {
   });
   els.recoveryFreshConfirmBtn?.addEventListener("click", () => {
     if (!startupDamage) return;
+    state = trackStateMutations(createInitialState({ starterSongs: false }));      // really empty: no demo songs
     persistBlocked = false;
     markStateDirty();
     if (!persist(true)) {
@@ -17595,8 +17951,77 @@ function initRecoveryUi() {
     els.recoveryScreen.hidden = true;
     els.recoveryScreen.classList.add("hidden");
     render();
-    showToast("Started a new empty library");
+    showToast("Started a new library with no songs");
   });
+}
+
+// ---------- the banner at the top: another window saved / this device cannot save ----------
+
+let saveBannerMode = "";
+
+function windowHasUnsavedChanges() {
+  return stateDirty || Boolean(pendingStorageTimer) || Boolean(pendingNoteTimer);
+}
+
+function showSaveBanner(mode) {
+  if (!els.saveBanner) return;
+  saveBannerMode = mode;
+  els.saveBanner.hidden = false;
+  if (mode === "external") {
+    els.saveBannerText.textContent = t(windowHasUnsavedChanges()
+      ? "Another window saved changes to your library. What you changed here is not saved yet."
+      : "Another window saved changes to your library. Reload to see them.");
+    els.saveBannerPrimary.textContent = t("Reload");
+    els.saveBannerSecondary.textContent = t("Keep this window's version");
+    els.saveBannerSecondary.hidden = false;
+  } else {
+    els.saveBannerText.textContent = t("This device could not save your changes (its storage may be full). Back up now so nothing is lost.");
+    els.saveBannerPrimary.textContent = t("Back up now");
+    els.saveBannerSecondary.hidden = true;
+  }
+}
+
+function hideSaveBanner(mode) {
+  if (saveBannerMode !== mode) return;
+  saveBannerMode = "";
+  if (els.saveBanner) els.saveBanner.hidden = true;
+}
+
+// Another window may have saved while this one was idle or in the background.
+function checkForExternalChange() {
+  if (persistBlocked || externalChange) return;
+  if (readStorage(STORAGE_KEY) !== lastPersistedSnapshot) {
+    externalChange = true;
+    showSaveBanner("external");
+  }
+}
+
+// Replace the other window's version with this window's. The version being replaced is set aside
+// first (Settings > the set-aside copy), so nothing is lost either way.
+function keepThisWindowVersion() {
+  openConfirm("Replace the other window's changes?", "This window's version will be saved over the library the other window saved. The other version is set aside first, and you can export it from Settings.", "Keep this window's version", async () => {
+    closeOverlays();
+    const other = readStorage(STORAGE_KEY);
+    if (other) {
+      try { await quarantineRawLibrary(other, "Replaced by another window"); } catch { showToast("Could not set the other version aside, so nothing was changed."); return; }
+    }
+    lastPersistedSnapshot = readStorage(STORAGE_KEY);
+    externalChange = false;
+    hideSaveBanner("external");
+    markStateDirty();
+    const saved = persist(true);
+    showToast(saved ? "Saved. The other version was set aside in Settings." : "Not saved. See the message at the top of the screen.");
+  });
+}
+
+function initSaveGuardUi() {
+  els.saveBannerPrimary?.addEventListener("click", () => {
+    if (saveBannerMode === "external") location.reload();
+    else exportLibrary();
+  });
+  els.saveBannerSecondary?.addEventListener("click", keepThisWindowVersion);
+  globalThis.addEventListener?.("storage", (event) => { if (event.key === STORAGE_KEY || event.key === null) checkForExternalChange(); });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkForExternalChange(); });
 }
 function renderGigs() {
   if (workspaceMode !== "gigs") {
@@ -17842,8 +18267,8 @@ function sortedGigSetItems(items, setId) {
   return positioned.sort((a, b) => {
     const songA = state.songs.find((song) => song.id === a.songId);
     const songB = state.songs.find((song) => song.id === b.songId);
-    const valueA = sort === "title" ? songA?.title : sort === "artist" ? songA?.artist : (a.keyOverride || songA?.key);
-    const valueB = sort === "title" ? songB?.title : sort === "artist" ? songB?.artist : (b.keyOverride || songB?.key);
+    const valueA = sort === "title" ? songA?.title : sort === "artist" ? songA?.artist : (eventKeyFor(songA, a.keyOverride) || songA?.key);
+    const valueB = sort === "title" ? songB?.title : sort === "artist" ? songB?.artist : (eventKeyFor(songB, b.keyOverride) || songB?.key);
     return String(valueA || "").localeCompare(String(valueB || ""), undefined, { numeric: true, sensitivity: "base" }) || a.position - b.position;
   });
 }
@@ -18952,7 +19377,7 @@ function saveGigItemSheet() {
   const draft = gigItemDraft;
   const item = draft && state.gigSetItems.find((candidate) => candidate.id === draft.itemId);
   if (!item) return closeOverlays();
-  item.keyOverride = draft.key || "";
+  item.keyOverride = eventKeyFor(state.songs.find((candidate) => candidate.id === item.songId), draft.key || "");
   item.gigNote = els.gigItemNoteInput.value.trim();
   item.transitionNote = els.gigItemTransitionInput.value.trim();
   item.updatedAt = new Date().toISOString();
@@ -19543,6 +19968,7 @@ function renderNoteBreadcrumbs(folder) {
 }
 
 function openNoteFolder(id) {
+  flushPendingNote();
   selectedNoteFolderId = id || "all";
   selectedNoteId = null;
   renderNotes();
@@ -19568,7 +19994,15 @@ function noteFolderLabel(folder) {
   return names.join(" / ");
 }
 
+// Save a note that has typed-but-not-yet-saved changes. Called before anything that changes which
+// note is open: the delayed save reads whichever note is open when it fires, so leaving first
+// would lose the edit (or, worse, put it on the wrong note).
+function flushPendingNote() {
+  if (pendingNoteTimer) autosaveOpenNote();
+}
+
 function openNoteEditor(noteId = "new", options = {}) {
+  flushPendingNote();
   selectedNoteId = noteId;
   pendingNoteLocationIds = new Set(options.folderId ? [options.folderId] : []);
   const note = state.notes.find((item) => item.id === noteId);
@@ -19627,8 +20061,7 @@ function saveNote(event) {
   renderNoteDetailDisplay(savedNote);
   els.deleteNoteBtn.classList.remove("hidden");
   setNoteEditMode(false);
-  persist();
-  showToast("Note saved");
+  persistThenToast("Note saved");
 }
 
 function autosaveOpenNote() {
@@ -19657,7 +20090,9 @@ function autosaveOpenNote() {
 function scheduleNoteAutosave() {
   clearTimeout(pendingNoteTimer);
   if (els.noteSaveStatus) els.noteSaveStatus.textContent = t("Saving...");
-  pendingNoteTimer = setTimeout(autosaveOpenNote, AUTOSAVE_DELAY);
+  // The timer is tied to the note it was started for; it does nothing if another note is open by then.
+  const target = selectedNoteId;
+  pendingNoteTimer = setTimeout(() => { if (selectedNoteId === target) autosaveOpenNote(); else pendingNoteTimer = null; }, AUTOSAVE_DELAY);
 }
 
 function noteLocationLinks(noteId) {
@@ -19733,8 +20168,7 @@ function toggleCurrentNotePin() {
   if (link) link.pinned = !link.pinned;
   else note.pinned = !note.pinned;
   syncNoteActionButtons(note);
-  persist();
-  showToast((link ? link.pinned : note.pinned) ? "Note pinned" : "Note unpinned");
+  persistThenToast((link ? link.pinned : note.pinned) ? "Note pinned" : "Note unpinned");
 }
 
 function toggleCurrentNoteArchive() {
@@ -19742,11 +20176,11 @@ function toggleCurrentNoteArchive() {
   if (!note) return showToast("Start the note before archiving it");
   note.archived = !note.archived;
   syncNoteActionButtons(note);
-  persist();
-  showToast(note.archived ? "Note archived" : "Note restored");
+  persistThenToast(note.archived ? "Note archived" : "Note restored");
 }
 
 function finishNoteEditing() {
+  flushPendingNote();
   selectedNoteId = null;
   pendingNoteLocationIds = new Set();
   if (noteReturnContext?.folderId) {
@@ -19761,6 +20195,7 @@ function finishNoteEditing() {
 }
 
 function openLinkedNote(noteId, folderId) {
+  flushPendingNote();
   const folder = folderById(folderId);
   if (!folder || !state.notes.some((note) => note.id === noteId)) return;
   noteReturnContext = { folderId, libraryMode: folder.kind };
@@ -19773,6 +20208,7 @@ function openLinkedNote(noteId, folderId) {
 }
 
 function createLinkedNote(folderId) {
+  flushPendingNote();
   const folder = folderById(folderId);
   if (!folder) return;
   noteReturnContext = { folderId, libraryMode: folder.kind };
@@ -19906,6 +20342,7 @@ function requestDeleteNote() {
 }
 
 function switchLibraryMode(mode) {
+  flushPendingNote();
   workspaceMode = "library";
   libraryMode = mode === "notes" ? "notes" : "category";
   folderEditMode = false;
@@ -23470,7 +23907,18 @@ function songDisplayKey(song) {
 
 // In an event the key can also be overridden for that one appearance of the song.
 function eventItemKey(item, song) {
-  return item?.keyOverride || songDisplayKey(song);
+  return eventKeyFor(song, item?.keyOverride) || songDisplayKey(song);
+}
+
+// An event's key keeps the song's own quality: a minor song stays minor and a major song stays major.
+// Only the starting note of the override counts; the "m" (or lack of it) comes from the song.
+function eventKeyFor(song, override) {
+  const text = String(override || "").trim();
+  if (!text) return "";
+  const own = parseKey(song?.key);
+  const chosen = parseKey(text);
+  if (!own || !chosen) return text;
+  return `${chosen.root}${own.suffix}`;
 }
 
 function songNeedsLyrics(song) {
@@ -24495,8 +24943,7 @@ document.addEventListener("keydown", (event) => {
   }
   if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "s") {
     event.preventDefault();
-    persist();
-    showToast("Saved");
+    persistThenToast("Saved");
   }
   if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "z" && currentSong()) {
     event.preventDefault();
@@ -24563,7 +25010,7 @@ function closeCurrentMobileLayer() {
     render();
     return true;
   }
-  if (workspaceMode === "notes" && selectedNoteId) {
+  if (workspaceMode === "library" && libraryMode === "notes" && selectedNoteId) {
     autosaveOpenNote();
     finishNoteEditing();
     return true;
@@ -24623,6 +25070,7 @@ document.addEventListener("visibilitychange", () => {
 
 initToolsUi();
 initRecoveryUi();
+initSaveGuardUi();
 initPracticeUi();
 initPerformanceUi();
 initChordEditorUi();
