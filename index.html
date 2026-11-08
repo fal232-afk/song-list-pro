@@ -5899,6 +5899,8 @@ a.perf-btn[hidden] { display: none; }
 .song-filter-chip.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .song-filter-options .song-filter-chip { font-weight: var(--font-weight-regular, 400); }
 .song-filter-options .song-filter-chip.is-active { font-weight: var(--font-weight-semibold); }
+.slp-row--static { cursor: default; }
+.slp-row--static .slp-row__subtitle { user-select: text; }
 
 }
 
@@ -7133,6 +7135,10 @@ a.perf-btn[hidden] { display: none; }
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         </div>
+        <div class="slp-row slp-row--static" id="appVersionRow">
+          <span class="slp-row__icon-tile"><i data-lucide="info"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">App version</span><span id="appVersionText" class="slp-row__subtitle" dir="ltr"></span></span>
+        </div>
         <button id="printLibraryBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="printer"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Print song index</span><span class="slp-row__subtitle">A clean list of your repertoire</span></span>
@@ -7643,6 +7649,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
+const APP_BUILD = "282cb665 · 581834d";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -7725,7 +7732,7 @@ const els = Object.fromEntries(
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "languageSettingsBtn", "languageSettingsValue", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
-    "exportLibraryBtn", "importLibraryBtn", "printLibraryBtn", "filterSheet", "closeFilterBtn", "filterArtistInput",
+    "exportLibraryBtn", "importLibraryBtn", "printLibraryBtn", "appVersionText", "filterSheet", "closeFilterBtn", "filterArtistInput",
     "filterLanguageInput", "filterKeyInput", "filterStatusInput", "filterComposerInput", "clearFiltersBtn", "applyFiltersBtn",
     "confirmDialog", "confirmTitle", "confirmMessage",
     "artistSuggestions", "artistHebrewSuggestions", "composerSuggestions", "lyricistSuggestions", "albumSuggestions", "languageSuggestions", "styleSuggestions",
@@ -8539,6 +8546,7 @@ Object.assign(HEBREW_UI, {
  "Filter songs": "סינון שירים",
  "Under 80": "מתחת ל־80",
  "140+": "‎140+",
+ "App version": "גרסת האפליקציה",
  "Previous song": "השיר הקודם",
  "Next song": "השיר הבא",
  "Resize the lyrics": "שינוי גודל המילים",
@@ -18236,6 +18244,7 @@ function showSettingsMain(title = t("Settings & Backup")) {
   refreshTitleAlignRow();
   refreshUndoImportRow();
   refreshFixArtistsRow();
+  els.appVersionText.textContent = APP_BUILD;
 }
 
 function refreshTitleAlignRow() {
