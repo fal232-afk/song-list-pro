@@ -2509,6 +2509,29 @@ textarea.slp-input { resize: vertical; }
 .import-fields .slp-form-row { align-items: end; }
 .import-new-location { white-space: nowrap; }
 
+/* ---- Import my songs: preview list ---- */
+.import-summary { display: grid; gap: var(--space-3); margin-block: var(--space-4); }
+.import-summary p { margin: 0; color: var(--color-text-secondary); font-size: var(--text-md); }
+.import-chips { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.import-summary .import-chip { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: var(--text-md); background: var(--color-chip-bg); color: var(--color-text); }
+.import-summary .import-chip.ok { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); font-weight: var(--font-weight-semibold); }
+.import-candidate-list.import-bulk { gap: var(--space-4); }
+.import-bulk .import-candidate { padding: 0; overflow: hidden; }
+.import-bulk .import-candidate-head { flex-wrap: nowrap; gap: var(--space-3); padding: 0 var(--space-4); min-height: 56px; }
+.import-bulk .import-song-toggle { flex: none; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+.import-row-main { flex: 1; min-width: 0; min-height: 56px; display: grid; gap: 2px; align-content: center; padding: var(--space-3) 0; background: transparent; text-align: start; color: var(--color-text); }
+.import-row-title { font-weight: var(--font-weight-semibold); font-size: var(--text-base); }
+.import-row-main .import-source { font-size: var(--text-sm); color: var(--color-text-muted, var(--color-text-secondary)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.import-status { flex: none; padding: 3px 10px; border-radius: 999px; font-size: var(--text-sm); background: var(--color-chip-bg); color: var(--color-text-secondary); }
+.import-status.new { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.import-bulk .import-candidate.skipped .import-row-title { opacity: 0.6; }
+.import-candidate-body { display: grid; gap: var(--space-5); padding: var(--space-4) var(--space-5) var(--space-5); border-top: 1px solid var(--color-border); }
+.import-candidate-body[hidden] { display: none; }
+.import-row-main .import-source { padding: 0; background: transparent; border-radius: 0; }
+.import-status.review { color: var(--color-warning-text, #8a5a00); background: color-mix(in srgb, #f59e0b 22%, transparent); }
+.import-summary .import-chip.review { color: var(--color-warning-text, #8a5a00); background: color-mix(in srgb, #f59e0b 22%, transparent); }
+.import-review-note { margin: 0; padding: var(--space-3) var(--space-4); border-radius: var(--radius-card, 10px); background: color-mix(in srgb, #f59e0b 16%, transparent); color: var(--color-text); font-size: var(--text-md); }
+
 }
 @layer features {
 /* Tools (Phase 2). One chassis for every tool: header -> hero readout -> grouped
@@ -5806,9 +5829,9 @@ a.perf-btn[hidden] { display: none; }
   .practice-controls { gap: 4px 8px; }
 }
 
-/* Wide, tall screens (iPad, computer): the player in a column beside the lyrics (no collapsing there).
+/* Wide, tall screens (iPad, computer, a foldable opened flat: 700 wide and not taller than wide): the player in a column beside the lyrics (no collapsing there).
    A landscape phone is wide but short, so it takes the landscape rule above instead. */
-@media (min-width: 900px) and (min-height: 521px) {
+@media (min-width: 900px) and (min-height: 521px), (min-width: 700px) and (min-height: 521px) and (min-aspect-ratio: 1/1) {
   .practice-body { flex-direction: row; }
   .practice-player { width: clamp(360px, 36vw, 480px); overflow-y: auto; align-content: start; border-right: 1px solid #232A33; padding: 12px; }
   .practice-view .perf-scroll { flex: 1; min-width: 0; }
@@ -5842,6 +5865,40 @@ a.perf-btn[hidden] { display: none; }
 .perf-notice[hidden] { display: none; }
 .perf-notice span { min-width: 0; overflow-wrap: anywhere; }
 .perf-notice .perf-chip { flex-shrink: 0; background: #0E1116; color: #FFC857; }
+
+/* ============ Two-line song titles: English above, Hebrew below, both on one side ============ */
+:root { --title-text-align: left; }
+:root[data-title-align="right"] { --title-text-align: right; }
+.song-title-lines { display: block; min-width: 0; text-align: var(--title-text-align); }
+.song-title-lines > span { display: block; overflow-wrap: anywhere; }
+.song-title-lines .t-en { line-height: 1.25; }
+.song-title-lines .t-he { font-family: "Noto Serif Hebrew", "Frank Ruhl Libre", "David", "Times New Roman", serif; font-size: 1.1em; line-height: 1.25; text-align: var(--title-text-align); }
+.song-title-lines .t-one { line-height: 1.25; text-align: var(--title-text-align); }
+.song-title-lines .t-en { text-align: var(--title-text-align); }
+.song-reader .slp-header__title { text-align: var(--title-text-align); white-space: normal; }
+.board-card__text strong, .board-panel__titles strong { display: block; }
+.board-card__text strong .song-title-lines > span, .board-panel__titles strong .song-title-lines > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.perf-title .song-title-lines { color: #D7DDE6; font-size: 15px; font-weight: 600; text-align: var(--title-text-align); }
+.perf-title .t-artist { display: block; margin-top: 2px; color: #8FA3B8; font-size: 13px; text-align: var(--title-text-align); }
+.gig-song-choice strong .song-title-lines, .folder-song-pick strong .song-title-lines { display: block; }
+.quick-add-suggestion__title .song-title-lines { display: block; }
+.import-undo-bar { z-index: 18; }
+.chord-paste-bar .slp-btn--soft { background: var(--accent); color: #fff; }
+.song-review-chip { flex: none; align-self: center; padding: 3px 10px; border-radius: 999px; font-size: var(--text-sm); font-weight: var(--font-weight-semibold); color: var(--color-warning-text, #8a5a00); background: color-mix(in srgb, #f59e0b 22%, transparent); }
+.slp-check-row { display: flex; align-items: center; gap: var(--space-4); min-height: 44px; margin-top: var(--space-5); }
+.slp-check-row input { width: 22px; height: 22px; flex: none; }
+.song-foot-link--text { display: inline-flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-6); font-weight: var(--font-weight-semibold); text-decoration: none; }
+.song-foot-link--text svg { width: 18px; height: 18px; }
+
+/* ============ Quick song filters: Style, Language, Occasion, BPM (text chips above the list) ============ */
+.song-filter-strip { display: grid; gap: var(--space-3); margin-bottom: var(--space-5); }
+.song-filter-strip[hidden] { display: none; }
+.song-filter-row { display: flex; gap: var(--space-3); overflow-x: auto; padding-block: 2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.song-filter-row::-webkit-scrollbar { display: none; }
+.song-filter-chip { flex: none; min-height: 44px; padding: 0 var(--space-7); border-radius: 999px; border: 1px solid var(--color-border-strong, var(--color-border)); background: var(--color-chip-bg); color: var(--color-text); font-size: var(--text-md); font-weight: var(--font-weight-semibold); white-space: nowrap; }
+.song-filter-chip.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.song-filter-options .song-filter-chip { font-weight: var(--font-weight-regular, 400); }
+.song-filter-options .song-filter-chip.is-active { font-weight: var(--font-weight-semibold); }
 
 }
 
@@ -6304,6 +6361,7 @@ a.perf-btn[hidden] { display: none; }
               <span class="slp-section-label">SONGS <span class="slp-section-label__count">0</span></span>
               <button id="songsEmptyAddBtn" class="slp-btn slp-btn--icon slp-section-add" type="button" aria-label="Add songs"><i data-lucide="plus"></i></button>
             </div>
+            <div id="songFilterStrip" class="song-filter-strip" hidden></div>
             <div id="songList" class="slp-card" aria-label="Songs"></div>
           </section>
         </div>
@@ -6471,6 +6529,10 @@ a.perf-btn[hidden] { display: none; }
       <span>Chords placed from your paste.</span>
       <button id="chordPasteUndoBtn" class="slp-btn slp-btn--soft" type="button">Undo</button>
     </div>
+    <div id="importUndoBar" class="chord-paste-bar import-undo-bar" role="status" hidden>
+      <span id="importUndoText">Songs added.</span>
+      <button id="importUndoBtn" class="slp-btn slp-btn--soft" type="button">Undo all</button>
+    </div>
     <aside id="saveBanner" class="save-banner" role="alert" hidden>
       <p id="saveBannerText" class="save-banner__text"></p>
       <div class="save-banner__actions">
@@ -6502,15 +6564,14 @@ a.perf-btn[hidden] { display: none; }
           <button id="saveSongInfoBtn" class="slp-link-btn slp-link-btn--accent" type="button">Save</button>
         </header>
         <section class="slp-form-section" aria-label="Title">
-          <label class="slp-field-label" for="songTitleInput">TITLE</label>
-          <input id="songTitleInput" class="slp-input" type="text" dir="auto" placeholder="Song title" autocomplete="off" />
+          <label class="slp-field-label" for="songTitleEnglishInput">ENGLISH TITLE</label>
+          <input id="songTitleEnglishInput" class="slp-input" type="text" dir="ltr" placeholder="Title in English letters" autocomplete="off" />
+          <label class="slp-field-label" for="songTitleHebrewInput">HEBREW OR YIDDISH TITLE</label>
+          <input id="songTitleHebrewInput" class="slp-input" type="text" dir="rtl" lang="he" placeholder="הכותרת בעברית או ביידיש" autocomplete="off" />
           <div id="songTitleNotice" class="song-title-notice" role="alert" hidden>
             <span id="songTitleNoticeText"></span>
             <button id="songTitleNoticeOpenBtn" class="slp-link-btn slp-link-btn--accent" type="button" hidden>Open existing song</button>
           </div>
-          <input id="songTitleEnglishInput" type="hidden" />
-          <input id="songTitleHebrewInput" type="hidden" />
-          <input id="songTitleYiddishInput" type="hidden" />
         </section>
         <section class="slp-form-section" aria-label="Credits">
           <label class="slp-field-label" for="songArtistInput">ARTIST (OPTIONAL)</label>
@@ -6522,8 +6583,8 @@ a.perf-btn[hidden] { display: none; }
             <svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div id="songDetailsPanel" class="slp-collapse__panel" hidden>
-            <label class="slp-field-label" for="songAlternateTitlesInput">ALTERNATE TITLES / TRANSLITERATIONS</label>
-            <input id="songAlternateTitlesInput" class="slp-input" type="text" dir="auto" placeholder="Hebrew, Yiddish, English — separate with |" />
+            <label class="slp-field-label" for="songAlternateTitlesInput">OTHER NAMES OR SPELLINGS</label>
+            <input id="songAlternateTitlesInput" class="slp-input" type="text" dir="auto" placeholder="Other spellings — separate with |" />
             <label class="slp-field-label" for="songArtistHebrewInput">ARTIST NAME IN HEBREW</label>
             <input id="songArtistHebrewInput" class="slp-input" type="text" dir="rtl" list="artistHebrewSuggestions" autocomplete="off" />
             <label class="slp-field-label" for="songComposerInput">COMPOSER</label>
@@ -6548,10 +6609,18 @@ a.perf-btn[hidden] { display: none; }
             </div>
             <label class="slp-field-label" for="songAlternateKeysInput">ALTERNATE KEYS</label>
             <input id="songAlternateKeysInput" class="slp-input" type="text" dir="ltr" placeholder="Am | Bm" />
+            <label class="slp-field-label" for="songInfoSourcesInput">INFO SOURCES (WHERE EACH DETAIL CAME FROM)</label>
+            <textarea id="songInfoSourcesInput" class="slp-input" rows="3" dir="auto" placeholder="Album: jyrics page"></textarea>
+            <label class="slp-check-row"><input id="songNeedsReviewInput" type="checkbox" /><span>Needs review (check the lyrics, chords and details)</span></label>
+            <input id="songReviewNoteInput" class="slp-input" type="text" dir="auto" placeholder="What to check (optional)" autocomplete="off" />
             <div class="slp-form-row">
               <div>
                 <label class="slp-field-label" for="songTimeSignatureInput">TIME SIGNATURE</label>
                 <input id="songTimeSignatureInput" class="slp-input" type="text" dir="ltr" inputmode="text" list="timeSignatureSuggestions" placeholder="4/4" autocomplete="off" />
+              </div>
+              <div>
+                <label class="slp-field-label" for="songCapoInput">CAPO (FRET)</label>
+                <input id="songCapoInput" class="slp-input" type="number" inputmode="numeric" min="1" max="12" placeholder="None" />
               </div>
               <div>
                 <label class="slp-field-label" for="songBpmInput">BPM</label>
@@ -6559,8 +6628,12 @@ a.perf-btn[hidden] { display: none; }
               </div>
             </div>
             <datalist id="timeSignatureSuggestions"><option value="2/4"></option><option value="3/4"></option><option value="4/4"></option><option value="6/8"></option><option value="9/8"></option><option value="12/8"></option></datalist>
-            <label class="slp-field-label" for="songStyleInput">STYLE / GENRE</label>
-            <input id="songStyleInput" class="slp-input" type="text" dir="auto" list="styleSuggestions" autocomplete="off" placeholder="Ballad, Hora, Kumzitz..." />
+            <label class="slp-field-label" for="songStyleInput">STYLE / GENRE (SEVERAL, SEPARATED BY ;)</label>
+            <input id="songStyleInput" class="slp-input" type="text" dir="auto" list="styleSuggestions" autocomplete="off" placeholder="Ballad; Hora; Kumzitz" />
+            <label class="slp-field-label" for="songOccasionsInput">OCCASION (SEVERAL, SEPARATED BY ;)</label>
+            <input id="songOccasionsInput" class="slp-input" type="text" dir="auto" autocomplete="off" placeholder="Wedding; Shabbos" />
+            <label class="slp-field-label" for="songYoutubeInput">YOUTUBE LINK</label>
+            <input id="songYoutubeInput" class="slp-input" type="url" dir="ltr" autocomplete="off" placeholder="https://www.youtube.com/watch?v=..." />
             <label class="slp-field-label" for="songLanguageInput">LANGUAGE</label>
             <input id="songLanguageInput" class="slp-input" type="text" dir="auto" list="languageSuggestions" autocomplete="off" placeholder="Hebrew, Yiddish, English..." />
             <div class="slp-form-row">
@@ -7011,12 +7084,22 @@ a.perf-btn[hidden] { display: none; }
         </button>
         <button id="bulkImportBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="clipboard-paste"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Import Song</span><span class="slp-row__subtitle">Paste copied lyrics or add a file</span></span>
+          <span class="slp-row__body"><span class="slp-row__title">Import my songs</span><span class="slp-row__subtitle">Word, PDF, photos, text or paste</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         <button id="exportLibraryBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="download"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Back up now</span><span id="backupStatusText" class="slp-row__subtitle">Save all folders, songs, and lyrics</span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <button id="undoImportBtn" class="slp-row hidden" type="button" hidden>
+          <span class="slp-row__icon-tile"><i data-lucide="undo-2"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Undo last import</span><span id="undoImportSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <button id="fixArtistsBtn" class="slp-row hidden" type="button" hidden>
+          <span class="slp-row__icon-tile"><i data-lucide="wand-2"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Fix artists copied from lyrics</span><span id="fixArtistsSubtitle" class="slp-row__subtitle"></span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         <button id="importLibraryBtn" class="slp-row" type="button">
@@ -7037,6 +7120,11 @@ a.perf-btn[hidden] { display: none; }
         <button id="pedalConfirmBtn" class="slp-row" type="button" role="switch" aria-checked="true">
           <span class="slp-row__icon-tile"><i data-lucide="footprints"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Pedal: confirm before next song</span><span id="pedalConfirmSubtitle" class="slp-row__subtitle">On: at the end of a song, press twice to go to the next</span></span>
+        </button>
+        <button id="titleAlignBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="align-left"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Song titles line up on the</span><span id="titleAlignSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         <div id="practiceAudioRow" hidden>
         <button id="practiceAudioBtn" class="slp-row" type="button">
@@ -7356,17 +7444,17 @@ a.perf-btn[hidden] { display: none; }
         <header class="slp-header">
           <div class="slp-header__titles">
             <span class="slp-header__eyebrow">SONG LIBRARY</span>
-            <h2 id="importTitle" class="slp-header__title">Import Songs</h2>
+            <h2 id="importTitle" class="slp-header__title">Import my songs</h2>
           </div>
           <button id="closeImportBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Close import"><i data-lucide="x"></i></button>
         </header>
         <div class="slp-sheet__body import-body">
           <div id="importStart" class="import-start">
-            <div class="slp-info-banner"><i data-lucide="shield-check"></i><span><strong>Import safely</strong><span>Review and edit every detail before a song is added to your Library.</span></span></div>
+            <div class="slp-info-banner"><i data-lucide="shield-check"></i><span><strong>Nothing is added until you say so</strong><span>You see every song first. Songs already in your library are skipped, and you can undo the whole batch.</span></span></div>
             <section class="slp-card" aria-label="Import methods">
-            <button id="jyricsImportBtn" class="slp-row" type="button">
-              <span class="slp-row__icon-tile"><i data-lucide="link"></i></span>
-              <span class="slp-row__body"><span class="slp-row__title">Import from Jyrics</span><span class="slp-row__subtitle">Use a Jyrics link or copied song page</span></span>
+            <button id="chooseImportFilesBtn" class="slp-row" type="button">
+              <span class="slp-row__icon-tile"><i data-lucide="folder-open"></i></span>
+              <span class="slp-row__body"><span class="slp-row__title">Choose files</span><span class="slp-row__subtitle">Word, PDF, text, CSV, photos or a zip. Pick as many as you like.</span></span>
               <i data-lucide="chevron-right" class="slp-row__chevron"></i>
             </button>
             <button id="pasteImportBtn" class="slp-row" type="button">
@@ -7374,19 +7462,9 @@ a.perf-btn[hidden] { display: none; }
               <span class="slp-row__body"><span class="slp-row__title">Paste copied text</span><span class="slp-row__subtitle">Extract details and lyrics from copied text</span></span>
               <i data-lucide="chevron-right" class="slp-row__chevron"></i>
             </button>
-            <button id="pdfImportBtn" class="slp-row" type="button">
-              <span class="slp-row__icon-tile"><i data-lucide="file-text"></i></span>
-              <span class="slp-row__body"><span class="slp-row__title">Import PDF</span><span class="slp-row__subtitle">Read lyrics from a text or scanned PDF</span></span>
-              <i data-lucide="chevron-right" class="slp-row__chevron"></i>
-            </button>
-            <button id="photoImportBtn" class="slp-row" type="button">
-              <span class="slp-row__icon-tile"><i data-lucide="scan-text"></i></span>
-              <span class="slp-row__body"><span class="slp-row__title">Import photo</span><span class="slp-row__subtitle">Recognize lyrics from a picture or screenshot</span></span>
-              <i data-lucide="chevron-right" class="slp-row__chevron"></i>
-            </button>
-            <button id="chooseImportFilesBtn" class="slp-row" type="button">
-              <span class="slp-row__icon-tile"><i data-lucide="folder-open"></i></span>
-              <span class="slp-row__body"><span class="slp-row__title">Other files</span><span class="slp-row__subtitle">Word, text, or CSV</span></span>
+            <button id="jyricsImportBtn" class="slp-row" type="button">
+              <span class="slp-row__icon-tile"><i data-lucide="link"></i></span>
+              <span class="slp-row__body"><span class="slp-row__title">From Jyrics</span><span class="slp-row__subtitle">Use a Jyrics link or copied song page</span></span>
               <i data-lucide="chevron-right" class="slp-row__chevron"></i>
             </button>
             </section>
@@ -7449,6 +7527,7 @@ a.perf-btn[hidden] { display: none; }
             <div id="mediaImportProgress" class="media-import-progress hidden" role="status" aria-live="polite">
               <div><span id="mediaImportStatus">Preparing...</span><strong id="mediaImportPercent">0%</strong></div>
               <progress id="mediaImportProgressBar" max="100" value="0"></progress>
+              <button id="cancelMediaImportBtn" class="slp-btn slp-btn--ghost" type="button">Stop reading</button>
             </div>
             <p id="mediaImportPrivacy" class="import-note">The selected file is used only to create an editable draft. It is not saved with the song.</p>
             <button id="startMediaImportBtn" class="slp-btn slp-btn--primary import-action" type="button"><i data-lucide="scan-text"></i> Read and review</button>
@@ -7459,6 +7538,7 @@ a.perf-btn[hidden] { display: none; }
               <span id="importFileCount">0 songs found</span>
               <button id="chooseMoreFilesBtn" class="slp-link-btn slp-link-btn--accent" type="button">Choose more</button>
             </div>
+            <div id="importSummary" class="import-summary" hidden></div>
             <div id="importCandidateList" class="import-candidate-list"></div>
           </div>
         </div>
@@ -7508,9 +7588,7 @@ a.perf-btn[hidden] { display: none; }
     <datalist id="albumSuggestions"></datalist>
     <datalist id="languageSuggestions"></datalist>
     <datalist id="styleSuggestions"></datalist>
-    <input id="songImportInput" class="hidden" type="file" multiple accept=".txt,.csv,.docx,text/plain,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-    <input id="pdfImportInput" class="hidden" type="file" multiple accept=".pdf,application/pdf" />
-    <input id="photoImportInput" class="hidden" type="file" multiple accept="image/*" />
+    <input id="songImportInput" class="hidden" type="file" multiple accept=".txt,.csv,.docx,.pdf,.zip,application/zip,application/x-zip-compressed,application/pdf,image/*,text/plain,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
     <script>
@@ -7563,7 +7641,7 @@ const ARTIST_PREFIX = "artist:";
 // A virtual list of Quick-added songs that still have no lyrics (opened from the banner).
 const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
-const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "lyrics", "language", "sourceUrl"];
+const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
@@ -7616,7 +7694,7 @@ const STARTER_SONGS = [
 
 const els = Object.fromEntries(
   [
-    "app", "librarySearchBtn", "backupReminder", "backupReminderText", "backupNowBtn", "backupLaterBtn", "backupStatusText", "storageStatusText", "settingsBtn", "libraryScreenTitle", "primaryNav", "appSongsNavBtn", "appEventsNavBtn", "appNotesNavBtn", "appToolsNavBtn", "songLibraryContent", "notesWorkspace", "gigsWorkspace",
+    "app", "librarySearchBtn", "backupReminder", "backupReminderText", "backupNowBtn", "backupLaterBtn", "backupStatusText", "storageStatusText", "settingsBtn", "libraryScreenTitle", "primaryNav", "appSongsNavBtn", "appEventsNavBtn", "appNotesNavBtn", "appToolsNavBtn", "songLibraryContent", "songFilterStrip", "notesWorkspace", "gigsWorkspace",
     "toolsWorkspace", "toolsHub", "toolsGrid", "toolsSettingsBtn", "toolView", "backFromToolBtn", "toolTitle", "toolBody", "toolTransport", "toolTransportBtn", "gigsHomeHeader", "gigSearchBtn", "newGigBtn", "gigSearchWrap", "gigSearchInput", "closeGigSearchBtn", "gigsToolbar", "gigListViewBtn", "gigCalendarViewBtn", "gigSortWrap", "gigSortSelect", "gigListView", "gigList", "gigListEmpty", "gigCalendarView", "previousGigMonthBtn", "nextGigMonthBtn", "gigTodayBtn", "gigCalendarMonth", "gigCalendarGrid", "selectedGigDateTitle", "selectedGigDateCount", "selectedGigDateList",
     "gigDetailView", "backToGigsBtn", "gigDetailTitle", "editGigBtn", "shareGigBtn", "gigPlanSearchBtn", "gigStructureEditBtn", "gigDetailsCollapse", "gigDetailsPanel", "gigDetailsFields", "gigDetailsSummary", "gigLocationSummary", "gigCustomerSummary", "gigMusicTeamSummary", "gigNotesSummary", "gigPlanSearchWrap", "gigPlanSearchScope", "gigPlanSearchInput", "closeGigPlanSearchBtn", "addGigSectionBtn", "addFirstGigSectionBtn", "gigSectionList", "gigKeyFilterBar", "gigKeyFilterLabel", "clearGigKeyFilterBtn", "gigBuilderEmpty", "addGigTemplateBtn", "gigTemplateMenuBtn", "gigTemplateSheet", "gigTemplateBackBtn", "gigTemplateTitle", "closeGigTemplateBtn", "gigTemplateListView", "gigTemplateListBody", "gigTemplateBuildView", "gigTemplateNameInput", "gigTemplateSectionsInput", "gigTemplateSaveBtn",
     "gigFormSheet", "gigForm", "gigFormTitle", "cancelGigFormBtn", "gigDateInput", "gigEventTypeInput", "gigTypeSelect", "gigEmailInput", "gigPriceInput", "gigDepositInput", "gigBalanceValue", "gigPaidInput", "gigDepositPaidInput", "gigOvertimeStartInput", "gigOvertimeRateInput", "gigChuppahInput", "gigChuppahRow", "gigMoneyNoteInput", "gigMoneySummary", "gigTitlePreview", "shareGigMoneyInput", "gigStartTimeInput", "gigEndTimeInput", "gigVenueInput", "gigAddressInput", "gigClientInput", "gigContactInput", "gigAgentInput", "gigBandInput", "gigDirectorInput", "gigChoirInput", "gigNotesInput", "saveGigBtn",
@@ -7632,18 +7710,18 @@ const els = Object.fromEntries(
     "artistSection", "artistCount", "artistList", "songsSection", "subfolderSection", "subfolderCount", "subfolderList", "attachedNotesSection", "attachedNoteCount", "attachedNoteList", "songSortSelect", "sortMenuBtn", "sortMenuLabel", "songList", "songEmptyState",
     "editSubfoldersBtn", "newSubfolderBtn",
     "songReader", "backToFolderBtn", "songTitle", "songAppearanceBtn", "songMoreBtn",
-    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceBody", "practiceSlowerBtn", "practiceSpeedValue", "practiceFasterBtn", "practicePitch", "practiceLoopBand", "practiceMini", "practiceMiniPlay", "practiceMiniSlower", "practiceMiniSpeed", "practiceMiniFaster", "practiceMiniLoop", "practiceMiniExpand", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfEventRow", "perfPrevBtn", "perfNextBtn", "perfEventLabel", "perfNotice", "perfNoticeText", "perfNoticeUndo", "pedalConfirmBtn", "pedalConfirmSubtitle", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerNumbers", "sectionPickerRepeats", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
+    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceBody", "practiceSlowerBtn", "practiceSpeedValue", "practiceFasterBtn", "practicePitch", "practiceLoopBand", "practiceMini", "practiceMiniPlay", "practiceMiniSlower", "practiceMiniSpeed", "practiceMiniFaster", "practiceMiniLoop", "practiceMiniExpand", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfEventRow", "perfPrevBtn", "perfNextBtn", "perfEventLabel", "perfNotice", "perfNoticeText", "perfNoticeUndo", "pedalConfirmBtn", "titleAlignBtn", "titleAlignSubtitle", "pedalConfirmSubtitle", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerNumbers", "sectionPickerRepeats", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
     "insertDisclosureBtn", "textFormatMenu", "boldTextBtn", "underlineTextBtn", "clearTextFormatBtn", "insertImageBtn", "undoBtn", "redoBtn", "finishWritingBtn",
     "imageToolbar", "imageWidthInput", "imageWidthOutput", "imageAlignLeftBtn", "imageAlignCenterBtn",
     "imageAlignRightBtn", "deleteImageBtn", "finishImageBtn",
     "scrim", "folderDialog", "folderDialogTitle", "cancelFolderBtn", "saveFolderBtn", "folderNameInput",
     "folderParentSelect", "songInfoSheet", "songInfoTitle", "closeSongInfoBtn",
-    "songTitleInput", "songTitleEnglishInput", "songTitleHebrewInput", "songTitleYiddishInput", "songAlternateTitlesInput",
+    "songTitleEnglishInput", "songTitleHebrewInput", "songAlternateTitlesInput",
     "songArtistInput", "songArtistHebrewInput", "songComposerInput", "songLyricistInput", "songAlbumInput",
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
-    "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
+    "songAlternateKeysInput", "songTimeSignatureInput", "songCapoInput", "songNeedsReviewInput", "songOccasionsInput", "songYoutubeInput", "songInfoSourcesInput", "songReviewNoteInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
+    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "importSummary", "importUndoBar", "importUndoText", "importUndoBtn", "undoImportBtn", "fixArtistsBtn", "fixArtistsSubtitle", "undoImportSubtitle", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "languageSettingsBtn", "languageSettingsValue", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -7654,9 +7732,9 @@ const els = Object.fromEntries(
     "confirmCancelBtn", "confirmAcceptBtn", "importSheet", "importTitle", "closeImportBtn", "importStart",
     "jyricsImportBtn", "jyricsImportStage", "backFromJyricsBtn", "jyricsUrlInput", "jyricsImportMessage", "loadJyricsBtn", "jyricsPageText", "parseJyricsCopyBtn",
     "pasteImportBtn", "pasteImportStage", "backFromPasteBtn", "pasteImportText", "parsePasteBtn",
-    "pdfImportBtn", "photoImportBtn", "mediaImportStage", "backFromMediaBtn", "mediaImportEyebrow", "mediaImportHeading", "mediaImportIcon", "mediaImportFilename", "mediaImportHelp", "ocrLanguageField", "ocrLanguageSelect", "mediaImportProgress", "mediaImportStatus", "mediaImportPercent", "mediaImportProgressBar", "mediaImportPrivacy", "startMediaImportBtn",
+    "mediaImportStage", "backFromMediaBtn", "mediaImportEyebrow", "mediaImportHeading", "mediaImportIcon", "mediaImportFilename", "mediaImportHelp", "ocrLanguageField", "ocrLanguageSelect", "mediaImportProgress", "mediaImportStatus", "mediaImportPercent", "mediaImportProgressBar", "mediaImportPrivacy", "startMediaImportBtn", "cancelMediaImportBtn",
     "chooseImportFilesBtn", "importReview", "importFileCount", "chooseMoreFilesBtn", "importCandidateList",
-    "importFooter", "cancelImportBtn", "importSelectedBtn", "songImportInput", "pdfImportInput", "photoImportInput", "imageFileInput", "backupFileInput", "toast",
+    "importFooter", "cancelImportBtn", "importSelectedBtn", "songImportInput", "imageFileInput", "backupFileInput", "toast",
     "newNoteFolderBtn", "newNoteBtn", "editNoteFoldersBtn", "noteBackFolderBtn", "notesHeader", "notesViewTitle", "notesBrowserContent", "noteSearchBtn", "noteArchiveToggleBtn", "noteSearchWrap", "noteSearchInput", "closeNoteSearchBtn", "noteBreadcrumbs", "noteFolderList", "noteList", "noteEditor", "noteEditorHeader", "backToNotesBtn", "makeNoteListBtn", "makeNoteChecklistBtn", "insertNoteDisclosureBtn", "pinNoteBtn", "archiveNoteBtn", "noteDetailsCollapse", "noteDetailsPanel", "noteDateDisplay", "noteFolderDisplay", "noteLocationChoices", "deleteNoteBtn",
     "noteTitleInput", "noteDateInput", "noteFolderInput", "noteBodyInput", "noteSaveStatus", "saveNoteBtn",
     "noteFolderDialog", "noteFolderDialogTitle", "cancelNoteFolderDialogBtn", "saveNoteFolderDialogBtn", "noteFolderNameInput", "noteFolderParentInput"
@@ -7751,6 +7829,9 @@ let imageAdjustmentActive = false;
 let pendingMediaImport = null;
 let pdfModulePromise = null;
 let songFilters = { artist: "", language: "", key: "", status: "", composer: "" };
+// The quick filter chips above the song list: any of the chosen styles / languages / occasions / tempo ranges, all groups together.
+let songChipFilters = { styles: [], languages: [], occasions: [], bpm: [] };
+let songChipOpen = "";
 let keyPickerMode = "major";
 let selectedNoteFolderId = "all";
 let selectedNoteId = null;
@@ -7940,6 +8021,7 @@ function applyAppLanguage() {
     root.lang = next;
     root.dir = next === "he" ? "rtl" : "ltr";
   }
+  applyTitleAlign();
   if (changed || !i18nCollected) { collectStaticStrings(); applyStaticTranslations(); }
   syncAttributeTranslator(next === "he");
   if (els.languageSettingsValue) {
@@ -8396,6 +8478,67 @@ Object.assign(HEBREW_UI, {
  "Place picture on right": "מיקום התמונה מימין",
  "Delete picture": "מחיקת התמונה",
  "Finish adjusting picture": "סיום התאמת התמונה",
+ "ENGLISH TITLE": "כותרת באנגלית",
+ "HEBREW OR YIDDISH TITLE": "כותרת בעברית או ביידיש",
+ "OTHER NAMES OR SPELLINGS": "שמות או איותים נוספים",
+ "Other spellings — separate with |": "איותים נוספים — מפרידים עם |",
+ "Title in English letters": "הכותרת באותיות לטיניות",
+ "Song titles line up on the": "יישור כותרות השירים",
+ "Follows the app language": "לפי שפת האפליקציה",
+ "Left": "שמאל",
+ "Right": "ימין",
+ "Import my songs": "ייבוא השירים שלי",
+ "Choose files": "בחירת קבצים",
+ "Word, PDF, text, CSV or photos. Pick as many as you like.": "Word, PDF, טקסט, CSV או תמונות. אפשר לבחור כמה שרוצים.",
+ "Word, PDF, text, CSV, photos or a zip. Pick as many as you like.": "Word, PDF, טקסט, CSV, תמונות או zip. אפשר לבחור כמה שרוצים.",
+ "Word, PDF, photos, text or paste": "Word, PDF, תמונות, טקסט או הדבקה",
+ "From Jyrics": "מ־Jyrics",
+ "Nothing is added until you say so": "שום דבר לא נוסף עד שתאשר",
+ "You see every song first. Songs already in your library are skipped, and you can undo the whole batch.": "רואים כל שיר קודם. שירים שכבר בספרייה מדולגים, ואפשר לבטל את כל האצווה.",
+ "Read the PDFs and pictures": "קריאת קובצי ה־PDF והתמונות",
+ "Text PDFs are read locally. Scanned pages and pictures are recognized, which takes a few seconds each.": "קובצי PDF עם טקסט נקראים במכשיר. דפים סרוקים ותמונות מזוהים, וזה לוקח כמה שניות לכל אחד.",
+ "Already in your library": "כבר בספרייה",
+ "Same as another song here": "זהה לשיר אחר כאן",
+ "New": "חדש",
+ "will be added": "יתווספו",
+ "already in your library": "כבר בספרייה",
+ "repeated in this batch": "כפולים באצווה הזו",
+ "Tap a song to edit it before it is added. Unticked songs are skipped.": "הקש על שיר כדי לערוך אותו לפני ההוספה. שירים לא מסומנים מדולגים.",
+ "added": "נוספו",
+ "Undo all": "ביטול הכול",
+ "Undo last import": "ביטול הייבוא האחרון",
+ "Undo the last import?": "לבטל את הייבוא האחרון?",
+ "Remove songs": "הסרת שירים",
+ "Nothing left to undo": "אין מה לבטל",
+ "Every song from that import is used in an event, so none were removed": "כל שירי הייבוא משמשים באירוע, ולכן לא הוסר אף אחד",
+ "Stop reading": "עצירת הקריאה",
+ "Reading stopped": "הקריאה נעצרה",
+ "Stopping...": "עוצר...",
+ "pictures will take a while: a few seconds each. You can stop at any time.": "תמונות ייקחו זמן: כמה שניות לכל אחת. אפשר לעצור בכל רגע.",
+ "Fill in missing details for songs already in your library": "השלמת פרטים חסרים לשירים שכבר בספרייה",
+ "Nothing to fill in: these songs already have those details": "אין מה להשלים: לשירים האלה כבר יש את הפרטים",
+ "Fix artists copied from lyrics": "תיקון אמנים שהועתקו מהמילים",
+ "the artist is a line from the lyrics": "האמן הוא שורה מהמילים",
+ "Fix artists copied from lyrics?": "לתקן אמנים שהועתקו מהמילים?",
+ "Clear artists": "ניקוי אמנים",
+ "Needs review": "דורש בדיקה",
+ "need review": "דורשים בדיקה",
+ "Review": "בדיקה",
+ "Needs review (check the lyrics, chords and details)": "דורש בדיקה (לבדוק מילים, אקורדים ופרטים)",
+ "What to check (optional)": "מה לבדוק (לא חובה)",
+ "Links (YouTube, audio)": "קישורים (YouTube, שמע)",
+ "One link per line": "קישור אחד בכל שורה",
+ "Occasion (several, separated by ;)": "אירוע (כמה, מופרדים ב־;)",
+ "YouTube link": "קישור YouTube",
+ "Other links (audio)": "קישורים נוספים (שמע)",
+ "STYLE / GENRE (SEVERAL, SEPARATED BY ;)": "סגנון (כמה, מופרדים ב־;)",
+ "OCCASION (SEVERAL, SEPARATED BY ;)": "אירוע (כמה, מופרדים ב־;)",
+ "YOUTUBE LINK": "קישור YOUTUBE",
+ "INFO SOURCES (WHERE EACH DETAIL CAME FROM)": "מקורות המידע (מאיפה כל פרט)",
+ "Occasion": "אירוע",
+ "Filter songs": "סינון שירים",
+ "Under 80": "מתחת ל־80",
+ "140+": "‎140+",
  "Previous song": "השיר הקודם",
  "Next song": "השיר הבא",
  "Resize the lyrics": "שינוי גודל המילים",
@@ -9111,6 +9254,8 @@ const HEBREW_PATTERNS = [
   [/^Saved “(.+)”$/, (m) => `״${m[1]}״ נשמר`],
   [/^Remove “(.+)” from My templates\? Events that already use it are not changed\.$/, (m) => `להסיר את ״${m[1]}״ מהתבניות שלי? אירועים שכבר משתמשים בה לא ישתנו.`],
   [/^(\d+) (?:songs?|שיר|שירים) added\. Keep choosing or press Done\.$/, (m) => `נוספו ${hebrewCount(m[1], "song")}. אפשר להמשיך לבחור או ללחוץ ״סיום״.`],
+  [/^(\d+) songs? found$/, (m) => `נמצאו ${m[1]} שירים`],
+  [/^Remove the (\d+) songs? added by the last import\?(.*)$/, (m) => `להסיר את ${m[1]} השירים שנוספו בייבוא האחרון?${m[2] ? " (" + m[2].trim() + ")" : ""}`],
   [/^Mark all (\d+) songs in this event as not played again\?$/, (m) => `לסמן את כל ${m[1]} השירים באירוע הזה כשלא בוצעו?`],
   [/^Take “(.+)” out of this event\? It stays in your library\.$/, (m) => `להוציא את ״${m[1]}״ מהאירוע הזה? הוא נשאר בספרייה.`],
   [/^Remove (.+) and its event setlists\? Your Library songs will be kept\.$/, (m) => `להסיר את ${m[1]} ואת סדרי השירים שלו באירוע? שירי הספרייה שלך יישמרו.`],
@@ -9606,6 +9751,7 @@ function normalizeState(raw) {
     setTemplates,
     setTemplateItems,
     gigNavigation: normalizeGigNavigation(raw.gigNavigation, gigIds, sectionIds, setIds),
+    meta: normalizeRecordMeta(raw.meta),
     appearanceMode: ["system", "light", "dark"].includes(raw.appearanceMode) ? raw.appearanceMode : "system",
     language: ["auto", "en", "he"].includes(raw.language) ? raw.language : "auto",
     accentTheme: ["teal", "blue", "violet", "rose", "green", "gold", "coral"].includes(raw.accentTheme) ? raw.accentTheme : "teal",
@@ -9703,8 +9849,8 @@ function normalizeSong(song) {
   return {
     id: song.id || makeId(),
     title,
-    titleEnglish: song.titleEnglish || (hasLatinText(title) ? title : ""),
-    titleHebrew: song.titleHebrew || (hasHebrewText(title) ? title : ""),
+    titleEnglish: isPureLatinText(song.titleEnglish) ? song.titleEnglish : (splitBilingualTitle(title)?.en || (isPureLatinText(title) ? title : "")),
+    titleHebrew: isPureHebrewText(song.titleHebrew) ? song.titleHebrew : (splitBilingualTitle(title)?.he || (isPureHebrewText(title) ? title : "")),
     titleYiddish: song.titleYiddish || "",
     alternateTitles: normalizeStringArray(song.alternateTitles || song.alternateTitle),
     artist: artists.join(", "),
@@ -9714,10 +9860,17 @@ function normalizeSong(song) {
     composer: song.composer || "",
     lyricist: song.lyricist || "",
     album: song.album || "",
-    style: song.style || song.genre || "",
+    // Style and occasion are lists of tags (a song can be "Rock Ballad" and "Soft Disco", or for "Wedding" and "Shabbos").
+    // `style` stays the same tags as one line of text for everything that reads the old field.
+    styles: normalizeStringArray(Array.isArray(song.styles) && song.styles.length ? song.styles : (song.style || song.genre || "")).slice(0, 12),
+    style: normalizeStringArray(Array.isArray(song.styles) && song.styles.length ? song.styles : (song.style || song.genre || "")).slice(0, 12).join("; "),
+    occasions: normalizeStringArray(song.occasions).slice(0, 12),
+    youtubeUrl: /^https?:\/\/\S+$/i.test(String(song.youtubeUrl || "").trim()) ? String(song.youtubeUrl).trim() : "",
+    infoSources: normalizeInfoSources(song.infoSources),
     bpm: Number(song.bpm) > 0 ? Number(song.bpm) : "",
     language: song.language || "",
     sourceUrl: "",
+    importBatchId: typeof song.importBatchId === "string" ? song.importBatchId : "",
     importSourceUrl: String(song.importSourceUrl || oldSource || "").trim(),
     needsDetails: Boolean(song.needsDetails) && !songHasLyricText(documentHtml),
     transpose: clamp(Math.round(Number(song.transpose) || 0), -11, 11),
@@ -9739,6 +9892,9 @@ function normalizeSong(song) {
     alternateOfId: song.alternateOfId || null,
     key: song.key || song.myKey || "",
     timeSignature: String(song.timeSignature || "").trim(),
+    needsReview: song.needsReview === true,
+    reviewNote: String(song.reviewNote || "").trim().slice(0, 300),
+    capo: /^(?:[1-9]|1[0-2])$/.test(String(song.capo || "").trim()) ? String(song.capo).trim() : "",
     alternateKeys: normalizeStringArray(song.alternateKeys || song.alternateKey),
     status: ["learning", "polishing", "ready"].includes(song.status) ? song.status : "learning",
     direction: ["auto", "rtl", "ltr"].includes(song.direction) ? song.direction : "auto",
@@ -9807,6 +9963,104 @@ function normalizeFolderOrder(order, folders) {
   return result;
 }
 
+// ---------- Record ledger (groundwork for sync) ----------
+// Every record (song, folder, event, note...) gets a revision number and a last-changed time, and a record
+// that is deleted leaves a small tombstone, so a second device can tell "changed", "new" and "deleted"
+// apart. It is kept in state.meta, written in the same save as the library, and worked out when saving by
+// comparing each record with how it was last saved, so no screen has to do anything.
+// (Functions only, no top-level constants: loadState() runs while runtime.js loads, before this file's own
+// constants exist.)
+function ledgerCollections() {
+  return ["folders", "songs", "savedSearches", "boards", "noteFolders", "notes", "noteLocationLinks", "gigs", "gigSections", "gigSets", "gigSetItems", "eventTemplates", "setTemplates", "setTemplateItems"];
+}
+
+function normalizeRecordMeta(raw) {
+  const ledger = {};
+  const source = raw && typeof raw.ledger === "object" && raw.ledger ? raw.ledger : {};
+  ledgerCollections().forEach((collection) => {
+    ledger[collection] = {};
+    const entries = source[collection];
+    if (!entries || typeof entries !== "object") return;
+    Object.entries(entries).forEach(([id, entry]) => {
+      const rev = Math.floor(Number(entry?.rev));
+      if (!id || !(rev >= 1)) return;
+      ledger[collection][id] = { rev, updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : "" };
+    });
+  });
+  const tombstones = (Array.isArray(raw?.tombstones) ? raw.tombstones : [])
+    .filter((item) => item && ledgerCollections().includes(item.c) && item.id && Math.floor(Number(item.rev)) >= 1)
+    .map((item) => ({ c: item.c, id: String(item.id), rev: Math.floor(Number(item.rev)), at: typeof item.at === "string" ? item.at : "" }));
+  return { version: 1, ledger, tombstones };
+}
+
+let recordSnapshots = null;        // "collection\0id" -> { text, rev, id, collection } as last saved; in memory only
+const TOMBSTONE_KEEP_MS = 180 * 24 * 60 * 60 * 1000;
+
+function recordKey(collection, id) {
+  return `${collection}\u0000${id}`;
+}
+
+// Takes the library as it is now as the starting point: records with no entry get revision 1, nothing is
+// counted as changed. Called at startup and after a whole library is replaced (restore, undo, start fresh).
+function seedRecordLedger() {
+  recordSnapshots = new Map();
+  if (!state.meta) state.meta = normalizeRecordMeta(null);
+  const now = new Date().toISOString();
+  ledgerCollections().forEach((collection) => {
+    const entries = state.meta.ledger[collection] || (state.meta.ledger[collection] = {});
+    (state[collection] || []).forEach((record) => {
+      const id = String(record?.id || "");
+      if (!id) return;
+      if (!entries[id]) entries[id] = { rev: 1, updatedAt: [record.updatedAt, record.createdAt].find((value) => typeof value === "string" && value) || now };
+      recordSnapshots.set(recordKey(collection, id), { text: JSON.stringify(record), rev: entries[id].rev, id, collection });
+    });
+  });
+}
+
+// Compares every record with how it was last saved: changed records get the next revision, new records
+// revision 1, and records that are gone leave a tombstone (a record that comes back, such as through Undo,
+// continues from its tombstone's revision). Writes to state.meta only when something changed.
+function updateRecordLedger() {
+  if (!recordSnapshots) seedRecordLedger();
+  const now = new Date().toISOString();
+  const meta = state.meta;
+  ledgerCollections().forEach((collection) => {
+    const entries = meta.ledger[collection] || (meta.ledger[collection] = {});
+    const present = new Set();
+    (state[collection] || []).forEach((record) => {
+      const id = String(record?.id || "");
+      if (!id) return;
+      present.add(id);
+      const key = recordKey(collection, id);
+      const text = JSON.stringify(record);
+      const entry = entries[id];
+      if (!entry) {
+        const tombstoneAt = meta.tombstones.findIndex((item) => item.c === collection && item.id === id);
+        const rev = tombstoneAt >= 0 ? meta.tombstones[tombstoneAt].rev + 1 : 1;
+        if (tombstoneAt >= 0) meta.tombstones.splice(tombstoneAt, 1);
+        entries[id] = { rev, updatedAt: now };
+      } else if (recordSnapshots.get(key)?.text !== text) {
+        entry.rev = Math.max(entry.rev, recordSnapshots.get(key)?.rev || 0) + 1;     // never behind what this device had before
+        entry.updatedAt = now;
+      }
+      recordSnapshots.set(key, { text, rev: entries[id].rev, id, collection });
+    });
+    Object.keys(entries).forEach((id) => {
+      if (present.has(id)) return;
+      meta.tombstones.push({ c: collection, id, rev: entries[id].rev + 1, at: now });
+      delete entries[id];
+      recordSnapshots.delete(recordKey(collection, id));
+    });
+    // Records that were here a moment ago and are gone without a ledger entry (a whole library was swapped in).
+    [...recordSnapshots.values()].filter((item) => item.collection === collection && !present.has(item.id)).forEach((item) => {
+      if (!meta.tombstones.some((tomb) => tomb.c === collection && tomb.id === item.id)) meta.tombstones.push({ c: collection, id: item.id, rev: item.rev + 1, at: now });
+      recordSnapshots.delete(recordKey(collection, item.id));
+    });
+  });
+  const cutoff = Date.now() - TOMBSTONE_KEEP_MS;
+  if (meta.tombstones.some((item) => item.at && Date.parse(item.at) < cutoff)) meta.tombstones = meta.tombstones.filter((item) => !item.at || Date.parse(item.at) >= cutoff);
+}
+
 function markStateDirty() {
   stateDirty = true;
 }
@@ -9825,6 +10079,7 @@ function persist(force = true) {
   pendingStorageTimer = null;
   if (persistBlocked) return false;
   if (!force && !stateDirty) return true;
+  updateRecordLedger();
   const snapshot = JSON.stringify(state);
   if (snapshot === lastPersistedSnapshot) {
     stateDirty = false;
@@ -9887,6 +10142,18 @@ function writeStorage(key, value) {
 
 // A list of web links (from an array or text with one link per line/space), keeping only
 // http(s) addresses, without duplicates.
+// Where each detail came from ("Album": "jyrics page + YouTube Topic"): kept on the song, never shown in lists.
+function normalizeInfoSources(value) {
+  const out = {};
+  if (!value || typeof value !== "object" || Array.isArray(value)) return out;
+  Object.entries(value).slice(0, 24).forEach(([key, text]) => {
+    const label = String(key || "").trim().slice(0, 40);
+    const note = String(text || "").trim().slice(0, 300);
+    if (label && note) out[label] = note;
+  });
+  return out;
+}
+
 function normalizeUrlList(value) {
   const items = Array.isArray(value) ? value : String(value || "").split(/[\s,]+/);
   const seen = new Set();
@@ -10516,7 +10783,7 @@ function renderLibrarySearchResults(rawQuery, scope = "all") {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `slp-row ${selectMode.active ? "selecting" : ""}`;
-    button.innerHTML = `${selectMode.active ? selectCheckMarkup() : ""}<span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([song.artist, songDisplayKey(song), song.language].filter(Boolean).join(" · ") || "Song")}</span></span>${songChartFlag(song)}<svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    button.innerHTML = `${selectMode.active ? selectCheckMarkup() : ""}<span class="slp-row__body"><span class="slp-row__title">${songTitleMarkup(song)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([song.artist, songDisplayKey(song), song.language].filter(Boolean).join(" · ") || "Song")}</span></span>${songChartFlag(song)}<svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
     button.addEventListener("click", () => openSongFromSearch(song.id));
     wireSelectableRow(button, song.id, searchSelectContext);
     els.librarySearchSongList.append(button);
@@ -10756,7 +11023,37 @@ function renderSubfolders(folders, parentFolder) {
   });
 }
 
+// Quick filters above the list: Style, Language, Occasion and tempo (BPM), as plain text chips. A chip opens its choices in
+// a second row; any of the chosen values in a group counts, and the groups narrow each other down. Shown only when some
+// song has one of those details.
+function renderSongFilterStrip(sourceSongs) {
+  const groups = [
+    { key: "styles", label: "Style", values: (song) => song.styles || [] },
+    { key: "languages", label: "Language", values: (song) => (song.language ? [song.language] : []) },
+    { key: "occasions", label: "Occasion", values: (song) => song.occasions || [] },
+    { key: "bpm", label: "BPM", values: (song) => [songBpmRangeKey(song)].filter(Boolean) }
+  ];
+  const options = (group) => {
+    const counts = new Map();
+    sourceSongs.forEach((song) => group.values(song).forEach((value) => counts.set(value, (counts.get(value) || 0) + 1)));
+    if (group.key === "bpm") return SONG_BPM_RANGES.filter((range) => counts.has(range.key)).map((range) => ({ value: range.key, label: range.label }));
+    return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([value]) => ({ value, label: value }));
+  };
+  const available = groups.map((group) => ({ group, options: options(group) })).filter((entry) => entry.options.length);
+  els.songFilterStrip.hidden = !available.length;
+  if (!available.length) { els.songFilterStrip.innerHTML = ""; return; }
+  if (songChipOpen && !available.some((entry) => entry.group.key === songChipOpen)) songChipOpen = "";
+  const chip = (attrs, text, active, pressed) => `<button type="button" class="song-filter-chip${active ? " is-active" : ""}" ${attrs}${pressed === undefined ? "" : ` aria-pressed="${pressed}"`}>${escapeHtml(text)}</button>`;
+  const anyActive = Object.values(songChipFilters).some((list) => list.length);
+  const open = available.find((entry) => entry.group.key === songChipOpen);
+  els.songFilterStrip.innerHTML = `<div class="song-filter-row" role="group" aria-label="${t("Filter songs")}">${available.map(({ group }) => {
+    const count = songChipFilters[group.key].length;
+    return chip(`data-filter-group="${group.key}" aria-expanded="${songChipOpen === group.key}"`, `${t(group.label)}${count ? ` · ${count}` : ""}`, count > 0 || songChipOpen === group.key);
+  }).join("")}${anyActive ? chip('data-filter-clear="1"', t("Clear"), false) : ""}</div>${open ? `<div class="song-filter-row song-filter-options" role="group" aria-label="${t(open.group.label)}">${open.options.map((option) => chip(`data-filter-value="${escapeAttribute(option.value)}" data-filter-group="${open.group.key}"`, option.label, songChipFilters[open.group.key].includes(option.value), songChipFilters[open.group.key].includes(option.value))).join("")}</div>` : ""}`;
+}
+
 function renderSongList(sourceSongs, isArtistView = false) {
+  renderSongFilterStrip(sourceSongs);
   const query = els.folderSearchInput.value.trim().toLocaleLowerCase();
   const scope = folderSearchScope;
   let songs = sourceSongs.filter((song) => songMatchesSearch(song, query, scope) && songMatchesFilters(song));
@@ -10788,8 +11085,9 @@ function renderSongList(sourceSongs, isArtistView = false) {
       item.innerHTML = `
         <div class="slp-row ${selectedSongId === song.id ? "selected" : ""}" role="button" tabindex="0" aria-label="Open ${escapeAttribute(visibleTitle)}">
           ${selectMode.active ? selectCheckMarkup() : ""}
-          <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></span>
-          ${songChartFlag(song)}
+          <span class="slp-row__body"><span class="slp-row__title">${songTitleMarkup(song)}</span></span>
+          ${song.needsReview ? `<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>` : ""}
+        ${songChartFlag(song)}
         ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
           <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
@@ -10815,9 +11113,10 @@ function renderSongList(sourceSongs, isArtistView = false) {
         ${selectMode.active ? selectCheckMarkup() : ""}
         ${songReorderMode ? `<button class="slp-row__drag-handle song-grip" type="button" aria-label="Move ${escapeAttribute(song.title)}"><i data-lucide="grip-vertical"></i></button>` : ""}
         <div class="slp-row__body">
-          <button class="song-title-button" type="button"><span class="slp-row__title" dir="auto">${escapeHtml(visibleTitle)}</span></button>
+          <button class="song-title-button" type="button"><span class="slp-row__title">${songTitleMarkup(song)}</span></button>
           ${(song.artists || []).length ? `<span class="slp-row__artists">${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
         </div>
+        ${song.needsReview ? `<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>` : ""}
         ${songChartFlag(song)}
         ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
       </div>
@@ -10867,7 +11166,8 @@ function renderSong() {
 
   els.songEmptyState.classList.add("hidden");
   els.songReader.classList.remove("hidden");
-  els.songTitle.textContent = song.title;
+  els.songTitle.innerHTML = songTitleMarkup(song);
+  els.songTitle.setAttribute("aria-label", song.title);
   els.songArtist.textContent = song.artist || t("Unknown artist");
   els.songArtist.disabled = !song.artist;
   // The artist sits in the chip row, right after the key, and stays tappable.
@@ -10910,9 +11210,12 @@ function renderSongSecondaryMeta(song) {
     ["Composer", song.composer],
     ["Lyricist", song.lyricist],
     ["Language", song.language],
-    ["Style", song.style],
+    ["Style", (song.styles || []).join(" · ")],
+    ["Occasion", (song.occasions || []).join(" · ")],
     ["Tempo", song.bpm ? `${song.bpm} BPM` : ""],
     ["Time signature", song.timeSignature],
+    ["Capo", song.capo ? `Fret ${song.capo}` : ""],
+    ["Needs review", song.needsReview ? (song.reviewNote || "Yes") : ""],
     ["Status", statusLabel(song.status)],
     ["Album", song.album],
     ["Alternate title", song.alternateTitles.join(" · ")],
@@ -10928,11 +11231,12 @@ function renderSongSecondaryMeta(song) {
 // are more. Tapping it opens the Add-to sheet, so it is a control, not just a label.
 // Audio and video links open in a new tab; only http(s) addresses are ever linked.
 function renderSongLinks(song) {
-  const links = [...song.audioLinks, ...song.videoLinks].filter((url) => safeExternalUrl(url));
+  const links = songLinkUrls(song).filter((url) => safeExternalUrl(url));
   els.songLinks.hidden = !links.length;
   // Small icon buttons on the footer line of the details box (the name is the tooltip).
   els.songLinks.innerHTML = links.map((url) => {
     const { label, icon } = linkInfo(url);
+    if (url === song.youtubeUrl) return `<a class="slp-btn slp-btn--soft song-foot-link song-foot-link--text" href="${escapeAttribute(safeExternalUrl(url))}" target="_blank" rel="noopener noreferrer" title="${escapeAttribute(url)}"><i data-lucide="square-play"></i><span>YouTube</span></a>`;
     return `<a class="slp-btn slp-btn--icon song-foot-link" href="${escapeAttribute(safeExternalUrl(url))}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttribute(label)}" title="${escapeAttribute(label)}"><i data-lucide="${icon}"></i></a>`;
   }).join("");
 }
@@ -11573,7 +11877,7 @@ function renderBoardPanel() {
     <section class="board-panel" aria-label="Lyrics">
       <header class="board-panel__head">
         <div class="board-panel__titles" dir="auto">
-          <strong>${escapeHtml(song.title)}</strong>
+          <strong>${songTitleMarkup(song)}</strong>
           ${meta || panelSwitch ? `<span class="board-panel__subrow">${meta ? `<span>${escapeHtml(meta)}</span>` : ""}${panelSwitch}</span>` : ""}
         </div>
         <button class="board-icon-btn board-aa-btn" type="button" data-board-act="text" aria-label="Text size">${t("Aa")}</button>
@@ -11712,7 +12016,7 @@ function boardCardMarkup(song, column) {
       <button class="board-card__head" type="button" aria-expanded="${open}" data-board-card>
         ${selectMode.active ? selectCheckMarkup() : ""}
         <span class="board-card__text">
-          <strong dir="auto">${escapeHtml(song.title)}</strong>
+          <strong>${songTitleMarkup(song)}</strong>
           ${sub}
           ${strip}
         </span>
@@ -12828,11 +13132,12 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   renderSongDetailSuggestions(song.key);
   els.songInfoTitle.textContent = isNew ? t("New Song") : t("Edit Song");
   clearSongTitleNotice();
-  els.songTitleInput.value = song.title === "Untitled Song" && isNew ? "" : song.title;
-  els.songTitleEnglishInput.value = song.titleEnglish;
-  els.songTitleHebrewInput.value = song.titleHebrew;
-  els.songTitleYiddishInput.value = song.titleYiddish;
-  els.songAlternateTitlesInput.value = normalizeStringArray([...song.alternateTitles, song.titleEnglish, song.titleHebrew, song.titleYiddish].filter((title) => title && title !== song.title)).join(" | ");
+  const shownTitle = songTitleParts(song);
+  const blankTitle = song.title === "Untitled Song" && isNew;
+  // A title that cannot be told apart (mixed words) goes into the English box as written.
+  els.songTitleEnglishInput.value = blankTitle ? "" : (shownTitle.one || shownTitle.en || "");
+  els.songTitleHebrewInput.value = blankTitle ? "" : (shownTitle.he || "");
+  els.songAlternateTitlesInput.value = normalizeStringArray([...song.alternateTitles, song.titleYiddish].filter((title) => title && title !== song.title && title !== shownTitle.en && title !== shownTitle.he)).join(" | ");
   els.songArtistInput.value = (song.artists || []).join("; ");
   els.songArtistHebrewInput.value = song.artistHebrew;
   els.songComposerInput.value = song.composer;
@@ -12840,8 +13145,14 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   els.songAlbumInput.value = song.album;
   els.songKeyInput.value = song.key;
   els.songTimeSignatureInput.value = song.timeSignature;
+  els.songCapoInput.value = song.capo || "";
+  els.songNeedsReviewInput.checked = song.needsReview === true;
+  els.songOccasionsInput.value = (song.occasions || []).join("; ");
+  els.songYoutubeInput.value = song.youtubeUrl || "";
+  els.songInfoSourcesInput.value = Object.entries(song.infoSources || {}).map(([key, text]) => `${key}: ${text}`).join("\n");
+  els.songReviewNoteInput.value = song.reviewNote || "";
   els.songAlternateKeysInput.value = song.alternateKeys.join(" | ");
-  els.songStyleInput.value = song.style;
+  els.songStyleInput.value = (song.styles || []).join("; ");
   els.songBpmInput.value = song.bpm;
   els.songLanguageInput.value = song.language;
   els.songStatusInput.value = song.status;
@@ -12854,7 +13165,7 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   renderSongFolderChoices(song);
   renderSongEventChoices(song);
   if (focusKey) return;
-  requestAnimationFrame(() => els.songTitleInput.focus());
+  requestAnimationFrame(() => els.songTitleEnglishInput.focus());
 }
 
 // The lyrics key chip goes straight to choosing the key: Details is opened, the key
@@ -13072,7 +13383,7 @@ function findExistingSongMatch(title, artist, alternateTitles, excludeId) {
   const wantedArtists = normalizeArtistNames(artist).map(normalizeComparisonText);
   return state.songs.find((existing) => {
     if (existing.id === excludeId) return false;
-    const names = [existing.title, ...(existing.alternateTitles || [])].map(normalizeComparisonText);
+    const names = [existing.title, existing.titleEnglish, existing.titleHebrew, ...(existing.alternateTitles || [])].map(normalizeComparisonText).filter(Boolean);
     if (!wanted.some((name) => names.includes(name))) return false;
     const existingArtists = (existing.artists || []).map(normalizeComparisonText);
     return !wantedArtists.length || !existingArtists.length || wantedArtists.some((name) => existingArtists.includes(name));
@@ -13084,13 +13395,14 @@ function showSongTitleNotice(message, existingSongId = "") {
   els.songTitleNoticeOpenBtn.hidden = !existingSongId;
   els.songTitleNoticeOpenBtn.dataset.songId = existingSongId;
   els.songTitleNotice.hidden = false;
-  els.songTitleInput.setAttribute("aria-invalid", "true");
-  els.songTitleInput.focus();
+  const titleField = els.songTitleEnglishInput.value.trim() || !els.songTitleHebrewInput.value.trim() ? els.songTitleEnglishInput : els.songTitleHebrewInput;
+  [els.songTitleEnglishInput, els.songTitleHebrewInput].forEach((input) => input.setAttribute("aria-invalid", String(input === titleField)));
+  titleField.focus();
 }
 
 function clearSongTitleNotice() {
   els.songTitleNotice.hidden = true;
-  els.songTitleInput.setAttribute("aria-invalid", "false");
+  [els.songTitleEnglishInput, els.songTitleHebrewInput].forEach((input) => input.setAttribute("aria-invalid", "false"));
 }
 
 function openExistingSongFromNotice() {
@@ -13106,23 +13418,28 @@ function saveSongInfo() {
   if (!songInfoDraft) return;
   const song = songInfoDraft.song;
   const practiceIdBefore = songInfoDraft.isNew ? null : state.songs.find((item) => item.id === songInfoDraft.originalId)?.practiceFile?.id || null;
-  const title = els.songTitleInput.value.trim();
+  let english = els.songTitleEnglishInput.value.trim();
+  let hebrew = els.songTitleHebrewInput.value.trim();
+  // A Hebrew title typed in the English box (or the other way round) goes where it belongs.
+  if (isPureHebrewText(english) && !hebrew) { hebrew = english; english = ""; }
+  else if (isPureLatinText(hebrew) && !english) { english = hebrew; hebrew = ""; }
+  const title = english && hebrew ? `${english} – ${hebrew}` : (english || hebrew);
   if (!title) {
     showSongTitleNotice("Give the song a title to save it.");
     return;
   }
-  const match = findExistingSongMatch(title, els.songArtistInput.value, normalizeStringArray(els.songAlternateTitlesInput.value), songInfoDraft.originalId);
+  const otherNames = normalizeStringArray(els.songAlternateTitlesInput.value).filter((name) => name !== english && name !== hebrew && name !== title);
+  const match = findExistingSongMatch(title, els.songArtistInput.value, [...otherNames, english, hebrew].filter(Boolean), songInfoDraft.originalId);
   if (match) {
     showSongTitleNotice(`“${match.title}”${match.artist ? ` by ${match.artist}` : ""} is already in your library. Add a different artist if this is another version.`, match.id);
     return;
   }
   clearSongTitleNotice();
   song.title = title;
-  song.alternateTitles = normalizeStringArray(els.songAlternateTitlesInput.value);
-  const titleCandidates = [song.title, ...song.alternateTitles];
-  song.titleEnglish = titleCandidates.find(hasLatinText) || "";
-  song.titleHebrew = titleCandidates.find(hasHebrewText) || "";
-  song.titleYiddish = song.titleYiddish && titleCandidates.includes(song.titleYiddish) ? song.titleYiddish : "";
+  song.alternateTitles = otherNames;
+  song.titleEnglish = isPureLatinText(english) ? english : "";
+  song.titleHebrew = isPureHebrewText(hebrew) ? hebrew : "";
+  song.titleYiddish = "";
   song.artists = normalizeArtistNames(els.songArtistInput.value);
   song.artist = song.artists.join(", ");
   song.artistHebrew = els.songArtistHebrewInput.value.trim();
@@ -13132,8 +13449,15 @@ function saveSongInfo() {
   song.album = els.songAlbumInput.value.trim();
   song.key = els.songKeyInput.value.trim();
   song.timeSignature = els.songTimeSignatureInput.value.trim();
+  song.needsReview = els.songNeedsReviewInput.checked;
+  song.occasions = normalizeStringArray(els.songOccasionsInput.value).slice(0, 12);
+  song.youtubeUrl = /^https?:\/\/\S+$/i.test(els.songYoutubeInput.value.trim()) ? els.songYoutubeInput.value.trim() : "";
+  song.infoSources = normalizeInfoSources(Object.fromEntries(els.songInfoSourcesInput.value.split("\n").map((line) => { const at = line.indexOf(":"); return at > 0 ? [line.slice(0, at), line.slice(at + 1)] : null; }).filter(Boolean)));
+  song.reviewNote = song.needsReview ? els.songReviewNoteInput.value.trim().slice(0, 300) : "";
+  song.capo = /^(?:[1-9]|1[0-2])$/.test(els.songCapoInput.value.trim()) ? els.songCapoInput.value.trim() : "";
   song.alternateKeys = normalizeStringArray(els.songAlternateKeysInput.value);
-  song.style = els.songStyleInput.value.trim();
+  song.styles = normalizeStringArray(els.songStyleInput.value).slice(0, 12);
+  song.style = song.styles.join("; ");
   song.bpm = els.songBpmInput.value ? clamp(Number(els.songBpmInput.value), 20, 300) : "";
   song.language = els.songLanguageInput.value.trim();
   song.status = els.songStatusInput.value;
@@ -13700,7 +14024,8 @@ function placeEditDockInPane(keyboardInset) {
   const sheet = els.lyricSheet.getBoundingClientRect();
   const nav = els.primaryNav?.getBoundingClientRect();
   const navShown = nav && nav.height > 0 && getComputedStyle(els.primaryNav).display !== "none";
-  const wide = globalThis.innerWidth > 900 && sheet.width > 0;
+  // Beside the lists (a tablet, or a foldable opened flat) the lyrics are a column, not the whole screen.
+  const wide = sheet.width > 0 && (globalThis.innerWidth > 900 || sheet.left > 8);
   const edge = 16;
   dock.style.setProperty("--dock-left", wide ? `${Math.round(sheet.left + edge)}px` : "");
   dock.style.setProperty("--dock-right", wide ? `${Math.round(globalThis.innerWidth - sheet.right + edge)}px` : "");
@@ -14053,7 +14378,7 @@ function renderFolderSongPicker() {
   if (!folder) return;
   const query = els.folderSongPickerSearch.value.trim().toLocaleLowerCase();
   const songs = state.songs.filter((song) => !song.folderIds.includes(folder.id) && (!query || songSearchText(song).includes(query)));
-  els.folderSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="folder-song-pick"><input type="checkbox" value="${song.id}"><span><strong dir="auto">${escapeHtml(song.title)}</strong><small dir="auto">${escapeHtml([song.artist, compactKeyLabel(songDisplayKey(song))].filter(Boolean).join(" · ") || "No artist or key")}</small></span></label>`).join("") : `<div class="picker-empty"><i data-lucide="music-2"></i><strong>${query ? "No matching songs" : "Every song is already here"}</strong></div>`;
+  els.folderSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="folder-song-pick"><input type="checkbox" value="${song.id}"><span><strong>${songTitleMarkup(song)}</strong><small dir="auto">${escapeHtml([song.artist, compactKeyLabel(songDisplayKey(song))].filter(Boolean).join(" · ") || "No artist or key")}</small></span></label>`).join("") : `<div class="picker-empty"><i data-lucide="music-2"></i><strong>${query ? "No matching songs" : "Every song is already here"}</strong></div>`;
   refreshIcons();
 }
 
@@ -14148,7 +14473,29 @@ function clearSongFilters() {
 }
 
 function activeFilterCount() {
-  return Object.values(songFilters).filter(Boolean).length;
+  return Object.values(songFilters).filter(Boolean).length + Object.values(songChipFilters).filter((list) => list.length).length;
+}
+
+const SONG_BPM_RANGES = [
+  { key: "lt80", label: "Under 80", min: 0, max: 79 },
+  { key: "80", label: "80–99", min: 80, max: 99 },
+  { key: "100", label: "100–119", min: 100, max: 119 },
+  { key: "120", label: "120–139", min: 120, max: 139 },
+  { key: "140", label: "140+", min: 140, max: 999 }
+];
+
+function songBpmRangeKey(song) {
+  const bpm = Number(song.bpm);
+  return bpm > 0 ? SONG_BPM_RANGES.find((range) => bpm >= range.min && bpm <= range.max)?.key || "" : "";
+}
+
+function songMatchesChipFilters(song) {
+  const has = (list, values) => !list.length || values.some((value) => list.some((wanted) => normalizeComparisonText(wanted) === normalizeComparisonText(value)));
+  if (!has(songChipFilters.styles, song.styles || [])) return false;
+  if (!has(songChipFilters.languages, song.language ? [song.language] : [])) return false;
+  if (!has(songChipFilters.occasions, song.occasions || [])) return false;
+  if (songChipFilters.bpm.length && !songChipFilters.bpm.includes(songBpmRangeKey(song))) return false;
+  return true;
 }
 
 function songMatchesFilters(song) {
@@ -14157,7 +14504,7 @@ function songMatchesFilters(song) {
   if (songFilters.key && songDisplayKey(song) !== songFilters.key) return false;
   if (songFilters.status && song.status !== songFilters.status) return false;
   if (songFilters.composer && song.composer !== songFilters.composer) return false;
-  return true;
+  return songMatchesChipFilters(song);
 }
 
 function safeExternalUrl(value) {
@@ -16760,7 +17107,7 @@ function renderPerformanceDocument() {
   fillReadOnlyLyrics(els.perfDoc, song, { simplify: perfPrefs.simplify });
   els.perfScroll.scrollTop = scroll;
 
-  els.perfTitle.textContent = [song.title, song.artist].filter(Boolean).join(" · ");
+  els.perfTitle.innerHTML = `${songTitleMarkup(song)}${song.artist ? `<span class="t-artist" dir="auto">${escapeHtml(song.artist)}</span>` : ""}`;
   const shift = songTranspose(song);
   const key = songCurrentKey(song);
   els.perfKeyPill.innerHTML = key
@@ -16959,6 +17306,7 @@ function initPerformanceUi() {
   els.perfNextBtn.addEventListener("click", () => stepPerformanceSong(1));
   els.perfPrevBtn.addEventListener("click", () => stepPerformanceSong(-1));
   els.perfNoticeUndo.addEventListener("click", undoPerfPlayed);
+  els.titleAlignBtn.addEventListener("click", cycleTitleAlign);
   els.pedalConfirmBtn.addEventListener("click", () => { perfPrefs.pedalConfirm = !perfPrefs.pedalConfirm; savePerfPrefs(); refreshPedalRow(); });
   // Page-turner pedals send arrow keys, Page Up/Down or Space.
   document.addEventListener("keydown", (event) => {
@@ -17053,7 +17401,7 @@ function practiceSources(song) {
   const sources = [];
   if (song.practiceFile?.id) sources.push({ kind: "file", id: song.practiceFile.id, name: song.practiceFile.name || "Audio file", size: song.practiceFile.size || 0 });
   const seen = new Set();
-  [...(song.videoLinks || []), ...(song.audioLinks || [])].forEach((url) => {
+  songLinkUrls(song).forEach((url) => {
     const id = youtubeIdFromUrl(url);
     if (id && !seen.has(id)) {
       seen.add(id);
@@ -17685,7 +18033,7 @@ let practiceLastScroll = 0;
 let practiceMiniLockUntil = 0;
 
 function practiceMiniAllowed() {
-  return practiceSourceKind === "file" && !globalThis.matchMedia?.("(min-width: 900px) and (min-height: 521px)")?.matches;
+  return practiceSourceKind === "file" && !globalThis.matchMedia?.("(min-width: 900px) and (min-height: 521px), (min-width: 700px) and (min-height: 521px) and (min-aspect-ratio: 1/1)")?.matches;
 }
 
 function setPracticeMini(on) {
@@ -17885,6 +18233,21 @@ function showSettingsMain(title = t("Settings & Backup")) {
   refreshSafetyRows();
   refreshPracticeAudioRow();
   refreshPedalRow();
+  refreshTitleAlignRow();
+  refreshUndoImportRow();
+  refreshFixArtistsRow();
+}
+
+function refreshTitleAlignRow() {
+  const choice = titleAlignChoice();
+  els.titleAlignSubtitle.textContent = t(choice === "left" ? "Left" : choice === "right" ? "Right" : "Follows the app language");
+}
+
+function cycleTitleAlign() {
+  const next = { auto: "left", left: "right", right: "auto" }[titleAlignChoice()];
+  try { if (next === "auto") localStorage.removeItem(TITLE_ALIGN_KEY); else localStorage.setItem(TITLE_ALIGN_KEY, next); } catch { /* the choice just will not be remembered */ }
+  applyTitleAlign();
+  refreshTitleAlignRow();
 }
 
 function refreshPedalRow() {
@@ -18179,6 +18542,7 @@ async function replaceLibrary(parsedBackup, review, snapshotReason, doneMessage 
   markStateDirty();
   if (!persist(true)) {
     state = previous;
+    seedRecordLedger();                                  // the ledger describes the library that is back
     persistBlocked = previousBlocked;
     stateDirty = previousDirty;
     await rollbackRestoredImages(imageOutcome);          // the pictures this restore overwrote come back too
@@ -18733,7 +19097,7 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
     ${selectMode.active ? selectCheckMarkup() : ""}
     ${item.performanceStatus === "played" ? `<i class="gig-played-tick" data-lucide="check" aria-label="Played"></i>` : `<span class="gig-song-number">${index + 1}</span>`}
     <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-song="${song.id}" data-open-gig-item="${item.id}">
-      <span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span>
+      <span class="slp-row__title">${songTitleMarkup(song)}</span>
       <span class="slp-row__subtitle" dir="auto">${escapeHtml(song.artist || "Artist not added")}</span>
       ${noteText ? `<span class="gig-row-note" dir="auto"><i data-lucide="sticky-note"></i><span>${escapeHtml(noteText)}</span></span>` : ""}
     </button>
@@ -19455,7 +19819,7 @@ function renderGigSongPicker() {
   const query = normalizeComparisonText(els.gigSongPickerSearch.value);
   const existing = new Set(state.gigSetItems.filter((item) => item.setId === activeGigSetId).map((item) => item.songId));
   const songs = state.songs.filter((song) => !query || normalizeComparisonText([song.title, song.titleEnglish, song.titleHebrew, song.artist, song.key].join(" ")).includes(query)).sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }));
-  els.gigSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="gig-song-choice"><input type="checkbox" data-gig-song-id="${song.id}" ${existing.has(song.id) ? "checked disabled" : ""}><span><strong dir="auto">${escapeHtml(song.title)}</strong><small>${escapeHtml([song.artist, song.key].filter(Boolean).join(" · ") || "Song details not added")}</small></span>${existing.has(song.id) ? "<em>Added</em>" : ""}</label>`).join("") : `<p class="gig-picker-empty">${t("No matching songs.")}</p>`;
+  els.gigSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="gig-song-choice"><input type="checkbox" data-gig-song-id="${song.id}" ${existing.has(song.id) ? "checked disabled" : ""}><span><strong>${songTitleMarkup(song)}</strong><small>${escapeHtml([song.artist, song.key].filter(Boolean).join(" · ") || "Song details not added")}</small></span>${existing.has(song.id) ? "<em>Added</em>" : ""}</label>`).join("") : `<p class="gig-picker-empty">${t("No matching songs.")}</p>`;
 }
 
 function addSelectedGigSongs() {
@@ -19774,7 +20138,7 @@ function openGigSetListSheet() {
     const heading = entry.section.id !== lastSection ? `<div class="gig-setlist-heading" dir="auto">${escapeHtml(entry.section.name)}</div>` : "";
     lastSection = entry.section.id;
     const key = eventItemKey(entry.item, song);
-    return `${heading}<button class="slp-row gig-setlist-row ${entry.item.id === gigReadItemId ? "is-reading" : ""}" type="button" data-gig-jump="${entry.item.id}" data-gig-jump-song="${song.id}"><span class="gig-song-number">${index + 1}</span><span class="slp-row__body gig-setlist-text"><span class="gig-setlist-title" dir="auto">${escapeHtml(song.title)}</span>${song.artist ? `<span class="gig-setlist-artist" dir="auto">${escapeHtml(song.artist)}</span>` : ""}</span>${key ? `<span class="slp-badge--key ${entry.item.keyOverride ? "event-key" : ""}" dir="ltr">${escapeHtml(compactKeyLabel(key))}</span>` : ""}</button>`;
+    return `${heading}<button class="slp-row gig-setlist-row ${entry.item.id === gigReadItemId ? "is-reading" : ""}" type="button" data-gig-jump="${entry.item.id}" data-gig-jump-song="${song.id}"><span class="gig-song-number">${index + 1}</span><span class="slp-row__body gig-setlist-text"><span class="gig-setlist-title">${songTitleMarkup(song)}</span>${song.artist ? `<span class="gig-setlist-artist" dir="auto">${escapeHtml(song.artist)}</span>` : ""}</span>${key ? `<span class="slp-badge--key ${entry.item.keyOverride ? "event-key" : ""}" dir="ltr">${escapeHtml(compactKeyLabel(key))}</span>` : ""}</button>`;
   }).join("");
   els.gigSetListBody.querySelectorAll("[data-gig-jump]").forEach((button) => button.addEventListener("click", () => {
     closeOverlays();
@@ -19955,7 +20319,7 @@ function quickAddMatches(text) {
 
 function renderQuickAddSuggestions() {
   const matches = quickAddMatches(els.quickAddInput.value);
-  els.quickAddSuggestions.innerHTML = matches.map((song) => `<button class="quick-add-suggestion" type="button" role="option" data-quick-add-song="${escapeAttribute(song.id)}"><span class="quick-add-suggestion__title" dir="auto">${escapeHtml(song.title)}</span><span class="quick-add-suggestion__meta" dir="auto">${escapeHtml([song.artist, song.key].filter(Boolean).join(" · ") || "In your library")}</span><span class="quick-add-suggestion__action">${t("Add")}</span></button>`).join("");
+  els.quickAddSuggestions.innerHTML = matches.map((song) => `<button class="quick-add-suggestion" type="button" role="option" data-quick-add-song="${escapeAttribute(song.id)}"><span class="quick-add-suggestion__title">${songTitleMarkup(song)}</span><span class="quick-add-suggestion__meta" dir="auto">${escapeHtml([song.artist, song.key].filter(Boolean).join(" · ") || "In your library")}</span><span class="quick-add-suggestion__action">${t("Add")}</span></button>`).join("");
 }
 
 function logQuickAdd(message, tone = "") {
@@ -20736,8 +21100,6 @@ function openSongImport() {
   importMode = "paste";
   pendingMediaImport = null;
   els.songImportInput.value = "";
-  els.pdfImportInput.value = "";
-  els.photoImportInput.value = "";
   els.pasteImportText.value = "";
   showImportStage("start");
   showOverlay(els.importSheet);
@@ -20752,32 +21114,31 @@ function showImportStage(stage) {
   els.importFooter.classList.toggle("hidden", stage !== "review");
 }
 
-function chooseMediaImport(mode) {
-  importMode = mode;
-  const input = mode === "pdf" ? els.pdfImportInput : els.photoImportInput;
-  input.value = "";
-  input.click();
-}
-
 function prepareMediaImport(mode, files) {
   const selectedFiles = [...(files || [])];
   if (!selectedFiles.length) return;
   pendingMediaImport = { mode, files: selectedFiles };
   const isPdf = mode === "pdf";
-  els.mediaImportEyebrow.textContent = isPdf ? t("PDF import") : t("Photo import");
-  els.mediaImportHeading.textContent = isPdf ? t("Read lyrics from PDF") : t("Read lyrics from pictures");
+  const mixed = mode === "mixed";
+  els.mediaImportEyebrow.textContent = mixed ? t("Import my songs") : isPdf ? t("PDF import") : t("Photo import");
+  els.mediaImportHeading.textContent = mixed ? t("Read the PDFs and pictures") : isPdf ? t("Read lyrics from PDF") : t("Read lyrics from pictures");
   els.mediaImportIcon.innerHTML = `<i data-lucide="${isPdf ? "file-text" : "scan-text"}"></i>`;
   els.mediaImportFilename.textContent = selectedFiles.length === 1
     ? selectedFiles[0].name
-    : `${selectedFiles.length} ${isPdf ? "PDF files" : "pictures"} selected`;
-  els.mediaImportHelp.textContent = isPdf
+    : `${selectedFiles.length} ${mixed ? "files" : isPdf ? "PDF files" : "pictures"} selected`;
+  const manyPictures = !isPdf && selectedFiles.length > 30;
+  els.mediaImportHelp.textContent = manyPictures
+    ? `${selectedFiles.length} ${t("pictures will take a while: a few seconds each. You can stop at any time.")}`
+    : mixed
+    ? t("Text PDFs are read locally. Scanned pages and pictures are recognized, which takes a few seconds each.")
+    : isPdf
     ? t("Text PDFs are read locally. Scanned pages are recognized like pictures.")
     : t("Clear, straight pictures with good lighting work best.");
   els.ocrLanguageField.classList.toggle("media-ocr-secondary", isPdf);
   els.mediaImportPrivacy.textContent = isPdf
     ? t("The PDF is converted into an editable draft and is not stored with the song.")
     : t("Pictures are converted into editable text and are not stored with the song.");
-  els.startMediaImportBtn.innerHTML = `<i data-lucide="scan-text"></i> ${isPdf ? "Read PDF" : "Read pictures"}`;
+  els.startMediaImportBtn.innerHTML = `<i data-lucide="scan-text"></i> ${mixed ? "Read files" : isPdf ? "Read PDF" : "Read pictures"}`;
   els.startMediaImportBtn.disabled = false;
   els.backFromMediaBtn.disabled = false;
   els.mediaImportProgress.classList.add("hidden");
@@ -20793,21 +21154,38 @@ function setMediaImportProgress(status, progress = 0) {
   els.mediaImportProgressBar.value = safeProgress;
 }
 
+const MEDIA_IMPORT_STOPPED = "Reading stopped";
+let mediaImportCancelled = false;
+
+function throwIfMediaImportCancelled() {
+  if (mediaImportCancelled) throw new Error(MEDIA_IMPORT_STOPPED);
+}
+
 async function startMediaImport() {
   if (!pendingMediaImport?.files?.length) return;
+  mediaImportCancelled = false;
   const { mode, files } = pendingMediaImport;
   els.startMediaImportBtn.disabled = true;
   els.backFromMediaBtn.disabled = true;
   els.mediaImportProgress.classList.remove("hidden");
   try {
-    const additions = mode === "pdf"
+    const additions = mode === "mixed"
+      ? [...await candidatesFromPdfFiles(files.filter(isPdfFile)), ...await candidatesFromImageFiles(files.filter((file) => !isPdfFile(file)))]
+      : mode === "pdf"
       ? await candidatesFromPdfFiles(files)
       : await candidatesFromImageFiles(files);
     importCandidates.push(...additions.filter((candidate) => candidate.title || candidate.lyrics));
+    applyImportIndex(additions);
     if (!additions.length) throw new Error("No readable song text was found");
     markImportDuplicates();
     renderImportCandidates();
   } catch (error) {
+    if (error?.message === MEDIA_IMPORT_STOPPED) {
+      pendingMediaImport = null;
+      showImportStage("start");
+      showToast(MEDIA_IMPORT_STOPPED);
+      return;
+    }
     const message = error?.message || t("The selected file could not be read");
     setMediaImportProgress(message, 0);
     showToast(message);
@@ -21049,9 +21427,25 @@ function parsePastedImport() {
 
 async function addImportFiles(files) {
   importMode = "files";
-  const selectedFiles = [...(files || [])];
-  if (!selectedFiles.length) return;
+  const allFiles = await expandZipFiles([...(files || [])]);
+  if (!allFiles.length) return;
+  // Word, text and CSV are read straight away. PDFs and pictures need reading (and OCR), so they go to the
+  // progress screen after the rest has been added to the preview.
+  const mediaFiles = allFiles.filter((file) => isPdfFile(file) || isImageFile(file));
+  const selectedFiles = allFiles.filter((file) => !mediaFiles.includes(file));
   const additions = [];
+  // A CSV that lists files ("file" column with the titles, artists and capo for each) describes the other files
+  // chosen with it; it is not a list of songs.
+  const indexRows = new Map();
+  for (const file of [...selectedFiles]) {
+    if (!/\.csv$/i.test(file.name || "") && file.type !== "text/csv") continue;
+    const text = await readFileText(file);
+    const index = parseImportIndexCsv(text);
+    if (!index) continue;
+    index.forEach((row, key) => indexRows.set(key, row));
+    selectedFiles.splice(selectedFiles.indexOf(file), 1);
+  }
+  importIndexRows = indexRows.size ? new Map([...importIndexRows, ...indexRows]) : importIndexRows;
   for (const file of selectedFiles) {
     if (file.size > 15_000_000) {
       showToast(`${file.name || "A file"} is too large`);
@@ -21062,15 +21456,166 @@ async function addImportFiles(files) {
       const isDocx = /\.docx$/i.test(name) || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
       const isCsv = /\.csv$/i.test(name) || file.type === "text/csv";
       const text = isDocx ? await extractDocxText(file) : await readFileText(file);
-      additions.push(...(isCsv ? candidatesFromCsv(text, name) : [candidateFromExtractedText(text, name, "Text file")]));
+      const made = isCsv ? candidatesFromCsv(text, name) : [candidateFromExtractedText(text, name, "Text file")];
+      made.forEach((candidate) => { candidate.sourceFile = name; });
+      additions.push(...made);
     } catch {
       showToast(`Could not read ${file.name || "that file"}`);
     }
   }
   importCandidates.push(...additions.filter((candidate) => candidate.title || candidate.lyrics));
+  applyImportIndex(importCandidates.filter((candidate) => additions.includes(candidate)));
+  if (mediaFiles.length) {
+    markImportDuplicates();
+    prepareMediaImport(mediaFiles.every(isPdfFile) ? "pdf" : mediaFiles.every(isImageFile) ? "photo" : "mixed", mediaFiles);
+    return;
+  }
   markImportDuplicates();
   renderImportCandidates();
   if (!additions.length) showToast("No songs were found in those files");
+}
+
+let importIndexRows = new Map();      // file name (lower case) -> details from an index CSV chosen with the files
+
+// Pulls the files out of any zip (the songs of a folder sent as one zip). Hidden files and Mac metadata are skipped.
+async function expandZipFiles(files) {
+  const out = [];
+  for (const file of files) {
+    if (!/\.zip$/i.test(file.name || "") && !/zip/.test(file.type || "")) { out.push(file); continue; }
+    if (!globalThis.JSZip) { showToast("Zip files are unavailable in this copy of the app"); continue; }
+    try {
+      const archive = await globalThis.JSZip.loadAsync(await readFileBuffer(file));
+      const entries = Object.values(archive.files).filter((entry) => !entry.dir && !/(^|\/)(__MACOSX|\.[^/]*)(\/|$)/.test(entry.name) && /\.(pdf|csv|txt|docx|jpe?g|png|heic|webp)$/i.test(entry.name));
+      for (const entry of entries) {
+        const blob = await entry.async("blob");
+        const name = entry.name.split("/").pop();
+        const type = /\.pdf$/i.test(name) ? "application/pdf" : /\.csv$/i.test(name) ? "text/csv" : /\.txt$/i.test(name) ? "text/plain" : /\.docx$/i.test(name) ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : "image/jpeg";
+        out.push(new File([blob], name, { type }));
+      }
+    } catch {
+      showToast(`Could not open ${file.name || "that zip"}`);
+    }
+  }
+  return out;
+}
+
+// An index CSV has a "file" column and title columns, e.g.
+//   english title, hebrew title, sure/unsure, english artist, hebrew artist, capo, pages, file
+// -> Map of lower-case file name -> details. Returns null when the CSV is not an index (then it is a list of songs).
+function parseImportIndexCsv(text) {
+  const rows = parseCsvRows(String(text || "").replace(/^\uFEFF/, ""));
+  if (rows.length < 2) return null;
+  const headers = rows[0].map(normalizeCsvHeader);
+  const at = (...names) => headers.findIndex((header) => names.includes(header));
+  const fileColumn = at("file", "filename", "file name");
+  const titleColumns = [at("english title", "title"), at("hebrew title")].filter((index) => index >= 0);
+  if (fileColumn < 0 || !titleColumns.length) return null;
+  const cell = (row, ...names) => { const index = at(...names); return index >= 0 ? String(row[index] || "").trim() : ""; };
+  const index = new Map();
+  rows.slice(1).filter((row) => row.some((value) => String(value).trim())).forEach((row) => {
+    const file = String(row[fileColumn] || "").trim();
+    if (!file) return;
+    index.set(file.toLowerCase(), {
+      titleEnglish: cell(row, "english title", "title"),
+      titleHebrew: cell(row, "hebrew title"),
+      artist: cell(row, "english artist", "artist"),
+      artistHebrew: cell(row, "hebrew artist"),
+      capo: cell(row, "capo"),
+      album: cell(row, "album"),
+      style: cell(row, "style", "genre"),
+      timeSignature: cell(row, "time signature"),
+      language: cell(row, "language"),
+      occasion: cell(row, "occasion", "occasions"),
+      bpm: cell(row, "bpm", "tempo"),
+      links: cell(row, "youtube url", "youtube", "link", "links"),
+      sourceUrl: cell(row, "jyrics url", "source url", "url"),
+      reviewNote: cell(row, "unsure reason", "review note"),
+      infoSources: Object.fromEntries([
+        ...headers.map((header, column) => [header, column]).filter(([header]) => /\bsource$/.test(header) && header !== "source").map(([header, column]) => [header.replace(/\s*source$/, "").replace(/^./, (c) => c.toUpperCase()) + " source", String(row[column] || "").trim()]),
+        ["Pages in the book", cell(row, "pages")],
+        ["Jyrics page", cell(row, "jyrics url")]
+      ].filter(([, value]) => value)),
+      unsure: /unsure|not sure|check|review/i.test(cell(row, "sure/unsure", "sure", "confidence"))
+    });
+  });
+  return index.size ? index : null;
+}
+
+// Details from the index CSV win over what was read from the file: they were written by hand.
+function applyImportIndex(candidates) {
+  if (!importIndexRows.size) return;
+  candidates.forEach((candidate) => {
+    const row = importIndexRows.get(String(candidate.sourceFile || "").toLowerCase());
+    if (!row) return;
+    const english = isPureLatinText(row.titleEnglish) ? row.titleEnglish : "";
+    const hebrew = isPureHebrewText(row.titleHebrew) ? row.titleHebrew : "";
+    if (english || hebrew) {
+      candidate.titleEnglish = english;
+      candidate.titleHebrew = hebrew;
+      candidate.title = english && hebrew ? `${english} – ${hebrew}` : (english || hebrew);
+      candidate.alternateTitles = [];
+    }
+    if (row.artist) candidate.artist = row.artist;
+    if (row.artistHebrew) candidate.artistHebrew = row.artistHebrew;
+    if (/^(?:[1-9]|1[0-2])$/.test(row.capo)) candidate.capo = row.capo;          // 0 means no capo
+    if (row.album) candidate.album = row.album;
+    if (row.style) candidate.style = row.style;
+    if (/^\d{1,2}\/\d{1,2}$/.test(row.timeSignature)) candidate.timeSignature = row.timeSignature;
+    if (row.language) candidate.language = row.language;
+    if (Number(row.bpm) >= 20 && Number(row.bpm) <= 300) candidate.bpm = String(Math.round(Number(row.bpm)));
+    const links = normalizeUrlList(row.links);
+    const youtube = links.find((url) => linkInfo(url).label === "YouTube");
+    if (youtube) candidate.youtubeUrl = youtube;
+    const others = links.filter((url) => url !== youtube);
+    if (others.length) candidate.linkText = others.join("\n");
+    if (row.infoSources && Object.keys(row.infoSources).length) candidate.infoSources = row.infoSources;
+    if (/^https?:\/\//i.test(row.sourceUrl)) candidate.sourceUrl = row.sourceUrl;
+    if (row.unsure) { candidate.needsReview = true; candidate.reviewNote = row.reviewNote || ""; }
+    if (row.occasion) candidate.occasions = normalizeStringArray(row.occasion).slice(0, 12);
+    suggestFoldersFromDetails(candidate);
+    candidate.fromIndex = true;
+  });
+}
+
+// Style, language and title can point to folders that already exist (Ballads, Hebrew / Yiddish...).
+function suggestFoldersFromDetails(candidate) {
+  const ids = suggestCategoryIds(`${candidate.title}\n${candidate.style}\n${candidate.language}\n${candidate.lyrics}`);
+  candidate.suggestedFolderIds = [...new Set([...candidate.suggestedFolderIds, ...ids])];
+  candidate.selectedFolderIds = [...new Set([...candidate.selectedFolderIds, ...ids])];
+}
+
+function isPdfFile(file) {
+  return /\.pdf$/i.test(file.name || "") || file.type === "application/pdf";
+}
+
+function isImageFile(file) {
+  return /^image\//.test(file.type || "") || /\.(jpe?g|png|heic|heif|webp|gif|bmp)$/i.test(file.name || "");
+}
+
+// A line printed at the top or bottom of every page (the page header or footer, with the date or page number changing)
+// is not song text. Needs a few pages to tell it from lyrics.
+function removeRunningPageLines(pages) {
+  const sizes = pages.flatMap((entry) => entry.lines).filter((line) => line.text.trim() && line.size > 0).map((line) => line.size).sort((a, b) => a - b);
+  const typical = sizes[Math.floor(sizes.length / 2)] || 0;
+  const keyOf = (line) => line.text.replace(/\d+/g, "#").replace(/\s+/g, " ").trim();
+  const edges = (lines) => { const filled = lines.filter((line) => line.text.trim()); return [...filled.slice(0, 2), ...filled.slice(-2)]; };
+  // 1. Small print at the very top or bottom of a page (a browser's page header or footer) is not song text.
+  let result = pages.map((entry) => {
+    const drop = new Set(edges(entry.lines).filter((line) => typical > 0 && line.size > 0 && line.size <= typical * 0.75));
+    return drop.size ? { ...entry, lines: entry.lines.filter((line) => !drop.has(line)) } : entry;
+  });
+  // 2. The same line at the top or bottom of most pages (only the date or page number changing).
+  if (result.length >= 3) {
+    const counts = new Map();
+    result.forEach((entry) => new Set(edges(entry.lines).map(keyOf).filter(Boolean)).forEach((key) => counts.set(key, (counts.get(key) || 0) + 1)));
+    // Only lines that look like page furniture: a date, a time or a page number, or smaller type than the song.
+    // A chorus line that happens to start or end several pages is lyrics and stays.
+    const furniturePattern = /\d{1,4}[\/.-]\d{1,2}[\/.-]\d{1,4}|\b\d{1,2}:\d{2}\s*(?:am|pm)?\b|\bpage\s+\d+\s*(?:of|\/)\s*\d+|^\s*\d+\s*(?:of|\/)\s*\d+\s*$/i;
+    const looksLikeFurniture = (line) => !(typical > 0 && line.size >= typical * 1.3) && ((typical > 0 && line.size > 0 && line.size <= typical * 0.9) || furniturePattern.test(line.text));
+    const running = new Set([...counts].filter(([, count]) => count >= Math.max(3, Math.ceil(result.length * 0.6))).map(([key]) => key));
+    if (running.size) result = result.map((entry) => ({ ...entry, lines: entry.lines.filter((line) => !(running.has(keyOf(line)) && edges(entry.lines).includes(line) && looksLikeFurniture(line))) }));
+  }
+  return result;
 }
 
 async function candidatesFromPdfFiles(files) {
@@ -21082,32 +21627,169 @@ async function candidatesFromPdfFiles(files) {
     setMediaImportProgress(`Opening ${file.name}...`, fileIndex / files.length * 100);
     const loadingTask = pdfjs.getDocument({ data: new Uint8Array(await readFileBuffer(file)) });
     const pdf = await loadingTask.promise;
-    if (pdf.numPages > 20) throw new Error(`${file.name} has more than 20 pages`);
     const pages = [];
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      throwIfMediaImportCancelled();
       setMediaImportProgress(`Reading page ${pageNumber} of ${pdf.numPages}...`, ((fileIndex + (pageNumber - 1) / pdf.numPages) / files.length) * 100);
       const page = await pdf.getPage(pageNumber);
-      const pageText = textFromPdfContent(await page.getTextContent());
-      pages.push(pageText);
+      pages.push({ page: pageNumber, lines: pdfPageLines(await page.getTextContent(), page.getViewport({ scale: 1 }).height) });
+      page.cleanup?.();
     }
-    let text = pages.join("\n\n").trim();
-    if (normalizeComparisonText(text).length < 30) {
-      setMediaImportProgress("This PDF is scanned. Recognizing its pages...", fileIndex / files.length * 100);
-      text = await recognizePdfPages(pdf, fileIndex, files.length);
+    pages.splice(0, pages.length, ...removeRunningPageLines(pages));
+    const allText = pages.map((entry) => entry.lines.map((line) => line.text).join("\n")).join("\n\n").trim();
+    if (normalizeComparisonText(allText).length < 30) {
+      setMediaImportProgress(`This PDF is scanned. Recognizing its ${pdf.numPages} pages, which takes a few seconds each...`, fileIndex / files.length * 100);
+      const text = await recognizePdfPages(pdf, fileIndex, files.length);
+      if (normalizeComparisonText(text).length >= 8) {
+        const scanned = candidateFromExtractedText(text, file.name, "PDF");
+        scanned.sourceFile = file.name;
+        additions.push(scanned);
+      }
+    } else {
+      // One PDF can hold a whole songbook: split it where a song title (bigger type) starts.
+      const songs = splitPdfIntoSongs(pages);
+      if (songs) {
+        songs.forEach((song) => {
+          const candidate = candidateFromPdfSongRows(song.rows, file.name) || candidateFromExtractedText(song.text, file.name, "PDF");
+          candidate.sourceFile = file.name;
+          if (pdfHebrewLooksGarbled(candidate.lyrics)) { candidate.needsReview = true; candidate.reviewNote = "The Hebrew in this PDF could not be read reliably (its font). Check the words."; }
+          candidate.sourceName = `PDF · ${file.name} · ${song.firstPage === song.lastPage ? `page ${song.firstPage}` : `pages ${song.firstPage}-${song.lastPage}`}`;
+          candidate.splitFromFile = true;
+          additions.push(candidate);
+        });
+      } else if (normalizeComparisonText(allText).length >= 8) {
+        const single = candidateFromExtractedText(allText, file.name, "PDF");
+        single.sourceFile = file.name;
+        additions.push(single);
+      }
     }
-    if (normalizeComparisonText(text).length < 8) continue;
-    additions.push(candidateFromExtractedText(text, file.name, "PDF"));
     await pdf.destroy();
   }
   setMediaImportProgress("Ready to review", 100);
   return additions;
 }
 
+// One song cut out of a PDF songbook. The header is only the first line (the title) and, when there is one, the
+// second line ("Artist · Capo 5", or just the artist). Everything after is lyrics, whatever it looks like: a short
+// first line, a Hebrew line, a line with no chords. Nothing from the lyrics is ever moved into the artist, an
+// alternate title or a note.
+function candidateFromPdfSongRows(rows, filename) {
+  const all = rows.map((row) => ({ ...row, text: String(row.text || "") }));
+  const firstIndex = all.findIndex((row) => row.text.trim());
+  if (firstIndex < 0) return null;
+  // A header line can carry the English on the left and the Hebrew on the right, far apart ("Tzaaka     צעקה").
+  const sides = (text) => {
+    const parts = String(text).split(/\s{3,}/).map((part) => part.trim()).filter(Boolean);
+    return { latin: parts.filter(isPureLatinText).join(" ").trim(), hebrew: parts.filter(isPureHebrewText).join(" ").trim(), plain: parts.join(" ") };
+  };
+  const plainQuotes = (text) => String(text).replace(/\u05f3/g, "'").replace(/\u05f4/g, '"');
+  const first = sides(plainQuotes(all[firstIndex].text));
+  let titleEnglish = "";
+  let titleHebrew = "";
+  let title = first.plain;
+  if (first.latin && first.hebrew && first.plain === `${first.latin} ${first.hebrew}`) {
+    titleEnglish = first.latin;
+    titleHebrew = first.hebrew;
+    title = `${titleEnglish} – ${titleHebrew}`;
+  }
+  let cursor = firstIndex + 1;
+  const sized = all.slice(cursor).filter((row) => row.text.trim() && row.size > 0).map((row) => row.size).sort((a, b) => a - b);
+  const lyricSize = sized[Math.floor(sized.length / 2)] || 0;
+  const second = all[cursor];
+  let artist = "";
+  let artistHebrew = "";
+  let capo = "";
+  if (second && second.text.trim() && !/\[[^\]]+\]/.test(second.text) && second.text.replace(/\s+/g, " ").trim().length <= 90) {
+    const parts = sides(plainQuotes(second.text));
+    const found = extractCapo(parts.latin || parts.plain);
+    const nextLine = all[cursor + 1];
+    const followedByBreak = !nextLine || !nextLine.text.trim();
+    const smallerThanLyrics = lyricSize > 0 && second.size > 0 && second.size < lyricSize * 0.97;
+    if (found.capo || smallerThanLyrics || (followedByBreak && !second.heading)) {
+      artist = parts.latin ? found.rest.trim() : (parts.hebrew ? "" : found.rest.trim());
+      artistHebrew = parts.hebrew;
+      capo = found.capo;
+      cursor += 1;
+    }
+  }
+  const lyrics = all.slice(cursor).map((row) => row.text.replace(/\s+$/g, "")).join("\n").replace(/^\s*\n/, "").replace(/\n{3,}/g, "\n\n").trim();
+  if (normalizeComparisonText(lyrics).length < 8) return null;
+  const language = /[\u0590-\u05ff]/.test(`${title}\n${lyrics}`) ? "Hebrew / Yiddish" : /[A-Za-z]/.test(lyrics) ? "English" : "";
+  const featured = artist.match(/^(.+?)\s+(?:feat\.?|ft\.?|featuring)\s+(.+)$/i);
+  return makeImportCandidate({
+    title,
+    titleEnglish,
+    titleHebrew,
+    artist: featured ? featured[1].trim() : artist,
+    featuredArtist: featured ? featured[2].trim() : "",
+    artistHebrew,
+    capo,
+    lyrics,
+    language,
+    sourceName: `PDF · ${filename}`,
+    confidence: { title: "high", artist: artist ? "high" : "none", capo: capo ? "high" : "none", lyrics: "medium" }
+  });
+}
+
+// Some PDFs use a font whose Hebrew cannot be read back correctly: Latin letters inside Hebrew words, or final letters
+// at the start of words. Such a song is flagged for review rather than trusted.
+function pdfHebrewLooksGarbled(lyrics) {
+  const text = String(lyrics || "").replace(/\[[^\]]*\]/g, "").replace(/[\u0591-\u05c7]/g, "");
+  const mixedInWord = (text.match(/[\u05d0-\u05ea][A-Za-z]|[A-Za-z][\u05d0-\u05ea]/g) || []).length;
+  const finalAtStart = (text.match(/(?:^|\s)[\u05da\u05dd\u05df\u05e3\u05e5][\u05d0-\u05ea]/g) || []).length;
+  return mixedInWord >= 1 || finalAtStart >= 3;
+}
+
+// Pages of { page, lines: [{ text, size }] } -> [{ text, firstPage, lastPage }], or null when the PDF shows no clear
+// song titles (then it stays one song). A title is a short line in clearly bigger type than the rest of the PDF, with
+// no chords in it. A heading that repeats on many pages is a running header, not a title. Pages with no title of
+// their own continue the song before them.
+function splitPdfIntoSongs(pages) {
+  const sized = pages.flatMap((entry) => entry.lines).filter((line) => line.size > 0 && line.text.trim()).map((line) => line.size).sort((a, b) => a - b);
+  if (sized.length < 4) return null;
+  const typical = sized[Math.floor(sized.length / 2)];
+  const isHeading = (line) => line.size >= typical * 1.3 && line.text.trim().length > 0 && line.text.trim().length <= 90 && !/\[[^\]]+\]/.test(line.text);
+  const seenOn = new Map();
+  pages.forEach((entry) => new Set(entry.lines.filter(isHeading).map((line) => normalizeComparisonText(line.text))).forEach((key) => seenOn.set(key, (seenOn.get(key) || 0) + 1)));
+  const running = new Set([...seenOn].filter(([, count]) => count >= 3 && count >= pages.length * 0.3).map(([key]) => key));
+  const flat = [];
+  pages.forEach((entry) => entry.lines.forEach((line) => {
+    if (isHeading(line) && running.has(normalizeComparisonText(line.text))) return;
+    flat.push({ ...line, page: entry.page, heading: isHeading(line) });
+  }));
+  // Lines before the first title (a browser's print header such as "My Favorites   11/8/26, 5:32AM") are not song text.
+  const firstHeading = flat.findIndex((line) => line.heading);
+  if (firstHeading > 0 && firstHeading <= 3 && flat.slice(0, firstHeading).every((line) => line.text.trim().length <= 120 && !/\[[^\]]+\]/.test(line.text))) flat.splice(0, firstHeading);
+  const songs = [];
+  let current = null;
+  flat.forEach((line, index) => {
+    const startsSong = line.heading && !(index > 0 && flat[index - 1].heading && current);
+    if (startsSong || !current) {
+      current = { lines: [], rows: [], firstPage: line.page, lastPage: line.page };
+      songs.push(current);
+    }
+    current.lines.push(line.text);
+    current.rows.push({ text: line.text, size: line.size, heading: line.heading });
+    current.lastPage = line.page;
+  });
+  const headingCount = flat.filter((line) => line.heading).length;
+  const startsWithTitle = flat.find((line) => line.text.trim())?.heading === true;
+  if (headingCount < 2 && !(headingCount === 1 && startsWithTitle)) return null;
+  return songs.map((song) => ({ text: song.lines.join("\n").replace(/\n{3,}/g, "\n\n").trim(), rows: song.rows, firstPage: song.firstPage, lastPage: song.lastPage }))
+    .filter((song) => normalizeComparisonText(song.text).length >= 8);
+}
+
 // Rebuild a PDF page as text lines. Each word is placed by where it actually sits on the page,
 // so a chord chart keeps its alignment even in a proportional font: a chord line is matched
 // to the lyric line under it by horizontal position, and the chord is written inline
 // ("[Am]word") at the letter it was above. Pages without chords come out as ordinary lines.
-function textFromPdfContent(content) {
+function textFromPdfContent(content, pageHeight = 0) {
+  return pdfPageLines(content, pageHeight).map((line) => line.text).join("\n").trim();
+}
+
+// The lines of one page as { text, size }: size is the type size of the line (0 when unknown), which is how a
+// song title is told apart from its lyrics when one PDF holds many songs. Blank entries are stanza breaks.
+function pdfPageLines(content, pageHeight = 0) {
   // Text without page positions (some PDF readers) can only be rebuilt line by line.
   if ((content?.items || []).some((item) => item?.str?.trim() && !item.transform)) {
     const rows = [];
@@ -21117,12 +21799,63 @@ function textFromPdfContent(content) {
       if (item?.hasEOL) { rows.push(row.join(" ").replace(/\s+/g, " ").trim()); row = []; }
     });
     if (row.length) rows.push(row.join(" ").replace(/\s+/g, " ").trim());
-    return rows.join("\n").trim();
+    return rows.filter((text) => text.trim()).map((text) => ({ text, size: 0 }));
   }
-  const items = (content?.items || [])
-    .map((item) => ({ str: String(item?.str || ""), x: Number(item?.transform?.[4]) || 0, y: Number(item?.transform?.[5]) || 0, w: Number(item?.width) || 0 }))
-    .filter((item) => item.str.trim());
-  if (!items.length) return "";
+  let items = (content?.items || [])
+    .map((item) => ({ str: String(item?.str || ""), x: Number(item?.transform?.[4]) || 0, y: Number(item?.transform?.[5]) || 0, w: Number(item?.width) || 0, size: Math.abs(Number(item?.transform?.[3])) || Number(item?.height) || 0, rtl: item?.dir === "rtl" || (item?.dir !== "ltr" && /[\u0590-\u05ff]/.test(String(item?.str || ""))) }))
+    .filter((item) => item.str.trim())
+    // Text in the top margin (the top 29 points, above the print header) is page furniture, never song text.
+    .filter((item) => !(pageHeight > 0 && item.y > pageHeight - 29));
+  if (!items.length) return [];
+  // Some PDFs draw bold text by printing the same letters several times a fraction of a point apart: one is kept.
+  const byPosition = [...items].sort((a, b) => a.y - b.y || a.x - b.x);
+  const duplicates = new Set();
+  byPosition.forEach((item, index) => {
+    for (let back = index - 1; back >= 0 && back >= index - 6; back -= 1) {
+      const other = byPosition[back];
+      if (duplicates.has(other) || other.str !== item.str || Math.abs(other.y - item.y) > 1.5) continue;
+      if (Math.abs(other.x - item.x) <= Math.max(1.2, (item.w || 0) * 0.2)) { duplicates.add(item); break; }
+    }
+  });
+  items = items.filter((item) => !duplicates.has(item));
+  // Hebrew with vowel points: some PDFs give each letter and each point as its own piece. A point belongs to the
+  // letter it sits on (and goes after it), and a letter's points take no room of their own.
+  const isMark = (char) => /[\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7]/.test(char);
+  items.forEach((item) => {
+    const lead = item.str.match(/^[\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7]+/)?.[0];
+    if (lead && lead.length < item.str.length) item.str = `${item.str[lead.length]}${lead}${item.str.slice(lead.length + 1)}`;
+  });
+  const markOnly = (item) => item.str.length > 0 && [...item.str].every((char) => isMark(char) || /\s/.test(char)) && /[\u0591-\u05c7]/.test(item.str);
+  const bases = items.filter((item) => !markOnly(item));
+  const strayMarks = new Set();
+  items.filter(markOnly).forEach((mark) => {
+    let best = null;
+    let bestDistance = Infinity;
+    bases.forEach((base) => {
+      if (Math.abs(base.y - mark.y) > 3 || !/[\u05d0-\u05ea]/.test(base.str)) return;
+      // A point is printed at the left edge of its letter (or just inside it).
+      if (mark.x < base.x - 2 || mark.x > base.x + (base.w || 6) + 1) return;
+      const distance = Math.abs(mark.x - base.x);
+      if (distance < bestDistance) { best = base; bestDistance = distance; }
+    });
+    if (best) { best.str += mark.str.replace(/\s+/g, ""); strayMarks.add(mark); }
+  });
+  items = items.filter((item) => !strayMarks.has(item));
+  // A raised or lowered small item right after a bigger one belongs to it: the 7 in E7 and the sus4 in Esus4 are
+  // printed as superscripts, and would otherwise be read as a separate line.
+  const byX = [...items].sort((a, b) => a.x - b.x);
+  const absorbed = new Set();
+  byX.forEach((small) => {
+    if (!small.size) return;
+    const base = byX.find((big) => big !== small && !absorbed.has(big) && big.size > small.size * 1.15
+      && small.x - (big.x + big.w) >= -3 && small.x - (big.x + big.w) <= 4
+      && Math.abs(small.y - big.y) > 0.5 && Math.abs(small.y - big.y) <= big.size * 0.8);
+    if (!base) return;
+    base.str += small.str;
+    base.w = Math.max(base.w, small.x + small.w - base.x);
+    absorbed.add(small);
+  });
+  items = items.filter((item) => !absorbed.has(item));
   // Group into lines by height (PDF y grows upward), then left to right.
   const heights = items.map((item) => item.y).sort((a, b) => b - a);
   const groups = [];
@@ -21131,29 +21864,84 @@ function textFromPdfContent(content) {
     if (group && Math.abs(group.y - item.y) <= 3) group.items.push(item);
     else groups.push({ y: item.y, items: [item] });
   });
+  // A line that contains TAB-INFO (a note for the tablet app, printed small above the song) is not song text, wherever
+  // the words fall in it: a right-to-left line can put them at either end.
+  for (let index = groups.length - 1; index >= 0; index -= 1) {
+    if (groups[index].items.some((item) => /TAB-INFO/i.test(item.str)) || /TAB-INFO/i.test(groups[index].items.map((item) => item.str).join(""))) groups.splice(index, 1);
+  }
+  if (!groups.length) return [];
   const lines = groups.map((group) => {
-    const ordered = group.items.sort((a, b) => a.x - b.x);
+    // A Hebrew or Yiddish line reads right to left: its words are taken from the right edge, and the letters
+    // of each word run from its right edge too (the first letter is the rightmost one).
+    const hebrew = group.items.reduce((total, item) => total + (item.str.match(/[\u0590-\u05ff]/g) || []).length, 0);
+    const latin = group.items.reduce((total, item) => total + (item.str.match(/[A-Za-z]/g) || []).length, 0);
+    const rtlLine = hebrew > 0 && hebrew >= latin;
+    // A line with both scripts ("Artist · Capo 5          מרדכי בן דוד") is cut into runs: the Latin runs read left to
+    // right, the Hebrew runs right to left, and the runs follow each other from left to right.
+    const mixed = hebrew > 0 && latin > 0;
+    const runStarts = new Set();
+    const runType = new Map();
+    let ordered;
+    if (mixed) {
+      const sorted = group.items.sort((a, b) => a.x - b.x);
+      const kind = (item) => (/[\u0590-\u05ff]/.test(item.str) ? "H" : /[A-Za-z0-9]/.test(item.str) ? "L" : "");
+      const kinds = sorted.map(kind);
+      sorted.forEach((item, index) => {
+        let own = kinds[index];
+        if (!own) {
+          const before = kinds.slice(0, index).reverse().find(Boolean);
+          const after = kinds.slice(index + 1).find(Boolean);
+          own = before === "H" && after === "H" ? "H" : "L";
+        }
+        runType.set(item, own);
+      });
+      const runs = [];
+      sorted.forEach((item) => {
+        const last = runs[runs.length - 1];
+        if (last && last.type === runType.get(item)) last.items.push(item);
+        else runs.push({ type: runType.get(item), items: [item] });
+      });
+      ordered = runs.flatMap((run) => { const items = run.type === "H" ? run.items.sort((a, b) => b.x - a.x) : run.items; runStarts.add(items[0]); return items; });
+    } else {
+      ordered = group.items.sort((a, b) => (rtlLine ? b.x - a.x : a.x - b.x));
+    }
     let text = "";
-    const xs = [];
-    let previousEnd = null;
+    const xs = [];            // left edge of each letter
+    let previousEdge = null;  // where the last word ended, on the side the next word starts from
     let previousWidth = 6;
     ordered.forEach((item) => {
-      const charWidth = item.w && item.str.length ? item.w / item.str.length : previousWidth;
-      if (previousEnd !== null && text) {
-        const spaces = Math.max(1, Math.min(60, Math.round((item.x - previousEnd) / Math.max(previousWidth, 1))));
+      const letterCount = [...item.str].filter((char) => !isMark(char)).length || item.str.length;
+      const charWidth = item.w && letterCount ? item.w / letterCount : previousWidth;
+      const itemWidth = item.w || charWidth * letterCount;
+      const flowsLeft = mixed ? runType.get(item) === "H" : rtlLine;
+      if (previousEdge !== null && text) {
+        const gap = mixed && runStarts.has(item) ? Math.abs(item.x - previousEdge) : (flowsLeft ? previousEdge - (item.x + itemWidth) : item.x - previousEdge);
+        // Pieces that touch (the letters of a word) get no space; a real gap gets at least one.
+        const ratio = gap / Math.max(previousWidth, 1);
+        const spaces = mixed && runStarts.has(item) ? (ratio >= 4 ? 6 : Math.max(1, Math.round(ratio))) : (ratio < 0.4 ? 0 : Math.max(1, Math.min(60, Math.round(ratio))));
         for (let index = 0; index < spaces; index += 1) {
           text += " ";
-          xs.push(previousEnd + index * previousWidth);
+          xs.push(flowsLeft ? previousEdge - (index + 1) * previousWidth : previousEdge + index * previousWidth);
         }
       }
-      for (let index = 0; index < item.str.length; index += 1) xs.push(item.x + index * charWidth);
+      let letterIndex = 0;
+      for (let index = 0; index < item.str.length; index += 1) {
+        if (isMark(item.str[index]) && letterIndex > 0) {
+          xs.push(xs[xs.length - 1]);                       // a vowel point sits on the letter before it
+          continue;
+        }
+        xs.push(item.rtl ? item.x + itemWidth - (letterIndex + 1) * charWidth : item.x + letterIndex * charWidth);
+        letterIndex += 1;
+      }
       text += item.str;
-      previousEnd = item.x + (item.w || charWidth * item.str.length);
+      previousEdge = flowsLeft ? item.x : item.x + itemWidth;
       previousWidth = charWidth;
     });
-    return { text, xs, end: previousEnd ?? 0 };
+    return { text, xs, y: group.y, size: Math.max(...group.items.map((item) => item.size)), rtl: rtlLine, end: previousEdge ?? 0 };
   });
   const output = [];
+  const sizes = [];
+  const rows = [];            // { top, bottom } of each output line, to find the gaps between stanzas
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
     const next = lines[index + 1];
@@ -21166,8 +21954,11 @@ function textFromPdfContent(content) {
         if (isChordSymbol(chord)) marks.push({ x: line.xs[match.index], chord });
       }
       let merged = next.text;
-      [...marks].reverse().forEach(({ x, chord }) => {
-        // The letter on the lyric line whose left edge is closest to the chord's left edge.
+      // Work out where each chord goes, then insert from the end of the text back, so earlier spots stay valid
+      // (on a right-to-left line the chords left to right are the later letters first).
+      const placed = marks.map(({ x, chord }, order) => {
+        // The letter whose left edge is closest to the chord's left edge (letters of a Hebrew or Yiddish word
+        // are numbered from its right edge, so this holds on right-to-left lines too).
         let spot = next.xs.length;
         let best = Math.abs(next.end - x);
         next.xs.forEach((letterX, letterIndex) => {
@@ -21175,15 +21966,34 @@ function textFromPdfContent(content) {
           if (distance < best) { best = distance; spot = letterIndex; }
         });
         while (spot < next.text.length && /\s/.test(next.text[spot])) spot += 1;
+        return { spot, chord, order };
+      }).sort((first, second) => second.spot - first.spot || second.order - first.order);
+      placed.forEach(({ spot, chord }) => {
         merged = `${merged.slice(0, spot)}[${chord}]${merged.slice(spot)}`;
       });
       output.push(merged.trim());
+      sizes.push(next.size);
+      rows.push({ top: line.y, bottom: next.y });
       index += 1;
     } else {
       output.push(line.text.trim());
+      sizes.push(line.size);
+      rows.push({ top: line.y, bottom: line.y });
     }
   }
-  return output.join("\n").trim();
+  // A gap clearly bigger than the usual spacing between lines is a break between stanzas.
+  if (rows.length >= 3) {
+    const gaps = rows.slice(1).map((row, index) => rows[index].bottom - row.top).filter((gap) => gap > 0).sort((a, b) => a - b);
+    const usual = gaps[Math.floor(gaps.length * 0.4)] || 0;     // the usual line spacing (a far-away footer does not skew it)
+    if (usual) {
+      for (let index = rows.length - 1; index > 0; index -= 1) {
+        if (rows[index - 1].bottom - rows[index].top > usual * 1.6) { output.splice(index, 0, ""); sizes.splice(index, 0, 0); }
+      }
+    }
+  }
+  // A web address or page number alone at the end is the page footer, not part of the song.
+  while (output.length && /^(?:(?:https?:\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:\/\S*)?|(?:page\s+)?\d{1,3}(?:\s*(?:of|\/)\s*\d{1,3})?|-\s*\d{1,3}\s*-)$/i.test(output[output.length - 1].trim()) || /^.{0,60}\bpage\s+\d{1,3}\s*(?:of|\/)\s*\d{1,3}$/i.test(output[output.length - 1].trim().replace(/\s+/g, " "))) { output.pop(); sizes.pop(); }
+  return output.map((text, index) => ({ text, size: sizes[index] }));
 }
 
 async function loadPdfModule() {
@@ -21221,7 +22031,7 @@ async function recognizePdfPages(pdf, fileIndex, fileCount) {
 async function candidatesFromImageFiles(files) {
   if (files.some((file) => file.size > 15_000_000)) throw new Error("Each picture must be smaller than 15 MB");
   const recognized = await recognizeImages(files.map((file) => ({ image: file, name: file.name })), 0, 1, true);
-  return recognized.map(({ text, name }) => candidateFromExtractedText(text, name, "Photo OCR"));
+  return recognized.map(({ text, name }) => { const candidate = candidateFromExtractedText(text, name, "Photo OCR"); candidate.sourceFile = name; return candidate; });
 }
 
 async function recognizeImages(sources, fileIndex = 0, fileCount = 1, keepSeparate = false) {
@@ -21236,20 +22046,22 @@ async function recognizeImages(sources, fileIndex = 0, fileCount = 1, keepSepara
         const taskShare = message.status === "recognizing text" ? Number(message.progress) || 0 : 0;
         const overall = ((fileIndex + sourceShare + taskShare / Math.max(sources.length, 1)) / fileCount) * 100;
         const readableStatus = message.status === "recognizing text"
-          ? `Recognizing ${sources[activeSourceIndex]?.name || "picture"}...`
+          ? `Recognizing ${sources[activeSourceIndex]?.name || "picture"} (${activeSourceIndex + 1} of ${sources.length})...`
           : "Preparing text recognition...";
         setMediaImportProgress(readableStatus, overall);
       }
     });
     const results = [];
     for (activeSourceIndex = 0; activeSourceIndex < sources.length; activeSourceIndex += 1) {
+      throwIfMediaImportCancelled();
       const source = sources[activeSourceIndex];
       const result = await worker.recognize(source.image);
       results.push({ name: source.name, text: String(result?.data?.text || "").trim() });
     }
     setMediaImportProgress("Text recognized", 100);
     return keepSeparate ? results : results.map((result) => result.text).join("\n\n").trim();
-  } catch {
+  } catch (error) {
+    if (error?.message === MEDIA_IMPORT_STOPPED) throw error;
     throw new Error("Text recognition needs an internet connection the first time it is used");
   } finally {
     await worker?.terminate?.();
@@ -21318,12 +22130,30 @@ function decodeXmlText(value) {
     .replaceAll("&amp;", "&");
 }
 
+// "Mordechai Ben David · Capo 5" -> { capo: "5", rest: "Mordechai Ben David" }. Only at the end of the text, after a
+// separator or on its own, so the word in a sentence is left alone.
+function extractCapo(text) {
+  const pattern = /(?:^|[·|,;(–—-]\s*)(?:capo|קאפו)\s*(?:on|:|fret)?\s*(\d{1,2})(?:st|nd|rd|th)?(?:\s*fret)?\s*\)?\s*$/i;
+  const found = String(text || "").match(pattern);
+  if (!found || Number(found[1]) < 1 || Number(found[1]) > 12) return { capo: "", rest: String(text || "") };
+  return { capo: String(Number(found[1])), rest: String(text).replace(pattern, " ").replace(/^[\s·|,;:–—-]+|[\s·|,;:–—-]+$/g, "") };
+}
+
 function parsePastedSongText(rawText) {
   // Charts with chords on the line above the words become inline [Am]word chords first.
   const text = convertChordLinesToInline(String(rawText || "").replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n"));
   const lines = text.split("\n");
   const consumed = new Set();
   const confidence = Object.fromEntries(IMPORT_METADATA_FIELDS.map((field) => [field, "none"]));
+  // "Capo 6" in the header (often beside the artist) is a setting of its own: it is taken out of that line.
+  let capo = "";
+  for (let index = 0; index < Math.min(lines.length, 12) && !capo; index += 1) {
+    if (/\[[^\]]+\]/.test(lines[index]) || lines[index].trim().length > 80) continue;
+    const found = extractCapo(lines[index]);
+    if (!found.capo) continue;
+    capo = found.capo;
+    lines[index] = found.rest;
+  }
   const draft = {
     title: "",
     alternateTitles: [],
@@ -21335,11 +22165,13 @@ function parsePastedSongText(rawText) {
     style: "",
     bpm: "",
     key: "",
+    capo,
     lyrics: "",
     language: "",
     sourceUrl: "",
     confidence
   };
+  if (capo) confidence.capo = "high";
   const aliases = importLabelAliases();
   let lyricsStart = -1;
   let lyricsOpening = "";
@@ -21390,7 +22222,8 @@ function parsePastedSongText(rawText) {
   }
 
   if (!draft.alternateTitles.length && draft.title) {
-    const alternateLine = usableIndexes.find((item) => !consumed.has(item.index) && isMetaLine(item)
+    // A second title is a header line (near the top, followed by a blank line), never the first line of the lyrics.
+    const alternateLine = usableIndexes.find((item) => !consumed.has(item.index) && item.index < 6 && lines[item.index + 1] !== undefined && !String(lines[item.index + 1]).trim() && isMetaLine(item)
       && item.text.length <= 140
       && scriptsDiffer(draft.title, item.text));
     if (alternateLine) {
@@ -21401,8 +22234,10 @@ function parsePastedSongText(rawText) {
   }
 
   if (!draft.artist) {
-    const byline = usableIndexes.find((item) => !consumed.has(item.index) && /^(?:by|performed by|sung by)\s+/i.test(item.text));
-    const artistLine = byline || usableIndexes.find((item) => !consumed.has(item.index) && isMetaLine(item) && item.text.length <= 80 && !/[.!?]$/.test(item.text));
+    const byline = usableIndexes.find((item) => !consumed.has(item.index) && item.index < 8 && isMetaLine(item) && /^(?:by|performed by|sung by)\s+/i.test(item.text));
+    // With no "by" line, the artist is a short line in the header: near the top and followed by a blank line. A lyric
+    // line is never taken for it.
+    const artistLine = byline || usableIndexes.find((item) => !consumed.has(item.index) && item.index < 8 && lines[item.index + 1] !== undefined && !String(lines[item.index + 1]).trim() && isMetaLine(item) && item.text.length <= 80 && !/[.!?]$/.test(item.text));
     if (artistLine) {
       draft.artist = artistLine.text.replace(/^(?:by|performed by|sung by)\s+/i, "").trim();
       confidence.artist = byline ? "high" : "low";
@@ -21640,6 +22475,17 @@ function makeImportCandidate(source) {
     album: String(source.album || "").trim(),
     style: String(source.style || source.genre || "").trim(),
     timeSignature: String(source.timeSignature || "").trim(),
+    capo: String(source.capo || "").trim(),
+    titleEnglish: String(source.titleEnglish || "").trim(),
+    titleHebrew: String(source.titleHebrew || "").trim(),
+    artistHebrew: String(source.artistHebrew || "").trim(),
+    needsReview: source.needsReview === true,
+    reviewNote: String(source.reviewNote || "").trim(),
+    linkText: String(source.linkText || "").trim(),
+    youtubeUrl: /^https?:\/\/\S+$/i.test(String(source.youtubeUrl || "").trim()) ? String(source.youtubeUrl).trim() : "",
+    occasions: normalizeStringArray(source.occasions).slice(0, 12),
+    infoSources: normalizeInfoSources(source.infoSources),
+    sourceFile: String(source.sourceFile || ""),
     bpm: String(source.bpm || "").trim(),
     language: String(source.language || "").trim(),
     sourceUrl: String(source.sourceUrl || "").trim(),
@@ -21707,6 +22553,15 @@ function importIdentity(title, artist = "") {
 }
 
 function markImportDuplicates() {
+  // The same song twice in one batch (two files, or a file and a photo): only the first one is kept ticked.
+  const seenInBatch = new Set();
+  importCandidates.forEach((candidate) => {
+    const identity = importIdentity(candidate.title, candidate.artist);
+    const repeated = Boolean(candidate.title.trim()) && seenInBatch.has(identity);
+    if (repeated && !candidate.batchDuplicate) candidate.selected = false;
+    candidate.batchDuplicate = repeated;
+    seenInBatch.add(identity);
+  });
   importCandidates.forEach((candidate) => {
     const wasDuplicate = candidate.duplicate;
     candidate.duplicateMatches = findDuplicateMatches(candidate);
@@ -21724,8 +22579,8 @@ function findDuplicateMatches(candidate) {
 }
 
 function duplicateSimilarity(candidate, song) {
-  const candidateTitles = [candidate.title, ...normalizeStringArray(candidate.alternateTitles)];
-  const existingTitles = [song.title, ...normalizeStringArray(song.alternateTitles)];
+  const candidateTitles = [candidate.title, candidate.titleEnglish, candidate.titleHebrew, ...normalizeStringArray(candidate.alternateTitles)].filter(Boolean);
+  const existingTitles = [song.title, song.titleEnglish, song.titleHebrew, ...normalizeStringArray(song.alternateTitles)].filter(Boolean);
   const titleScore = maximumSimilarity(candidateTitles, existingTitles);
   const artistScore = textTokenSimilarity(candidate.artist, song.artist);
   const composerScore = textTokenSimilarity(candidate.composer, song.composer);
@@ -21796,9 +22651,11 @@ function renderImportCandidates() {
   const hasCandidates = importCandidates.length > 0;
   showImportStage(hasCandidates ? "review" : "start");
   const isSingleImport = ["paste", "jyrics"].includes(importMode);
-  els.importFileCount.textContent = isSingleImport ? t("Review extracted song") : `${importCandidates.length} ${plural(importCandidates.length, "song")} found`;
+  els.importFileCount.textContent = isSingleImport ? t("Review extracted song") : t(`${importCandidates.length} ${plural(importCandidates.length, "song")} found`);
   els.importSelectedBtn.textContent = isSingleImport ? t("Save song") : t("Import selected");
   els.importCandidateList.innerHTML = "";
+  const bulk = !isSingleImport;
+  els.importCandidateList.classList.toggle("import-bulk", bulk);
   importCandidates.forEach((candidate, index) => {
     const row = document.createElement("article");
     row.className = `import-candidate ${candidate.duplicate ? "duplicate" : ""}`;
@@ -21809,10 +22666,16 @@ function renderImportCandidates() {
     // so a freshly extracted song is a short card, not a wall of fields.
     row.innerHTML = `
       <div class="import-candidate-head">
-        <label class="import-song-toggle"><input class="import-check slp-switch" type="checkbox" ${candidate.selected ? "checked" : ""}><span>Import song ${index + 1}</span></label>
-        <span class="import-source">${escapeHtml(candidate.sourceName)}</span>
-        ${candidate.duplicate ? `<span class="duplicate-note">${t("Possible duplicate")}</span>` : ""}
+        ${bulk
+          ? `<label class="import-song-toggle"><input class="import-check slp-switch" type="checkbox" aria-label="${escapeAttribute(candidate.title || `Song ${index + 1}`)}" ${candidate.selected ? "checked" : ""}></label>
+             <button class="import-row-main" type="button" aria-expanded="false" data-import-open><span class="import-row-title">${songTitleMarkup({ title: candidate.title || t("Untitled"), titleEnglish: "", titleHebrew: "", titleYiddish: "" })}</span><span class="import-source">${escapeHtml(candidate.sourceName)}</span></button>
+             <span class="import-status ${candidate.duplicate || candidate.batchDuplicate ? "skip" : candidate.needsReview ? "review" : "new"}" ${candidate.needsReview && candidate.reviewNote ? `title="${escapeAttribute(candidate.reviewNote)}"` : ""}>${candidate.duplicate ? t("Already in your library") : candidate.batchDuplicate ? t("Same as another song here") : candidate.needsReview ? t("Needs review") : t("New")}</span>`
+          : `<label class="import-song-toggle"><input class="import-check slp-switch" type="checkbox" ${candidate.selected ? "checked" : ""}><span>Import song ${index + 1}</span></label>
+             <span class="import-source">${escapeHtml(candidate.sourceName)}</span>
+             ${candidate.duplicate ? `<span class="duplicate-note">${t("Possible duplicate")}</span>` : ""}`}
       </div>
+      ${bulk ? '<div class="import-candidate-body" hidden>' : ""}
+      ${candidate.needsReview && candidate.reviewNote ? `<p class="import-review-note">${t("Needs review")}: ${escapeHtml(candidate.reviewNote)}</p>` : ""}
       <div class="import-fields">
         ${field("title-field-wrap", "Song title", "title", text("title-field", "title"))}
         ${field("artist-field", "Primary artist", "artist", text("", "artist", 'placeholder="Artist name"'))}
@@ -21853,6 +22716,9 @@ function renderImportCandidates() {
             <option value="ltr" ${candidate.direction === "ltr" ? "selected" : ""}>${t("English · LTR")}</option>
           </select></label>
         </div>
+        ${field("occasions-field", "Occasion (several, separated by ;)", "occasions", `<input class="slp-input" type="text" dir="auto" value="${escapeAttribute((candidate.occasions || []).join("; "))}" placeholder="Wedding; Shabbos">`)}
+        ${field("youtube-field", "YouTube link", "youtubeUrl", `<input class="slp-input" type="url" dir="ltr" value="${escapeAttribute(candidate.youtubeUrl)}" placeholder="https://www.youtube.com/watch?v=...">`)}
+        ${field("links-field", "Other links (audio)", "linkText", `<textarea class="slp-input" rows="2" dir="ltr" placeholder="One link per line">${escapeHtml(candidate.linkText)}</textarea>`)}
         ${field("source-field", "Source URL", "sourceUrl", `<input class="slp-input" type="url" dir="ltr" value="${escapeAttribute(candidate.sourceUrl)}" placeholder="https://...">`)}
       </div>
       ${renderDuplicateMatches(candidate)}
@@ -21866,8 +22732,20 @@ function renderImportCandidates() {
         <div class="import-folder-groups">${importFolderOptionsMarkup(candidate)}</div>
       </fieldset>
       ${suggestions.length ? `<div class="import-suggestions"><span>${t("Automatically selected:")}</span>${suggestions.map((name) => `<small>${escapeHtml(name)}</small>`).join("")}</div>` : ""}
+      ${bulk ? "</div>" : ""}
     `;
-    row.querySelector(".import-check").addEventListener("change", (event) => { candidate.selected = event.target.checked; });
+    row.classList.toggle("skipped", bulk && !candidate.selected);
+    row.querySelector(".import-check").addEventListener("change", (event) => {
+      candidate.selected = event.target.checked;
+      row.classList.toggle("skipped", bulk && !candidate.selected);
+      refreshImportSummary();
+    });
+    row.querySelector("[data-import-open]")?.addEventListener("click", (event) => {
+      const button = event.currentTarget;
+      const opening = button.getAttribute("aria-expanded") !== "true";
+      button.setAttribute("aria-expanded", String(opening));
+      row.querySelector(".import-candidate-body").hidden = !opening;
+    });
     bindImportDraftField(row, ".title-field", candidate, "title");
     bindImportDraftField(row, ".alternate-field input", candidate, "alternateTitles", normalizeStringArray);
     bindImportDraftField(row, ".artist-field input", candidate, "artist");
@@ -21879,6 +22757,9 @@ function renderImportCandidates() {
     bindImportDraftField(row, ".bpm-field input", candidate, "bpm");
     bindImportDraftField(row, ".language-field input", candidate, "language");
     bindImportDraftField(row, ".source-field input", candidate, "sourceUrl");
+    bindImportDraftField(row, ".links-field textarea", candidate, "linkText");
+    bindImportDraftField(row, ".occasions-field input", candidate, "occasions", normalizeStringArray);
+    bindImportDraftField(row, ".youtube-field input", candidate, "youtubeUrl");
     bindImportDraftField(row, ".lyrics-field textarea", candidate, "lyrics");
     bindImportDraftField(row, ".key-field", candidate, "key");
     row.querySelector(".status-field").addEventListener("change", (event) => { candidate.status = event.target.value; });
@@ -21908,6 +22789,84 @@ function renderImportCandidates() {
     }));
     els.importCandidateList.append(row);
   });
+  refreshImportSummary();
+}
+
+// "31 new · 2 already in your library, skipped", and the button says how many will be added.
+function refreshImportSummary() {
+  const bulk = !["paste", "jyrics"].includes(importMode);
+  els.importSummary.hidden = !bulk || !importCandidates.length;
+  if (!bulk) return;
+  const added = importCandidates.filter((candidate) => candidate.selected && candidate.title.trim()).length;
+  const inLibrary = importCandidates.filter((candidate) => candidate.duplicate).length;
+  const repeats = importCandidates.filter((candidate) => candidate.batchDuplicate && !candidate.duplicate).length;
+  const chips = [`<span class="import-chip ok">${added} ${t("will be added")}</span>`];
+  const toReview = importCandidates.filter((candidate) => candidate.selected && candidate.needsReview).length;
+  if (toReview) chips.push(`<span class="import-chip review">${toReview} ${t("need review")}</span>`);
+  if (inLibrary) chips.push(`<span class="import-chip skip">${inLibrary} ${t("already in your library")}</span>`);
+  if (repeats) chips.push(`<span class="import-chip skip">${repeats} ${t("repeated in this batch")}</span>`);
+  const fillable = importCandidates.filter((candidate) => candidate.duplicate && candidate.duplicateMatches[0]).length;
+  els.importSummary.innerHTML = `<div class="import-chips">${chips.join("")}</div>${fillable ? `<button class="slp-btn slp-btn--soft import-fill-btn" type="button" data-import-fill>${t("Fill in missing details for songs already in your library")} (${fillable})</button>` : ""}<p>${t("Tap a song to edit it before it is added. Unticked songs are skipped.")}</p>`;
+  els.importSelectedBtn.textContent = `${t("Add")} ${added} ${t(plural(added, "song"))}`;
+  els.importSelectedBtn.disabled = added === 0;
+  els.importSummary.querySelector("[data-import-fill]")?.addEventListener("click", fillMissingDetailsFromImport);
+}
+
+// A song's artist is not real when it is a chord-marked fragment or a copy of one of the first lyric lines
+// (an older import took the first short line for the artist).
+function songArtistLooksLikeLyrics(song) {
+  const artist = String(song.artist || "").trim();
+  if (!artist) return false;
+  if (/\[[^\]]+\]/.test(artist)) return true;
+  const lines = textFromDocumentHtml(song.documentHtml || "").split("\n").map((line) => normalizeComparisonText(line.replace(/\[[^\]]*\]/g, ""))).filter(Boolean).slice(0, 3);
+  return lines.includes(normalizeComparisonText(artist));
+}
+
+// For songs already in the library: fills only what is blank (artist, capo, key, composer...) from the same song in
+// this import. Nothing is overwritten and no song is added.
+function fillMissingDetailsFromImport() {
+  let changed = 0;
+  importCandidates.filter((candidate) => candidate.duplicate && candidate.duplicateMatches[0]).forEach((candidate) => {
+    const song = state.songs.find((item) => item.id === candidate.duplicateMatches[0].songId);
+    if (!song) return;
+    let touched = false;
+    ["capo", "composer", "lyricist", "album", "bpm", "language", "key", "timeSignature"].forEach((field) => {
+      if (!String(song[field] || "").trim() && String(candidate[field] || "").trim()) { song[field] = candidate[field]; touched = true; }
+    });
+    if (!String(song.titleHebrew || "").trim() && isPureHebrewText(candidate.titleHebrew)) {
+      const english = isPureLatinText(song.titleEnglish) ? song.titleEnglish : (isPureLatinText(song.title) ? song.title : "");
+      song.titleHebrew = candidate.titleHebrew;
+      if (english) { song.titleEnglish = english; song.title = `${english} – ${candidate.titleHebrew}`; }
+      touched = true;
+    }
+    if (!(song.styles || []).length && normalizeStringArray(candidate.style).length) {
+      song.styles = normalizeStringArray(candidate.style).slice(0, 12);
+      song.style = song.styles.join("; ");
+      touched = true;
+    }
+    if (!(song.occasions || []).length && (candidate.occasions || []).length) { song.occasions = [...candidate.occasions]; touched = true; }
+    if (!String(song.youtubeUrl || "").trim() && candidate.youtubeUrl) { song.youtubeUrl = candidate.youtubeUrl; touched = true; }
+    Object.entries(candidate.infoSources || {}).forEach(([key, value]) => {
+      if (!(song.infoSources || (song.infoSources = {}))[key]) { song.infoSources[key] = value; touched = true; }
+    });
+    const newLinks = normalizeUrlList(candidate.linkText).filter((url) => ![...(song.audioLinks || []), ...(song.videoLinks || [])].includes(url));
+    if (newLinks.length && !(song.audioLinks || []).length && !(song.videoLinks || []).length) {
+      song.audioLinks = newLinks.filter((url) => linkInfo(url).kind !== "video");
+      song.videoLinks = newLinks.filter((url) => linkInfo(url).kind === "video");
+      touched = true;
+    }
+    if (!String(song.importSourceUrl || "").trim() && /^https?:\/\//i.test(candidate.sourceUrl || "")) { song.importSourceUrl = candidate.sourceUrl.trim(); touched = true; }
+    if (!String(song.artistHebrew || "").trim() && candidate.artistHebrew) { song.artistHebrew = candidate.artistHebrew; touched = true; }
+    if ((!String(song.artist || "").trim() || songArtistLooksLikeLyrics(song)) && candidate.artist.trim() && !/\[[^\]]+\]/.test(candidate.artist)) {
+      song.artists = normalizeArtistNames([candidate.artist, candidate.featuredArtist]);
+      song.artist = song.artists.join(", ");
+      touched = true;
+    }
+    if (touched) { song.updatedAt = new Date().toISOString(); changed += 1; }
+  });
+  if (changed) { render(); persistThenToast(`Filled in missing details for ${changed} ${plural(changed, "song")}`); }
+  else showToast("Nothing to fill in: these songs already have those details");
+  refreshImportSummary();
 }
 
 function importLocationParentOptionsMarkup(candidate) {
@@ -22096,8 +23055,10 @@ function importSelectedSongs() {
   const selected = importCandidates.filter((candidate) => candidate.selected && candidate.title.trim());
   if (!selected.length) return showToast("Select at least one song to import");
   commitCandidateImportFolders(selected);
+  const batchId = isSingleImport ? "" : makeId();
   const imported = selected.map((candidate) => normalizeSong({
     id: makeId(),
+    importBatchId: batchId,
     title: candidate.title.trim(),
     alternateTitles: candidate.alternateTitles,
     artist: candidate.artist.trim(),
@@ -22107,6 +23068,18 @@ function importSelectedSongs() {
     album: candidate.album.trim(),
     style: candidate.style.trim(),
     timeSignature: String(candidate.timeSignature || "").trim(),
+    capo: String(candidate.capo || "").trim(),
+    titleEnglish: candidate.titleEnglish || "",
+    titleHebrew: candidate.titleHebrew || "",
+    artistHebrew: candidate.artistHebrew || "",
+    needsReview: candidate.needsReview === true,
+    reviewNote: candidate.reviewNote || "",
+    youtubeUrl: candidate.youtubeUrl || "",
+    occasions: candidate.occasions || [],
+    infoSources: candidate.infoSources || {},
+    styles: normalizeStringArray(candidate.style),
+    audioLinks: normalizeUrlList(candidate.linkText).filter((url) => linkInfo(url).kind !== "video"),
+    videoLinks: normalizeUrlList(candidate.linkText).filter((url) => linkInfo(url).kind === "video"),
     bpm: candidate.bpm ? clamp(Number(candidate.bpm), 20, 300) : "",
     language: candidate.language.trim(),
     importSourceUrl: /^https?:\/\//i.test(candidate.sourceUrl.trim()) ? candidate.sourceUrl.trim() : "",
@@ -22127,7 +23100,142 @@ function importSelectedSongs() {
   importCandidates = [];
   closeOverlays();
   render();
-  showToast(importMode === "paste" ? "Song imported" : `${imported.length} ${plural(imported.length, "song")} imported`);
+  if (batchId) rememberImportBatch(batchId, imported);
+  else showToast(importMode === "paste" ? "Song imported" : `${imported.length} ${plural(imported.length, "song")} imported`);
+}
+// "Undo all" for a batch import. Every song added by Import my songs carries the batch's id; the last batch
+// is remembered on this device (ids and the time each song was saved, so a song changed afterwards is noticed).
+// Songs that an event uses are never removed by Undo: they stay, and the message says so.
+const LAST_IMPORT_KEY = "slp-last-import";
+let importUndoTimer = 0;
+
+function readLastImport() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LAST_IMPORT_KEY) || "null");
+    return saved && saved.id && Array.isArray(saved.songs) ? saved : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeLastImport(record) {
+  try {
+    if (record) localStorage.setItem(LAST_IMPORT_KEY, JSON.stringify(record));
+    else localStorage.removeItem(LAST_IMPORT_KEY);
+  } catch {
+    // Undo just will not be offered after a restart.
+  }
+}
+
+function rememberImportBatch(batchId, songs) {
+  writeLastImport({ id: batchId, at: new Date().toISOString(), songs: songs.map((song) => ({ id: song.id, updatedAt: song.updatedAt })) });
+  const count = songs.length;
+  els.importUndoText.textContent = `${count} ${t(plural(count, "song"))} ${t("added")}`;
+  els.importUndoBar.hidden = false;
+  clearTimeout(importUndoTimer);
+  importUndoTimer = setTimeout(hideImportUndoBar, 15000);
+  refreshUndoImportRow();
+}
+
+function hideImportUndoBar() {
+  clearTimeout(importUndoTimer);
+  if (els.importUndoBar) els.importUndoBar.hidden = true;
+}
+
+// The songs from the last batch that are still in the library, split into ones that can go and ones an event uses.
+function lastImportSongs() {
+  const record = readLastImport();
+  if (!record) return null;
+  const present = record.songs
+    .map((entry) => ({ entry, song: state.songs.find((song) => song.id === entry.id && song.importBatchId === record.id) }))
+    .filter((item) => item.song);
+  const removable = present.filter((item) => !songGigReferenceCount(item.song.id));
+  return {
+    record,
+    present,
+    removable,
+    inEvents: present.length - removable.length,
+    edited: removable.filter((item) => item.song.updatedAt !== item.entry.updatedAt).length
+  };
+}
+
+function refreshUndoImportRow() {
+  if (!els.undoImportBtn) return;
+  const last = lastImportSongs();
+  const show = Boolean(last?.present.length);
+  els.undoImportBtn.hidden = !show;
+  els.undoImportBtn.classList.toggle("hidden", !show);
+  if (show) els.undoImportSubtitle.textContent = `${last.present.length} ${t(plural(last.present.length, "song"))} · ${formatSafetyDate(last.record.at)}`;
+}
+
+function requestUndoLastImport() {
+  hideImportUndoBar();
+  const last = lastImportSongs();
+  if (!last || !last.present.length) {
+    writeLastImport(null);
+    refreshUndoImportRow();
+    showToast("Nothing left to undo");
+    return;
+  }
+  if (!last.removable.length) {
+    showToast("Every song from that import is used in an event, so none were removed");
+    return;
+  }
+  const count = last.removable.length;
+  const parts = [`Remove the ${count} ${plural(count, "song")} added by the last import?`];
+  if (last.edited) parts.push(`${last.edited} of them ${last.edited === 1 ? "was" : "were"} changed since.`);
+  if (last.inEvents) parts.push(`${last.inEvents} used in an event will stay.`);
+  openConfirm("Undo the last import?", parts.join(" "), "Remove songs", undoLastImport);
+}
+
+function undoLastImport() {
+  const last = lastImportSongs();
+  if (!last) return;
+  const ids = new Set(last.removable.map((item) => item.song.id));
+  state.songs = state.songs.filter((song) => !ids.has(song.id));
+  Object.keys(state.songOrder).forEach((key) => {
+    state.songOrder[key] = state.songOrder[key].filter((id) => !ids.has(id));
+  });
+  if (ids.has(selectedSongId)) { selectedSongId = null; mobileView = "folder"; }
+  const kept = last.present.filter((item) => !ids.has(item.song.id));
+  writeLastImport(kept.length ? { ...last.record, songs: kept.map((item) => item.entry) } : null);
+  closeOverlays();
+  render();
+  refreshUndoImportRow();
+  persistThenToast(`${ids.size} ${plural(ids.size, "song")} removed${kept.length ? `, ${kept.length} kept (used in events)` : ""}`);
+}
+
+// ---------- Artists that are really lyric lines ----------
+// An older import took the first short line of a song for its artist. Settings offers to clear those (only those).
+function songsWithLyricArtists() {
+  return state.songs.filter(songArtistLooksLikeLyrics);
+}
+
+function refreshFixArtistsRow() {
+  if (!els.fixArtistsBtn) return;
+  const count = songsWithLyricArtists().length;
+  els.fixArtistsBtn.hidden = !count;
+  els.fixArtistsBtn.classList.toggle("hidden", !count);
+  if (count) els.fixArtistsSubtitle.textContent = `${count} ${t(plural(count, "song"))} · ${t("the artist is a line from the lyrics")}`;
+}
+
+function requestFixArtists() {
+  const count = songsWithLyricArtists().length;
+  if (!count) { refreshFixArtistsRow(); return; }
+  openConfirm("Fix artists copied from lyrics?", `The artist of ${count} ${plural(count, "song")} is a copy of a lyric line. The artist will be cleared on those songs. Nothing else changes.`, "Clear artists", fixLyricArtists);
+}
+
+function fixLyricArtists() {
+  const songs = songsWithLyricArtists();
+  songs.forEach((song) => {
+    song.artists = [];
+    song.artist = "";
+    song.updatedAt = new Date().toISOString();
+  });
+  closeOverlays();
+  render();
+  refreshFixArtistsRow();
+  persistThenToast(`Cleared the artist on ${songs.length} ${plural(songs.length, "song")}`);
 }
 // Instrument sounds for the Tools. No sample files: each note is computed on the fly from a
 // small physical model, so the sounds work offline and add no download weight.
@@ -23742,7 +24850,74 @@ function songListTitle(song) {
   return song.title;
 }
 
+// ---------- Two-line titles: English on top, Hebrew or Yiddish below ----------
+// The song keeps one combined `title` ("English – Hebrew") for sorting, search and backups; the two
+// names are stored separately in titleEnglish / titleHebrew and drawn on their own lines.
+function isPureLatinText(value) {
+  return hasLatinText(value) && !hasHebrewText(value);
+}
+
+function isPureHebrewText(value) {
+  return hasHebrewText(value) && !hasLatinText(value);
+}
+
+// "Ich Bin Ich – איך בין איך" -> { en, he }, only when one side is all Latin and the other all Hebrew letters.
+function splitBilingualTitle(title) {
+  const parts = String(title || "").split(/\s+[–—-]\s+/).map((part) => part.trim()).filter(Boolean);
+  if (parts.length !== 2) return null;
+  const [first, second] = parts;
+  if (isPureLatinText(first) && isPureHebrewText(second)) return { en: first, he: second };
+  if (isPureHebrewText(first) && isPureLatinText(second)) return { en: second, he: first };
+  return null;
+}
+
+// { en, he } for a two-language or single-language title, or { one } for anything that cannot be told apart
+// (it is then shown as written, on one line).
+function songTitleParts(song) {
+  const title = String(song.title || "");
+  let en = isPureLatinText(song.titleEnglish) ? song.titleEnglish : "";
+  let he = isPureHebrewText(song.titleHebrew) ? song.titleHebrew : (isPureHebrewText(song.titleYiddish) ? song.titleYiddish : "");
+  if (!en || !he) {
+    const split = splitBilingualTitle(title);
+    if (split) { en = en || split.en; he = he || split.he; }
+  }
+  const mixed = hasLatinText(title) && hasHebrewText(title);
+  if (mixed && !splitBilingualTitle(title) && !(en && he && title.includes(en) && title.includes(he))) return { one: title };
+  if (!en && !he) {
+    if (isPureLatinText(title)) en = title;
+    else if (isPureHebrewText(title)) he = title;
+    else return { one: title };
+  }
+  return { en, he };
+}
+
+function songTitleMarkup(song) {
+  const parts = songTitleParts(song);
+  const line = (cls, dir, text, lang = "") => `<span class="${cls}" dir="${dir}"${lang ? ` lang="${lang}"` : ""}>${escapeHtml(text)}</span>`;
+  return `<span class="song-title-lines">${parts.one ? line("t-one", "auto", parts.one) : `${parts.en ? line("t-en", "ltr", parts.en) : ""}${parts.he ? line("t-he", "rtl", parts.he, "he") : ""}`}</span>`;
+}
+
+// Titles line up on one side: the left in the English app, the right in the Hebrew app, or whichever
+// the person picked in Settings. A device preference, like the Performance settings.
+const TITLE_ALIGN_KEY = "slp-title-align";
+function titleAlignChoice() {
+  try {
+    const saved = localStorage.getItem(TITLE_ALIGN_KEY);
+    return saved === "left" || saved === "right" ? saved : "auto";
+  } catch {
+    return "auto";
+  }
+}
+
+function applyTitleAlign() {
+  const choice = titleAlignChoice();
+  const side = choice === "auto" ? (document.documentElement?.dir === "rtl" ? "right" : "left") : choice;
+  if (document.documentElement) document.documentElement.dataset.titleAlign = side;
+}
+
 function alternateDisplayTitle(song, visibleTitle) {
+  const shown = songTitleParts(song);
+  if (shown.en && shown.he) return (song.alternateTitles || []).find((title) => title !== shown.en && title !== shown.he && title !== song.title) || "";
   if (hasLatinText(song.title) && hasHebrewText(song.title)) return "";
   if (songSort === "titleHebrew") return englishTitleForSong(song) !== visibleTitle ? englishTitleForSong(song) : "";
   if (songSort === "titleEnglish") return hebrewTitleForSong(song) !== visibleTitle ? hebrewTitleForSong(song) : "";
@@ -24153,7 +25328,7 @@ function songSearchIndex(song) {
   const metadataFingerprint = [
     song.title, song.titleEnglish, song.titleHebrew, song.titleYiddish, song.alternateTitles.join(" "),
     song.artist, song.artistHebrew, song.featuredArtist, song.composer, song.lyricist, song.album,
-    song.style, song.language, song.key, song.alternateKeys.join(" "), song.transpose
+    song.style, (song.occasions || []).join(" "), song.language, song.key, song.alternateKeys.join(" "), song.transpose
   ].join("\u0001");
   const cached = songSearchCache.get(song);
   if (cached?.metadataFingerprint === metadataFingerprint && cached.documentHtml === song.documentHtml) return cached.index;
@@ -24247,6 +25422,11 @@ function normalizeArtistNames(value) {
 // What a link is, from its address: a friendly name, and whether it is something to
 // listen to or watch. Unknown sites keep their host name and are filed under audio.
 // (Plain function with local tables: it runs while the saved library loads.)
+// Every link a song has, the YouTube link first.
+function songLinkUrls(song) {
+  return [...new Set([song.youtubeUrl, ...(song.videoLinks || []), ...(song.audioLinks || [])].filter(Boolean))];
+}
+
 function linkInfo(url) {
   let host = "";
   try { host = new URL(url).hostname.replace(/^www\./, "").toLowerCase(); } catch { /* not a link */ }
@@ -24994,6 +26174,19 @@ els.editSubfoldersBtn.addEventListener("click", () => {
 els.songSortSelect.addEventListener("change", () => {
   setSongSort(els.songSortSelect.value);
 });
+els.songFilterStrip.addEventListener("click", (event) => {
+  const button = event.target.closest("button");
+  if (!button) return;
+  if (button.dataset.filterClear) { songChipFilters = { styles: [], languages: [], occasions: [], bpm: [] }; songChipOpen = ""; }
+  else if (button.dataset.filterValue !== undefined) {
+    const list = songChipFilters[button.dataset.filterGroup];
+    const value = button.dataset.filterValue;
+    songChipFilters[button.dataset.filterGroup] = list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+  } else if (button.dataset.filterGroup) songChipOpen = songChipOpen === button.dataset.filterGroup ? "" : button.dataset.filterGroup;
+  else return;
+  renderFolder();
+  refreshIcons();
+});
 els.sortMenuBtn.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -25072,7 +26265,7 @@ els.closeSongInfoBtn.addEventListener("click", closeOverlays);
 els.saveSongInfoBtn.addEventListener("click", saveSongInfo);
 els.saveSongInfoBottomBtn.addEventListener("click", saveSongInfo);
 els.songDetailsCollapse.addEventListener("click", toggleSongDetailsCollapse);
-[els.songTitleInput, els.songArtistInput, els.songAlternateTitlesInput].forEach((input) => input.addEventListener("input", clearSongTitleNotice));
+[els.songTitleEnglishInput, els.songTitleHebrewInput, els.songArtistInput, els.songAlternateTitlesInput].forEach((input) => input.addEventListener("input", clearSongTitleNotice));
 els.songTitleNoticeOpenBtn.addEventListener("click", openExistingSongFromNotice);
 els.songDetailsCollapse.addEventListener("keydown", (event) => {
   if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggleSongDetailsCollapse(); }
@@ -25157,6 +26350,8 @@ globalThis.visualViewport?.addEventListener("resize", updateWritingToolbarPositi
 globalThis.visualViewport?.addEventListener("scroll", updateWritingToolbarPosition);
 globalThis.addEventListener?.("orientationchange", updateWritingToolbarPosition);
 globalThis.addEventListener?.("resize", updateWritingToolbarPosition);
+// Folding or unfolding a phone, or dragging the divider, changes the lyrics column without a window resize.
+if (globalThis.ResizeObserver) { const watcher = new ResizeObserver(() => updateWritingToolbarPosition()); watcher.observe(els.lyricSheet); watcher.observe(els.app); }
 els.imageFileInput.addEventListener("change", () => {
   addImageFromFile(els.imageFileInput.files[0]);
   els.imageFileInput.value = "";
@@ -25258,15 +26453,12 @@ els.loadJyricsBtn.addEventListener("click", loadJyricsSong);
 els.parseJyricsCopyBtn.addEventListener("click", parseCopiedJyricsPage);
 els.backFromPasteBtn.addEventListener("click", () => showImportStage("start"));
 els.parsePasteBtn.addEventListener("click", parsePastedImport);
-els.pdfImportBtn.addEventListener("click", () => chooseMediaImport("pdf"));
-els.photoImportBtn.addEventListener("click", () => chooseMediaImport("photo"));
 els.backFromMediaBtn.addEventListener("click", () => {
   pendingMediaImport = null;
   showImportStage("start");
 });
 els.startMediaImportBtn.addEventListener("click", startMediaImport);
-els.pdfImportInput.addEventListener("change", () => prepareMediaImport("pdf", els.pdfImportInput.files));
-els.photoImportInput.addEventListener("change", () => prepareMediaImport("photo", els.photoImportInput.files));
+els.cancelMediaImportBtn.addEventListener("click", () => { mediaImportCancelled = true; els.mediaImportStatus.textContent = t("Stopping..."); });
 els.chooseImportFilesBtn.addEventListener("click", () => {
   importMode = "files";
   els.songImportInput.click();
@@ -25292,6 +26484,9 @@ els.songImportInput.addEventListener("change", async () => {
   els.songImportInput.value = "";
 });
 els.importSelectedBtn.addEventListener("click", importSelectedSongs);
+els.importUndoBtn.addEventListener("click", requestUndoLastImport);
+els.undoImportBtn.addEventListener("click", requestUndoLastImport);
+els.fixArtistsBtn.addEventListener("click", requestFixArtists);
 els.importLibraryBtn.addEventListener("click", () => els.backupFileInput.click());
 els.backupFileInput.addEventListener("change", () => {
   importLibrary(els.backupFileInput.files[0]);
@@ -25451,6 +26646,7 @@ document.addEventListener("visibilitychange", () => {
 
 initToolsUi();
 initRecoveryUi();
+seedRecordLedger();
 initSaveGuardUi();
 initPracticeUi();
 initPerformanceUi();
