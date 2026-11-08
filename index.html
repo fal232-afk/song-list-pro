@@ -3774,14 +3774,14 @@ textarea.slp-collapse__panel::placeholder { color: var(--color-text-secondary); 
 
 .slp-edit-dock {
   position: fixed;
-  bottom: calc(var(--writing-toolbar-inset, 0px) + var(--space-8));
+  bottom: var(--dock-bottom, calc(var(--writing-toolbar-inset, 0px) + var(--space-8)));
   z-index: 30;
   display: flex;
   align-items: center;
   gap: 0;
 }
-.slp-edit-dock[data-side="left"] { left: var(--space-5); }
-.slp-edit-dock[data-side="right"] { right: var(--space-5); }
+.slp-edit-dock[data-side="left"] { left: var(--dock-left, var(--space-5)); }
+.slp-edit-dock[data-side="right"] { right: var(--dock-right, var(--space-5)); }
 .slp-edit-dock.hidden { display: none; }
 .edit-dock__toggle {
   display: inline-flex; align-items: center; justify-content: center;
@@ -3798,8 +3798,6 @@ textarea.slp-collapse__panel::placeholder { color: var(--color-text-secondary); 
 .slp-edit-dock .slp-btn--icon { min-width: 44px; min-height: 44px; font-size: var(--text-xl); font-weight: var(--font-weight-bold); color: var(--color-card); background: transparent; }
 .slp-edit-dock .slp-btn--icon svg { width: 20px; height: 20px; }
 .slp-edit-dock .edit-dock__done { color: var(--accent-on-dark, #7ee0cf); }
-.lyric-sheet.dock-pad-left { padding-left: calc(clamp(20px, 4vw, 54px) + 36px); }
-.lyric-sheet.dock-pad-right { padding-right: calc(clamp(20px, 4vw, 54px) + 36px); }
 
 .slp-selection-popover {
   position: fixed;
@@ -4282,7 +4280,7 @@ body.perf-open { overflow: hidden; }
   background: #151A21;
   transition: margin-top 200ms ease, opacity 200ms ease;
 }
-.perf-view.bar-hidden .perf-bar { margin-top: -140px; opacity: 0; pointer-events: none; }
+.perf-view.bar-hidden .perf-bar { margin-top: -210px; opacity: 0; pointer-events: none; }
 .perf-bar__row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .perf-bar__row--tools { justify-content: flex-start; flex-wrap: wrap; gap: 6px; }
 .perf-btn {
@@ -5055,6 +5053,8 @@ a.slp-chip { min-height: 44px; }
 .app-shell[data-board-side="true"] .board[data-density="roomy"] [data-card-text="overview"] .board-card__lyrics { max-height: 150px; }
 .app-shell[data-board-side="true"] .board[data-density="roomy"] [data-card-text="overview"] .board-card__lyrics .board-lyric-line { font-size: 12.5px; line-height: 1.5; }
 @media (min-width: 901px) {
+  /* The tab bar runs under every column, not just the first. */
+  .app-shell .slp-bottom-nav { grid-column: 1 / -1; }
   .app-shell.board-full .slp-bottom-nav { justify-self: center; width: min(100%, 640px); }
 }
 
@@ -5632,6 +5632,9 @@ textarea.slp-input.gig-item-note { min-height: 44px; height: 44px; resize: none;
 .section-picker__lang button { min-width: 44px; min-height: 44px; padding: 0 var(--space-4); background: transparent; color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
 .section-picker__lang button[aria-pressed="true"] { background: var(--accent); color: #fff; }
 .section-picker__chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); }
+.section-picker__numbers, .section-picker__repeats { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--space-4); }
+.section-picker__numbers { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.section-picker__label { grid-column: 1 / -1; color: var(--color-text-secondary); font-size: var(--text-sm); }
 .section-chip { min-height: 44px; padding: 0 var(--space-2); border: 1px solid var(--color-border-strong, var(--color-border)); border-radius: 10px; background: var(--color-chip-bg); color: var(--color-text); font-size: 14px; line-height: 1.15; text-align: center; overflow-wrap: anywhere; }
 .section-chip.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
 .section-picker__actions { display: grid; gap: var(--space-2); margin-top: var(--space-4); border-top: 1px solid var(--color-border); padding-top: var(--space-3); }
@@ -5701,7 +5704,8 @@ body.practice-open { overflow: hidden; }
 .practice-view[hidden], .practice-view.hidden { display: none; }
 .practice-view:focus { outline: none; }
 .practice-bar .perf-bar__row { justify-content: flex-start; }
-.practice-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 600; color: #F2F2EE; }
+.practice-title { flex: 1; min-width: 0; overflow: hidden; font-size: 15px; font-weight: 600; line-height: 1.2; color: #F2F2EE; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow-wrap: anywhere; cursor: pointer; }
+.practice-title.is-open { display: block; -webkit-line-clamp: unset; line-clamp: unset; }
 .practice-bar a.perf-btn { text-decoration: none; flex-shrink: 0; }
 a.perf-btn[hidden] { display: none; }
 .practice-body { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
@@ -5770,6 +5774,26 @@ a.perf-btn[hidden] { display: none; }
   .practice-view[data-source="youtube"] .practice-loop { display: grid; grid-template-columns: repeat(2, 1fr); width: 100%; max-width: 150px; }
 }
 
+/* Phone portrait, a little wider (402pt and up, e.g. iPhone 16 Pro): the loop buttons fit in one row beside the video, and the
+   progress line moves into the controls column too, so the band is no taller than the video itself. */
+@media (min-width: 402px) and (max-width: 520px) and (orientation: portrait) {
+  .practice-view[data-source="youtube"] .practice-player { grid-template-columns: 1fr 200px; column-gap: 4px; padding: 8px; align-items: start; direction: ltr; }
+  html[dir="rtl"] .practice-view[data-source="youtube"] .practice-message { direction: rtl; }
+  .practice-view[data-source="youtube"][data-lyrics-dir="rtl"] .practice-player { grid-template-columns: 200px 1fr; }
+  .practice-view[data-source="youtube"] .practice-stage { display: contents; }
+  .practice-view[data-source="youtube"] .practice-seg { grid-column: 1 / -1; grid-row: 1; }
+  .practice-view[data-source="youtube"] .practice-video { grid-column: 2; grid-row: 2 / span 2; }
+  .practice-view[data-source="youtube"][data-lyrics-dir="rtl"] .practice-video { grid-column: 1; }
+  .practice-view[data-source="youtube"] .practice-controls { grid-column: 1; grid-row: 2; }
+  .practice-view[data-source="youtube"][data-lyrics-dir="rtl"] .practice-controls { grid-column: 2; }
+  .practice-view[data-source="youtube"] .practice-scrub { grid-column: 1; grid-row: 3; align-self: end; gap: 4px; }
+  .practice-view[data-source="youtube"][data-lyrics-dir="rtl"] .practice-scrub { grid-column: 2; }
+  .practice-view[data-source="youtube"] .practice-message { grid-column: 1 / -1; grid-row: 4; }
+  .practice-view[data-source="youtube"] .practice-loop { display: flex; justify-content: space-between; gap: 2px; width: 100%; max-width: none; }
+  .practice-view[data-source="youtube"] .practice-loop .practice-chip { flex: 1 1 0; min-width: 44px; padding: 0; }
+  .practice-view[data-source="youtube"] .practice-clock { min-width: 30px; font-size: 11px; }
+}
+
 /* Phone landscape: player on the left (about 40%), lyrics on the right. Never overlapping. */
 @media (orientation: landscape) and (max-height: 520px) {
   .practice-body { flex-direction: row; direction: ltr; }          /* the player stays on the left in Hebrew too */
@@ -5804,6 +5828,20 @@ a.perf-btn[hidden] { display: none; }
 .save-banner__actions .slp-btn { min-height: 44px; }
 .save-banner__actions .slp-btn[hidden] { display: none; }
 .save-banner .slp-btn--soft { background: var(--color-card); color: var(--color-text); box-shadow: inset 0 0 0 1px var(--color-border); }
+
+/* Offered after a pasted chord sheet was turned into inline chords. */
+.chord-paste-bar { position: fixed; z-index: 16; left: 50%; transform: translateX(-50%); bottom: calc(var(--writing-toolbar-inset, 0px) + 84px); display: flex; align-items: center; gap: var(--space-5); max-width: calc(100% - 24px); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-7); border-radius: 999px; background: var(--color-card); color: var(--color-text); box-shadow: var(--shadow-card), 0 0 0 1px var(--color-border); font-size: var(--text-md); }
+.chord-paste-bar[hidden] { display: none; }
+.chord-paste-bar .slp-btn { min-height: 44px; border-radius: 999px; }
+
+.perf-bar { grid-template-columns: minmax(0, 1fr); }
+.perf-bar__row--event[hidden] { display: none; }
+.perf-event-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #D7DDE6; font-size: 14px; font-weight: 600; text-align: center; }
+.perf-btn:disabled { opacity: 0.35; cursor: default; }
+.perf-notice { position: absolute; inset-inline: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 14px; background: #FFC857; color: #0E1116; font-size: 16px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,.45); }
+.perf-notice[hidden] { display: none; }
+.perf-notice span { min-width: 0; overflow-wrap: anywhere; }
+.perf-notice .perf-chip { flex-shrink: 0; background: #0E1116; color: #FFC857; }
 
 }
 
@@ -6343,6 +6381,8 @@ a.perf-btn[hidden] { display: none; }
               </span>
             </div>
             <div id="sectionPickerChips" class="section-picker__chips"></div>
+            <div id="sectionPickerNumbers" class="section-picker__chips section-picker__numbers"></div>
+            <div id="sectionPickerRepeats" class="section-picker__chips section-picker__repeats" hidden></div>
             <div id="sectionPickerActions" class="section-picker__actions" hidden>
               <button type="button" data-section-action="rename"><i data-lucide="pencil"></i>Rename</button>
               <button type="button" data-section-action="plain" class="danger"><i data-lucide="eraser"></i>Make it a normal line</button>
@@ -6427,6 +6467,10 @@ a.perf-btn[hidden] { display: none; }
         </div>
       </div>
     </section>
+    <div id="chordPasteBar" class="chord-paste-bar" role="status" hidden>
+      <span>Chords placed from your paste.</span>
+      <button id="chordPasteUndoBtn" class="slp-btn slp-btn--soft" type="button">Undo</button>
+    </div>
     <aside id="saveBanner" class="save-banner" role="alert" hidden>
       <p id="saveBannerText" class="save-banner__text"></p>
       <div class="save-banner__actions">
@@ -6990,6 +7034,10 @@ a.perf-btn[hidden] { display: none; }
           <span class="slp-row__body"><span class="slp-row__title">Set-aside library copy</span><span class="slp-row__subtitle">Export a copy the app set aside (damaged, or replaced by another window)</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
+        <button id="pedalConfirmBtn" class="slp-row" type="button" role="switch" aria-checked="true">
+          <span class="slp-row__icon-tile"><i data-lucide="footprints"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Pedal: confirm before next song</span><span id="pedalConfirmSubtitle" class="slp-row__subtitle">On: at the end of a song, press twice to go to the next</span></span>
+        </button>
         <div id="practiceAudioRow" hidden>
         <button id="practiceAudioBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="headphones"></i></span>
@@ -7180,10 +7228,19 @@ a.perf-btn[hidden] { display: none; }
           </span>
           <span id="perfAwake" class="perf-awake" hidden><i data-lucide="sun"></i>Screen stays on</span>
         </div>
+        <div id="perfEventRow" class="perf-bar__row perf-bar__row--event" hidden>
+          <button id="perfPrevBtn" class="perf-btn" type="button" aria-label="Previous song"><i data-lucide="chevron-left"></i></button>
+          <span id="perfEventLabel" class="perf-event-label" dir="auto"></span>
+          <button id="perfNextBtn" class="perf-btn" type="button" aria-label="Next song"><i data-lucide="chevron-right"></i></button>
+        </div>
       </header>
-      <div id="perfScroll" class="perf-scroll">
+      <div id="perfScroll" class="perf-scroll" tabindex="-1">
         <div id="perfTitle" class="perf-title"></div>
         <div id="perfDoc" class="perf-doc song-document" dir="auto"></div>
+      </div>
+      <div id="perfNotice" class="perf-notice" role="status" hidden>
+        <span id="perfNoticeText" dir="auto"></span>
+        <button id="perfNoticeUndo" class="perf-chip" type="button" hidden>Undo</button>
       </div>
     </section>
 
@@ -7191,7 +7248,7 @@ a.perf-btn[hidden] { display: none; }
       <header class="perf-bar practice-bar">
         <div class="perf-bar__row">
           <button id="practiceCloseBtn" class="perf-btn" type="button" aria-label="Close practice"><i data-lucide="x"></i></button>
-          <div id="practiceTitle" class="practice-title" dir="auto"></div>
+          <div id="practiceTitle" class="practice-title" dir="auto" role="button" tabindex="0" aria-expanded="false" title="Tap to see the whole title"></div>
           <a id="practiceOpenExternal" class="perf-btn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open in YouTube" title="Open in YouTube" hidden><i data-lucide="external-link"></i></a>
         </div>
       </header>
@@ -7575,7 +7632,7 @@ const els = Object.fromEntries(
     "artistSection", "artistCount", "artistList", "songsSection", "subfolderSection", "subfolderCount", "subfolderList", "attachedNotesSection", "attachedNoteCount", "attachedNoteList", "songSortSelect", "sortMenuBtn", "sortMenuLabel", "songList", "songEmptyState",
     "editSubfoldersBtn", "newSubfolderBtn",
     "songReader", "backToFolderBtn", "songTitle", "songAppearanceBtn", "songMoreBtn",
-    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceBody", "practiceSlowerBtn", "practiceSpeedValue", "practiceFasterBtn", "practicePitch", "practiceLoopBand", "practiceMini", "practiceMiniPlay", "practiceMiniSlower", "practiceMiniSpeed", "practiceMiniFaster", "practiceMiniLoop", "practiceMiniExpand", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
+    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceBody", "practiceSlowerBtn", "practiceSpeedValue", "practiceFasterBtn", "practicePitch", "practiceLoopBand", "practiceMini", "practiceMiniPlay", "practiceMiniSlower", "practiceMiniSpeed", "practiceMiniFaster", "practiceMiniLoop", "practiceMiniExpand", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfEventRow", "perfPrevBtn", "perfNextBtn", "perfEventLabel", "perfNotice", "perfNoticeText", "perfNoticeUndo", "pedalConfirmBtn", "pedalConfirmSubtitle", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerNumbers", "sectionPickerRepeats", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
     "insertDisclosureBtn", "textFormatMenu", "boldTextBtn", "underlineTextBtn", "clearTextFormatBtn", "insertImageBtn", "undoBtn", "redoBtn", "finishWritingBtn",
     "imageToolbar", "imageWidthInput", "imageWidthOutput", "imageAlignLeftBtn", "imageAlignCenterBtn",
     "imageAlignRightBtn", "deleteImageBtn", "finishImageBtn",
@@ -7586,7 +7643,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
+    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "languageSettingsBtn", "languageSettingsValue", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -8747,7 +8804,17 @@ Object.assign(HEBREW_UI, {
  "This song has no chords yet; only its key moves.": "לשיר הזה אין עדיין אקורדים; רק הסולם זז.",
  "Set a key on the song to see the new key.": "יש להגדיר סולם לשיר כדי לראות את הסולם החדש.",
  "Four bars from the highlighted bar will be the preview.": "ארבע תיבות מהתיבה המסומנת יהיו התצוגה המקדימה.",
+ "Press again for next:": "לחץ שוב לשיר הבא:",
+ "Press again for previous:": "לחץ שוב לשיר הקודם:",
+ "That was the last song": "זה היה השיר האחרון",
+ "Pedal: confirm before next song": "דוושה: אישור לפני השיר הבא",
+ "On: at the end of a song, press twice to go to the next": "פעיל: בסוף השיר לוחצים פעמיים כדי לעבור לבא",
+ "Off: one press at the end of a song goes to the next": "כבוי: לחיצה אחת בסוף השיר עוברת לבא",
  "Change this section": "שינוי החלק הזה",
+ "More…": "עוד…",
+ "Number (optional)": "מספר (לא חובה)",
+ "None": "ללא",
+ "Already in this song — tap to repeat": "כבר בשיר הזה — הקש לחזרה",
  "Edit Folder": "עריכת תיקייה",
  "New Subfolder": "תיקיית משנה חדשה",
  "New List": "רשימה חדשה",
@@ -9008,6 +9075,13 @@ Object.assign(HEBREW_UI, {
  "Pitch. Tap to reset": "גובה צליל. לחיצה מאפסת",
  "YouTube needs the https version of the app. Open the website link instead.": "YouTube דורש את גרסת ה-https של האפליקציה. כדאי לפתוח את קישור האתר."
 });
+
+Object.assign(HEBREW_UI, {
+ "Chords placed from your paste.": "האקורדים הוצבו מתוך ההדבקה.",
+ "Undo": "ביטול פעולה"
+});
+
+Object.assign(HEBREW_UI, { "Tap to see the whole title": "לחיצה מציגה את הכותרת המלאה" });
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -13380,15 +13454,12 @@ function setEditDockOpen(open) {
 function placeEditDock() {
   const left = songTextIsRtl(currentSong());
   els.writingToolbar.dataset.side = left ? "left" : "right";
-  els.lyricSheet.classList.toggle("dock-pad-left", left);
-  els.lyricSheet.classList.toggle("dock-pad-right", !left);
 }
 
 function setSongEditMode(editing) {
   const wasEditing = songEditMode;
   songEditMode = editing;
   if (editing) { setEditDockOpen(false); placeEditDock(); }
-  else { els.lyricSheet.classList.remove("dock-pad-left", "dock-pad-right"); }
   els.songDocument.contentEditable = String(editing);
   els.writingToolbar.classList.toggle("hidden", !editing);
   if (!editing) {
@@ -13456,13 +13527,41 @@ function toggleSongDetailsView() {
   els.songDetailsViewPanel.hidden = !opening;
 }
 
+// Ctrl/Cmd+Shift+V is the usual "paste exactly as it is": the next paste is not turned into chords.
+let pasteAsTypedUntil = 0;
+
 function pastePlainLyrics(event) {
   const text = event.clipboardData?.getData("text/plain");
   if (text === undefined) return;
   event.preventDefault();
   pushUndoSnapshot();
-  document.execCommand("insertHTML", false, plainTextToDocumentHtml(text));
+  const asTyped = Date.now() < pasteAsTypedUntil;
+  pasteAsTypedUntil = 0;
+  // A normal chord sheet (chords on the line above the words) becomes inline chords, so changing the key moves them.
+  const sheet = asTyped ? { text, converted: false } : chordSheetToInline(text);
+  document.execCommand("insertHTML", false, plainTextToDocumentHtml(sheet.text));
   syncSongDocument();
+  if (sheet.converted) showChordPasteBar();
+  else hideChordPasteBar();
+}
+
+// "Chords placed from your paste. Undo": offered until the next edit (an undo then would take back more than the paste).
+let chordPasteTimer = 0;
+
+function showChordPasteBar() {
+  els.chordPasteBar.hidden = false;
+  clearTimeout(chordPasteTimer);
+  chordPasteTimer = setTimeout(hideChordPasteBar, 10000);
+}
+
+function hideChordPasteBar() {
+  clearTimeout(chordPasteTimer);
+  if (els.chordPasteBar) els.chordPasteBar.hidden = true;
+}
+
+function undoChordPaste() {
+  hideChordPasteBar();
+  undoEdit();
 }
 
 function insertCollapsibleSection(editor, onChange) {
@@ -13591,6 +13690,21 @@ function updateWritingToolbarPosition() {
     ? Math.max(0, layoutHeight - viewport.height - viewport.offsetTop)
     : 0;
   els.app.style.setProperty("--writing-toolbar-inset", `${Math.round(keyboardInset)}px`);
+  placeEditDockInPane(keyboardInset);
+}
+
+// On tablets and desktops the lyrics sit in a column beside the lists, so the pencil is placed against
+// the lyrics column (not the screen edge) and above the tab bar. On a phone nothing changes.
+function placeEditDockInPane(keyboardInset) {
+  const dock = els.writingToolbar;
+  const sheet = els.lyricSheet.getBoundingClientRect();
+  const nav = els.primaryNav?.getBoundingClientRect();
+  const navShown = nav && nav.height > 0 && getComputedStyle(els.primaryNav).display !== "none";
+  const wide = globalThis.innerWidth > 900 && sheet.width > 0;
+  const edge = 16;
+  dock.style.setProperty("--dock-left", wide ? `${Math.round(sheet.left + edge)}px` : "");
+  dock.style.setProperty("--dock-right", wide ? `${Math.round(globalThis.innerWidth - sheet.right + edge)}px` : "");
+  dock.style.setProperty("--dock-bottom", navShown && !keyboardInset ? `${Math.round(globalThis.innerHeight - nav.top + edge)}px` : "");
 }
 
 function applyLyricPrefs() {
@@ -14640,7 +14754,9 @@ function convertChordLinesToInline(text) {
       if (isChordSymbol(chord)) marks.push({ column: match.index + (match[0].startsWith("(") ? 1 : 0), chord });
     }
     const next = lines[index + 1];
-    const hasWordsBelow = next !== undefined && next.trim() && !isChordOnlyLine(next) && !/^\s*\[[^\]]*\]\s*$/.test(next);
+    // Under Hebrew (right-to-left) words a column in this text does not say where the chord belongs, so the
+    // chords stay as their own row above instead of being merged into the wrong word.
+    const hasWordsBelow = next !== undefined && next.trim() && !isChordOnlyLine(next) && !/^\s*\[[^\]]*\]\s*$/.test(next) && !/[\u0590-\u05FF\u0600-\u06FF]/.test(next);
     if (!hasWordsBelow) {
       output.push(marks.map(({ chord }) => `[${chord}]`).join(" "));
       continue;
@@ -14660,6 +14776,58 @@ function convertChordLinesToInline(text) {
     index += 1;
   }
   return output.join("\n");
+}
+
+
+// ---------- pasted chord sheets ----------
+// A normal chord sheet has the chords on a line above the words. Pasted into the lyrics it is turned into the
+// inline form so the chords move with the key. Ordinary lyrics must never be changed, so a paste only counts
+// as a chord sheet when it is unmistakable: some chord lines are made of chords that cannot be plain words.
+
+// Bare letters and plain minors ("A", "G", "Am") are also ordinary words and letters, so on their own they prove nothing.
+const WEAK_CHORD_TOKEN = /^[A-G]m?$/;
+
+function chordLineTokens(line) {
+  const tokens = String(line || "").trim().split(/\s+/).filter((token) => token && token !== "|" && token !== "-" && !/^x\d+$/i.test(token));
+  if (!tokens.length) return null;
+  const cleaned = tokens.map((token) => token.replace(/^\(|\)$/g, ""));
+  return cleaned.every((token) => isChordSymbol(token)) ? cleaned : null;
+}
+
+// "A B C D E F G": the alphabet (or any run of letters in order), not chords.
+function isLetterRun(tokens) {
+  if (tokens.length < 3 || !tokens.every((token) => /^[A-G]$/.test(token))) return false;
+  return tokens.every((token, index) => index === 0 || (token.charCodeAt(0) - tokens[index - 1].charCodeAt(0) + 7) % 7 === 1);
+}
+
+// "strong": surely chords (a seventh, a flat, a slash bass...) or three or more chords in a row.
+// "weak": one or two bare chords, which could be words. "": not a chord line.
+function chordLineStrength(line) {
+  const tokens = chordLineTokens(line);
+  if (!tokens || isLetterRun(tokens)) return "";
+  const rich = tokens.some((token) => !WEAK_CHORD_TOKEN.test(token));
+  return rich || tokens.length >= 3 ? "strong" : "weak";
+}
+
+function looksLikeChordSheet(text) {
+  const lines = String(text || "").replace(/\r\n?/g, "\n").split("\n");
+  let strong = 0;
+  let weak = 0;
+  lines.forEach((line, index) => {
+    const strength = chordLineStrength(line);
+    if (strength === "strong") strong += 1;
+    // A weak chord line only counts when words sit right under it, as in a real chord sheet.
+    else if (strength === "weak" && lines[index + 1]?.trim() && !chordLineTokens(lines[index + 1])) weak += 1;
+  });
+  return strong >= 1 || weak >= 2;
+}
+
+// What a pasted text becomes: the same text when it is not clearly a chord sheet.
+function chordSheetToInline(text) {
+  const original = String(text || "");
+  if (!looksLikeChordSheet(original)) return { text: original, converted: false };
+  const converted = convertChordLinesToInline(original);
+  return { text: converted, converted: converted !== original.replace(/\r\n?/g, "\n") };
 }
 // Song sections (verse, chorus, bridge...). A section name is an ordinary heading (<h2>) in the
 // lyrics, so every older version, backup and import keeps working. A heading can carry an optional
@@ -14739,23 +14907,39 @@ function undecorateSections(root) {
 
 // ---------- Section picker (the H button in the editing toolbar) ----------
 // One tap on H shows the section types in the song's language; picking one puts a heading on the
-// line (or changes the heading the caret is in). Verses number themselves.
+// line (or changes the heading the caret is in). Nothing is numbered automatically: the number is an
+// optional choice, and headings already in the song can be repeated with one tap.
 const SECTION_LABELS = {
   he: { verse: "בית", chorus: "פזמון", prechorus: "קדם פזמון", bridge: "גשר", intro: "פתיחה", outro: "סיום", instrumental: "ניגון", other: "אחר" },
-  en: { verse: "Verse", chorus: "Chorus", prechorus: "Pre-chorus", bridge: "Bridge", intro: "Intro", outro: "Outro", instrumental: "Instrumental", other: "Other" }
+  en: { verse: "Verse", chorus: "Chorus", prechorus: "Pre-chorus", bridge: "Bridge", intro: "Intro", outro: "Ending", instrumental: "Instrumental", other: "Other" }
 };
-const SECTION_PICKER_ORDER = ["chorus", "verse", "prechorus", "bridge", "intro", "outro", "instrumental", "other"];
+const SECTION_MAIN_TYPES = ["verse", "chorus", "bridge", "outro"];
+const SECTION_MORE_TYPES = ["intro", "prechorus", "instrumental", "other"];
+const SECTION_NUMBER_CHOICES = [1, 2, 3, 4, 5];
 const HEBREW_ORDINALS = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י"];
 const sectionPickerLangBySong = new Map();
 let sectionPickerHeading = null;
 let sectionPickerRenameType = null;
+let sectionPickerNumber = null;
+let sectionPickerMore = false;
+let sectionPickerRepeats = [];
 
 // "בית ב׳" for the second Hebrew verse (past ten it is just the number), "Verse 2" in English.
-function sectionLabelFor(type, lang, verseNumber) {
+// No number means just the name.
+function sectionLabelFor(type, lang, number) {
   const base = SECTION_LABELS[lang][type];
-  if (type !== "verse") return base;
-  if (lang === "he") return `${base} ${verseNumber <= HEBREW_ORDINALS.length ? `${HEBREW_ORDINALS[verseNumber - 1]}׳` : verseNumber}`;
-  return `${base} ${verseNumber}`;
+  if (!number) return base;
+  if (lang === "he") return `${base} ${number <= HEBREW_ORDINALS.length ? `${HEBREW_ORDINALS[number - 1]}׳` : number}`;
+  return `${base} ${number}`;
+}
+
+// The number written in a heading ("Verse 2", "בית ב׳"), or null when it has none.
+function sectionNumberOf(text) {
+  const plain = String(text || "");
+  const digits = plain.match(/(?:^|\s)(\d{1,2})(?=\s*$)/);
+  if (digits) return Number(digits[1]);
+  const letter = plain.match(/(?:^|\s)([א-י])["׳'’״]?\s*$/);
+  return letter ? HEBREW_ORDINALS.indexOf(letter[1]) + 1 : null;
 }
 
 function songSectionLanguage(song) {
@@ -14766,13 +14950,18 @@ function songSectionLanguage(song) {
   return hebrew > 0 && hebrew >= latin ? "he" : "en";
 }
 
-function verseNumberBefore(root, node) {
-  let count = 0;
+// The distinct headings already in the song, in order, so a repeated part is one tap.
+function sectionsUsedInSong(root, except) {
+  const seen = new Set();
+  const used = [];
   for (const child of root.children) {
-    if (child === node) break;
-    if (isSectionHeading(child) && sectionTypeOf(child) === "verse") count += 1;
+    if (!isSectionHeading(child) || child === except) continue;
+    const text = child.textContent.trim();
+    if (!text || seen.has(text)) continue;
+    seen.add(text);
+    used.push({ type: sectionTypeOf(child), text });
   }
-  return count + 1;
+  return used;
 }
 
 function newEmptyLine() {
@@ -14804,6 +14993,8 @@ function openSectionPicker() {
   const line = currentEditorLine(els.songDocument);
   sectionPickerHeading = line && isSectionHeading(line) ? line : null;
   sectionPickerRenameType = null;
+  sectionPickerMore = false;
+  sectionPickerNumber = sectionPickerHeading ? sectionNumberOf(sectionPickerHeading.textContent) : null;
   renderSectionPicker();
   els.sectionPicker.classList.remove("hidden");
   positionSectionPicker();
@@ -14832,21 +15023,37 @@ function sectionPickerLanguage() {
 
 function renderSectionPicker() {
   const lang = sectionPickerLanguage();
-  const target = sectionPickerHeading || currentEditorLine(els.songDocument);
-  const number = verseNumberBefore(els.songDocument, target);
   const currentType = sectionPickerHeading ? sectionTypeOf(sectionPickerHeading) : null;
+  const dir = lang === "he" ? "rtl" : "ltr";
   els.sectionPickerTitle.textContent = sectionPickerHeading ? t("Change this section") : t("Section for this line");
   els.sectionPicker.querySelectorAll("[data-section-lang]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.sectionLang === lang)));
-  els.sectionPickerChips.dir = lang === "he" ? "rtl" : "ltr";
-  els.sectionPickerChips.innerHTML = SECTION_PICKER_ORDER.map((type) => `<button type="button" class="section-chip${type === currentType ? " selected" : ""}" data-section-type="${type}" dir="auto">${escapeHtml(type === "other" ? SECTION_LABELS[lang].other : sectionLabelFor(type, lang, number))}</button>`).join("");
+  const chip = (attrs, text, selected) => `<button type="button" class="section-chip${selected ? " selected" : ""}" ${attrs} dir="auto">${escapeHtml(text)}</button>`;
+  const typeChip = (type) => chip(`data-section-type="${type}"`, SECTION_LABELS[lang][type], type === currentType);
+  const moreSelected = SECTION_MORE_TYPES.includes(currentType);
+  els.sectionPickerChips.dir = dir;
+  els.sectionPickerChips.innerHTML = SECTION_MAIN_TYPES.map(typeChip).join("")
+    + chip('data-section-more="1"', t("More…"), sectionPickerMore || moreSelected)
+    + (sectionPickerMore || moreSelected ? SECTION_MORE_TYPES.map(typeChip).join("") : "");
+  els.sectionPickerNumbers.dir = dir;
+  els.sectionPickerNumbers.innerHTML = `<span class="section-picker__label">${escapeHtml(t("Number (optional)"))}</span>`
+    + chip('data-section-number="0"', t("None"), !sectionPickerNumber)
+    + SECTION_NUMBER_CHOICES.map((number) => chip(`data-section-number="${number}"`, String(number), sectionPickerNumber === number)).join("");
+  sectionPickerRepeats = sectionsUsedInSong(els.songDocument, sectionPickerHeading);
+  els.sectionPickerRepeats.hidden = !sectionPickerRepeats.length;
+  els.sectionPickerRepeats.dir = dir;
+  els.sectionPickerRepeats.innerHTML = `<span class="section-picker__label">${escapeHtml(t("Already in this song — tap to repeat"))}</span>`
+    + sectionPickerRepeats.map((item, index) => chip(`data-section-repeat="${index}"`, item.text, false)).join("");
   els.sectionPickerActions.hidden = !sectionPickerHeading;
   els.sectionPickerRename.hidden = true;
   els.sectionPickerChips.hidden = false;
+  els.sectionPickerNumbers.hidden = false;
 }
 
 function startSectionRename(type, text) {
   sectionPickerRenameType = type;
   els.sectionPickerChips.hidden = true;
+  els.sectionPickerNumbers.hidden = true;
+  els.sectionPickerRepeats.hidden = true;
   els.sectionPickerActions.hidden = true;
   els.sectionPickerRename.hidden = false;
   els.sectionRenameInput.value = text;
@@ -14876,9 +15083,11 @@ function applySection(type, label) {
       root.append(heading, next);
       placeCaret(next, false);
     } else if (empty) {
-      const next = newEmptyLine();
+      // The heading takes the empty line's place; the caret goes to the line below it (a new blank line
+      // only when there is none), so no extra gap appears between the heading and the lyrics.
+      let next = line.nextElementSibling;
+      if (!next || isSectionHeading(next)) { next = newEmptyLine(); line.after(next); }
       line.replaceWith(heading);
-      heading.after(next);
       placeCaret(next, false);
     } else {
       line.before(heading);
@@ -14909,7 +15118,23 @@ function initSectionPickerUi() {
     if (!chip) return;
     const type = chip.dataset.sectionType;
     if (type === "other") return startSectionRename("other", sectionPickerHeading && sectionTypeOf(sectionPickerHeading) === "other" ? sectionPickerHeading.textContent : "");
-    applySection(type, chip.textContent.trim());
+    applySection(type, sectionLabelFor(type, sectionPickerLanguage(), sectionPickerNumber));
+  });
+  els.sectionPickerChips.addEventListener("click", (event) => {
+    if (!event.target.closest("[data-section-more]")) return;
+    sectionPickerMore = !sectionPickerMore;
+    renderSectionPicker();
+    positionSectionPicker();
+  });
+  els.sectionPickerNumbers.addEventListener("click", (event) => {
+    const chip = event.target.closest("[data-section-number]");
+    if (!chip) return;
+    sectionPickerNumber = Number(chip.dataset.sectionNumber) || null;
+    renderSectionPicker();
+  });
+  els.sectionPickerRepeats.addEventListener("click", (event) => {
+    const item = sectionPickerRepeats[Number(event.target.closest("[data-section-repeat]")?.dataset.sectionRepeat)];
+    if (item) applySection(item.type, item.text);
   });
   els.sectionPicker.querySelectorAll("[data-section-lang]").forEach((button) => button.addEventListener("click", () => {
     sectionPickerLangBySong.set(currentSong().id, button.dataset.sectionLang);
@@ -16457,13 +16682,16 @@ let perfWakeLock = null;
 let perfScrolling = false;
 let perfFrame = 0;
 let perfPointer = null;
+let perfArmed = 0; // -1 / +1 once the pedal has reached a song's edge and is waiting for the second press
+let perfNoticeTimer = 0;
+let perfUndoItemId = null;
 
 function loadPerfPrefs() {
   try {
     const saved = JSON.parse(localStorage.getItem(PERF_PREFS_KEY) || "{}");
-    return { simplify: saved.simplify === true, speed: clamp(Math.round(Number(saved.speed) || 4), 1, 10) };
+    return { simplify: saved.simplify === true, speed: clamp(Math.round(Number(saved.speed) || 4), 1, 10), pedalConfirm: saved.pedalConfirm !== false };
   } catch {
-    return { simplify: false, speed: 4 };
+    return { simplify: false, speed: 4, pedalConfirm: true };
   }
 }
 
@@ -16540,6 +16768,109 @@ function renderPerformanceDocument() {
     : (shift ? escapeHtml(transposeLabel(shift)) : "No key");
   els.perfSimplifyBtn.setAttribute("aria-pressed", String(perfPrefs.simplify));
   els.perfSpeedOut.textContent = t(`Speed ${perfPrefs.speed}`);
+  renderPerformanceEventRow();
+}
+
+// ---------- Next / previous song while playing an event ----------
+// Only when the song was opened from an event's set list. Moving forward marks the song played.
+function perfEventPosition() {
+  if (!eventReaderActive()) return null;
+  const order = gigReadingOrder(eventReaderGigId());
+  const index = order.findIndex((entry) => entry.item.id === gigReadItemId);
+  return index < 0 ? null : { order, index };
+}
+
+function perfSongTitle(entry) {
+  return state.songs.find((song) => song.id === entry?.item.songId)?.title || "";
+}
+
+function renderPerformanceEventRow() {
+  const position = perfEventPosition();
+  els.perfEventRow.hidden = !position;
+  if (!position) return;
+  const { order, index } = position;
+  els.perfPrevBtn.disabled = index === 0;
+  els.perfNextBtn.disabled = index === order.length - 1;
+  const next = order[index + 1];
+  els.perfEventLabel.innerHTML = next ? `${index + 1}/${order.length} · ${escapeHtml(t("Next:"))} <bdi>${escapeHtml(perfSongTitle(next))}</bdi>` : `${index + 1}/${order.length} · ${escapeHtml(t("Last song"))}`;
+}
+
+function showPerfNotice(text, { undo = false, ms = 6000 } = {}) {
+  els.perfNoticeText.textContent = text;
+  els.perfNoticeUndo.hidden = !undo;
+  els.perfNotice.hidden = false;
+  clearTimeout(perfNoticeTimer);
+  perfNoticeTimer = setTimeout(hidePerfNotice, ms);
+}
+
+function hidePerfNotice() {
+  clearTimeout(perfNoticeTimer);
+  els.perfNotice.hidden = true;
+  perfArmed = 0;
+}
+
+function undoPerfPlayed() {
+  const item = state.gigSetItems.find((candidate) => candidate.id === perfUndoItemId);
+  perfUndoItemId = null;
+  hidePerfNotice();
+  if (!item) return;
+  item.performanceStatus = "planned";
+  item.updatedAt = new Date().toISOString();
+  persist();
+  showPerfNotice(t("Marked as not played"), { ms: 2500 });
+}
+
+// Goes to the next (+1) or previous (-1) song of the event. Forward marks the one being left as played;
+// back never changes any mark.
+function stepPerformanceSong(step) {
+  const position = perfEventPosition();
+  const target = position?.order[position.index + step];
+  if (!target) return false;
+  const leaving = position.order[position.index].item;
+  hidePerfNotice();
+  let marked = false;
+  if (step > 0 && leaving.performanceStatus !== "played") {
+    leaving.performanceStatus = "played";
+    leaving.updatedAt = new Date().toISOString();
+    perfUndoItemId = leaving.id;
+    marked = true;
+  }
+  stopPerformanceScroll();
+  gigReadItemId = target.item.id;
+  selectedSongId = target.item.songId;
+  persist();
+  render();
+  els.perfScroll.scrollTop = 0;
+  renderPerformanceDocument();
+  if (marked) showPerfNotice(t("Marked as played"), { undo: true });
+  return true;
+}
+
+// The end of the song is when its last line is on screen (the blank space under it does not count).
+function perfAtEnd() {
+  const doc = els.perfDoc.getBoundingClientRect();
+  const view = els.perfScroll.getBoundingClientRect();
+  return doc.bottom <= view.bottom - 4;
+}
+
+// Pedal and keyboard: forward pages down; at the end of the song the first press says what is next
+// and the second one goes there (unless the setting asks for one press). Back mirrors it at the top.
+function pedalPress(direction) {
+  if (direction > 0 && !perfAtEnd()) { perfArmed = 0; return pagePerformanceScroll(1); }
+  if (direction < 0 && els.perfScroll.scrollTop > 2) { perfArmed = 0; return pagePerformanceScroll(-1); }
+  const position = perfEventPosition();
+  const target = position?.order[position.index + direction];
+  if (!target) {
+    if (direction > 0 && position) showPerfNotice(t("That was the last song"), { ms: 2500 });
+    return;
+  }
+  if (perfPrefs.pedalConfirm && perfArmed !== direction) {
+    perfArmed = direction;
+    showPerfNotice(`${t(direction > 0 ? "Press again for next:" : "Press again for previous:")} ${perfSongTitle(target)}`, { ms: 5000 });
+    perfArmed = direction;
+    return;
+  }
+  stepPerformanceSong(direction);
 }
 
 async function requestPerformanceWakeLock() {
@@ -16564,7 +16895,7 @@ function openPerformanceMode() {
   renderPerformanceDocument();
   refreshIcons();
   requestPerformanceWakeLock();
-  els.perfCloseBtn.focus();
+  els.perfScroll.focus({ preventScroll: true });
 }
 
 function closePerformanceMode() {
@@ -16577,6 +16908,7 @@ function closePerformanceMode() {
   perfWakeLock?.release?.().catch?.(() => {});
   perfWakeLock = null;
   els.perfAwake.hidden = true;
+  hidePerfNotice();
   // The lyrics page may have shifted keys while we were away.
   renderSong();
 }
@@ -16624,6 +16956,20 @@ function pagePerformanceScroll(direction) {
 function initPerformanceUi() {
   els.songPerformanceBtn.addEventListener("click", openPerformanceMode);
   els.perfCloseBtn.addEventListener("click", closePerformanceMode);
+  els.perfNextBtn.addEventListener("click", () => stepPerformanceSong(1));
+  els.perfPrevBtn.addEventListener("click", () => stepPerformanceSong(-1));
+  els.perfNoticeUndo.addEventListener("click", undoPerfPlayed);
+  els.pedalConfirmBtn.addEventListener("click", () => { perfPrefs.pedalConfirm = !perfPrefs.pedalConfirm; savePerfPrefs(); refreshPedalRow(); });
+  // Page-turner pedals send arrow keys, Page Up/Down or Space.
+  document.addEventListener("keydown", (event) => {
+    if (!performanceActive || event.metaKey || event.ctrlKey || event.altKey || event.target.closest?.("input, textarea, select")) return;
+    const forward = ["ArrowRight", "ArrowDown", "PageDown", " "].includes(event.key) && !(event.key === " " && event.shiftKey);
+    const back = ["ArrowLeft", "ArrowUp", "PageUp"].includes(event.key) || (event.key === " " && event.shiftKey);
+    if (!forward && !back) return;
+    event.preventDefault();
+    document.activeElement?.blur?.();
+    pedalPress(forward ? 1 : -1);
+  });
   els.perfKeyDownBtn.addEventListener("click", () => { changeTranspose(-1); renderPerformanceDocument(); });
   els.perfKeyUpBtn.addEventListener("click", () => { changeTranspose(1); renderPerformanceDocument(); });
   els.perfScrollBtn.addEventListener("click", () => (perfScrolling ? stopPerformanceScroll() : startPerformanceScroll()));
@@ -17424,6 +17770,22 @@ function closePractice() {
   els.practiceView.classList.add("hidden");
 }
 
+// A long title shrinks (down to 11px) to fit two lines; if it still does not, tapping it shows all of it.
+function fitPracticeTitle() {
+  const title = els.practiceTitle;
+  if (!title || title.classList.contains("is-open")) return;
+  for (const size of [15, 14, 13, 12, 11]) {
+    title.style.fontSize = `${size}px`;
+    if (title.scrollHeight <= title.clientHeight + 1) break;
+  }
+}
+
+function togglePracticeTitle() {
+  const open = els.practiceTitle.classList.toggle("is-open");
+  els.practiceTitle.setAttribute("aria-expanded", String(open));
+  if (!open) fitPracticeTitle();
+}
+
 function renderPracticeView() {
   const song = state.songs.find((item) => item.id === practiceSongId);
   if (!song) return;
@@ -17432,6 +17794,9 @@ function renderPracticeView() {
   applyReadOnlyTypography(els.practiceView);
   fillReadOnlyLyrics(els.practiceDoc, song);
   els.practiceTitle.textContent = [song.title, song.artist].filter(Boolean).join(" · ");
+  els.practiceTitle.classList.remove("is-open");
+  els.practiceTitle.setAttribute("aria-expanded", "false");
+  fitPracticeTitle();
   const youtube = practiceSources(song).find((source) => source.kind === "youtube");
   if (youtube) els.practiceOpenExternal.href = youtube.url;
 }
@@ -17446,6 +17811,9 @@ function initPracticeUi() {
   els.songPracticeFileClear.addEventListener("click", clearPracticeFile);
   els.songPracticeBtn.addEventListener("click", openPractice);
   els.practiceCloseBtn.addEventListener("click", closePractice);
+  els.practiceTitle.addEventListener("click", togglePracticeTitle);
+  els.practiceTitle.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); togglePracticeTitle(); } });
+  globalThis.addEventListener?.("resize", () => { if (practiceActive) fitPracticeTitle(); });
   els.practicePlayBtn.addEventListener("click", practiceToggle);
   els.practiceBackBtn.addEventListener("click", () => practiceSkip(-5));
   els.practiceFwdBtn.addEventListener("click", () => practiceSkip(5));
@@ -17479,7 +17847,7 @@ function initPracticeUi() {
   // Desktop keyboard: Space plays or pauses, the arrows skip 5 seconds. (Ignored while typing or on a button.)
   document.addEventListener("keydown", (event) => {
     if (!practiceActive || event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
-    if (event.target.closest?.("input, textarea, select, button, a, [contenteditable=true]")) return;
+    if (event.target.closest?.("input, textarea, select, button, a, [role=button], [contenteditable=true]")) return;
     if (event.key === " ") { event.preventDefault(); practiceToggle(); }
     else if (event.key === "ArrowLeft") { event.preventDefault(); practiceSkip(-5); }
     else if (event.key === "ArrowRight") { event.preventDefault(); practiceSkip(5); }
@@ -17516,6 +17884,12 @@ function showSettingsMain(title = t("Settings & Backup")) {
   refreshBackupStatus();
   refreshSafetyRows();
   refreshPracticeAudioRow();
+  refreshPedalRow();
+}
+
+function refreshPedalRow() {
+  els.pedalConfirmBtn.setAttribute("aria-checked", String(perfPrefs.pedalConfirm));
+  els.pedalConfirmSubtitle.textContent = t(perfPrefs.pedalConfirm ? "On: at the end of a song, press twice to go to the next" : "Off: one press at the end of a song goes to the next");
 }
 
 function openAppearanceSettings() {
@@ -24734,6 +25108,12 @@ els.songDocument.addEventListener("focus", () => {
 els.songDocument.addEventListener("beforeinput", recordTypingHistory);
 els.songDocument.addEventListener("input", syncSongDocument);
 els.songDocument.addEventListener("paste", pastePlainLyrics);
+els.songDocument.addEventListener("keydown", (event) => {
+  if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLocaleLowerCase() === "v") pasteAsTypedUntil = Date.now() + 1500;
+  else if (!els.chordPasteBar.hidden && !event.metaKey && !event.ctrlKey && event.key.length === 1) hideChordPasteBar();
+});
+els.songDocument.addEventListener("beforeinput", (event) => { if (!els.chordPasteBar.hidden && event.inputType !== "insertFromPaste") hideChordPasteBar(); });
+els.chordPasteUndoBtn.addEventListener("click", undoChordPaste);
 els.songDocument.addEventListener("keyup", captureEditorSelection);
 els.songDocument.addEventListener("pointerup", captureEditorSelection);
 els.songDocument.addEventListener("click", (event) => {
@@ -24776,6 +25156,7 @@ els.songDocument.addEventListener("pointerdown", () => setEditDockOpen(false));
 globalThis.visualViewport?.addEventListener("resize", updateWritingToolbarPosition);
 globalThis.visualViewport?.addEventListener("scroll", updateWritingToolbarPosition);
 globalThis.addEventListener?.("orientationchange", updateWritingToolbarPosition);
+globalThis.addEventListener?.("resize", updateWritingToolbarPosition);
 els.imageFileInput.addEventListener("change", () => {
   addImageFromFile(els.imageFileInput.files[0]);
   els.imageFileInput.value = "";
