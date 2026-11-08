@@ -3945,8 +3945,8 @@ textarea.slp-collapse__panel::placeholder { color: var(--color-text-secondary); 
 @media (max-width: 480px) {
   /* Practice keeps its headphones icon and aria-label; dropping the word gives the
      category chip room to show a real folder name. */
-  .song-chip-row > #songPracticeLink { padding-inline: var(--space-5); }
-  .song-chip-row > #songPracticeLink > span { display: none; }
+  .song-chip-row > #songPracticeBtn { padding-inline: var(--space-5); min-width: 44px; justify-content: center; }
+  .song-chip-row > #songPracticeBtn > span { display: none; }
 }
 
 /* ============ Settings building blocks (Appearance page + Lyrics appearance popover) ============
@@ -5691,6 +5691,67 @@ html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir
 .recovery-fresh { display: grid; gap: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
 .recovery-fresh.hidden, .recovery-fresh[hidden] { display: none; }
 
+/* ============ Practice view (reuses the Performance view's dark stage styling) ============ */
+body.practice-open { overflow: hidden; }
+.practice-view.hidden, .practice-view[hidden] { display: none; }
+.practice-bar .perf-bar__row { justify-content: flex-start; }
+.practice-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 600; color: #F2F2EE; }
+.practice-player { flex-shrink: 0; display: grid; gap: 10px; padding: 10px 12px; background: #0E1116; }
+.practice-view .perf-scroll { padding-bottom: 40vh; }
+.practice-video { width: 100%; max-width: 640px; margin-inline: auto; aspect-ratio: 16 / 9; min-width: 200px; min-height: 200px; background: #000; border-radius: 12px; overflow: hidden; }
+.practice-video[hidden] { display: none; }
+.practice-video iframe { width: 100%; height: 100%; border: 0; display: block; }
+.practice-message { margin: 0; padding: 10px 12px; border-radius: 12px; background: #232A33; color: #D7DDE6; font-size: 14px; line-height: 1.4; }
+.practice-message[hidden] { display: none; }
+.practice-transport { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.practice-btn { position: relative; display: grid; place-items: center; width: 56px; height: 56px; border: none; border-radius: 50%; background: #232A33; color: #F2F2EE; font-family: inherit; cursor: pointer; }
+.practice-btn:disabled { opacity: 0.4; cursor: default; }
+.practice-btn svg { width: 24px; height: 24px; }
+.practice-btn span { position: absolute; font-size: 11px; font-weight: 700; pointer-events: none; }
+.practice-btn--play { width: 68px; height: 68px; background: #FFC857; color: #0E1116; }
+.practice-btn--play svg { width: 30px; height: 30px; }
+.practice-btn--play .practice-pause-icon, .practice-btn--play.playing .practice-play-icon { display: none; }
+.practice-btn--play.playing .practice-pause-icon { display: block; }
+.practice-scrub { display: flex; align-items: center; gap: 10px; }
+.practice-clock { min-width: 44px; color: #8FA3B8; font-size: 13px; font-variant-numeric: tabular-nums; text-align: center; }
+.practice-seek { flex: 1; min-width: 0; height: 44px; accent-color: #FFC857; }
+.practice-chips, .practice-loop { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
+.practice-chip { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; min-width: 56px; padding: 0 14px; border: none; border-radius: 999px; background: #232A33; color: #D7DDE6; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.practice-chip[hidden] { display: none; }
+.practice-chip:disabled { opacity: 0.4; cursor: default; }
+.practice-chip[aria-pressed="true"], .practice-chip.set { background: #FFC857; color: #0E1116; }
+.practice-chip svg { width: 16px; height: 16px; }
+.practice-loop-read { display: block; text-align: center; color: #8FA3B8; font-size: 13px; font-variant-numeric: tabular-nums; }
+.practice-file-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.practice-file-name { flex: 1 1 140px; min-width: 0; overflow-wrap: anywhere; white-space: normal; color: var(--color-text-secondary); font-size: var(--text-md); }
+.practice-file-row .slp-btn { min-height: 44px; }
+.practice-file-hint { margin: 4px 0 var(--space-6); color: var(--color-text-secondary); font-size: var(--text-sm); }
+.practice-seg { display: flex; justify-content: center; gap: 8px; }
+.practice-seg[hidden] { display: none; }
+.practice-file-card { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 12px; background: #151A21; color: #F2F2EE; }
+.practice-file-card[hidden] { display: none; }
+.practice-file-card svg { width: 28px; height: 28px; color: #FFC857; flex-shrink: 0; }
+.practice-file-card span { min-width: 0; overflow-wrap: anywhere; font-size: 14px; font-weight: 600; }
+/* Short phones: tighter spacing so the lyrics keep room under the player (targets stay 44px+). */
+@media (max-height: 740px) {
+  .practice-player { gap: 6px; padding-block: 6px; }
+  .practice-btn { width: 48px; height: 48px; }
+  .practice-btn--play { width: 56px; height: 56px; }
+  .practice-transport { gap: 14px; }
+  .practice-video { max-width: 300px; }
+}
+/* Wide screens: the player on one side, the lyrics beside it. */
+@media (min-width: 900px) {
+  .practice-view:not(.hidden) { display: grid; grid-template-columns: minmax(360px, 480px) 1fr; grid-template-rows: auto 1fr; }
+  .practice-view .practice-bar { grid-column: 1 / -1; }
+  .practice-view .practice-player { grid-row: 2; grid-column: 1; overflow-y: auto; align-content: start; border-inline-end: 1px solid #232A33; }
+  .practice-view .perf-scroll { grid-row: 2; grid-column: 2; }
+  .practice-video { max-width: none; }
+}
+.practice-view:focus { outline: none; }
+a.perf-btn[hidden] { display: none; }
+.practice-bar a.perf-btn { text-decoration: none; flex-shrink: 0; }
+
 }
 
 </style>
@@ -6184,7 +6245,7 @@ html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir
             <button id="songArtistChip" class="slp-chip song-chip song-artist-chip" type="button" aria-label="Songs by this artist" hidden><span dir="auto"></span></button>
             <button id="songNotesToggleBtn" class="slp-chip song-chip hidden" type="button" aria-label="Show the notes"><i data-lucide="file-music"></i><span>Notes</span></button>
             <button id="songCategoryBtn" class="slp-chip song-chip" type="button" aria-label="Change folders"><i data-lucide="folder"></i><span>Unfiled</span></button>
-            <a id="songPracticeLink" class="slp-chip song-chip hidden" href="#" target="_blank" rel="noopener noreferrer" aria-label="Practice"><i data-lucide="headphones"></i><span>Practice</span></a>
+            <button id="songPracticeBtn" class="slp-chip song-chip hidden" type="button" aria-label="Practice"><i data-lucide="headphones"></i><span>Practice</span></button>
             <button id="songDetailsViewCollapse" class="slp-chip song-chip" type="button" aria-expanded="false" aria-controls="songDetailsViewPanel"><span>More</span><svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
           <div id="songDetailsViewPanel" class="slp-collapse__panel" hidden>
@@ -6418,6 +6479,14 @@ html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir
             </div>
             <label class="slp-field-label" for="songLinksInput">LINKS (OPTIONAL)</label>
             <textarea id="songLinksInput" class="slp-input song-links-input" rows="3" dir="ltr" placeholder="One link per line: Spotify, YouTube, Apple Music, a voice memo..."></textarea>
+            <label class="slp-field-label" for="songPracticeFileBtn">PRACTICE AUDIO (OPTIONAL)</label>
+            <div class="practice-file-row">
+              <span id="songPracticeFileName" class="practice-file-name" dir="auto">No file</span>
+              <button id="songPracticeFileBtn" class="slp-btn slp-btn--soft" type="button">Choose file</button>
+              <button id="songPracticeFileClear" class="slp-btn slp-btn--ghost" type="button" hidden>Remove</button>
+              <input id="songPracticeFileInput" type="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.flac" hidden>
+            </div>
+            <p class="practice-file-hint">Stays on this device. It is not included in backups.</p>
             <div class="song-organization" aria-label="Folders and events">
           <div class="slp-btn-row">
               <button id="songAddFolderBtn" class="slp-btn slp-btn--soft" style="flex:1;" type="button" aria-expanded="false" aria-controls="songFolderPanel">+ Add To Folder</button>
@@ -6861,6 +6930,13 @@ html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir
           <span class="slp-row__body"><span class="slp-row__title">Unreadable library copy</span><span class="slp-row__subtitle">Export the damaged data kept on this device</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
+        <div id="practiceAudioRow" hidden>
+        <button id="practiceAudioBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="headphones"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Practice audio on this device</span><span id="practiceAudioSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        </div>
         <button id="printLibraryBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="printer"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Print song index</span><span class="slp-row__subtitle">A clean list of your repertoire</span></span>
@@ -7048,6 +7124,54 @@ html[dir="rtl"] input[type="date"], html[dir="rtl"] input[type="time"], html[dir
       <div id="perfScroll" class="perf-scroll">
         <div id="perfTitle" class="perf-title"></div>
         <div id="perfDoc" class="perf-doc song-document" dir="auto"></div>
+      </div>
+    </section>
+
+    <section id="practiceView" class="perf-view practice-view hidden" hidden tabindex="-1" role="dialog" aria-modal="true" aria-label="Practice player">
+      <header class="perf-bar practice-bar">
+        <div class="perf-bar__row">
+          <button id="practiceCloseBtn" class="perf-btn" type="button" aria-label="Close practice"><i data-lucide="x"></i></button>
+          <div id="practiceTitle" class="practice-title" dir="auto"></div>
+          <a id="practiceOpenExternal" class="perf-btn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open in YouTube" title="Open in YouTube" hidden><i data-lucide="external-link"></i></a>
+        </div>
+      </header>
+      <div id="practicePlayer" class="practice-player">
+        <div id="practiceSourceToggle" class="practice-seg" role="group" aria-label="Practice source" hidden>
+          <button class="practice-chip" type="button" data-source="file" aria-pressed="false">Audio file</button>
+          <button class="practice-chip" type="button" data-source="youtube" aria-pressed="false">YouTube</button>
+        </div>
+        <div id="practiceFileCard" class="practice-file-card" hidden><i data-lucide="headphones"></i><span id="practiceFileLabel" dir="auto"></span></div>
+        <div id="practiceVideo" class="practice-video" hidden></div>
+        <p id="practiceMessage" class="practice-message" role="status" hidden></p>
+        <div class="practice-transport" dir="ltr">
+          <button id="practiceBackBtn" class="practice-btn" type="button" aria-label="Back 5 seconds" disabled><i data-lucide="rotate-ccw"></i><span>5</span></button>
+          <button id="practicePlayBtn" class="practice-btn practice-btn--play" type="button" aria-label="Play" aria-pressed="false" disabled>
+            <svg class="practice-play-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="practice-pause-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          </button>
+          <button id="practiceFwdBtn" class="practice-btn" type="button" aria-label="Forward 5 seconds" disabled><i data-lucide="rotate-cw"></i><span>5</span></button>
+        </div>
+        <div id="practiceSpeed" class="practice-chips" role="group" aria-label="Speed" dir="ltr">
+          <button class="practice-chip" type="button" data-rate="0.5" aria-pressed="false" disabled>0.5×</button>
+          <button class="practice-chip" type="button" data-rate="0.75" aria-pressed="false" disabled>0.75×</button>
+          <button class="practice-chip" type="button" data-rate="1" aria-pressed="true" disabled>1×</button>
+          <button class="practice-chip" type="button" data-rate="1.25" aria-pressed="false" disabled>1.25×</button>
+        </div>
+        <div class="practice-scrub" dir="ltr">
+          <span id="practiceTime" class="practice-clock">0:00</span>
+          <input id="practiceSeek" class="practice-seek" type="range" min="0" max="1" step="0.1" value="0" aria-label="Position in the song" disabled>
+          <span id="practiceDuration" class="practice-clock">0:00</span>
+        </div>
+        <div class="practice-loop" role="group" aria-label="Loop between two points">
+          <button id="practiceSetABtn" class="practice-chip" type="button" disabled>Set A</button>
+          <button id="practiceSetBBtn" class="practice-chip" type="button" disabled>Set B</button>
+          <button id="practiceLoopBtn" class="practice-chip" type="button" aria-pressed="false" disabled><i data-lucide="repeat"></i><span>Loop</span></button>
+          <button id="practiceClearBtn" class="practice-chip" type="button" disabled>Clear</button>
+        </div>
+        <output id="practiceLoopRead" class="practice-loop-read" dir="ltr">No loop set</output>
+      </div>
+      <div id="practiceScroll" class="perf-scroll">
+        <div id="practiceDoc" class="perf-doc song-document" dir="auto"></div>
       </div>
     </section>
 
@@ -7366,7 +7490,7 @@ const els = Object.fromEntries(
     "artistSection", "artistCount", "artistList", "songsSection", "subfolderSection", "subfolderCount", "subfolderList", "attachedNotesSection", "attachedNoteCount", "attachedNoteList", "songSortSelect", "sortMenuBtn", "sortMenuLabel", "songList", "songEmptyState",
     "editSubfoldersBtn", "newSubfolderBtn",
     "songReader", "backToFolderBtn", "songTitle", "songAppearanceBtn", "songMoreBtn",
-    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeLink", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
+    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceSpeed", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceLoopRead", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
     "insertDisclosureBtn", "textFormatMenu", "boldTextBtn", "underlineTextBtn", "clearTextFormatBtn", "insertImageBtn", "undoBtn", "redoBtn", "finishWritingBtn",
     "imageToolbar", "imageWidthInput", "imageWidthOutput", "imageAlignLeftBtn", "imageAlignCenterBtn",
     "imageAlignRightBtn", "deleteImageBtn", "finishImageBtn",
@@ -7377,7 +7501,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
+    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "languageSettingsBtn", "languageSettingsValue", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -8695,6 +8819,67 @@ Object.assign(HEBREW_UI, {
  "The saved library is missing its songs or folders.": "בספרייה השמורה חסרים שירים או תיקיות.",
  "The saved library could not be opened.": "לא ניתן היה לפתוח את הספרייה השמורה."
 });
+
+Object.assign(HEBREW_UI, {
+ "Practice": "תרגול",
+ "Close practice": "סגירת התרגול",
+ "Practice player": "נגן תרגול",
+ "Open in YouTube": "פתיחה ב-YouTube"
+});
+
+Object.assign(HEBREW_UI, {
+ "Back 5 seconds": "5 שניות אחורה",
+ "Forward 5 seconds": "5 שניות קדימה",
+ "Position in the song": "מיקום בשיר",
+ "Pause": "השהיה",
+ "Play": "ניגון",
+ "Loading the video...": "טוען את הסרטון...",
+ "YouTube needs an internet connection. Open it in YouTube when you are back online.": "YouTube דורש חיבור לאינטרנט. אפשר לפתוח אותו ב-YouTube כשחוזרים לרשת.",
+ "Could not reach YouTube. Check your connection, or open it in YouTube.": "לא ניתן להגיע ל-YouTube. כדאי לבדוק את החיבור או לפתוח ב-YouTube.",
+ "The owner of this video does not allow it to play here. Open it in YouTube instead.": "בעל הסרטון לא מאפשר להפעיל אותו כאן. אפשר לפתוח אותו ב-YouTube.",
+ "This video was removed or is private. Open it in YouTube to check.": "הסרטון הוסר או פרטי. אפשר לפתוח אותו ב-YouTube ולבדוק.",
+ "This video could not be played here. Open it in YouTube instead.": "לא ניתן להפעיל את הסרטון כאן. אפשר לפתוח אותו ב-YouTube."
+});
+
+Object.assign(HEBREW_UI, {
+ "Speed": "מהירות",
+ "Loop between two points": "לולאה בין שתי נקודות",
+ "Set A": "נקודה A",
+ "Set B": "נקודה B",
+ "Loop": "לולאה",
+ "Clear": "ניקוי",
+ "No loop set": "לא הוגדרה לולאה",
+ "Point B has to come after point A.": "נקודה B חייבת לבוא אחרי נקודה A.",
+ "Set point A and point B first.": "קודם יש להגדיר נקודה A ונקודה B."
+});
+
+Object.assign(HEBREW_UI, {
+ "PRACTICE AUDIO (OPTIONAL)": "קובץ שמע לתרגול (אופציונלי)",
+ "Choose file": "בחירת קובץ",
+ "Replace": "החלפה",
+ "Remove": "הסרה",
+ "No file": "אין קובץ",
+ "Audio file": "קובץ שמע",
+ "Stays on this device. It is not included in backups.": "נשאר במכשיר הזה ולא נכלל בגיבויים.",
+ "Choose an audio file.": "יש לבחור קובץ שמע.",
+ "That does not look like an audio file. Choose an mp3 or m4a.": "זה לא נראה כמו קובץ שמע. יש לבחור mp3 או m4a.",
+ "That file is too large (over 150 MB). Choose a shorter recording.": "הקובץ גדול מדי (מעל 150 MB). יש לבחור הקלטה קצרה יותר.",
+ "This browser cannot keep audio files on this device.": "הדפדפן הזה לא יכול לשמור קבצי שמע במכשיר.",
+ "Could not store the file on this device. There may not be enough space.": "לא ניתן היה לשמור את הקובץ במכשיר. ייתכן שאין מספיק מקום.",
+ "Loading the audio...": "טוען את השמע...",
+ "Practice source": "מקור התרגול",
+ "YouTube": "YouTube",
+ "This audio file is not on this device. Audio is not included in backups, so add it again in the song details.": "קובץ השמע הזה לא נמצא במכשיר. שמע לא נכלל בגיבויים, ולכן צריך להוסיף אותו שוב בפרטי השיר.",
+ "This file could not be played on this device.": "לא ניתן להשמיע את הקובץ הזה במכשיר."
+});
+
+Object.assign(HEBREW_UI, {
+ "Practice audio on this device": "שמע לתרגול במכשיר הזה",
+ "not used by any song": "לא בשימוש",
+ "Every audio file is attached to a song.": "כל קבצי השמע מחוברים לשירים.",
+ "Remove unused audio?": "להסיר שמע שאינו בשימוש?",
+ "Unused audio removed": "השמע שאינו בשימוש הוסר"
+});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -9323,6 +9508,7 @@ function normalizeSong(song) {
     notePreview: song.notePreview && typeof song.notePreview.a === "string" && song.notePreview.a ? { a: song.notePreview.a, b: typeof song.notePreview.b === "string" ? song.notePreview.b : "", group: typeof song.notePreview.group === "string" ? song.notePreview.group : "" } : null,
     audioLinks,
     videoLinks,
+    practiceFile: normalizePracticeFile(song.practiceFile),
     alternateOfId: song.alternateOfId || null,
     key: song.key || song.myKey || "",
     timeSignature: String(song.timeSignature || "").trim(),
@@ -9460,6 +9646,15 @@ function normalizeUrlList(value) {
     seen.add(item);
     return true;
   });
+}
+
+// The optional practice audio attached to a song: only its description lives in the library record
+// (and in backups). The audio itself stays on the device that added it (see practice.js).
+function normalizePracticeFile(file) {
+  if (!file || typeof file !== "object") return null;
+  const id = String(file.id || "").trim();
+  if (!id) return null;
+  return { id, name: String(file.name || "").trim().slice(0, 120), size: Math.max(0, Number(file.size) || 0), type: String(file.type || "").trim().slice(0, 60) };
 }
 // Lyric pictures live in IndexedDB as Blobs, not inside the song record.
 //
@@ -10420,8 +10615,8 @@ function renderSong() {
   els.songEdited.textContent = t(`Updated ${formatDateTime(song.updatedAt)}`);
   renderSongSecondaryMeta(song);
   // The import source address is kept as hidden metadata (song.importSourceUrl); it is not shown.
-  els.songPracticeLink.classList.add("hidden");
-  els.songPracticeLink.href = "#";
+  // Practice shows only for a song with something to play (a YouTube link or an attached file).
+  els.songPracticeBtn.classList.toggle("hidden", !practiceSources(song).length);
   renderSongCategoryButton(song);
   renderSongLocations(song);
   renderSongLinks(song);
@@ -12376,6 +12571,7 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
   els.songStatusInput.value = song.status;
   els.songDirectionInput.value = song.direction;
   els.songLinksInput.value = [...song.audioLinks, ...song.videoLinks].join("\n");
+  renderSongPracticeFile();
   els.quickLocationForm.classList.add("hidden");
   // The bottom row always has Save; Delete only for a song that already exists.
   els.deleteSongBtn.hidden = isNew;
@@ -12633,6 +12829,7 @@ function openExistingSongFromNotice() {
 function saveSongInfo() {
   if (!songInfoDraft) return;
   const song = songInfoDraft.song;
+  const practiceIdBefore = songInfoDraft.isNew ? null : state.songs.find((item) => item.id === songInfoDraft.originalId)?.practiceFile?.id || null;
   const title = els.songTitleInput.value.trim();
   if (!title) {
     showSongTitleNotice("Give the song a title to save it.");
@@ -12686,7 +12883,12 @@ function saveSongInfo() {
     state.songs[index] = normalizeSong(song);
   }
   applySongEventChoices(songInfoDraft.isNew ? song : state.songs.find((item) => item.id === songInfoDraft.originalId), els.songEventChoices);
+  // A replaced or removed practice file is deleted once no song uses it; files added then abandoned too.
+  const practiceBefore = practiceIdBefore;
+  const practiceStale = [...(songInfoDraft.audioAdded || [])].filter((id) => id !== song.practiceFile?.id);
+  if (practiceBefore && practiceBefore !== song.practiceFile?.id) practiceStale.push(practiceBefore);
   songInfoDraft = null;
+  if (practiceStale.length) releasePracticeAudio(practiceStale);
   markStateDirty();
   closeOverlays();
   render();
@@ -16083,27 +16285,37 @@ function tagSectionLabels(root) {
   });
 }
 
-function renderPerformanceDocument() {
-  const song = currentSong();
-  if (!song) return;
+// The read-only lyrics page shared by Performance mode and the Practice view: the song's lyrics
+// with chords, section tags and text direction applied, in the reader's size and font.
+function applyReadOnlyTypography(view) {
   const prefs = state.lyricPrefs;
-  const view = els.performanceView;
-  view.className = `perf-view font-${prefs.font}`;
   view.style.setProperty("--lyric-size", `${prefs.fontSize}px`);
   view.style.setProperty("--heading-scale", prefs.headingScale);
   view.style.setProperty("--heading-weight", prefs.headingBold ? "700" : "500");
   view.style.setProperty("--line-scale", prefs.lineSpacing);
   view.style.setProperty("--letter-spacing", prefs.letterSpacing);
+}
+
+function fillReadOnlyLyrics(root, song, { simplify = false } = {}) {
+  root.innerHTML = song.documentHtml || "";
+  root.querySelectorAll("[contenteditable]").forEach((node) => node.setAttribute("contenteditable", "false"));
+  normalizeDocumentImages(root);
+  hydrateDocumentImages(root);
+  applyChordDisplay(root, song, { simplify });
+  tagSectionLabels(root);
+  decorateSections(root);
+  applyDocumentDirections(song, root);
+  root.style.textAlign = state.lyricPrefs.alignment === "auto" ? "" : state.lyricPrefs.alignment;
+}
+
+function renderPerformanceDocument() {
+  const song = currentSong();
+  if (!song) return;
+  const view = els.performanceView;
+  view.className = `perf-view font-${state.lyricPrefs.font}`;
+  applyReadOnlyTypography(view);
   const scroll = els.perfScroll.scrollTop;
-  els.perfDoc.innerHTML = song.documentHtml || "";
-  els.perfDoc.querySelectorAll("[contenteditable]").forEach((node) => node.setAttribute("contenteditable", "false"));
-  normalizeDocumentImages(els.perfDoc);
-  hydrateDocumentImages(els.perfDoc);
-  applyChordDisplay(els.perfDoc, song, { simplify: perfPrefs.simplify });
-  tagSectionLabels(els.perfDoc);
-  decorateSections(els.perfDoc);
-  applyDocumentDirections(song, els.perfDoc);
-  els.perfDoc.style.textAlign = prefs.alignment === "auto" ? "" : prefs.alignment;
+  fillReadOnlyLyrics(els.perfDoc, song, { simplify: perfPrefs.simplify });
   els.perfScroll.scrollTop = scroll;
 
   els.perfTitle.textContent = [song.title, song.artist].filter(Boolean).join(" · ");
@@ -16246,6 +16458,715 @@ function initPerformanceUi() {
     if (performanceActive && document.visibilityState === "visible" && (!perfWakeLock || perfWakeLock.released)) requestPerformanceWakeLock();
   });
 }
+// Practice view: a small, optional player (a YouTube video or an attached audio file) with the
+// song's lyrics under it, for learning a song. It is its own full-screen view, opened from the
+// Practice chip on a song that has something to play. Nothing here changes songs, the library
+// record or backups; the last speed and loop points are kept on this device only.
+//
+// Spotify and Apple Music links are never played: they stay ordinary "open in app" links.
+
+let practiceActive = false;
+let practiceSongId = null;
+
+// ---------- sources ----------
+
+// The video id inside a YouTube address (watch, youtu.be, shorts, embed, live, YouTube Music), or "".
+function youtubeIdFromUrl(url) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
+    let id = "";
+    if (host === "youtu.be") id = parsed.pathname.slice(1).split("/")[0];
+    else if (host === "youtube.com" || host.endsWith(".youtube.com")) {
+      if (parsed.pathname === "/watch") id = parsed.searchParams.get("v") || "";
+      else id = (/^\/(?:embed|shorts|live|v)\/([\w-]{11})/.exec(parsed.pathname) || [])[1] || "";
+    }
+    return /^[\w-]{11}$/.test(id) ? id : "";
+  } catch {
+    return "";
+  }
+}
+
+// What a song can play, in the order they are offered. An attached file comes first.
+function practiceSources(song) {
+  if (!song) return [];
+  const sources = [];
+  if (song.practiceFile?.id) sources.push({ kind: "file", id: song.practiceFile.id, name: song.practiceFile.name || "Audio file", size: song.practiceFile.size || 0 });
+  const seen = new Set();
+  [...(song.videoLinks || []), ...(song.audioLinks || [])].forEach((url) => {
+    const id = youtubeIdFromUrl(url);
+    if (id && !seen.has(id)) {
+      seen.add(id);
+      sources.push({ kind: "youtube", id, url });
+    }
+  });
+  return sources;
+}
+
+
+// ---------- time helpers ----------
+
+function formatPracticeTime(seconds) {
+  const total = Math.max(0, Math.floor(Number(seconds) || 0));
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const rest = String(total % 60).padStart(2, "0");
+  return hours ? `${hours}:${String(minutes).padStart(2, "0")}:${rest}` : `${minutes}:${rest}`;
+}
+
+// ---------- YouTube (the official IFrame Player API; the video always stays visible) ----------
+
+let youtubeApiPromise = null;
+
+function loadYouTubeApi() {
+  if (globalThis.YT?.Player) return Promise.resolve();
+  if (!youtubeApiPromise) {
+    youtubeApiPromise = new Promise((resolve, reject) => {
+      const timer = setTimeout(() => { youtubeApiPromise = null; reject(new Error("timeout")); }, 12000);
+      const previous = globalThis.onYouTubeIframeAPIReady;
+      globalThis.onYouTubeIframeAPIReady = () => { clearTimeout(timer); previous?.(); resolve(); };
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      script.onerror = () => { clearTimeout(timer); youtubeApiPromise = null; reject(new Error("offline")); };
+      document.head.append(script);
+    });
+  }
+  return youtubeApiPromise;
+}
+
+// Videos the owner will not let other sites embed report these codes.
+const YOUTUBE_NOT_EMBEDDABLE = [101, 150];
+
+// An engine is { play, pause, seek, time, duration, isPlaying, destroy } (more are added for speed).
+// Every engine calls handlers.onState(playing) and handlers.onError(code) as things happen.
+async function createYouTubeEngine(videoId, handlers) {
+  await loadYouTubeApi();
+  els.practiceVideo.innerHTML = "<div></div>";
+  let playing = false;
+  const player = await new Promise((resolve, reject) => {
+    const instance = new globalThis.YT.Player(els.practiceVideo.firstElementChild, {
+      videoId,
+      width: "100%",
+      height: "100%",
+      playerVars: { playsinline: 1, rel: 0, controls: 1 },
+      events: {
+        onReady: () => resolve(instance),
+        onStateChange: (event) => {
+          const states = globalThis.YT.PlayerState;
+          playing = event.data === states.PLAYING || event.data === states.BUFFERING;
+          handlers.onState(playing, event.data === states.ENDED);
+        },
+        onError: (event) => { handlers.onError(event.data); reject(new Error(`youtube ${event.data}`)); }
+      }
+    });
+  });
+  return {
+    kind: "youtube",
+    play: () => player.playVideo(),
+    pause: () => player.pauseVideo(),
+    seek: (seconds) => player.seekTo(seconds, true),
+    time: () => Number(player.getCurrentTime?.()) || 0,
+    duration: () => Number(player.getDuration?.()) || 0,
+    isPlaying: () => playing,
+    setRate: (rate) => { try { player.setPlaybackRate(rate); } catch { /* keeps the current speed */ } },
+    availableRates: () => { try { return player.getAvailablePlaybackRates?.() || []; } catch { return []; } },
+    destroy: () => { try { player.destroy(); } catch { /* already gone */ } els.practiceVideo.innerHTML = ""; }
+  };
+}
+
+
+// ---------- speed, loop and what is remembered ----------
+
+const PRACTICE_RATES = [0.5, 0.75, 1, 1.25];
+const PRACTICE_PREFS_KEY = "slp-practice-prefs";
+
+// The speeds to offer: ours, limited to what the player says it can do (all of ours if it cannot say).
+function practiceRateOptions(available) {
+  const list = Array.isArray(available) ? available : [];
+  return list.length ? PRACTICE_RATES.filter((rate) => list.includes(rate)) : [...PRACTICE_RATES];
+}
+
+// While a loop is on and the clock has reached B, play from A again. Returns where to seek, or null.
+// Dragging the position before A does not pull it back: it plays up to B, then loops.
+function practiceLoopTarget(time, loop) {
+  if (!loop || !loop.on || loop.a == null || loop.b == null || loop.b <= loop.a) return null;
+  return time >= loop.b ? loop.a : null;
+}
+
+function loadPracticePrefs() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PRACTICE_PREFS_KEY) || "{}");
+    return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+  } catch {
+    return {};
+  }
+}
+
+function savePracticePrefs(songId, patch) {
+  try {
+    const all = loadPracticePrefs();
+    const known = new Set(state.songs.map((song) => song.id));
+    Object.keys(all).forEach((id) => { if (!known.has(id)) delete all[id]; });   // forget deleted songs
+    all[songId] = { ...(all[songId] || {}), ...patch };
+    localStorage.setItem(PRACTICE_PREFS_KEY, JSON.stringify(all));
+  } catch {
+    // The settings simply will not be remembered.
+  }
+}
+
+let practiceRate = 1;
+let practiceLoop = { a: null, b: null, on: false };
+let practiceSourceKind = "";          // "file" or "youtube": which of the song's sources is open
+let practiceLoops = {};               // loop points kept per source (a file and a video have different timings)
+
+function cleanLoop(raw) {
+  const a = raw && Number.isFinite(raw.a) ? raw.a : null;
+  const b = raw && Number.isFinite(raw.b) && a != null && raw.b > a ? raw.b : null;
+  return { a, b, on: Boolean(raw && raw.on) && a != null && b != null };
+}
+
+function practiceRemember() {
+  if (!practiceSongId) return;
+  if (practiceSourceKind) practiceLoops[practiceSourceKind] = { ...practiceLoop };
+  savePracticePrefs(practiceSongId, { rate: practiceRate, source: practiceSourceKind, loops: practiceLoops });
+}
+
+// Speed is shared by the song's sources; the loop belongs to one source. (Settings saved by the
+// first version had one flat loop: that belonged to the YouTube video.)
+function loadPracticeSettings(songId) {
+  const saved = loadPracticePrefs()[songId] || {};
+  practiceRate = PRACTICE_RATES.includes(saved.rate) ? saved.rate : 1;
+  practiceLoops = {
+    file: cleanLoop(saved.loops?.file),
+    youtube: cleanLoop(saved.loops?.youtube || (saved.loops ? null : { a: saved.a, b: saved.b, on: saved.on }))
+  };
+}
+
+function usePracticeLoopFor(kind) {
+  practiceSourceKind = kind;
+  practiceLoop = { ...(practiceLoops[kind] || { a: null, b: null, on: false }) };
+}
+
+function renderPracticeSpeed() {
+  const offered = practiceEngine ? practiceRateOptions(practiceEngine.availableRates?.()) : PRACTICE_RATES;
+  els.practiceSpeed.querySelectorAll("[data-rate]").forEach((button) => {
+    const rate = Number(button.dataset.rate);
+    button.hidden = !offered.includes(rate);
+    button.disabled = !practiceEngine;
+    button.setAttribute("aria-pressed", String(rate === practiceRate));
+  });
+}
+
+function renderPracticeLoop() {
+  const { a, b, on } = practiceLoop;
+  els.practiceLoopRead.textContent = a == null && b == null
+    ? t("No loop set")
+    : `A ${a == null ? "–" : formatPracticeTime(a)} · B ${b == null ? "–" : formatPracticeTime(b)}`;
+  els.practiceLoopBtn.setAttribute("aria-pressed", String(on));
+  [els.practiceSetABtn, els.practiceSetBBtn, els.practiceLoopBtn, els.practiceClearBtn].forEach((button) => { button.disabled = !practiceEngine; });
+  els.practiceSetABtn.classList.toggle("set", a != null);
+  els.practiceSetBBtn.classList.toggle("set", b != null);
+  els.practiceClearBtn.disabled = !practiceEngine || (a == null && b == null);
+}
+
+function setPracticeRate(rate) {
+  practiceRate = rate;
+  practiceEngine?.setRate(rate);
+  renderPracticeSpeed();
+  practiceRemember();
+}
+
+function setLoopPoint(which) {
+  if (!practiceEngine) return;
+  const time = practiceEngine.time();
+  if (which === "a") {
+    practiceLoop.a = time;
+    if (practiceLoop.b != null && practiceLoop.b <= time + 0.5) { practiceLoop.b = null; practiceLoop.on = false; }
+  } else {
+    if (practiceLoop.a == null) practiceLoop.a = 0;
+    if (time <= practiceLoop.a + 0.5) {
+      setPracticeMessage("Point B has to come after point A.");
+      setTimeout(() => { if (els.practiceMessage.textContent === t("Point B has to come after point A.")) setPracticeMessage(""); }, 2500);
+      return;
+    }
+    practiceLoop.b = time;
+  }
+  practiceLoop.on = practiceLoop.a != null && practiceLoop.b != null;
+  renderPracticeLoop();
+  practiceRemember();
+}
+
+function togglePracticeLoop() {
+  if (practiceLoop.a == null || practiceLoop.b == null) {
+    setPracticeMessage("Set point A and point B first.");
+    setTimeout(() => { if (els.practiceMessage.textContent === t("Set point A and point B first.")) setPracticeMessage(""); }, 2500);
+    return;
+  }
+  practiceLoop.on = !practiceLoop.on;
+  renderPracticeLoop();
+  practiceRemember();
+}
+
+function clearPracticeLoop() {
+  practiceLoop = { a: null, b: null, on: false };
+  renderPracticeLoop();
+  practiceRemember();
+}
+
+
+// ---------- an attached audio file ----------
+
+async function createAudioEngine(source, handlers) {
+  const url = await practiceAudioUrl(source.id);
+  if (!url) { handlers.onError("missing"); throw new Error("missing audio"); }
+  const audio = new Audio();
+  audio.preload = "metadata";
+  audio.playsInline = true;
+  audio.preservesPitch = true;               // slowing down must not change the key
+  audio.webkitPreservesPitch = true;
+  audio.src = url;
+  await new Promise((resolve, reject) => {
+    audio.onloadedmetadata = resolve;
+    audio.onerror = () => { handlers.onError("unplayable"); reject(new Error("unplayable audio")); };
+  });
+  audio.onplay = () => handlers.onState(true, false);
+  audio.onpause = () => handlers.onState(false, false);
+  audio.onended = () => handlers.onState(false, true);
+  audio.onerror = () => handlers.onError("unplayable");
+  return {
+    kind: "file",
+    play: () => { audio.play().catch(() => handlers.onState(false, false)); },
+    pause: () => audio.pause(),
+    seek: (seconds) => { audio.currentTime = seconds; },
+    time: () => audio.currentTime || 0,
+    duration: () => (Number.isFinite(audio.duration) ? audio.duration : 0),
+    isPlaying: () => !audio.paused && !audio.ended,
+    setRate: (rate) => { audio.playbackRate = rate; },
+    availableRates: () => [],
+    destroy: () => { audio.onplay = audio.onpause = audio.onended = audio.onerror = null; audio.pause(); audio.removeAttribute("src"); audio.load(); }
+  };
+}
+
+// ---------- the controller ----------
+
+let practiceEngine = null;
+let practiceTick = 0;
+let practiceDragging = false;
+
+function setPracticeMessage(text) {
+  els.practiceMessage.hidden = !text;
+  els.practiceMessage.textContent = text ? t(text) : "";
+}
+
+function practiceControlsEnabled(enabled) {
+  [els.practiceBackBtn, els.practicePlayBtn, els.practiceFwdBtn, els.practiceSeek].forEach((control) => { control.disabled = !enabled; });
+}
+
+function renderPracticeTransport() {
+  const playing = Boolean(practiceEngine?.isPlaying());
+  els.practicePlayBtn.classList.toggle("playing", playing);
+  els.practicePlayBtn.setAttribute("aria-label", t(playing ? "Pause" : "Play"));
+  els.practicePlayBtn.setAttribute("aria-pressed", String(playing));
+}
+
+function renderPracticeTime() {
+  if (!practiceEngine) return;
+  const time = practiceEngine.time();
+  const duration = practiceEngine.duration();
+  els.practiceTime.textContent = formatPracticeTime(time);
+  els.practiceDuration.textContent = formatPracticeTime(duration);
+  els.practiceSeek.max = String(duration || 1);
+  if (!practiceDragging) els.practiceSeek.value = String(time);
+}
+
+function startPracticeTick(milliseconds = 100) {
+  clearInterval(practiceTick);
+  practiceTick = setInterval(() => {
+    if (!practiceEngine) return;
+    renderPracticeTime();
+    practiceTickHook(practiceEngine.time());
+  }, milliseconds);
+}
+
+// While playing, watch the clock for the loop.
+function practiceTickHook(time) {
+  if (!practiceEngine?.isPlaying()) return;
+  const target = practiceLoopTarget(time, practiceLoop);
+  if (target != null) practiceEngine.seek(target);
+}
+
+function stopPracticeEngine() {
+  clearInterval(practiceTick);
+  practiceTick = 0;
+  practiceEngine?.destroy();
+  practiceEngine = null;
+  if (els.practiceSpeed) { renderPracticeSpeed(); renderPracticeLoop(); }
+}
+
+function practiceErrorText(code) {
+  if (YOUTUBE_NOT_EMBEDDABLE.includes(code)) return "The owner of this video does not allow it to play here. Open it in YouTube instead.";
+  if (code === 100) return "This video was removed or is private. Open it in YouTube to check.";
+  return "This video could not be played here. Open it in YouTube instead.";
+}
+
+async function startPracticeSource(source) {
+  stopPracticeEngine();
+  practiceControlsEnabled(false);
+  renderPracticeTransport();
+  els.practiceVideo.hidden = source.kind !== "youtube";
+  els.practiceFileCard.hidden = source.kind !== "file";
+  els.practiceOpenExternal.hidden = source.kind !== "youtube";
+  usePracticeLoopFor(source.kind);
+  renderPracticeSpeed();
+  renderPracticeLoop();
+  if (source.kind === "file") {
+    els.practiceFileLabel.textContent = `${source.name} · ${formatFileSize(source.size)}`;
+    setPracticeMessage("Loading the audio...");
+    let playerError = false;
+    const handlers = {
+      onState: (playing, ended) => { renderPracticeTransport(); if (ended) renderPracticeTime(); },
+      onError: (code) => { playerError = true; setPracticeMessage(code === "missing" ? "This audio file is not on this device. Audio is not included in backups, so add it again in the song details." : "This file could not be played on this device."); practiceControlsEnabled(false); }
+    };
+    try {
+      const engine = await createAudioEngine(source, handlers);
+      if (!practiceActive || practiceSourceKind !== "file") { engine.destroy(); return; }
+      practiceEngine = engine;
+      setPracticeMessage("");
+      practiceControlsEnabled(true);
+      if (practiceRate !== 1) engine.setRate(practiceRate);
+      renderPracticeSpeed();
+      renderPracticeLoop();
+      startPracticeTick(50);
+      renderPracticeTime();
+    } catch {
+      if (!playerError) setPracticeMessage("This file could not be played on this device.");
+    }
+    return;
+  }
+  if (source.kind === "youtube") {
+    if (globalThis.navigator && navigator.onLine === false) {
+      setPracticeMessage("YouTube needs an internet connection. Open it in YouTube when you are back online.");
+      return;
+    }
+    setPracticeMessage("Loading the video...");
+    let playerError = false;
+    const handlers = {
+      onState: (playing, ended) => { renderPracticeTransport(); if (ended) renderPracticeTime(); if (playing && practiceRate !== 1) practiceEngine?.setRate(practiceRate); },
+      onError: (code) => { playerError = true; setPracticeMessage(practiceErrorText(code)); practiceControlsEnabled(false); }
+    };
+    try {
+      const engine = await createYouTubeEngine(source.id, handlers);
+      if (!practiceActive || practiceSourceKind !== "youtube") { engine.destroy(); return; }
+      practiceEngine = engine;
+      setPracticeMessage("");
+      practiceControlsEnabled(true);
+      if (practiceRate !== 1) engine.setRate(practiceRate);
+      renderPracticeSpeed();
+      renderPracticeLoop();
+      startPracticeTick();
+      renderPracticeTime();
+    } catch (error) {
+      if (!playerError) setPracticeMessage("Could not reach YouTube. Check your connection, or open it in YouTube.");
+    }
+  }
+}
+
+function practiceToggle() {
+  if (!practiceEngine) return;
+  if (practiceEngine.isPlaying()) practiceEngine.pause();
+  else practiceEngine.play();
+  renderPracticeTransport();
+}
+
+function practiceSkip(seconds) {
+  if (!practiceEngine) return;
+  const duration = practiceEngine.duration() || Infinity;
+  practiceEngine.seek(Math.min(Math.max(0, practiceEngine.time() + seconds), duration));
+  renderPracticeTime();
+}
+
+
+// ---------- practice audio files ----------
+// Kept in their own IndexedDB ("slp-audio"), apart from pictures. That is deliberate: the picture
+// cleanup that runs at launch only looks at the picture store, so it can never remove practice audio,
+// and a restore or undo never touches it. A file is only removed when you remove it (or, from
+// Settings, when you clear files no song uses). Audio is not included in backups.
+
+const PRACTICE_AUDIO_DB = "slp-audio";
+const PRACTICE_AUDIO_STORE = "files";
+const PRACTICE_AUDIO_MAX_BYTES = 150 * 1024 * 1024;
+const PRACTICE_AUDIO_EXTENSIONS = ["mp3", "m4a", "aac", "wav", "ogg", "oga", "opus", "flac", "mp4"];
+let practiceAudioDbPromise = null;
+const practiceAudioUrls = new Map();
+
+function practiceAudioAvailable() {
+  return Boolean(globalThis.indexedDB);
+}
+
+function openPracticeAudioDb() {
+  if (!practiceAudioDbPromise) {
+    practiceAudioDbPromise = new Promise((resolve, reject) => {
+      const request = globalThis.indexedDB.open(PRACTICE_AUDIO_DB, 1);
+      request.onupgradeneeded = () => request.result.createObjectStore(PRACTICE_AUDIO_STORE);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    }).catch((error) => { practiceAudioDbPromise = null; throw error; });
+  }
+  return practiceAudioDbPromise;
+}
+
+// Resolves once the transaction has committed, so a full disk rejects instead of looking saved.
+async function practiceAudioRequest(mode, run) {
+  const db = await openPracticeAudioDb();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(PRACTICE_AUDIO_STORE, mode);
+    let result;
+    const request = run(transaction.objectStore(PRACTICE_AUDIO_STORE));
+    request.onsuccess = () => { result = request.result; };
+    transaction.oncomplete = () => resolve(result);
+    transaction.onerror = () => reject(transaction.error || request.error);
+    transaction.onabort = () => reject(transaction.error || request.error || new Error("audio write aborted"));
+  });
+}
+
+const putPracticeAudio = (id, blob) => practiceAudioRequest("readwrite", (store) => store.put(blob, id));
+const getPracticeAudio = (id) => practiceAudioRequest("readonly", (store) => store.get(id));
+const listPracticeAudioIds = () => practiceAudioRequest("readonly", (store) => store.getAllKeys());
+
+async function deletePracticeAudio(id) {
+  const url = practiceAudioUrls.get(id);
+  if (url) URL.revokeObjectURL(url);
+  practiceAudioUrls.delete(id);
+  return practiceAudioRequest("readwrite", (store) => store.delete(id));
+}
+
+async function practiceAudioUrl(id) {
+  if (practiceAudioUrls.has(id)) return practiceAudioUrls.get(id);
+  const blob = await getPracticeAudio(id);
+  if (!blob) return "";
+  const url = URL.createObjectURL(blob);
+  practiceAudioUrls.set(id, url);
+  return url;
+}
+
+// Why a chosen file cannot be used, or "" when it is fine.
+function practiceFileProblem(file) {
+  if (!file) return "Choose an audio file.";
+  const extension = String(file.name || "").split(".").pop().toLowerCase();
+  const looksAudio = String(file.type || "").startsWith("audio/") || PRACTICE_AUDIO_EXTENSIONS.includes(extension);
+  if (!looksAudio) return "That does not look like an audio file. Choose an mp3 or m4a.";
+  if (file.size > PRACTICE_AUDIO_MAX_BYTES) return "That file is too large (over 150 MB). Choose a shorter recording.";
+  return "";
+}
+
+function formatFileSize(bytes) {
+  const size = Number(bytes) || 0;
+  if (size >= 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  return `${Math.max(1, Math.round(size / 1024))} KB`;
+}
+
+// Deletes audio files nothing refers to any more, for ids given (never anything else).
+async function releasePracticeAudio(ids) {
+  for (const id of ids) {
+    if (state.songs.some((song) => song.practiceFile?.id === id)) continue;
+    try { await deletePracticeAudio(id); } catch { /* it will be offered for clearing in Settings */ }
+  }
+}
+
+// The Practice audio row in the song details form.
+function renderSongPracticeFile() {
+  const file = songInfoDraft?.song?.practiceFile;
+  els.songPracticeFileName.textContent = file ? `${file.name || t("Audio file")} · ${formatFileSize(file.size)}` : t("No file");
+  els.songPracticeFileClear.hidden = !file;
+  els.songPracticeFileBtn.textContent = t(file ? "Replace" : "Choose file");
+}
+
+async function choosePracticeFile(file) {
+  if (!songInfoDraft) return;
+  const problem = practiceFileProblem(file);
+  if (problem) { showToast(problem); return; }
+  if (!practiceAudioAvailable()) { showToast("This browser cannot keep audio files on this device."); return; }
+  const id = `audio-${makeId()}`;
+  try {
+    await putPracticeAudio(id, file);
+  } catch {
+    showToast("Could not store the file on this device. There may not be enough space.");
+    return;
+  }
+  if (!songInfoDraft) { releasePracticeAudio([id]); return; }       // the form was closed meanwhile
+  // A file added earlier in this same form and then replaced is not kept.
+  const previous = songInfoDraft.song.practiceFile;
+  if (previous && songInfoDraft.audioAdded?.includes(previous.id)) releasePracticeAudio([previous.id]);
+  songInfoDraft.song.practiceFile = { id, name: file.name, size: file.size, type: file.type || "" };
+  (songInfoDraft.audioAdded ||= []).push(id);
+  renderSongPracticeFile();
+}
+
+function clearPracticeFile() {
+  if (!songInfoDraft?.song.practiceFile) return;
+  const previous = songInfoDraft.song.practiceFile;
+  songInfoDraft.song.practiceFile = null;
+  if (songInfoDraft.audioAdded?.includes(previous.id)) releasePracticeAudio([previous.id]);
+  renderSongPracticeFile();
+}
+
+
+// ---------- Settings: audio kept on this device ----------
+
+async function practiceAudioUsage() {
+  if (!practiceAudioAvailable()) return { files: 0, bytes: 0, unused: [] };
+  const used = new Set(state.songs.map((song) => song.practiceFile?.id).filter(Boolean));
+  let bytes = 0;
+  const unused = [];
+  const ids = await listPracticeAudioIds();
+  for (const id of ids) {
+    const blob = await getPracticeAudio(id);
+    const size = blob?.size || 0;
+    bytes += size;
+    if (!used.has(id)) unused.push({ id, size });
+  }
+  return { files: ids.length, bytes, unused };
+}
+
+async function refreshPracticeAudioRow() {
+  if (!els.practiceAudioBtn) return;
+  let usage = { files: 0, bytes: 0, unused: [] };
+  try { usage = await practiceAudioUsage(); } catch { /* shown as empty */ }
+  els.practiceAudioRow.hidden = usage.files === 0;
+  els.practiceAudioSubtitle.textContent = usage.files
+    ? `${usage.files} ${plural(usage.files, "file")} · ${formatFileSize(usage.bytes)}${usage.unused.length ? ` · ${usage.unused.length} ${t("not used by any song")}` : ""}`
+    : "";
+}
+
+async function requestClearUnusedPracticeAudio() {
+  let usage;
+  try { usage = await practiceAudioUsage(); } catch { return; }
+  if (!usage.unused.length) { showToast("Every audio file is attached to a song."); return; }
+  const bytes = usage.unused.reduce((total, file) => total + file.size, 0);
+  const message = appLanguage === "he"
+    ? `להסיר ${usage.unused.length} קבצים שאינם מחוברים לשום שיר (${formatFileSize(bytes)})? קבצים שמחוברים לשירים נשארים.`
+    : `Remove ${usage.unused.length} ${plural(usage.unused.length, "file")} no song uses (${formatFileSize(bytes)})? Files attached to songs are kept.`;
+  openConfirm("Remove unused audio?", message, "Remove", async () => {
+    closeOverlays();
+    await releasePracticeAudio(usage.unused.map((file) => file.id));
+    showToast("Unused audio removed");
+    refreshPracticeAudioRow();
+  });
+}
+
+// ---------- the view ----------
+
+function openPractice() {
+  const song = currentSong();
+  if (!song || !practiceSources(song).length) return;
+  closeOverlays();
+  practiceActive = true;
+  setPracticeMessage("");
+  practiceSongId = song.id;
+  loadPracticeSettings(song.id);
+  document.body.classList.add("practice-open");
+  els.practiceView.hidden = false;
+  els.practiceView.classList.remove("hidden");
+  els.practiceScroll.scrollTop = 0;
+  renderPracticeView();
+  refreshIcons();
+  els.practiceView.focus({ preventScroll: true });      // not the Close button: Space must play, not close
+  openPracticeSource(song);
+}
+
+// Which source opens: the one used last for this song, else the first (an attached file comes first).
+function openPracticeSource(song) {
+  const sources = practiceSources(song);
+  const saved = loadPracticePrefs()[song.id]?.source;
+  const source = sources.find((item) => item.kind === saved) || sources[0];
+  renderPracticeSourceToggle(sources, source.kind);
+  startPracticeSource(source);
+}
+
+function renderPracticeSourceToggle(sources, active) {
+  const kinds = [...new Set(sources.map((source) => source.kind))];
+  els.practiceSourceToggle.hidden = kinds.length < 2;
+  els.practiceSourceToggle.querySelectorAll("[data-source]").forEach((button) => {
+    button.hidden = !kinds.includes(button.dataset.source);
+    button.setAttribute("aria-pressed", String(button.dataset.source === active));
+  });
+}
+
+function switchPracticeSource(kind) {
+  const song = state.songs.find((item) => item.id === practiceSongId);
+  const source = song && practiceSources(song).find((item) => item.kind === kind);
+  if (!source || kind === practiceSourceKind) return;
+  practiceRemember();                       // keep the loop of the source being left
+  renderPracticeSourceToggle(practiceSources(song), kind);
+  startPracticeSource(source);              // stops the current one first (nothing keeps playing unseen)
+  practiceRemember();
+}
+
+function closePractice() {
+  if (!practiceActive) return;
+  stopPracticeEngine();
+  practiceActive = false;
+  practiceSongId = null;
+  practiceSourceKind = "";
+  document.body.classList.remove("practice-open");
+  els.practiceView.hidden = true;
+  els.practiceView.classList.add("hidden");
+}
+
+function renderPracticeView() {
+  const song = state.songs.find((item) => item.id === practiceSongId);
+  if (!song) return;
+  els.practiceView.className = `perf-view practice-view font-${state.lyricPrefs.font}`;
+  applyReadOnlyTypography(els.practiceView);
+  fillReadOnlyLyrics(els.practiceDoc, song);
+  els.practiceTitle.textContent = [song.title, song.artist].filter(Boolean).join(" · ");
+  const youtube = practiceSources(song).find((source) => source.kind === "youtube");
+  if (youtube) els.practiceOpenExternal.href = youtube.url;
+}
+
+function initPracticeUi() {
+  els.songPracticeFileBtn.addEventListener("click", () => els.songPracticeFileInput.click());
+  els.songPracticeFileInput.addEventListener("change", () => {
+    const file = els.songPracticeFileInput.files[0];
+    els.songPracticeFileInput.value = "";
+    if (file) choosePracticeFile(file);
+  });
+  els.songPracticeFileClear.addEventListener("click", clearPracticeFile);
+  els.songPracticeBtn.addEventListener("click", openPractice);
+  els.practiceCloseBtn.addEventListener("click", closePractice);
+  els.practicePlayBtn.addEventListener("click", practiceToggle);
+  els.practiceBackBtn.addEventListener("click", () => practiceSkip(-5));
+  els.practiceFwdBtn.addEventListener("click", () => practiceSkip(5));
+  els.practiceSpeed.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-rate]");
+    if (button) setPracticeRate(Number(button.dataset.rate));
+  });
+  els.practiceSourceToggle.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-source]");
+    if (button) switchPracticeSource(button.dataset.source);
+  });
+  els.practiceSetABtn.addEventListener("click", () => setLoopPoint("a"));
+  els.practiceSetBBtn.addEventListener("click", () => setLoopPoint("b"));
+  els.practiceLoopBtn.addEventListener("click", togglePracticeLoop);
+  els.practiceClearBtn.addEventListener("click", clearPracticeLoop);
+  els.practiceSeek.addEventListener("pointerdown", () => { practiceDragging = true; });
+  els.practiceSeek.addEventListener("input", () => {
+    els.practiceTime.textContent = formatPracticeTime(Number(els.practiceSeek.value));
+  });
+  els.practiceSeek.addEventListener("change", () => {
+    practiceDragging = false;
+    practiceEngine?.seek(Number(els.practiceSeek.value));
+  });
+  // Desktop keyboard: Space plays or pauses, the arrows skip 5 seconds. (Ignored while typing or on a button.)
+  document.addEventListener("keydown", (event) => {
+    if (!practiceActive || event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+    if (event.target.closest?.("input, textarea, select, button, a, [contenteditable=true]")) return;
+    if (event.key === " ") { event.preventDefault(); practiceToggle(); }
+    else if (event.key === "ArrowLeft") { event.preventDefault(); practiceSkip(-5); }
+    else if (event.key === "ArrowRight") { event.preventDefault(); practiceSkip(5); }
+  });
+  els.practiceAudioBtn?.addEventListener("click", requestClearUnusedPracticeAudio);
+}
 function applyAppAppearance() {
   const mode = state.appearanceMode || "system";
   const systemDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
@@ -16275,6 +17196,7 @@ function showSettingsMain(title = t("Settings & Backup")) {
   appearanceDraft = null;
   refreshBackupStatus();
   refreshSafetyRows();
+  refreshPracticeAudioRow();
 }
 
 function openAppearanceSettings() {
@@ -19191,6 +20113,15 @@ function parseJyricsCreditLine(lines, titleKey) {
   if (!parts.some((part) => /^Composed by\b/i.test(part)) && /^Composed by\b/i.test(lines[index + 1] || "")) {
     parts = [...parts, ...splitParts(lines[index + 1])];
   }
+  // "Sung & Composed by X" and "Sung by X" name the performer; "Sung" is not an artist.
+  let sungBy = "";
+  parts = parts.map((part) => {
+    const both = /^(?:Sung\s*(?:&|and)\s*(?:Composed|Written)|(?:Composed|Written)\s*(?:&|and)\s*Sung)\s+by\s+(.+)$/i.exec(part);
+    if (both) { sungBy = both[1].trim(); return `Composed by ${sungBy}`; }
+    const sung = /^Sung\s+by\s+(.+)$/i.exec(part);
+    if (sung) { sungBy = sung[1].trim(); return sungBy; }
+    return part;
+  });
   const creditIndex = parts.findIndex((part) => /^(?:Composed|Written|Music) by\b/i.test(part));
   const artistsText = parts[1] && parts.indexOf(parts[1]) !== creditIndex ? parts[1] : "";
   let composer = "";
@@ -19204,7 +20135,7 @@ function parseJyricsCreditLine(lines, titleKey) {
     if (lyricsPart >= 0) lyricist = lyricist || rest[lyricsPart].replace(/^Lyrics by\s*/i, "");
     album = rest.filter((part, i) => i !== lyricsPart && !/^Lyrics by\b/i.test(part)).join(" - ");
   }
-  return { index: index + (creditIndex >= 0 && !/Composed by/i.test(lines[index]) ? 1 : 0), title: parts[0] || "", artistsText, composer: composer.trim(), lyricist: lyricist.trim(), album: album.trim() };
+  return { index: index + (creditIndex >= 0 && !/Composed by/i.test(lines[index]) ? 1 : 0), title: parts[0] || "", artistsText: artistsText || sungBy, composer: composer.trim(), lyricist: lyricist.trim(), album: album.trim() };
 }
 
 // ALL-CAPS Latin titles from the credit line become ordinary capitals ("KOL DODI" -> "Kol Dodi").
@@ -21844,6 +22775,8 @@ function showOverlay(element) {
 }
 
 function closeOverlays() {
+  // A form closed without saving does not keep an audio file it added.
+  if (songInfoDraft?.audioAdded?.length) releasePracticeAudio(songInfoDraft.audioAdded);
   songInfoDraft = null;
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
@@ -23548,6 +24481,10 @@ document.addEventListener("keydown", (event) => {
     closeChordEditor(false);
     return;
   }
+  if (event.key === "Escape" && practiceActive) {
+    closePractice();
+    return;
+  }
   if (event.key === "Escape" && performanceActive) {
     closePerformanceMode();
     return;
@@ -23591,6 +24528,10 @@ document.addEventListener("pointerdown", (event) => {
 function closeCurrentMobileLayer() {
   if (chordEditor) {
     closeChordEditor(false);
+    return true;
+  }
+  if (practiceActive) {
+    closePractice();
     return true;
   }
   if (performanceActive) {
@@ -23682,6 +24623,7 @@ document.addEventListener("visibilitychange", () => {
 
 initToolsUi();
 initRecoveryUi();
+initPracticeUi();
 initPerformanceUi();
 initChordEditorUi();
 // Return in the Artist field starts the next artist name instead of submitting anything.
