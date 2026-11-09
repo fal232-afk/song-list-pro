@@ -2531,6 +2531,9 @@ textarea.slp-input { resize: vertical; }
 .import-status.review { color: var(--color-warning-text, #8a5a00); background: color-mix(in srgb, #f59e0b 22%, transparent); }
 .import-summary .import-chip.review { color: var(--color-warning-text, #8a5a00); background: color-mix(in srgb, #f59e0b 22%, transparent); }
 .import-review-note { margin: 0; padding: var(--space-3) var(--space-4); border-radius: var(--radius-card, 10px); background: color-mix(in srgb, #f59e0b 16%, transparent); color: var(--color-text); font-size: var(--text-md); }
+.import-index-note { margin: 0; padding: var(--space-3) var(--space-4); border-radius: var(--radius-card, 10px); font-size: var(--text-md); }
+.import-index-note.ok { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--color-text); }
+.import-index-note.warn { background: color-mix(in srgb, #f59e0b 18%, transparent); color: var(--color-text); }
 
 }
 @layer features {
@@ -4587,7 +4590,7 @@ body.chord-editor-open { overflow: hidden; }
 }
 .select-action svg { width: var(--icon-lg); height: var(--icon-lg); }
 .select-action:disabled { opacity: 0.4; cursor: default; }
-#selectRemoveBtn { color: var(--danger); }
+#selectRemoveBtn, #selectDeleteBtn { color: var(--danger); }
 .select-action.hidden { display: none; }
 .select-mode-active #songLibraryContent,
 .select-mode-active .folder-content,
@@ -5078,7 +5081,6 @@ a.slp-chip { min-height: 44px; }
 @media (min-width: 901px) {
   /* The tab bar runs under every column, not just the first. */
   .app-shell .slp-bottom-nav { grid-column: 1 / -1; }
-  .app-shell.board-full .slp-bottom-nav { justify-self: center; width: min(100%, 640px); }
 }
 
 /* Tall medium screens (a foldable held upright): reader on top like the phone, with room for
@@ -5890,17 +5892,153 @@ a.perf-btn[hidden] { display: none; }
 .song-foot-link--text { display: inline-flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-6); font-weight: var(--font-weight-semibold); text-decoration: none; }
 .song-foot-link--text svg { width: 18px; height: 18px; }
 
-/* ============ Quick song filters: Style, Language, Occasion, BPM (text chips above the list) ============ */
-.song-filter-strip { display: grid; gap: var(--space-3); margin-bottom: var(--space-5); }
+/* ============ Sort & filter: one thin active-filter line above the list, one panel behind the filter button ============ */
+.song-filter-strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
 .song-filter-strip[hidden] { display: none; }
-.song-filter-row { display: flex; gap: var(--space-3); overflow-x: auto; padding-block: 2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-.song-filter-row::-webkit-scrollbar { display: none; }
-.song-filter-chip { flex: none; min-height: 44px; padding: 0 var(--space-7); border-radius: 999px; border: 1px solid var(--color-border-strong, var(--color-border)); background: var(--color-chip-bg); color: var(--color-text); font-size: var(--text-md); font-weight: var(--font-weight-semibold); white-space: nowrap; }
-.song-filter-chip.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
-.song-filter-options .song-filter-chip { font-weight: var(--font-weight-regular, 400); }
-.song-filter-options .song-filter-chip.is-active { font-weight: var(--font-weight-semibold); }
-.slp-row--static { cursor: default; }
-.slp-row--static .slp-row__subtitle { user-select: text; }
+.active-filter { display: inline-flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-5); border-radius: 999px; background: color-mix(in srgb, var(--accent) 14%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); color: var(--accent); font-size: var(--text-md); font-weight: var(--font-weight-semibold); }
+.active-filter i { font-style: normal; font-size: 12px; opacity: 0.8; }
+.active-filter-clear { min-height: 44px; padding: 0 var(--space-4); background: transparent; color: var(--accent); font-size: var(--text-md); font-weight: var(--font-weight-semibold); margin-inline-start: auto; }
+.active-filter-clear--block { display: block; margin: var(--space-4) auto 0; }
+#sortMenuBtn { position: relative; }
+#sortMenuBtn[data-count]:not([data-count=""])::after { content: attr(data-count); position: absolute; top: 4px; inset-inline-end: 4px; width: 16px; height: 16px; padding: 0; box-sizing: border-box; border-radius: 50%; display: block; transform: none; background: var(--accent); color: #fff; font-size: 10px; font-weight: var(--font-weight-semibold); line-height: 16px; text-align: center; }
+.filter-panel { display: grid; gap: var(--space-6); align-content: start; }
+.filter-group { display: grid; gap: var(--space-3); }
+.filter-group__label { color: var(--color-text-muted, var(--color-text-secondary)); font-size: var(--text-xs-plus, 12px); font-weight: var(--font-weight-semibold); letter-spacing: 0.04em; text-transform: uppercase; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.filter-chip { min-height: 44px; padding: 0 var(--space-6); border-radius: 999px; border: 1px solid var(--color-border-strong, var(--color-border)); background: var(--color-chip-bg); color: var(--color-text); font-size: var(--text-md); font-weight: var(--font-weight-regular, 400); }
+.filter-chip.is-on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: var(--font-weight-semibold); }
+.filter-more { border-top: 1px solid var(--color-border); padding-top: var(--space-4); }
+.filter-more summary { min-height: 44px; display: flex; align-items: center; color: var(--color-text-secondary); font-weight: var(--font-weight-semibold); cursor: pointer; }
+.filter-select { display: grid; gap: var(--space-2); margin-top: var(--space-4); }
+.filter-select span { color: var(--color-text-secondary); font-size: var(--text-md); }
+.filter-select select { min-height: 44px; border-radius: 10px; border: 1px solid var(--color-border); background: var(--color-card); color: var(--color-text); padding: 0 var(--space-5); }
+.filter-select-songs { display: flex; align-items: center; gap: var(--space-4); min-height: 44px; background: transparent; color: var(--color-text); font-weight: var(--font-weight-semibold); border-top: 1px solid var(--color-border); padding-top: var(--space-4); }
+
+/* Settings: a short main page (three groups) and small pages behind a row. */
+.settings-page { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; }
+.settings-page.hidden { display: none; }
+.settings-page > .slp-header { padding: var(--space-6) var(--space-9); flex: none; }
+.settings-page__body { display: flex; flex-direction: column; gap: var(--space-6); min-height: 0; overflow-y: auto; padding: var(--space-4) var(--space-11) var(--space-9); }
+#settingsSheet:has(.settings-page:not(.hidden)) { grid-template-rows: minmax(0, 1fr); }
+#settingsSheet:has(.settings-page:not(.hidden)) > .slp-header { display: none; }
+.slp-card--quiet { background: transparent; box-shadow: none; border: 1px solid var(--color-border); }
+#settingsMainView { gap: var(--space-4); }
+
+
+/* ============ Appearance page: compact (one card, one-line rows, dots, pinned preview) ============ */
+.appearance-compact .appearance-scroll { gap: var(--space-5); padding: 0 var(--space-9) var(--space-9); }
+.appearance-compact .appearance-preview { position: sticky; top: 0; z-index: 2; margin: 0 0 var(--space-2); padding: var(--space-4) var(--space-6); }
+.appearance-compact .appearance-preview p { margin: 0; font-size: var(--text-md); line-height: 1.35; }
+.appearance-compact .appearance-preview span { display: none; }
+.appearance-compact .slp-setting { gap: var(--space-3); padding: var(--space-4) var(--space-7); }
+.appearance-compact .slp-setting--inline { min-height: 52px; flex-wrap: wrap; }
+.appearance-compact .slp-swatch-row { flex-wrap: nowrap; gap: 0; row-gap: 0; justify-content: space-between; }
+.appearance-compact .slp-swatch { min-width: 40px; min-height: 44px; gap: 0; flex: 0 0 auto; }
+.appearance-compact .slp-swatch__label { display: none; }
+.appearance-compact .slp-swatch__dot { width: 28px; height: 28px; }
+.appearance-compact .slp-setting--inline .slp-swatch-row { justify-content: flex-end; }
+.appearance-compact .slp-segmented button { min-height: 44px; min-width: 44px; }
+.appearance-compact .slp-setting--inline .slp-segmented button { padding-inline: var(--space-4); }
+.appearance-compact .slp-select { min-height: 44px; min-width: 140px; max-width: 58%; padding: 0 var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-chip-bg); color: var(--color-text); font-size: var(--text-md); }
+
+/* Song rows: the small nested buttons keep their look but get a 44px touch area (an invisible extension,
+   as the header icons do). The title's area is the row itself; the key badge reaches out around it. */
+.song-item .song-title-button { position: relative; }
+.song-item .song-title-button::after { content: ""; position: absolute; inset: -14px -8px -12px -8px; }
+.song-item .slp-badge--key { position: relative; }
+.song-item .slp-badge--key::after { content: ""; position: absolute; inset: -13px -10px; }
+
+
+/* ============ Duplicate songs: compare, choose, review merge ============ */
+.dup-sheet { position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; background: var(--color-bg, var(--color-card)); }
+.dup-sheet.hidden, .dup-sheet[hidden] { display: none; }
+@media (min-width: 901px) { .dup-sheet { left: auto; width: min(560px, 100%); box-shadow: var(--shadow); } }
+.dup-header-spacer { width: 44px; }
+.dup-body { flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-5) var(--space-9) var(--space-9); display: grid; align-content: start; gap: var(--space-7); }
+.dup-footer { padding: var(--space-6) var(--space-9) calc(var(--space-6) + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--color-border); background: var(--color-card); }
+.dup-footer .slp-btn { flex: 1; min-height: 44px; }
+.dup-table { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-card); }
+.dup-row { display: grid; grid-template-columns: 84px minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-4); padding: var(--space-4) var(--space-5); font-size: var(--text-sm); border-top: 1px solid var(--color-border); overflow-wrap: anywhere; }
+.dup-row:first-child { border-top: 0; }
+.dup-head { font-weight: var(--font-weight-semibold); background: var(--color-chip-bg); }
+.dup-label { color: var(--color-text-secondary); }
+.dup-row.is-diff:not(.dup-head) > span:not(.dup-label) { background: var(--color-warning-soft, #fbeed0); color: var(--color-warning-text, #7a4a00); border-radius: 6px; padding: 2px 6px; }
+.dup-empty { color: var(--color-text-secondary); }
+.dup-lines h3, .dup-review h3 { margin: 0 0 var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); font-weight: var(--font-weight-bold); }
+.dup-line { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-4); padding: var(--space-3) 0; font-size: var(--text-sm); border-top: 1px solid var(--color-border); overflow-wrap: anywhere; }
+.dup-line__new { background: var(--color-warning-soft, #fbeed0); color: var(--color-warning-text, #7a4a00); border-radius: 6px; padding: 0 4px; }
+.dup-choices { display: grid; gap: var(--space-4); }
+.dup-choice { display: grid; gap: 2px; text-align: start; min-height: 56px; padding: var(--space-5) var(--space-7); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-card); color: var(--color-text); font-family: inherit; cursor: pointer; }
+.dup-choice small { color: var(--color-text-secondary); font-size: var(--text-sm); }
+.dup-choice:disabled { opacity: 0.55; cursor: default; }
+.dup-field { margin: 0 0 var(--space-4); padding: var(--space-3) var(--space-6); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+.dup-field legend { padding-inline: var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); }
+.dup-radio { display: flex; align-items: center; gap: var(--space-5); min-height: 44px; font-size: var(--text-sm); }
+.dup-radio input { width: 20px; height: 20px; flex: none; }
+.dup-note { margin: 0 0 var(--space-4); font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
+.dup-richer { width: 100%; min-height: 44px; margin-bottom: var(--space-4); }
+#songTitleNotice .slp-link-btn { min-height: 44px; }
+.toast { display: flex; align-items: center; gap: var(--space-6); pointer-events: auto; }
+.toast-action { min-height: 44px; min-width: 44px; padding: 0 var(--space-5); border: 0; background: transparent; color: #ffd27a; font: inherit; font-weight: 800; cursor: pointer; }
+.toast.hidden { display: none; }
+
+/* Duplicates page */
+.dup-tabs { display: flex; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-pill); background: var(--color-chip-bg); }
+.dup-tabs button { flex: 1; min-height: 44px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--color-text-secondary); font: inherit; font-weight: var(--font-weight-semibold); cursor: pointer; }
+.dup-tabs button.on { background: var(--color-card); color: var(--color-text); box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+.dup-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-4); }
+.dup-actions .slp-btn { min-height: 44px; }
+.dup-chip { flex: none; padding: 2px 8px; border-radius: 8px; background: var(--color-chip-bg); color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+.dup-chip.is-likely { background: var(--color-warning-soft, #fbeed0); color: var(--color-warning-text, #7a4a00); }
+.dup-pair, .dup-kept { min-height: 56px; }
+.song-title-hint { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-4); padding: var(--space-4) var(--space-6); border-radius: var(--radius-lg); background: var(--color-warning-soft, #fbeed0); color: var(--color-warning-text, #7a4a00); font-size: var(--text-sm); }
+.song-title-hint[hidden] { display: none; }
+.song-title-hint .slp-link-btn { min-height: 44px; flex: none; }
+.dup-kept .slp-btn { min-height: 44px; flex: none; }
+.dup-empty-note { padding: var(--space-6) var(--space-3); text-align: center; }
+
+/* Quick key picker on the lyrics page */
+.quick-key-body { display: grid; gap: var(--space-6); }
+.quick-key-sheet .key-mode-control button, .quick-key-sheet .key-note-grid button, .quick-key-sheet .clear-key-button { min-height: 44px; }
+
+/* ============ Practice view follows the app's light/dark setting ============
+   It reuses the Performance view's dark stage; in light mode the same pieces take the app's own colors.
+   Amber stays for the play button and the "on" states (dark text on it), and for the chord color a
+   deeper amber that reads on a light page. Performance mode itself is unchanged. */
+:root[data-color-mode="light"] .practice-view { --practice-chord: #9a6400; background: var(--color-bg); color: var(--color-text); }
+:root[data-color-mode="light"] .practice-view .perf-bar { background: var(--color-card); border-bottom-color: var(--color-border); }
+:root[data-color-mode="light"] .practice-view .perf-btn,
+:root[data-color-mode="light"] .practice-view .practice-btn,
+:root[data-color-mode="light"] .practice-view .practice-speed,
+:root[data-color-mode="light"] .practice-view .practice-chip,
+:root[data-color-mode="light"] .practice-view .perf-chip { background: var(--color-chip-bg); color: var(--color-text); }
+:root[data-color-mode="light"] .practice-view .practice-btn--play { background: #FFC857; color: #0E1116; }
+:root[data-color-mode="light"] .practice-view .perf-btn[aria-pressed="true"],
+:root[data-color-mode="light"] .practice-view .practice-chip[aria-pressed="true"],
+:root[data-color-mode="light"] .practice-view .practice-chip.set,
+:root[data-color-mode="light"] .practice-view .perf-chip[aria-pressed="true"] { background: #FFC857; color: #0E1116; }
+:root[data-color-mode="light"] .practice-view .practice-speed button { color: var(--color-text); }
+:root[data-color-mode="light"] .practice-view .practice-title { color: var(--color-text); }
+:root[data-color-mode="light"] .practice-view .practice-player { background: var(--color-bg); border-right-color: var(--color-border); }
+:root[data-color-mode="light"] .practice-view .practice-file-card,
+:root[data-color-mode="light"] .practice-view .practice-mini { background: var(--color-card); color: var(--color-text); }
+:root[data-color-mode="light"] .practice-view .practice-message { background: var(--color-chip-bg); color: var(--color-text-secondary); }
+:root[data-color-mode="light"] .practice-view .practice-clock,
+:root[data-color-mode="light"] .practice-view .perf-title,
+:root[data-color-mode="light"] .practice-view .perf-speed { color: var(--color-text-secondary); }
+:root[data-color-mode="light"] .practice-view .practice-seek::-webkit-slider-runnable-track { background: linear-gradient(to right, #D99A00 var(--p, 0%), var(--color-border) var(--p, 0%)); }
+:root[data-color-mode="light"] .practice-view .practice-seek::-moz-range-track { background: var(--color-border); }
+:root[data-color-mode="light"] .practice-view .practice-seek::-webkit-slider-thumb { background: #D99A00; border-color: var(--color-card); }
+:root[data-color-mode="light"] .practice-view .practice-seek::-moz-range-thumb { background: #D99A00; border-color: var(--color-card); }
+:root[data-color-mode="light"] .practice-view .song-document,
+:root[data-color-mode="light"] .practice-view .song-document h2 { color: var(--color-text); }
+:root[data-color-mode="light"] .practice-view .cp-chord { color: var(--practice-chord); }
+:root[data-color-mode="light"] .practice-view .line-disclosure-content { color: var(--color-text-secondary); }
+:root[data-color-mode="light"] .practice-view .line-disclosure-toggle { color: var(--practice-chord); }
+:root[data-color-mode="light"] .practice-view .perf-section { background: var(--color-chip-bg); color: var(--color-text-secondary); }
+:root[data-color-mode="light"] .practice-view .sec-chorus { background: rgba(217, 154, 0, 0.1); }
+:root[data-color-mode="light"] .practice-view .sec-bar-right { border-right-color: #D99A00; }
+:root[data-color-mode="light"] .practice-view .sec-bar-left { border-left-color: #D99A00; }
 
 }
 
@@ -6510,6 +6648,7 @@ a.perf-btn[hidden] { display: none; }
         <button id="selectAddBtn" class="select-action" type="button"><i data-lucide="folder-plus"></i><span>Add to…</span></button>
         <button id="selectMoveBtn" class="select-action" type="button"><i data-lucide="folder-input"></i><span>Move to…</span></button>
         <button id="selectRemoveBtn" class="select-action" type="button"><i data-lucide="folder-minus"></i><span>Remove from here</span></button>
+        <button id="selectDeleteBtn" class="select-action" type="button"><i data-lucide="trash-2"></i><span>Delete</span></button>
       </div>
     </main>
 
@@ -6570,8 +6709,13 @@ a.perf-btn[hidden] { display: none; }
           <input id="songTitleEnglishInput" class="slp-input" type="text" dir="ltr" placeholder="Title in English letters" autocomplete="off" />
           <label class="slp-field-label" for="songTitleHebrewInput">HEBREW OR YIDDISH TITLE</label>
           <input id="songTitleHebrewInput" class="slp-input" type="text" dir="rtl" lang="he" placeholder="הכותרת בעברית או ביידיש" autocomplete="off" />
+          <div id="songTitleHint" class="song-title-hint" role="status" hidden>
+            <span id="songTitleHintText"></span>
+            <button id="songTitleHintCompareBtn" class="slp-link-btn slp-link-btn--accent" type="button">Compare</button>
+          </div>
           <div id="songTitleNotice" class="song-title-notice" role="alert" hidden>
             <span id="songTitleNoticeText"></span>
+            <button id="songTitleNoticeCompareBtn" class="slp-link-btn slp-link-btn--accent" type="button" hidden>Compare</button>
             <button id="songTitleNoticeOpenBtn" class="slp-link-btn slp-link-btn--accent" type="button" hidden>Open existing song</button>
           </div>
         </section>
@@ -6715,6 +6859,19 @@ a.perf-btn[hidden] { display: none; }
         <div id="folderSongPickerList" class="folder-song-picker-list"></div>
       </div>
       <div class="sheet-footer"><button id="cancelFolderSongPickerBtn" class="secondary-button" type="button">Cancel</button><button id="addFolderSongsBtn" class="primary-button" type="button">Add selected</button></div>
+    </section>
+
+    <section id="quickKeySheet" class="sheet compact-sheet quick-key-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="quickKeyTitle">
+      <div class="sheet-header"><div><span id="quickKeySong">Song</span><h2 id="quickKeyTitle">Key</h2></div><button id="closeQuickKeyBtn" class="icon-button" type="button" aria-label="Close"><i data-lucide="x"></i></button></div>
+      <div class="sheet-body quick-key-body">
+        <div class="key-mode-control" role="group" aria-label="Key type">
+          <button type="button" data-quick-mode="major">Major</button>
+          <button type="button" data-quick-mode="minor">Minor</button>
+          <button type="button" data-quick-mode="freygish">Freygish</button>
+        </div>
+        <div id="quickKeyGrid" class="key-note-grid" role="group" aria-label="Select key note"></div>
+        <button id="quickKeyClearBtn" class="text-button clear-key-button" type="button">No key</button>
+      </div>
     </section>
 
     <section id="songAddToSheet" class="sheet compact-sheet song-add-to-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="songAddToTitle">
@@ -7073,6 +7230,7 @@ a.perf-btn[hidden] { display: none; }
         <button id="closeSettingsBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Close settings"><i data-lucide="x"></i></button>
       </header>
       <div id="settingsMainView">
+      <span class="slp-section-label">MY APP</span>
       <section class="slp-card">
         <button id="languageSettingsBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="languages"></i></span>
@@ -7084,26 +7242,93 @@ a.perf-btn[hidden] { display: none; }
           <span class="slp-row__body"><span class="slp-row__title">Appearance</span><span class="slp-row__subtitle">Color, dark mode, and reading text</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
+        <button id="openPlaySettingsBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="sliders-horizontal"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Song list and playing</span><span class="slp-row__subtitle">Title side, pedal</span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+      </section>
+      <span class="slp-section-label">MY SONGS</span>
+      <section class="slp-card">
         <button id="bulkImportBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="clipboard-paste"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Import my songs</span><span class="slp-row__subtitle">Word, PDF, photos, text or paste</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
+        <button id="printLibraryBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="printer"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Print song index</span><span class="slp-row__subtitle">A clean list of your repertoire</span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <div id="practiceAudioRow" hidden>
+        <button id="practiceAudioBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="headphones"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Practice audio on this device</span><span id="practiceAudioSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        </div>
+      </section>
+      <span class="slp-section-label">BACKUP AND RESTORE</span>
+      <section class="slp-card">
         <button id="exportLibraryBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="download"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Back up now</span><span id="backupStatusText" class="slp-row__subtitle">Save all folders, songs, and lyrics</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
-        <button id="undoImportBtn" class="slp-row hidden" type="button" hidden>
-          <span class="slp-row__icon-tile"><i data-lucide="undo-2"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Undo last import</span><span id="undoImportSubtitle" class="slp-row__subtitle"></span></span>
+        <button id="openBackupSettingsBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="archive-restore"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Restore, undo and cloud</span><span class="slp-row__subtitle">Restore a backup, undo, send to Drive or Dropbox</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
-        <button id="fixArtistsBtn" class="slp-row hidden" type="button" hidden>
-          <span class="slp-row__icon-tile"><i data-lucide="wand-2"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Fix artists copied from lyrics</span><span id="fixArtistsSubtitle" class="slp-row__subtitle"></span></span>
+      </section>
+      <section class="slp-card slp-card--quiet">
+        <button id="openAboutSettingsBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="wrench"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">About and repair</span><span class="slp-row__subtitle">App version and cleanup tools</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
+      </section>
+      <div class="slp-info-banner"><i data-lucide="hard-drive"></i><span id="storageStatusText">Your library is saved on this device. Exporting a backup protects it if the browser data is cleared.</span></div>
+      <p class="screen-info" hidden>Screen: <span id="screenInfoText"></span></p>
+      </div>
+      <div id="playSettingsView" class="settings-page hidden">
+        <header class="slp-header">
+          <button id="backFromPlayBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back to settings">
+            <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="slp-header__titles">
+            <h2 class="slp-header__title">Song list and playing</h2>
+            <p class="slp-subtitle">How titles line up and how the pedal works</p>
+          </div>
+          <button class="slp-btn slp-btn--icon" type="button" data-close-settings aria-label="Close"><i data-lucide="x"></i></button>
+        </header>
+        <div class="settings-page__body">
+          <section class="slp-card">
+        <button id="titleAlignBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="align-left"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Song titles line up on the</span><span id="titleAlignSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <button id="pedalConfirmBtn" class="slp-row" type="button" role="switch" aria-checked="true">
+          <span class="slp-row__icon-tile"><i data-lucide="footprints"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Pedal: confirm before next song</span><span id="pedalConfirmSubtitle" class="slp-row__subtitle">On: at the end of a song, press twice to go to the next</span></span>
+        </button>
+          </section>
+        </div>
+      </div>
+      <div id="backupSettingsView" class="settings-page hidden">
+        <header class="slp-header">
+          <button id="backFromBackupBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back to settings">
+            <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="slp-header__titles">
+            <h2 class="slp-header__title">Restore, undo and cloud</h2>
+            <p class="slp-subtitle">Bring a backup back, or undo the last change</p>
+          </div>
+          <button class="slp-btn slp-btn--icon" type="button" data-close-settings aria-label="Close"><i data-lucide="x"></i></button>
+        </header>
+        <div class="settings-page__body">
+          <section class="slp-card">
         <button id="importLibraryBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="upload"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Restore backup</span><span class="slp-row__subtitle">Import a Song List Pro backup</span></span>
@@ -7114,39 +7339,19 @@ a.perf-btn[hidden] { display: none; }
           <span class="slp-row__body"><span id="undoRestoreTitle" class="slp-row__title">Undo restore</span><span id="undoRestoreSubtitle" class="slp-row__subtitle">No restore to undo</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
+        <button id="undoImportBtn" class="slp-row hidden" type="button" hidden>
+          <span class="slp-row__icon-tile"><i data-lucide="undo-2"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Undo last import</span><span id="undoImportSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
         <button id="damagedCopyBtn" class="slp-row hidden" type="button" hidden>
           <span class="slp-row__icon-tile"><i data-lucide="file-warning"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Set-aside library copy</span><span class="slp-row__subtitle">Export a copy the app set aside (damaged, or replaced by another window)</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
-        <button id="pedalConfirmBtn" class="slp-row" type="button" role="switch" aria-checked="true">
-          <span class="slp-row__icon-tile"><i data-lucide="footprints"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Pedal: confirm before next song</span><span id="pedalConfirmSubtitle" class="slp-row__subtitle">On: at the end of a song, press twice to go to the next</span></span>
-        </button>
-        <button id="titleAlignBtn" class="slp-row" type="button">
-          <span class="slp-row__icon-tile"><i data-lucide="align-left"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Song titles line up on the</span><span id="titleAlignSubtitle" class="slp-row__subtitle"></span></span>
-          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
-        </button>
-        <div id="practiceAudioRow" hidden>
-        <button id="practiceAudioBtn" class="slp-row" type="button">
-          <span class="slp-row__icon-tile"><i data-lucide="headphones"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Practice audio on this device</span><span id="practiceAudioSubtitle" class="slp-row__subtitle"></span></span>
-          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
-        </button>
-        </div>
-        <div class="slp-row slp-row--static" id="appVersionRow">
-          <span class="slp-row__icon-tile"><i data-lucide="info"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">App version</span><span id="appVersionText" class="slp-row__subtitle" dir="ltr"></span></span>
-        </div>
-        <button id="printLibraryBtn" class="slp-row" type="button">
-          <span class="slp-row__icon-tile"><i data-lucide="printer"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Print song index</span><span class="slp-row__subtitle">A clean list of your repertoire</span></span>
-          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
-        </button>
-      </section>
-      <span class="slp-section-label">CLOUD BACKUP</span>
-      <section class="slp-card">
+          </section>
+          <span class="slp-section-label">SEND A COPY</span>
+          <section class="slp-card">
         <button id="googleDriveBackupBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="cloud-upload"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Send to Google Drive</span><span class="slp-row__subtitle">Choose Drive from the secure share menu</span></span>
@@ -7157,12 +7362,58 @@ a.perf-btn[hidden] { display: none; }
           <span class="slp-row__body"><span class="slp-row__title">Send to Dropbox</span><span class="slp-row__subtitle">Choose Dropbox from the secure share menu</span></span>
           <i data-lucide="share-2" class="slp-row__chevron"></i>
         </button>
-        <div class="slp-info-banner"><i data-lucide="shield-check"></i><span><strong>Automatic sync is not connected yet</strong><span>A hosted app and private provider sign-in are required before background syncing can be enabled safely.</span></span></div>
-      </section>
-      <p class="slp-subtitle screen-info" aria-live="polite">Screen: <span id="screenInfoText"></span></p>
-      <div class="slp-info-banner"><i data-lucide="hard-drive"></i><span id="storageStatusText">Your library is saved on this device. Exporting a backup protects it if the browser data is cleared.</span></div>
+          </section>
+        </div>
       </div>
-      <div id="appearanceSettingsView" class="appearance-settings-view hidden">
+      <div id="aboutSettingsView" class="settings-page hidden">
+        <header class="slp-header">
+          <button id="backFromAboutBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back to settings">
+            <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="slp-header__titles">
+            <h2 class="slp-header__title">About and repair</h2>
+            <p class="slp-subtitle">Which version is running, and cleanup tools</p>
+          </div>
+          <button class="slp-btn slp-btn--icon" type="button" data-close-settings aria-label="Close"><i data-lucide="x"></i></button>
+        </header>
+        <div class="settings-page__body">
+          <section class="slp-card">
+        <div class="slp-row slp-row--static" id="appVersionRow">
+          <span class="slp-row__icon-tile"><i data-lucide="info"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">App version</span><span id="appVersionText" class="slp-row__subtitle" dir="ltr"></span></span>
+        </div>
+        <button id="openDuplicatesBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="copy"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Duplicate songs</span><span id="duplicatesSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <button id="splitArtistsBtn" class="slp-row hidden" type="button" hidden>
+          <span class="slp-row__icon-tile"><i data-lucide="users"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Split combined artists</span><span id="splitArtistsSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <button id="fixArtistsBtn" class="slp-row hidden" type="button" hidden>
+          <span class="slp-row__icon-tile"><i data-lucide="wand-2"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Fix artists copied from lyrics</span><span id="fixArtistsSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+          </section>
+        </div>
+      </div>
+<div id="duplicatesSettingsView" class="settings-page hidden">
+        <header class="slp-header">
+          <button id="backFromDuplicatesBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back to settings">
+            <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="slp-header__titles">
+            <h2 class="slp-header__title">Duplicate songs</h2>
+            <p class="slp-subtitle">Songs that look like the same song</p>
+          </div>
+          <button id="duplicatesRescanBtn" class="slp-link-btn slp-link-btn--accent" type="button">Rescan</button>
+        </header>
+        <div id="duplicatesBody" class="settings-page__body"></div>
+      </div>
+<div id="appearanceSettingsView" class="appearance-settings-view appearance-compact hidden">
         <header class="slp-header">
           <button id="backFromAppearanceBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back to settings">
             <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -7179,7 +7430,6 @@ a.perf-btn[hidden] { display: none; }
             <p>Sing every word clearly<br>שירו כל מילה בבירור</p>
           </div>
           <section class="slp-group" aria-label="Theme">
-            <span class="slp-group__label">THEME</span>
             <div class="slp-card">
               <div class="slp-setting">
                 <span class="slp-setting__title">Mode</span>
@@ -7201,22 +7451,17 @@ a.perf-btn[hidden] { display: none; }
             <button type="button" class="slp-swatch" data-accent-choice="coral" aria-label="Soft coral"><span class="slp-swatch__dot" style="background:#bd6657;"></span><span class="slp-swatch__label">Coral</span></button>
                 </div>
               </div>
-            </div>
-          </section>
-          <section class="slp-group" aria-label="Reading">
-            <span class="slp-group__label">READING</span>
-            <div class="slp-card">
-              <div class="slp-setting">
+              <div class="slp-setting slp-setting--inline">
                 <span class="slp-setting__title">Typeface</span>
-                <div class="slp-choice-grid" role="group" aria-label="Typeface">
-              <button type="button" class="slp-choice" data-font-choice="system" style="font-family:system-ui, -apple-system, sans-serif">System</button>
-              <button type="button" class="slp-choice" data-font-choice="serif" style="font-family:Times New Roman, Times, serif">Times</button>
-              <button type="button" class="slp-choice" data-font-choice="rounded" style="font-family:Trebuchet MS, sans-serif">Trebuchet</button>
-              <button type="button" class="slp-choice" data-font-choice="verdana" style="font-family:Verdana, sans-serif">Verdana</button>
-              <button type="button" class="slp-choice" data-font-choice="arial" style="font-family:Arial, sans-serif">Arial</button>
-              <button type="button" class="slp-choice" data-font-choice="georgia" style="font-family:Georgia, serif">Georgia</button>
-              <button type="button" class="slp-choice" data-font-choice="tahoma" style="font-family:Tahoma, sans-serif">Tahoma</button>
-                </div>
+                <select id="fontSelect" class="slp-select" aria-label="Typeface">
+                  <option value="system">System</option>
+                  <option value="serif">Times</option>
+                  <option value="rounded">Trebuchet</option>
+                  <option value="verdana">Verdana</option>
+                  <option value="arial">Arial</option>
+                  <option value="georgia">Georgia</option>
+                  <option value="tahoma">Tahoma</option>
+                </select>
               </div>
               <div class="slp-setting slp-setting--inline">
                 <span class="slp-setting__title">Lyrics size</span>
@@ -7234,16 +7479,16 @@ a.perf-btn[hidden] { display: none; }
                   <button type="button" data-size-target="notes" data-size-step="2" aria-label="Larger notes"><i data-lucide="plus"></i></button>
                 </div>
               </div>
-              <div class="slp-setting">
+              <div class="slp-setting slp-setting--inline">
                 <span class="slp-setting__title">Lyrics alignment</span>
-                <div class="slp-segmented slp-segmented--full" role="group" aria-label="Lyrics alignment">
+                <div class="slp-segmented" role="group" aria-label="Lyrics alignment">
                   <button type="button" data-align-choice="auto">Auto</button>
                   <button type="button" data-align-choice="left">Left</button>
                   <button type="button" data-align-choice="center">Center</button>
                   <button type="button" data-align-choice="right">Right</button>
                 </div>
               </div>
-              <div class="slp-setting">
+              <div class="slp-setting slp-setting--inline">
                 <span class="slp-setting__title">Reading background</span>
                 <div class="slp-swatch-row" role="group" aria-label="Reading background">
                   <button type="button" class="slp-swatch" data-bg-choice="paper" aria-label="Warm paper"><span class="slp-swatch__dot slp-swatch__dot--outlined" style="background:#fbfaf5;"></span><span class="slp-swatch__label">Paper</span></button>
@@ -7416,30 +7661,13 @@ a.perf-btn[hidden] { display: none; }
         <header class="slp-header">
           <div class="slp-header__titles">
             <span class="slp-header__eyebrow">SONG LIBRARY</span>
-            <h2 id="filterTitle" class="slp-header__title">Filter Songs</h2>
+            <h2 id="filterTitle" class="slp-header__title">Sort &amp; filter</h2>
           </div>
           <button id="closeFilterBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Close filters"><i data-lucide="x"></i></button>
         </header>
-        <div class="slp-sheet__body">
-          <p class="slp-subtitle">Show only songs matching the details you choose.</p>
-          <section class="slp-group" aria-label="People">
-            <span class="slp-group__label">PEOPLE</span>
-            <div class="slp-card">
-              <div class="slp-setting"><label class="slp-setting__title" for="filterArtistInput">Artist</label><select id="filterArtistInput" class="slp-input"><option value="">All artists</option></select></div>
-              <div class="slp-setting"><label class="slp-setting__title" for="filterComposerInput">Composer</label><select id="filterComposerInput" class="slp-input"><option value="">All composers</option></select></div>
-            </div>
-          </section>
-          <section class="slp-group" aria-label="Song details">
-            <span class="slp-group__label">SONG</span>
-            <div class="slp-card">
-              <div class="slp-setting"><label class="slp-setting__title" for="filterKeyInput">Key</label><select id="filterKeyInput" class="slp-input"><option value="">All keys</option></select></div>
-              <div class="slp-setting"><label class="slp-setting__title" for="filterLanguageInput">Language</label><select id="filterLanguageInput" class="slp-input"><option value="">All languages</option></select></div>
-              <div class="slp-setting"><label class="slp-setting__title" for="filterStatusInput">Status</label><select id="filterStatusInput" class="slp-input"><option value="">All statuses</option><option value="learning">Learning</option><option value="polishing">Polishing</option><option value="ready">Ready</option></select></div>
-            </div>
-          </section>
-        </div>
+        <div id="filterPanelBody" class="slp-sheet__body filter-panel"></div>
         <div class="slp-sheet__footer">
-          <button id="clearFiltersBtn" class="slp-btn slp-btn--ghost" type="button">Clear filters</button>
+          <button id="clearFiltersBtn" class="slp-btn slp-btn--ghost" type="button">Clear all</button>
           <button id="applyFiltersBtn" class="slp-btn slp-btn--primary" type="button">Show songs</button>
         </div>
       </div>
@@ -7595,6 +7823,16 @@ a.perf-btn[hidden] { display: none; }
     <datalist id="languageSuggestions"></datalist>
     <datalist id="styleSuggestions"></datalist>
     <input id="songImportInput" class="hidden" type="file" multiple accept=".txt,.csv,.docx,.pdf,.zip,application/zip,application/x-zip-compressed,application/pdf,image/*,text/plain,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+    <section id="dupSheet" class="dup-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="dupTitle">
+      <header class="slp-header">
+        <button id="dupBackBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back"><svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="slp-header__titles"><h2 id="dupTitle" class="slp-header__title">Same song?</h2></div>
+        <span class="dup-header-spacer"></span>
+      </header>
+      <div id="dupBody" class="dup-body"></div>
+      <div id="dupFooter" class="slp-btn-row dup-footer"></div>
+    </section>
+
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
     <script>
@@ -7649,7 +7887,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "282cb665 · 581834d";
+const APP_BUILD = "80282df1 · 1881424";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -7727,13 +7965,13 @@ const els = Object.fromEntries(
     "songArtistInput", "songArtistHebrewInput", "songComposerInput", "songLyricistInput", "songAlbumInput",
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songCapoInput", "songNeedsReviewInput", "songOccasionsInput", "songYoutubeInput", "songInfoSourcesInput", "songReviewNoteInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
-    "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "importSummary", "importUndoBar", "importUndoText", "importUndoBtn", "undoImportBtn", "fixArtistsBtn", "fixArtistsSubtitle", "undoImportSubtitle", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
+    "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songTitleNoticeCompareBtn", "songTitleHint", "quickKeySheet", "quickKeySong", "quickKeyGrid", "quickKeyClearBtn", "closeQuickKeyBtn", "songTitleHintText", "songTitleHintCompareBtn", "dupSheet", "dupTitle", "dupBody", "dupFooter", "dupBackBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
+    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectDeleteBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "importSummary", "importUndoBar", "importUndoText", "importUndoBtn", "undoImportBtn", "fixArtistsBtn", "openPlaySettingsBtn", "openBackupSettingsBtn", "openAboutSettingsBtn", "backFromPlayBtn", "backFromBackupBtn", "backFromAboutBtn", "playSettingsView", "backupSettingsView", "aboutSettingsView", "splitArtistsBtn", "splitArtistsSubtitle", "fixArtistsSubtitle", "undoImportSubtitle", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "languageSettingsBtn", "languageSettingsValue", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
-    "exportLibraryBtn", "importLibraryBtn", "printLibraryBtn", "appVersionText", "filterSheet", "closeFilterBtn", "filterArtistInput",
-    "filterLanguageInput", "filterKeyInput", "filterStatusInput", "filterComposerInput", "clearFiltersBtn", "applyFiltersBtn",
+    "exportLibraryBtn", "importLibraryBtn", "printLibraryBtn", "appVersionText", "filterSheet", "closeFilterBtn", "filterPanelBody", "filterArtistInput",
+    "clearFiltersBtn", "applyFiltersBtn",
     "confirmDialog", "confirmTitle", "confirmMessage",
     "artistSuggestions", "artistHebrewSuggestions", "composerSuggestions", "lyricistSuggestions", "albumSuggestions", "languageSuggestions", "styleSuggestions",
     "confirmCancelBtn", "confirmAcceptBtn", "importSheet", "importTitle", "closeImportBtn", "importStart",
@@ -8547,6 +8785,39 @@ Object.assign(HEBREW_UI, {
  "Under 80": "מתחת ל־80",
  "140+": "‎140+",
  "App version": "גרסת האפליקציה",
+ "Details read from the index file:": "פרטים שנקראו מקובץ האינדקס:",
+ "of": "מתוך",
+ "songs": "שירים",
+ "Index file read, but only": "קובץ האינדקס נקרא, אבל רק",
+ "songs were found in it. Check that the file names match the file column.": "שירים נמצאו בו. בדוק ששמות הקבצים תואמים לעמודת file.",
+ "No index.csv was chosen with these PDFs, so titles, album, style, tempo and links come only from the PDFs. Choose it too (Choose more) to add them.": "לא נבחר קובץ index.csv עם קובצי ה־PDF, ולכן כותרות, אלבום, סגנון, קצב וקישורים נלקחים רק מה־PDF. בחר גם אותו (בחירת קבצים נוספים) כדי להוסיף אותם.",
+ "file was skipped because it could not be read:": "קובץ דולג כי אי אפשר היה לקרוא אותו:",
+ "files were skipped because they could not be read:": "קבצים דולגו כי אי אפשר היה לקרוא אותם:",
+ "Split combined artists": "פיצול אמנים משולבים",
+ "a credit lists several people": "קרדיט עם כמה אנשים",
+ "Split combined artists?": "לפצל אמנים משולבים?",
+ "Split artists": "פיצול אמנים",
+ "Sort & filter": "מיון וסינון",
+ "More filters": "עוד מסננים",
+ "Remove filter": "הסרת סינון",
+ "Clear all": "ניקוי הכול",
+ "Show": "הצג",
+ "Ascending": "עולה",
+ "Descending": "יורד",
+ "MY APP": "האפליקציה שלי",
+ "MY SONGS": "השירים שלי",
+ "BACKUP AND RESTORE": "גיבוי ושחזור",
+ "SEND A COPY": "שליחת עותק",
+ "Song list and playing": "רשימת שירים והפעלה",
+ "Title side, pedal": "צד הכותרות, דוושה",
+ "Restore, undo and cloud": "שחזור, ביטול וענן",
+ "Restore a backup, undo, send to Drive or Dropbox": "שחזור גיבוי, ביטול, שליחה ל־Drive או Dropbox",
+ "About and repair": "אודות ותיקונים",
+ "App version and cleanup tools": "גרסת האפליקציה וכלי ניקוי",
+ "How titles line up and how the pedal works": "איך הכותרות מיושרות ואיך הדוושה עובדת",
+ "Bring a backup back, or undo the last change": "החזרת גיבוי, או ביטול השינוי האחרון",
+ "Which version is running, and cleanup tools": "איזו גרסה פועלת, וכלי ניקוי",
+ "Back to settings": "חזרה להגדרות",
  "Previous song": "השיר הקודם",
  "Next song": "השיר הבא",
  "Resize the lyrics": "שינוי גודל המילים",
@@ -9233,6 +9504,69 @@ Object.assign(HEBREW_UI, {
 });
 
 Object.assign(HEBREW_UI, { "Tap to see the whole title": "לחיצה מציגה את הכותרת המלאה" });
+
+Object.assign(HEBREW_UI, {
+ "Same song?": "אותו שיר?",
+ "In your library": "בספרייה שלך",
+ "This one": "זה החדש",
+ "Version A": "גרסה א׳",
+ "Version B": "גרסה ב׳",
+ "Album": "אלבום",
+ "Lyricist": "פזמונאי",
+ "Time signature": "משקל",
+ "Capo": "קאפו",
+ "Other names": "שמות נוספים",
+ "Lines that differ": "שורות שונות",
+ "Keep both": "לשמור את שניהם",
+ "It's another version. This pair won't be flagged again.": "זו גרסה אחרת. הזוג לא יסומן שוב.",
+ "Merge into the one I have": "לאחד לשיר שיש לי",
+ "Fills empty details. You choose the rest.": "משלים פרטים חסרים. את השאר בוחרים בעצמך.",
+ "This song is used in an event, so it can't be merged away.": "השיר בשימוש באירוע, ולכן אי אפשר לאחד אותו.",
+ "Replace the old one": "להחליף את הישן",
+ "The song in your library is removed. Undo is available.": "השיר שבספרייה יימחק. אפשר לבטל.",
+ "The old song is used in an event, so it can't be replaced.": "השיר הישן בשימוש באירוע, ולכן אי אפשר להחליף אותו.",
+ "Back to editing": "חזרה לעריכה",
+ "Review merge": "סקירת האיחוד",
+ "Combined": "מאוחד",
+ "Where they differ": "איפה הם שונים",
+ "Keep mine": "להשאיר את שלי",
+ "Use new": "להשתמש בחדש",
+ "Merge": "איחוד",
+ "Keep my lyrics": "להשאיר את המילים שלי",
+ "Use the new lyrics": "להשתמש במילים החדשות",
+ "Use the new one (it has chords)": "להשתמש בחדש (יש בו אקורדים)",
+ "Filled in from the new one": "הושלם מהחדש",
+ "Chords, line by line": "אקורדים, שורה אחר שורה",
+ "Use the more detailed chord everywhere": "האקורד המפורט יותר בכל מקום",
+ "Words only in the new one are not added. Choose “Use the new lyrics” to take them.": "מילים שיש רק בחדש לא יתווספו. בחרו ״להשתמש במילים החדשות״ כדי לקחת אותן.",
+ "Undone": "בוטל",
+ "Compare": "השוואה",
+ "You already have a song like this:": "כבר יש לך שיר כזה:",
+ "Duplicate songs": "שירים כפולים",
+ "Songs that look like the same song": "שירים שנראים כמו אותו שיר",
+ "Rescan": "סריקה מחדש",
+ "To review": "לסקירה",
+ "Kept both": "נשמרו שניהם",
+ "Likely the same": "כנראה אותו שיר",
+ "Maybe": "אולי",
+ "Merge all 100%": "איחוד כל ההתאמות המלאות",
+ "Undo keep": "ביטול השמירה",
+ "Scanned": "נסרק",
+ "Maybe duplicate": "אולי כפול",
+ "chords differ": "האקורדים שונים",
+ "one has chords": "באחד יש אקורדים",
+ "lyrics differ": "המילים שונות",
+ "same details": "אותם פרטים",
+ "to review": "לסקירה",
+ "No duplicates found": "לא נמצאו כפילויות",
+ "No duplicates found. Songs with the same title and artist will show up here.": "לא נמצאו כפילויות. שירים עם אותה כותרת ואותו אמן יופיעו כאן.",
+ "Nothing here yet.": "אין כאן עדיין כלום.",
+ "Old song replaced": "השיר הישן הוחלף",
+ "Merged. Nothing needed changing.": "אוחד. לא היה מה לשנות.",
+ "Nothing to merge automatically": "אין מה לאחד אוטומטית",
+ "These songs are used in events or sets. Take them out of those first.": "השירים האלה בשימוש באירועים או בסטים. קודם יש להוציא אותם משם.",
+ "They and their lyrics will be permanently deleted from this device. Back up first if you are unsure.": "הם והמילים שלהם יימחקו לצמיתות מהמכשיר. אם יש ספק, קודם לגבות."
+});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -9898,6 +10232,7 @@ function normalizeSong(song) {
     videoLinks,
     practiceFile: normalizePracticeFile(song.practiceFile),
     alternateOfId: song.alternateOfId || null,
+    keptBoth: [...new Set((Array.isArray(song.keptBoth) ? song.keptBoth : []).map((id) => String(id || "")).filter(Boolean))],
     key: song.key || song.myKey || "",
     timeSignature: String(song.timeSignature || "").trim(),
     needsReview: song.needsReview === true,
@@ -10860,6 +11195,7 @@ function renderFolder() {
   const artistName = artistNameFromFolderId(currentFolderId);
   const isArtistIndex = currentFolderId === ARTISTS;
   const isArtistView = isArtistIndex || Boolean(artistName);
+  syncSongFilterContext(Boolean(artistName));
   const isSpecial = [ALL_SONGS, UNFILED, ARTISTS, NEEDS_LYRICS].includes(currentFolderId) || Boolean(artistName);
   const title = currentFolderId === ALL_SONGS ? t("All Songs")
     : currentFolderId === UNFILED ? t("Unfiled")
@@ -10891,6 +11227,7 @@ function renderFolder() {
   els.sortMenuBtn.classList.toggle("hidden", isArtistView || !songs.length);
   els.sortMenuLabel.textContent = songSortLabel(songSort);
   els.sortMenuBtn.classList.toggle("filtered", activeFilterCount() > 0);
+  els.sortMenuBtn.dataset.count = activeFilterCount() > 0 ? String(activeFilterCount()) : "";
   els.sortMenuBtn.setAttribute("aria-label", activeFilterCount() ? `Sort and filter songs, ${activeFilterCount()} filters active` : "Sort and filter songs");
   els.songsSection.classList.toggle("hidden", isArtistIndex);
   renderBreadcrumbs(folder, artistName);
@@ -11031,37 +11368,34 @@ function renderSubfolders(folders, parentFolder) {
   });
 }
 
-// Quick filters above the list: Style, Language, Occasion and tempo (BPM), as plain text chips. A chip opens its choices in
-// a second row; any of the chosen values in a group counts, and the groups narrow each other down. Shown only when some
-// song has one of those details.
-function renderSongFilterStrip(sourceSongs) {
-  const groups = [
-    { key: "styles", label: "Style", values: (song) => song.styles || [] },
-    { key: "languages", label: "Language", values: (song) => (song.language ? [song.language] : []) },
-    { key: "occasions", label: "Occasion", values: (song) => song.occasions || [] },
-    { key: "bpm", label: "BPM", values: (song) => [songBpmRangeKey(song)].filter(Boolean) }
-  ];
-  const options = (group) => {
-    const counts = new Map();
-    sourceSongs.forEach((song) => group.values(song).forEach((value) => counts.set(value, (counts.get(value) || 0) + 1)));
-    if (group.key === "bpm") return SONG_BPM_RANGES.filter((range) => counts.has(range.key)).map((range) => ({ value: range.key, label: range.label }));
-    return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([value]) => ({ value, label: value }));
-  };
-  const available = groups.map((group) => ({ group, options: options(group) })).filter((entry) => entry.options.length);
-  els.songFilterStrip.hidden = !available.length;
-  if (!available.length) { els.songFilterStrip.innerHTML = ""; return; }
-  if (songChipOpen && !available.some((entry) => entry.group.key === songChipOpen)) songChipOpen = "";
-  const chip = (attrs, text, active, pressed) => `<button type="button" class="song-filter-chip${active ? " is-active" : ""}" ${attrs}${pressed === undefined ? "" : ` aria-pressed="${pressed}"`}>${escapeHtml(text)}</button>`;
-  const anyActive = Object.values(songChipFilters).some((list) => list.length);
-  const open = available.find((entry) => entry.group.key === songChipOpen);
-  els.songFilterStrip.innerHTML = `<div class="song-filter-row" role="group" aria-label="${t("Filter songs")}">${available.map(({ group }) => {
-    const count = songChipFilters[group.key].length;
-    return chip(`data-filter-group="${group.key}" aria-expanded="${songChipOpen === group.key}"`, `${t(group.label)}${count ? ` · ${count}` : ""}`, count > 0 || songChipOpen === group.key);
-  }).join("")}${anyActive ? chip('data-filter-clear="1"', t("Clear"), false) : ""}</div>${open ? `<div class="song-filter-row song-filter-options" role="group" aria-label="${t(open.group.label)}">${open.options.map((option) => chip(`data-filter-value="${escapeAttribute(option.value)}" data-filter-group="${open.group.key}"`, option.label, songChipFilters[open.group.key].includes(option.value), songChipFilters[open.group.key].includes(option.value))).join("")}</div>` : ""}`;
+// One thin line above the list while filters are on: each active choice with a cross, and one Clear all. Nothing shows when no
+// filter is on. The choices themselves live in the filter button's panel.
+let songFilterContext = "";
+
+// Filters belong to the list they were chosen in: opening another folder, list or artist starts with none.
+function syncSongFilterContext(isArtistView) {
+  const context = `${currentFolderId}|${isArtistView}`;
+  if (context !== songFilterContext) { songFilterContext = context; clearAllSongFilters(); }
+}
+
+function activeFilterChips() {
+  const chips = [];
+  const labelFor = (group, value) => (group === "bpm" ? SONG_BPM_RANGES.find((range) => range.key === value)?.label || value : value);
+  Object.entries(songChipFilters).forEach(([group, values]) => values.forEach((value) => chips.push({ kind: "chip", group, value, label: labelFor(group, value) })));
+  [["artist", ""], ["composer", ""], ["key", ""], ["status", ""]].forEach(([key]) => { if (songFilters[key]) chips.push({ kind: "select", group: key, value: songFilters[key], label: key === "status" ? statusLabel(songFilters[key]) : songFilters[key] }); });
+  return chips;
+}
+
+function renderSongFilterStrip() {
+  const chips = activeFilterChips();
+  els.songFilterStrip.hidden = !chips.length;
+  if (!chips.length) { els.songFilterStrip.innerHTML = ""; return; }
+  els.songFilterStrip.innerHTML = `${chips.map((chip) => `<button type="button" class="active-filter" data-active-kind="${chip.kind}" data-active-group="${escapeAttribute(chip.group)}" data-active-value="${escapeAttribute(chip.value)}" aria-label="${escapeAttribute(`${t("Remove filter")}: ${chip.label}`)}"><span>${escapeHtml(chip.label)}</span><i aria-hidden="true">✕</i></button>`).join("")}<button type="button" class="active-filter-clear" data-active-clear="1">${t("Clear all")}</button>`;
 }
 
 function renderSongList(sourceSongs, isArtistView = false) {
-  renderSongFilterStrip(sourceSongs);
+  filterPanelSongs = sourceSongs;
+  renderSongFilterStrip();
   const query = els.folderSearchInput.value.trim().toLocaleLowerCase();
   const scope = folderSearchScope;
   let songs = sourceSongs.filter((song) => songMatchesSearch(song, query, scope) && songMatchesFilters(song));
@@ -11075,7 +11409,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
   els.songsEmptyHeader.classList.toggle("hidden", !emptyList || filtering);
   els.songList.classList.toggle("hidden", emptyList && !filtering);
   if (emptyList) {
-    if (filtering) els.songList.innerHTML = emptyMarkup("search-x", "No songs match");
+    if (filtering) els.songList.innerHTML = `${emptyMarkup("search-x", "No songs match")}${activeFilterCount() ? `<button type="button" class="active-filter-clear active-filter-clear--block" data-active-clear="1">${t("Clear filters")}</button>` : ""}`;
     return;
   }
 
@@ -11094,7 +11428,8 @@ function renderSongList(sourceSongs, isArtistView = false) {
         <div class="slp-row ${selectedSongId === song.id ? "selected" : ""}" role="button" tabindex="0" aria-label="Open ${escapeAttribute(visibleTitle)}">
           ${selectMode.active ? selectCheckMarkup() : ""}
           <span class="slp-row__body"><span class="slp-row__title">${songTitleMarkup(song)}</span></span>
-          ${song.needsReview ? `<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>` : ""}
+          ${likelyDuplicateIds().has(song.id) ? `<span class="song-review-chip song-dup-chip">${t("Maybe duplicate")}</span>` : ""}
+        ${song.needsReview ? `<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>` : ""}
         ${songChartFlag(song)}
         ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
           <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -11124,6 +11459,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
           <button class="song-title-button" type="button"><span class="slp-row__title">${songTitleMarkup(song)}</span></button>
           ${(song.artists || []).length ? `<span class="slp-row__artists">${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
         </div>
+        ${likelyDuplicateIds().has(song.id) ? `<span class="song-review-chip song-dup-chip">${t("Maybe duplicate")}</span>` : ""}
         ${song.needsReview ? `<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>` : ""}
         ${songChartFlag(song)}
         ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
@@ -12014,8 +12350,8 @@ function boardCardMarkup(song, column) {
   // An open card keeps its header short: the key moves under the title (highlighted) and the right
   // side holds only a small pin button.
   const keyChip = key ? `<span class="board-card__keychip" dir="ltr">${escapeHtml(key)}</span>` : "";
-  const composerText = column?.type === "search" ? [song.composer, ...(song.artists || [])] : [song.composer];
-  const composer = [...new Set(composerText.map((part) => String(part || "").trim()).filter(Boolean))].join(" · ");
+  // Under a title the card shows who sings it, never the composer.
+  const composer = (song.artists || []).map((name) => String(name || "").trim()).filter(Boolean).join(" · ");
   const openSub = songNeedsLyrics(song) ? `<span class="board-card__sub board-card__needs">${t("Needs details")}</span>` : `<span class="board-card__sub board-card__sub--open">${composer ? `<span dir="auto">${escapeHtml(composer)}</span>` : ""}${keyChip}</span>`;
   const sub = open ? openSub : (songNeedsLyrics(song) ? `<span class="board-card__sub board-card__needs">${t("Needs details")}</span>` : boardCardSubline(song, column));
   const pinTitle = boardWide() ? "Pin to side" : "Pin to top";
@@ -12092,8 +12428,8 @@ function renderBoardColumnsScreen() {
 }
 
 function boardCardSubline(song, column) {
-  const parts = column?.type === "search" ? [song.composer, ...(song.artists || [])] : [song.composer];
-  const text = [...new Set(parts.map((part) => String(part || "").trim()).filter(Boolean))].join(" · ");
+  // Under a title the card shows who sings it (the artists), never the composer.
+  const text = (song.artists || []).map((name) => String(name || "").trim()).filter(Boolean).join(" · ");
   return text ? `<span class="board-card__sub" dir="auto">${escapeHtml(text)}</span>` : "";
 }
 
@@ -13179,6 +13515,40 @@ function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) 
 // The lyrics key chip goes straight to choosing the key: Details is opened, the key
 // picker is expanded and scrolled into view, and the title field is not focused (no
 // keyboard pops up over the picker).
+// A small key picker right on the lyrics page: one tap sets the song's key, no need for the full editor.
+let quickKeyMode = "major";
+
+function openQuickKey() {
+  const song = currentSong();
+  if (!song) return;
+  quickKeyMode = keyModeFromValue(song.key || "");
+  els.quickKeySong.textContent = song.title;
+  renderQuickKey();
+  showOverlay(els.quickKeySheet);
+}
+
+function renderQuickKey() {
+  const song = currentSong();
+  if (!song) return;
+  const notes = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab"];
+  els.quickKeySheet.querySelectorAll("[data-quick-mode]").forEach((button) => button.classList.toggle("selected", button.dataset.quickMode === quickKeyMode));
+  els.quickKeyGrid.innerHTML = notes.map((note) => {
+    const value = keyValueFor(note, quickKeyMode);
+    return `<button type="button" data-quick-note="${escapeAttribute(note)}" class="${value === song.key ? "selected" : ""}" aria-label="${escapeAttribute(fullKeyLabel(value))}">${keyNoteLabel(note, quickKeyMode)}</button>`;
+  }).join("");
+}
+
+function setQuickKey(value) {
+  const song = currentSong();
+  if (!song) return;
+  song.key = value;
+  song.updatedAt = new Date().toISOString();
+  persist();
+  closeOverlays();
+  render();
+  showToast(value ? `Key set to ${compactKeyLabel(value)}` : "Key cleared");
+}
+
 function openSongKeyEditor() {
   if (!currentSong()) return;
   openSongInfo(false, null, { focusKey: true });
@@ -13388,7 +13758,7 @@ function appendFolderChoice(folder, song, child, container = els.songFolderChoic
 // side has no artist yet -- is treated as the existing song, not a new one.
 function findExistingSongMatch(title, artist, alternateTitles, excludeId) {
   const wanted = [title, ...alternateTitles].map(normalizeComparisonText).filter(Boolean);
-  const wantedArtists = normalizeArtistNames(artist).map(normalizeComparisonText);
+  const wantedArtists = splitArtistCredits(artist).map(normalizeComparisonText);
   return state.songs.find((existing) => {
     if (existing.id === excludeId) return false;
     const names = [existing.title, existing.titleEnglish, existing.titleHebrew, ...(existing.alternateTitles || [])].map(normalizeComparisonText).filter(Boolean);
@@ -13402,6 +13772,7 @@ function showSongTitleNotice(message, existingSongId = "") {
   els.songTitleNoticeText.textContent = message;
   els.songTitleNoticeOpenBtn.hidden = !existingSongId;
   els.songTitleNoticeOpenBtn.dataset.songId = existingSongId;
+  els.songTitleNoticeCompareBtn.hidden = !existingSongId || !songInfoDraft;
   els.songTitleNotice.hidden = false;
   const titleField = els.songTitleEnglishInput.value.trim() || !els.songTitleHebrewInput.value.trim() ? els.songTitleEnglishInput : els.songTitleHebrewInput;
   [els.songTitleEnglishInput, els.songTitleHebrewInput].forEach((input) => input.setAttribute("aria-invalid", String(input === titleField)));
@@ -13437,7 +13808,9 @@ function saveSongInfo() {
     return;
   }
   const otherNames = normalizeStringArray(els.songAlternateTitlesInput.value).filter((name) => name !== english && name !== hebrew && name !== title);
-  const match = findExistingSongMatch(title, els.songArtistInput.value, [...otherNames, english, hebrew].filter(Boolean), songInfoDraft.originalId);
+  let match = findExistingSongMatch(title, els.songArtistInput.value, [...otherNames, english, hebrew].filter(Boolean), songInfoDraft.originalId);
+  // A pair already marked "keep both" (now or earlier) is not a duplicate any more.
+  if (match && (songInfoDraft.keepBoth?.has(match.id) || (match.keptBoth || []).includes(song.id) || (song.keptBoth || []).includes(match.id))) match = null;
   if (match) {
     showSongTitleNotice(`“${match.title}”${match.artist ? ` by ${match.artist}` : ""} is already in your library. Add a different artist if this is another version.`, match.id);
     return;
@@ -13448,7 +13821,7 @@ function saveSongInfo() {
   song.titleEnglish = isPureLatinText(english) ? english : "";
   song.titleHebrew = isPureHebrewText(hebrew) ? hebrew : "";
   song.titleYiddish = "";
-  song.artists = normalizeArtistNames(els.songArtistInput.value);
+  song.artists = splitArtistCredits(els.songArtistInput.value);
   song.artist = song.artists.join(", ");
   song.artistHebrew = els.songArtistHebrewInput.value.trim();
   song.featuredArtist = "";
@@ -13477,6 +13850,13 @@ function saveSongInfo() {
   song.sourceUrl = "";
   song.folderIds = [...els.songFolderChoices.querySelectorAll("input:checked")].map((input) => input.value);
   song.updatedAt = new Date().toISOString();
+  if (songInfoDraft.keepBoth?.size) {
+    song.keptBoth = [...new Set([...(song.keptBoth || []), ...songInfoDraft.keepBoth])];
+    songInfoDraft.keepBoth.forEach((id) => {
+      const other = state.songs.find((item) => item.id === id);
+      if (other) other.keptBoth = [...new Set([...(other.keptBoth || []), song.id])];
+    });
+  }
   commitSongInfoFolders();
   if (songInfoDraft.isNew) {
     state.songs.unshift(song);
@@ -13791,7 +14171,8 @@ function placeEditDock() {
 function setSongEditMode(editing) {
   const wasEditing = songEditMode;
   songEditMode = editing;
-  if (editing) { setEditDockOpen(false); placeEditDock(); }
+  // A song with chords opens the editing bar already expanded, so Done is in plain sight.
+  if (editing) { setEditDockOpen(songHasChords(currentSong())); placeEditDock(); }
   els.songDocument.contentEditable = String(editing);
   els.writingToolbar.classList.toggle("hidden", !editing);
   if (!editing) {
@@ -13979,6 +14360,7 @@ function applySnapshot(snapshot) {
   els.songDocument.innerHTML = song.documentHtml;
   els.songDocument.dataset.songId = song.id;
   decorateSections(els.songDocument);
+  if (songEditMode && songHasChords(song)) decorateChordChips(els.songDocument);
   renderSong();
   persist();
 }
@@ -14430,54 +14812,106 @@ function showSongSortMenu() {
   showActionMenu(items, els.sortMenuBtn);
 }
 
+// ---------- Sort & filter (the filter button in the list header) ----------
+// One panel: how to sort, then the quick filters (Style, Language, Occasion, tempo) as plain chips, and under "More" the
+// older ones (artist, composer, key, status). Choices apply at once; "Show N songs" just closes the panel.
+let filterPanelSongs = [];            // the songs of the list that is open, so the choices offered are the ones that exist there
+
+function filterGroupOptions(group) {
+  const counts = new Map();
+  filterPanelSongs.forEach((song) => {
+    const values = group === "styles" ? (song.styles || []) : group === "occasions" ? (song.occasions || []) : group === "languages" ? (song.language ? [song.language] : []) : [songBpmRangeKey(song)].filter(Boolean);
+    values.forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+  });
+  if (group === "bpm") return SONG_BPM_RANGES.filter((range) => counts.has(range.key)).map((range) => ({ value: range.key, label: range.label }));
+  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([value]) => ({ value, label: value }));
+}
+
+function filteredSongCount() {
+  return filterPanelSongs.filter((song) => songMatchesFilters(song)).length;
+}
+
+function renderFilterPanel() {
+  const chip = (attrs, text, on) => `<button type="button" class="filter-chip${on ? " is-on" : ""}" ${attrs} aria-pressed="${Boolean(on)}">${escapeHtml(text)}</button>`;
+  const sorts = [["custom", "Custom order"], ["titleEnglish", "A-Z"], ["titleHebrew", "א-ת"], ["key", "Key"], ["date", "Recently edited"]];
+  const group = (key, label) => {
+    const options = filterGroupOptions(key);
+    if (!options.length) return "";
+    return `<div class="filter-group"><span class="filter-group__label">${t(label)}</span><div class="filter-chips">${options.map((option) => chip(`data-chip-group="${key}" data-chip-value="${escapeAttribute(option.value)}"`, option.label, songChipFilters[key].includes(option.value))).join("")}</div></div>`;
+  };
+  const select = (key, label, values, allLabel) => {
+    const options = [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+    return `<label class="filter-select"><span>${t(label)}</span><select data-select-filter="${key}"><option value="">${t(allLabel)}</option>${options.map((value) => `<option value="${escapeAttribute(value)}"${songFilters[key] === value ? " selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></label>`;
+  };
+  const artists = [...new Set(filterPanelSongs.flatMap((song) => song.artists || []))].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+  const moreOpen = Boolean(songFilters.artist || songFilters.composer || songFilters.key || songFilters.status);
+  els.filterPanelBody.innerHTML = `
+    <div class="filter-group"><span class="filter-group__label">${t("Sort")}</span><div class="filter-chips">${sorts.map(([value, label]) => chip(`data-sort-value="${value}"`, t(label), songSort === value)).join("")}${songSort !== "custom" ? chip('data-sort-direction="1"', songSortDirection === "asc" ? t("Ascending") : t("Descending"), false) : ""}</div></div>
+    ${group("styles", "Style")}${group("languages", "Language")}${group("occasions", "Occasion")}${group("bpm", "BPM")}
+    <details class="filter-more"${moreOpen ? " open" : ""}><summary>${t("More filters")}</summary>
+      ${select("artist", "Artist", artists, "All artists")}
+      ${select("composer", "Composer", filterPanelSongs.map((song) => song.composer), "All composers")}
+      ${select("key", "Key", filterPanelSongs.map(songDisplayKey), "All keys")}
+      <label class="filter-select"><span>${t("Status")}</span><select data-select-filter="status"><option value="">${t("All statuses")}</option>${[["learning", "Learning"], ["polishing", "Polishing"], ["ready", "Ready"]].map(([value, label]) => `<option value="${value}"${songFilters.status === value ? " selected" : ""}>${t(label)}</option>`).join("")}</select></label>
+    </details>
+    <button type="button" class="filter-select-songs" data-select-songs="1"><i data-lucide="check-circle-2"></i><span>${t("Select songs")}</span></button>`;
+  els.applyFiltersBtn.textContent = `${t("Show")} ${filteredSongCount()} ${t(plural(filteredSongCount(), "song"))}`;
+  els.clearFiltersBtn.hidden = activeFilterCount() === 0;
+  refreshIcons();
+}
+
 function openFilterSheet() {
-  populateArtistFilter();
-  populateFilterSelect(els.filterLanguageInput, "All languages", state.songs.map((song) => song.language), songFilters.language);
-  populateFilterSelect(els.filterKeyInput, "All keys", state.songs.map(songDisplayKey), songFilters.key);
-  populateFilterSelect(els.filterComposerInput, "All composers", state.songs.map((song) => song.composer), songFilters.composer);
-  els.filterStatusInput.value = songFilters.status;
+  renderFilterPanel();
   showOverlay(els.filterSheet);
 }
 
-function populateArtistFilter() {
-  const artists = new Map();
-  state.songs.forEach((song) => {
-    (song.artists || []).forEach((name, index) => {
-      const key = normalizedArtist(name);
-      const hebrew = index === 0 ? song.artistHebrew || "" : "";
-      if (!artists.has(key)) artists.set(key, { value: name, hebrew });
-      else if (!artists.get(key).hebrew && hebrew) artists.get(key).hebrew = hebrew;
-    });
-  });
-  const options = [...artists.values()].sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: "base" }));
-  els.filterArtistInput.innerHTML = `<option value="">${t("All artists")}</option>${options.map((artist) => `<option value="${escapeAttribute(artist.value)}">${escapeHtml(artist.hebrew ? `${artist.value} · ${artist.hebrew}` : artist.value)}</option>`).join("")}`;
-  els.filterArtistInput.value = songFilters.artist;
+function onFilterPanelClick(event) {
+  const button = event.target.closest("button");
+  if (!button) return;
+  if (button.dataset.chipGroup) {
+    const list = songChipFilters[button.dataset.chipGroup];
+    const value = button.dataset.chipValue;
+    songChipFilters[button.dataset.chipGroup] = list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+  } else if (button.dataset.sortValue) {
+    songSort = button.dataset.sortValue;
+    if (songSort === "date") songSortDirection = "desc";
+    songReorderMode = false;
+    els.songSortSelect.value = songSort;
+  } else if (button.dataset.sortDirection) {
+    songSortDirection = songSortDirection === "asc" ? "desc" : "asc";
+  } else if (button.dataset.selectSongs) {
+    closeOverlays();
+    enterSelectMode(folderSelectContext());
+    return;
+  } else return;
+  renderFolder();
+  renderFilterPanel();
 }
 
-function populateFilterSelect(select, allLabel, values, selected) {
-  const options = [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-  select.innerHTML = `<option value="">${escapeHtml(allLabel)}</option>${options.map((value) => `<option value="${escapeAttribute(value)}">${escapeHtml(value)}</option>`).join("")}`;
-  select.value = selected;
+function onFilterPanelChange(event) {
+  const select = event.target.closest("[data-select-filter]");
+  if (!select) return;
+  songFilters[select.dataset.selectFilter] = select.value;
+  renderFolder();
+  renderFilterPanel();
+}
+
+function clearAllSongFilters() {
+  songFilters = { artist: "", language: "", key: "", status: "", composer: "" };
+  songChipFilters = { styles: [], languages: [], occasions: [], bpm: [] };
 }
 
 function applySongFilters() {
-  songFilters = {
-    artist: els.filterArtistInput.value,
-    language: els.filterLanguageInput.value,
-    key: els.filterKeyInput.value,
-    status: els.filterStatusInput.value,
-    composer: els.filterComposerInput.value
-  };
   closeOverlays();
   renderFolder();
   refreshIcons();
-  showToast(activeFilterCount() ? `${activeFilterCount()} filters applied` : "Showing all songs");
 }
 
 function clearSongFilters() {
-  songFilters = { artist: "", language: "", key: "", status: "", composer: "" };
-  openFilterSheet();
+  clearAllSongFilters();
+  renderFolder();
+  if (!els.filterSheet.classList.contains("hidden")) renderFilterPanel();
+  refreshIcons();
 }
 
 function activeFilterCount() {
@@ -14508,7 +14942,6 @@ function songMatchesChipFilters(song) {
 
 function songMatchesFilters(song) {
   if (songFilters.artist && ![...(song.artists || []), song.artistHebrew].includes(songFilters.artist)) return false;
-  if (songFilters.language && song.language !== songFilters.language) return false;
   if (songFilters.key && songDisplayKey(song) !== songFilters.key) return false;
   if (songFilters.status && song.status !== songFilters.status) return false;
   if (songFilters.composer && song.composer !== songFilters.composer) return false;
@@ -14706,6 +15139,663 @@ async function shareCloudBackup(provider) {
   await exportLibrary();
   showToast(`Backup downloaded. Move it into ${provider}.`);
 }
+// Duplicate songs: compare two versions, merge them, keep both, or replace one.
+//
+// Rules (agreed): the song already in the library is the base and nothing is overwritten without being
+// shown. Empty fields are filled from the other song, lists are combined, differing single values keep
+// the library's unless chosen, lyrics keep the library's unless chosen, and chords are never merged
+// automatically: where both charts have the same words with different chords, each line is chosen.
+
+const DUP_VALUE_FIELDS = [
+  ["title", "Title"], ["artist", "Artist"], ["key", "Key"], ["language", "Language"], ["bpm", "BPM"],
+  ["album", "Album"], ["composer", "Composer"], ["lyricist", "Lyricist"], ["timeSignature", "Time signature"],
+  ["capo", "Capo"], ["youtubeUrl", "YouTube link"]
+];
+const DUP_LIST_FIELDS = [["styles", "Style"], ["occasions", "Occasion"], ["alternateTitles", "Other names"]];
+
+// The song's text, one string per line, chord tokens kept ("[Am] Sing every word").
+function dupLyricLines(song) {
+  return String(song?.documentHtml || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(div|p|h[1-6]|li)>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replaceAll("&nbsp;", " ").replaceAll("&amp;", "&").replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&quot;", '"').replaceAll("&#039;", "'")
+    .split("\n").map((line) => line.trim()).filter(Boolean);
+}
+
+function dupChordsOf(line) {
+  return line.match(chordTokenPattern()) || [];
+}
+
+function dupPlainLine(line) {
+  return normalizeComparisonText(line.replace(chordTokenPattern(), " "));
+}
+
+// A chord that adds to another ("E7" over "E", "Am7" over "Am").
+function dupRicher(mine, theirs) {
+  if (mine.length !== theirs.length || !mine.length) return false;
+  let longer = false;
+  for (let i = 0; i < mine.length; i += 1) {
+    const a = mine[i].slice(1, -1);
+    const b = theirs[i].slice(1, -1);
+    if (a === b) continue;
+    if (b.startsWith(a) && b.length > a.length) longer = true;
+    else return false;
+  }
+  return longer;
+}
+
+// Line by line: the same words with different chords, words only in one chart.
+function dupLyricDiff(base, other) {
+  const mine = dupLyricLines(base);
+  const theirs = dupLyricLines(other);
+  const used = new Set();
+  const chordDiffs = [];
+  let matched = 0;
+  const onlyNew = [];
+  theirs.forEach((line, bIndex) => {
+    const plain = dupPlainLine(line);
+    if (!plain) return;
+    const aIndex = mine.findIndex((candidate, index) => !used.has(index) && dupPlainLine(candidate) === plain);
+    if (aIndex < 0) { onlyNew.push(line); return; }
+    used.add(aIndex);
+    matched += 1;
+    if (dupChordsOf(mine[aIndex]).join("") !== dupChordsOf(line).join("")) {
+      chordDiffs.push({ aIndex, bIndex, mine: mine[aIndex], theirs: line, richer: dupRicher(dupChordsOf(mine[aIndex]), dupChordsOf(line)) });
+    }
+  });
+  const onlyMine = mine.filter((line, index) => !used.has(index) && dupPlainLine(line));
+  const biggest = Math.max(mine.length, theirs.length, 1);
+  return { chordDiffs, onlyNew, onlyMine, matched, aligned: matched / biggest >= 0.6, mineLines: mine.length, theirLines: theirs.length };
+}
+
+function dupFolderNames(song) {
+  return (song.folderIds || []).map((id) => folderById(id)?.name).filter(Boolean);
+}
+
+// Rows for the compare table: what each version has, and whether it differs.
+function compareSongs(base, other) {
+  const rows = [];
+  const text = (v) => (v === 0 || v ? String(v) : "");
+  DUP_VALUE_FIELDS.forEach(([key, label]) => {
+    const a = text(base[key]);
+    const b = text(other[key]);
+    if (!a && !b) return;
+    rows.push({ key, label, mine: a, theirs: b, differs: a.trim() !== b.trim() });
+  });
+  DUP_LIST_FIELDS.forEach(([key, label]) => {
+    const a = (base[key] || []).join(", ");
+    const b = (other[key] || []).join(", ");
+    if (!a && !b) return;
+    rows.push({ key, label, mine: a, theirs: b, differs: a !== b, list: true });
+  });
+  const fa = dupFolderNames(base).join(", ");
+  const fb = dupFolderNames(other).join(", ");
+  if (fa || fb) rows.push({ key: "folders", label: "Folders", mine: fa, theirs: fb, differs: fa !== fb, list: true });
+  const diff = dupLyricDiff(base, other);
+  const chordsA = songHasChords(base);
+  const chordsB = songHasChords(other);
+  rows.push({ key: "chords", label: "Chords", mine: chordsA ? "Yes" : "No", theirs: chordsB ? "Yes" : "No", differs: chordsA !== chordsB });
+  rows.push({ key: "lines", label: "Lyrics", mine: `${diff.mineLines} lines`, theirs: `${diff.theirLines} lines`, differs: diff.mineLines !== diff.theirLines || diff.chordDiffs.length > 0 || diff.onlyNew.length > 0 });
+  return { rows, diff };
+}
+
+// What happens by default: empty fields fill, differing values keep the library's.
+function defaultMergePlan(base, other) {
+  const { rows, diff } = compareSongs(base, other);
+  const fields = {};
+  rows.filter((row) => row.differs && !row.list && DUP_VALUE_FIELDS.some(([key]) => key === row.key)).forEach((row) => {
+    fields[row.key] = row.mine ? "mine" : "new";
+  });
+  let lyrics = "mine";
+  if (!dupLyricLines(base).length && dupLyricLines(other).length) lyrics = "new";
+  else if (!songHasChords(base) && songHasChords(other) && diff.aligned) lyrics = "new";
+  const lines = {};
+  diff.chordDiffs.forEach((entry) => { lines[entry.aIndex] = "mine"; });
+  return { fields, lyrics, lines };
+}
+
+function dupUnion(...lists) {
+  return [...new Set(lists.flat().map((item) => String(item || "").trim()).filter(Boolean))];
+}
+
+// The merged song (the base with the chosen things from the other). Pure: nothing is saved here.
+function mergedSong(base, other, plan) {
+  const merged = JSON.parse(JSON.stringify(base));
+  const report = [];
+  DUP_VALUE_FIELDS.forEach(([key, label]) => {
+    const a = merged[key];
+    const b = other[key];
+    const has = (v) => v === 0 || Boolean(v);
+    if (!has(b) || String(a ?? "").trim() === String(b).trim()) return;
+    if (!has(a) || plan.fields?.[key] === "new") {
+      merged[key] = b;
+      report.push(`${label} ${has(a) ? "changed" : "added"}`);
+    }
+  });
+  if (plan.fields?.artist === "new" || (!base.artist && other.artist)) merged.artists = [...(other.artists || [])];
+  DUP_LIST_FIELDS.forEach(([key, label]) => {
+    const all = dupUnion(merged[key] || [], other[key] || []);
+    if (all.length !== (merged[key] || []).length) report.push(`${label} added`);
+    merged[key] = all;
+  });
+  merged.style = (merged.styles || []).join("; ");
+  const folders = dupUnion(merged.folderIds || [], other.folderIds || []);
+  if (folders.length !== (merged.folderIds || []).length) report.push("Folders added");
+  merged.folderIds = folders;
+  merged.audioLinks = dupUnion(merged.audioLinks || [], other.audioLinks || []);
+  merged.videoLinks = dupUnion(merged.videoLinks || [], other.videoLinks || []);
+  ["practiceFile", "notePictures", "noteGroups", "notePdfs", "notePreview"].forEach((key) => {
+    const empty = (v) => !v || (Array.isArray(v) && !v.length);
+    if (empty(merged[key]) && !empty(other[key])) merged[key] = JSON.parse(JSON.stringify(other[key]));
+  });
+  merged.infoSources = { ...(other.infoSources || {}), ...(merged.infoSources || {}) };
+  if (!merged.needsReview && other.needsReview) { merged.needsReview = true; merged.reviewNote = other.reviewNote || ""; }
+  if (plan.lyrics === "new" && dupLyricLines(other).length) {
+    merged.documentHtml = other.documentHtml;
+    merged.blocks = other.blocks;
+    report.push(songHasChords(other) && !songHasChords(base) ? "Chords and lyrics taken from the new one" : "Lyrics taken from the new one");
+  } else {
+    const diff = dupLyricDiff(base, other);
+    let applied = 0;
+    diff.chordDiffs.forEach((entry) => {
+      if (plan.lines?.[entry.aIndex] !== "new") return;
+      const from = escapeHtml(entry.mine);
+      if (!String(merged.documentHtml).includes(from)) return;
+      merged.documentHtml = String(merged.documentHtml).replace(from, () => escapeHtml(entry.theirs));
+      applied += 1;
+    });
+    if (applied) report.push(`${applied} ${applied === 1 ? "line" : "lines"} with new chords`);
+  }
+  merged.updatedAt = new Date().toISOString();
+  return { song: normalizeSong(merged), report };
+}
+
+// The song that disappears when merging: the one being edited, or the second of a pair.
+function dupMergedAwayId() {
+  if (!dupCtx) return null;
+  if (dupCtx.source === "pair") return dupCtx.other.id;
+  return dupCtx.source === "edit" && songInfoDraft && !songInfoDraft.isNew ? songInfoDraft.originalId : null;
+}
+
+function dupGigReferences(songId) {
+  return songGigReferenceCount(songId);
+}
+
+// ---------- the screen ----------
+let dupCtx = null;
+let dupUndo = null;
+
+function dupSongFromForm() {
+  const draft = songInfoDraft.song;
+  const english = els.songTitleEnglishInput.value.trim();
+  const hebrew = els.songTitleHebrewInput.value.trim();
+  const title = english && hebrew ? `${english} – ${hebrew}` : (english || hebrew);
+  const artists = splitArtistCredits(els.songArtistInput.value);
+  return normalizeSong({
+    ...draft,
+    title, titleEnglish: english, titleHebrew: hebrew, artists, artist: artists.join(", "),
+    composer: els.songComposerInput.value.trim(), lyricist: els.songLyricistInput.value.trim(), album: els.songAlbumInput.value.trim(),
+    key: els.songKeyInput.value.trim(), language: els.songLanguageInput.value.trim(), timeSignature: els.songTimeSignatureInput.value.trim(),
+    bpm: els.songBpmInput.value, styles: normalizeStringArray(els.songStyleInput.value), occasions: normalizeStringArray(els.songOccasionsInput.value),
+    youtubeUrl: els.songYoutubeInput.value.trim(), capo: els.songCapoInput.value.trim(),
+    alternateTitles: normalizeStringArray(els.songAlternateTitlesInput.value),
+    folderIds: [...els.songFolderChoices.querySelectorAll("input:checked")].map((input) => input.value)
+  });
+}
+
+function openDuplicateCompare(baseId, other, source = "edit") {
+  const base = state.songs.find((song) => song.id === baseId);
+  if (!base || !other) return;
+  dupCtx = { baseId, other, source, step: "compare", plan: defaultMergePlan(base, other) };
+  setElementVisible(els.dupSheet, true);
+  els.app?.classList.add("dup-open");
+  renderDuplicateSheet();
+}
+
+function closeDuplicateSheet() {
+  setElementVisible(els.dupSheet, false);
+  els.app?.classList.remove("dup-open");
+  dupCtx = null;
+}
+
+function dupCell(value) {
+  return value ? escapeHtml(value) : `<span class="dup-empty">—</span>`;
+}
+
+function renderDuplicateSheet() {
+  if (!dupCtx) return;
+  const base = state.songs.find((song) => song.id === dupCtx.baseId);
+  if (!base) { closeDuplicateSheet(); return; }
+  const other = dupCtx.other;
+  const { rows, diff } = compareSongs(base, other);
+  const step = dupCtx.step;
+  const counter = dupCtx.queue ? ` ${dupCtx.queueIndex + 1} / ${dupCtx.queue.length}` : "";
+  els.dupTitle.textContent = t(step === "review" ? "Review merge" : "Same song?") + counter;
+  const table = `<div class="dup-table" role="table">
+    <div class="dup-row dup-head" role="row"><span></span><span>${t(dupCtx.source === "pair" ? "Version A" : "In your library")}</span><span>${t(dupCtx.source === "pair" ? "Version B" : "This one")}</span></div>
+    ${rows.map((row) => `<div class="dup-row ${row.differs ? "is-diff" : ""}" role="row"><span class="dup-label">${t(row.label)}</span><span dir="auto">${dupCell(row.mine)}</span><span dir="auto">${dupCell(row.theirs)}</span></div>`).join("")}
+  </div>`;
+  const lineList = diff.chordDiffs.length || diff.onlyNew.length ? `<div class="dup-lines"><h3>${t("Lines that differ")}</h3>
+    ${diff.chordDiffs.slice(0, 12).map((e) => `<div class="dup-line" dir="auto"><span>${escapeHtml(e.mine)}</span><span class="dup-line__new">${escapeHtml(e.theirs)}</span></div>`).join("")}
+    ${diff.onlyNew.slice(0, 6).map((line) => `<div class="dup-line" dir="auto"><span class="dup-empty">—</span><span class="dup-line__new">${escapeHtml(line)}</span></div>`).join("")}
+  </div>` : "";
+  let body = "";
+  let footer = "";
+  if (step === "compare" || step === "choose") {
+    const blockedBase = dupGigReferences(base.id) > 0;
+    const awayId = dupMergedAwayId();
+    const blockedMerge = Boolean(awayId) && dupGigReferences(awayId) > 0;
+    body = `${table}${lineList}
+    <div class="dup-choices">
+      <button class="dup-choice" type="button" data-dup="keep"><strong>${t("Keep both")}</strong><small>${t("It's another version. This pair won't be flagged again.")}</small></button>
+      <button class="dup-choice" type="button" data-dup="merge" ${blockedMerge ? "disabled" : ""}><strong>${t("Merge into the one I have")}</strong><small>${t(blockedMerge ? "This song is used in an event, so it can't be merged away." : "Fills empty details. You choose the rest.")}</small></button>
+      <button class="dup-choice" type="button" data-dup="replace" ${blockedBase ? "disabled" : ""}><strong>${t("Replace the old one")}</strong><small>${t(blockedBase ? "The old song is used in an event, so it can't be replaced." : "The song in your library is removed. Undo is available.")}</small></button>
+    </div>`;
+    footer = `<button class="slp-btn slp-btn--ghost" type="button" data-dup="cancel">${t("Back to editing")}</button>`;
+  } else {
+    const plan = dupCtx.plan;
+    const fieldRows = rows.filter((row) => row.differs && !row.list && plan.fields[row.key] !== undefined && row.mine && row.theirs);
+    const fills = rows.filter((row) => row.differs && !row.mine && row.theirs);
+    const lists = rows.filter((row) => row.list && row.differs && row.theirs);
+    const radio = (name, value, label, checked) => `<label class="dup-radio"><input type="radio" name="${name}" value="${value}" ${checked ? "checked" : ""}><span>${label}</span></label>`;
+    body = `<div class="dup-review">
+      ${fills.length ? `<h3>${t("Filled in from the new one")}</h3><p class="dup-note">${fills.map((row) => `${t(row.label)}: ${escapeHtml(row.theirs)}`).join(" · ")}</p>` : ""}
+      ${lists.length ? `<h3>${t("Combined")}</h3><p class="dup-note">${lists.map((row) => t(row.label)).join(" · ")}</p>` : ""}
+      ${fieldRows.length ? `<h3>${t("Where they differ")}</h3>${fieldRows.map((row) => `<fieldset class="dup-field"><legend>${t(row.label)}</legend>
+        ${radio(`f-${row.key}`, "mine", `${t("Keep mine")}: <b dir="auto">${escapeHtml(row.mine)}</b>`, plan.fields[row.key] === "mine")}
+        ${radio(`f-${row.key}`, "new", `${t("Use new")}: <b dir="auto">${escapeHtml(row.theirs)}</b>`, plan.fields[row.key] === "new")}
+      </fieldset>`).join("")}` : ""}
+      <h3>${t("Lyrics")}</h3>
+      <fieldset class="dup-field">
+        ${radio("lyrics", "mine", t("Keep my lyrics"), plan.lyrics === "mine")}
+        ${radio("lyrics", "new", t(songHasChords(dupCtx.other) && !songHasChords(base) ? "Use the new one (it has chords)" : "Use the new lyrics"), plan.lyrics === "new")}
+      </fieldset>
+      ${diff.chordDiffs.length && plan.lyrics === "mine" ? `<h3>${t("Chords, line by line")}</h3>
+        <button class="slp-btn slp-btn--soft dup-richer" type="button" data-dup="richer">${t("Use the more detailed chord everywhere")}</button>
+        ${diff.chordDiffs.map((e) => `<fieldset class="dup-field"><legend dir="auto">${escapeHtml(dupPlainLine(e.mine).slice(0, 40))}</legend>
+          ${radio(`l-${e.aIndex}`, "mine", `${t("Keep mine")}: <b dir="auto">${escapeHtml(dupChordsOf(e.mine).join(" ") || "—")}</b>`, plan.lines[e.aIndex] === "mine")}
+          ${radio(`l-${e.aIndex}`, "new", `${t("Use new")}: <b dir="auto">${escapeHtml(dupChordsOf(e.theirs).join(" ") || "—")}</b>`, plan.lines[e.aIndex] === "new")}
+        </fieldset>`).join("")}` : ""}
+      ${plan.lyrics === "mine" && diff.onlyNew.length ? `<p class="dup-note">${t("Words only in the new one are not added. Choose “Use the new lyrics” to take them.")}</p>` : ""}
+    </div>`;
+    footer = `<button class="slp-btn slp-btn--ghost" type="button" data-dup="back">${t("Back")}</button><button class="slp-btn slp-btn--primary" type="button" data-dup="apply">${t("Merge")}</button>`;
+  }
+  els.dupBody.innerHTML = body;
+  els.dupFooter.innerHTML = footer;
+}
+
+function onDuplicateClick(event) {
+  const button = event.target.closest("[data-dup]");
+  if (!button || !dupCtx || button.disabled) return;
+  const action = button.dataset.dup;
+  if (action === "cancel") { closeDuplicateSheet(); return; }
+  if (action === "back") { dupCtx.step = "compare"; renderDuplicateSheet(); return; }
+  if (action === "keep") { duplicateKeepBoth(); return; }
+  if (action === "merge") { dupCtx.step = "review"; renderDuplicateSheet(); els.dupBody.scrollTop = 0; return; }
+  if (action === "replace") { duplicateReplace(); return; }
+  if (action === "richer") {
+    const base = state.songs.find((song) => song.id === dupCtx.baseId);
+    dupLyricDiff(base, dupCtx.other).chordDiffs.forEach((e) => { if (e.richer) dupCtx.plan.lines[e.aIndex] = "new"; });
+    renderDuplicateSheet();
+    return;
+  }
+  if (action === "apply") duplicateApplyMerge();
+}
+
+function onDuplicateChange(event) {
+  const input = event.target;
+  if (!dupCtx || input.type !== "radio") return;
+  const name = input.name;
+  if (name === "lyrics") dupCtx.plan.lyrics = input.value;
+  else if (name.startsWith("f-")) dupCtx.plan.fields[name.slice(2)] = input.value;
+  else if (name.startsWith("l-")) dupCtx.plan.lines[Number(name.slice(2))] = input.value;
+  if (name === "lyrics") renderDuplicateSheet();
+}
+
+function duplicateKeepBoth() {
+  if (!dupCtx) return;
+  const baseId = dupCtx.baseId;
+  if (dupCtx.source === "pair") {
+    const a = state.songs.find((song) => song.id === baseId);
+    const b = state.songs.find((song) => song.id === dupCtx.other.id);
+    if (a && b) {
+      a.keptBoth = [...new Set([...(a.keptBoth || []), b.id])];
+      b.keptBoth = [...new Set([...(b.keptBoth || []), a.id])];
+      persist();
+    }
+    duplicatePairDone("Kept both");
+    return;
+  }
+  if (dupCtx.source === "edit" && songInfoDraft) {
+    songInfoDraft.keepBoth = new Set([...(songInfoDraft.keepBoth || []), baseId]);
+    closeDuplicateSheet();
+    clearSongTitleNotice();
+    saveSongInfo();
+  }
+}
+
+function duplicateSnapshot(songs) {
+  dupUndo = { at: Date.now(), songs: songs.map((song) => JSON.parse(JSON.stringify(song))), ids: songs.map((song) => song.id) };
+}
+
+function duplicateReplace() {
+  if (!dupCtx) return;
+  const base = state.songs.find((song) => song.id === dupCtx.baseId);
+  if (!base || dupGigReferences(base.id)) return;
+  duplicateSnapshot([base]);
+  const baseId = base.id;
+  if (dupCtx.source === "pair") {
+    state.songs = state.songs.filter((song) => song.id !== baseId);
+    Object.keys(state.songOrder).forEach((key) => { state.songOrder[key] = state.songOrder[key].filter((id) => id !== baseId); });
+    persist();
+    duplicatePairDone("Old song replaced", true);
+    return;
+  }
+  closeDuplicateSheet();
+  state.songs = state.songs.filter((song) => song.id !== baseId);
+  Object.keys(state.songOrder).forEach((key) => { state.songOrder[key] = state.songOrder[key].filter((id) => id !== baseId); });
+  clearSongTitleNotice();
+  saveSongInfo();
+  showUndoToast("Old song replaced", undoDuplicateAction);
+}
+
+function duplicateApplyMerge() {
+  if (!dupCtx) return;
+  const base = state.songs.find((song) => song.id === dupCtx.baseId);
+  if (!base) return;
+  const editedId = dupMergedAwayId();
+  if (editedId && dupGigReferences(editedId)) return;
+  const { song, report } = mergedSong(base, dupCtx.other, dupCtx.plan);
+  const edited = editedId ? state.songs.find((item) => item.id === editedId) : null;
+  duplicateSnapshot(edited ? [base, edited] : [base]);
+  const index = state.songs.findIndex((item) => item.id === base.id);
+  state.songs[index] = song;
+  if (edited) {
+    state.songs = state.songs.filter((item) => item.id !== edited.id);
+    Object.keys(state.songOrder).forEach((key) => { state.songOrder[key] = state.songOrder[key].filter((id) => id !== edited.id); });
+  }
+  if (dupCtx.source === "pair") {
+    persist();
+    duplicatePairDone(report.length ? `Merged: ${report.join(", ")}` : "Merged. Nothing needed changing.", true);
+    return;
+  }
+  closeDuplicateSheet();
+  songInfoDraft = null;
+  closeOverlays();
+  selectedSongId = song.id;
+  mobileView = "song";
+  persist();
+  render();
+  showUndoToast(report.length ? `Merged: ${report.join(", ")}` : "Merged. Nothing needed changing.", undoDuplicateAction);
+}
+
+function undoDuplicateAction() {
+  if (!dupUndo) return;
+  const { songs } = dupUndo;
+  songs.forEach((song) => {
+    const index = state.songs.findIndex((item) => item.id === song.id);
+    const restored = normalizeSong(song);
+    if (index >= 0) state.songs[index] = restored;
+    else state.songs.unshift(restored);
+    Object.keys(state.songOrder).forEach((key) => { if (!state.songOrder[key].includes(restored.id)) state.songOrder[key].push(restored.id); });
+  });
+  dupUndo = null;
+  persist();
+  render();
+  showToast("Undone");
+}
+
+// A toast with one action button (Undo).
+function showUndoToast(message, action) {
+  els.toast.textContent = "";
+  const text = document.createElement("span");
+  text.textContent = t(message);
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "toast-action";
+  button.textContent = t("Undo");
+  button.addEventListener("click", () => { els.toast.classList.add("hidden"); action(); });
+  els.toast.append(text, button);
+  els.toast.classList.remove("hidden");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => els.toast.classList.add("hidden"), 8000);
+}
+
+function openCompareFromNotice() {
+  const id = els.songTitleNoticeOpenBtn.dataset.songId;
+  if (!id || !songInfoDraft) return;
+  openDuplicateCompare(id, dupSongFromForm(), "edit");
+}
+
+function initDuplicatesUi() {
+  els.dupSheet.addEventListener("click", onDuplicateClick);
+  els.dupSheet.addEventListener("change", onDuplicateChange);
+  els.dupBackBtn.addEventListener("click", () => { if (dupCtx?.step === "review") { dupCtx.step = "compare"; renderDuplicateSheet(); } else closeDuplicateSheet(); });
+  els.songTitleNoticeCompareBtn.addEventListener("click", openCompareFromNotice);
+  initDuplicatesPage();
+  [els.songTitleEnglishInput, els.songTitleHebrewInput, els.songArtistInput].forEach((input) => input.addEventListener("input", scheduleTitleHint));
+  els.songTitleHintCompareBtn.addEventListener("click", () => {
+    const id = els.songTitleHintCompareBtn.dataset.songId;
+    if (id && songInfoDraft) openDuplicateCompare(id, dupSongFromForm(), "edit");
+  });
+}
+
+
+// ---------- scan and the Duplicates page ----------
+function dupNames(song) {
+  return [...new Set([song.title, song.titleEnglish, song.titleHebrew, ...(song.alternateTitles || [])].map(normalizeComparisonText).filter(Boolean))];
+}
+
+function dupSameArtist(a, b) {
+  const x = (a.artists || []).map(normalizeComparisonText).filter(Boolean);
+  const y = (b.artists || []).map(normalizeComparisonText).filter(Boolean);
+  return !x.length || !y.length || x.some((name) => y.includes(name));
+}
+
+function dupPairKey(a, b) {
+  return [a.id, b.id].sort().join("|");
+}
+
+// Every pair that shares a title (so the scan stays fast on big libraries). "Likely" means the same
+// artist too, or near-identical lyrics; the rest are "maybe".
+function scanDuplicates() {
+  const byName = new Map();
+  state.songs.forEach((song) => dupNames(song).forEach((name) => {
+    if (!byName.has(name)) byName.set(name, []);
+    byName.get(name).push(song);
+  }));
+  const seen = new Set();
+  const pairs = [];
+  byName.forEach((songs) => {
+    for (let i = 0; i < songs.length; i += 1) {
+      for (let j = i + 1; j < songs.length; j += 1) {
+        const a = songs[i];
+        const b = songs[j];
+        if (a.id === b.id) continue;
+        const key = dupPairKey(a, b);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const kept = (a.keptBoth || []).includes(b.id) || (b.keptBoth || []).includes(a.id);
+        const lyricsA = textFromDocumentHtml(a.documentHtml);
+        const lyricsB = textFromDocumentHtml(b.documentHtml);
+        const lyricScore = lyricsA && lyricsB ? lyricsSimilarity(lyricsA, lyricsB) : 0;
+        const sameArtist = dupSameArtist(a, b);
+        const level = (sameArtist || lyricScore >= 0.9) ? "likely" : "maybe";
+        const base = dupLyricLines(a).length >= dupLyricLines(b).length ? a : b;
+        const other = base === a ? b : a;
+        const { rows, diff } = compareSongs(base, other);
+        const valueDiffs = rows.filter((row) => row.differs && !row.list && DUP_VALUE_FIELDS.some(([k]) => k === row.key) && row.mine && row.theirs);
+        const exact = level === "likely" && !valueDiffs.length && !diff.chordDiffs.length && !diff.onlyNew.length && lyricScore >= 0.98;
+        const percent = exact ? 100 : Math.round(Math.max(lyricScore, sameArtist ? 0.7 : 0.5) * 100);
+        const notes = [];
+        valueDiffs.forEach((row) => notes.push(`${t(row.label)} ${row.mine} / ${row.theirs}`));
+        if (diff.chordDiffs.length) notes.push(t("chords differ"));
+        else if (rows.find((row) => row.key === "chords")?.differs) notes.push(t("one has chords"));
+        if (diff.onlyNew.length || diff.onlyMine.length) notes.push(t("lyrics differ"));
+        pairs.push({ key, baseId: base.id, otherId: other.id, kept, level, exact, percent, title: base.title, artist: base.artist || other.artist, note: notes.join(" · ") || t("same details") });
+      }
+    }
+  });
+  pairs.sort((x, y) => y.percent - x.percent || x.title.localeCompare(y.title));
+  return pairs;
+}
+
+let dupPageTab = "review";
+
+function duplicateCount() {
+  return scanDuplicates().filter((pair) => !pair.kept).length;
+}
+
+function refreshDuplicatesRow() {
+  const row = document.getElementById("openDuplicatesBtn");
+  if (!row) return;
+  const n = duplicateCount();
+  document.getElementById("duplicatesSubtitle").textContent = n ? `${n} ${plural(n, "pair")} ${t("to review")}` : t("No duplicates found");
+}
+
+function renderDuplicatesPage() {
+  const body = document.getElementById("duplicatesBody");
+  if (!body) return;
+  const pairs = scanDuplicates();
+  const review = pairs.filter((pair) => !pair.kept);
+  const kept = pairs.filter((pair) => pair.kept);
+  const list = dupPageTab === "review" ? review : kept;
+  const exact = review.filter((pair) => pair.exact);
+  const row = (pair) => `<button class="slp-row dup-pair" type="button" data-pair="${escapeAttribute(pair.key)}"><span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(pair.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([pair.artist, pair.note].filter(Boolean).join(" · "))}</span></span><span class="dup-chip ${pair.level === "likely" ? "is-likely" : ""}">${pair.percent}%</span><i data-lucide="chevron-right" class="slp-row__chevron"></i></button>`;
+  const section = (label, items) => items.length ? `<span class="slp-section-label">${t(label)}</span><section class="slp-card">${items.map(row).join("")}</section>` : "";
+  body.innerHTML = `
+    <div class="dup-tabs" role="group"><button type="button" data-dup-tab="review" class="${dupPageTab === "review" ? "on" : ""}">${t("To review")} ${review.length}</button><button type="button" data-dup-tab="kept" class="${dupPageTab === "kept" ? "on" : ""}">${t("Kept both")} ${kept.length}</button></div>
+    ${dupPageTab === "review" && review.length ? `<div class="dup-actions"><button class="slp-btn slp-btn--soft" type="button" data-dup-act="one">${t("Review one by one")}</button>${exact.length ? `<button class="slp-btn slp-btn--soft" type="button" data-dup-act="exact">${t("Merge all 100%")} (${exact.length})</button>` : ""}</div>` : ""}
+    ${dupPageTab === "review" ? section("Likely the same", review.filter((p) => p.level === "likely")) + section("Maybe", review.filter((p) => p.level === "maybe")) : (kept.length ? `<section class="slp-card">${kept.map((pair) => `<div class="slp-row dup-kept"><span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(pair.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml(pair.artist || "")}</span></span><button class="slp-btn slp-btn--soft" type="button" data-unkeep="${escapeAttribute(pair.key)}">${t("Undo keep")}</button></div>`).join("")}</section>` : "")}
+    ${!list.length ? `<p class="dup-note dup-empty-note">${t(dupPageTab === "review" ? "No duplicates found. Songs with the same title and artist will show up here." : "Nothing here yet.")}</p>` : ""}`;
+  refreshIcons();
+}
+
+function dupOpenPair(pairKey, queue = null, index = 0) {
+  const pair = scanDuplicates().find((item) => item.key === pairKey);
+  if (!pair) return;
+  const other = state.songs.find((song) => song.id === pair.otherId);
+  openDuplicateCompare(pair.baseId, other, "pair");
+  if (queue) { dupCtx.queue = queue; dupCtx.queueIndex = index; renderDuplicateSheet(); }
+}
+
+// After a decision on a pair: the next pair in a one-by-one review, or back to the list.
+function duplicatePairDone(message, withUndo = false) {
+  const queue = dupCtx?.queue;
+  const next = dupCtx?.queueIndex + 1;
+  closeDuplicateSheet();
+  persist();
+  render();
+  if (withUndo) showUndoToast(message, undoDuplicateAction);
+  else showToast(message);
+  if (queue && next < queue.length) {
+    const remaining = scanDuplicates().filter((pair) => !pair.kept).map((pair) => pair.key);
+    const wanted = queue.slice(next).find((key) => remaining.includes(key));
+    if (wanted) { dupOpenPair(wanted, queue, next); return; }
+  }
+  renderDuplicatesPage();
+  refreshDuplicatesRow();
+}
+
+function duplicatesMergeExact() {
+  const exact = scanDuplicates().filter((pair) => !pair.kept && pair.exact && !dupGigReferences(pair.otherId));
+  if (!exact.length) { showToast("Nothing to merge automatically"); return; }
+  openConfirm(`Merge ${exact.length} exact ${plural(exact.length, "duplicate")}?`, `Each pair has the same title, artist and lyrics. The second copy of each is removed and its details are added to the first. Undo is available.${exact.map((pair) => `\n• ${pair.title}`).join("").slice(0, 400)}`, "Merge", () => {
+    const touched = [];
+    exact.forEach((pair) => {
+      const base = state.songs.find((song) => song.id === pair.baseId);
+      const other = state.songs.find((song) => song.id === pair.otherId);
+      if (!base || !other) return;
+      touched.push(base, other);
+      const { song } = mergedSong(base, other, defaultMergePlan(base, other));
+      state.songs[state.songs.findIndex((item) => item.id === base.id)] = song;
+      state.songs = state.songs.filter((item) => item.id !== other.id);
+      Object.keys(state.songOrder).forEach((key) => { state.songOrder[key] = state.songOrder[key].filter((id) => id !== other.id); });
+    });
+    duplicateSnapshot(touched);
+    persist();
+    closeOverlays();
+    showOverlay(els.settingsSheet);
+    showSettingsPage("duplicatesSettingsView");
+    render();
+    renderDuplicatesPage();
+    refreshDuplicatesRow();
+    showUndoToast(`${exact.length} ${plural(exact.length, "duplicate")} merged`, () => { undoDuplicateAction(); renderDuplicatesPage(); refreshDuplicatesRow(); });
+  });
+}
+
+function initDuplicatesPage() {
+  document.getElementById("openDuplicatesBtn").addEventListener("click", () => { dupPageTab = "review"; renderDuplicatesPage(); showSettingsPage("duplicatesSettingsView"); });
+  document.getElementById("backFromDuplicatesBtn").addEventListener("click", () => showSettingsMain());
+  document.getElementById("duplicatesRescanBtn").addEventListener("click", () => { renderDuplicatesPage(); refreshDuplicatesRow(); showToast("Scanned"); });
+  document.getElementById("duplicatesBody").addEventListener("click", (event) => {
+    const tab = event.target.closest("[data-dup-tab]");
+    if (tab) { dupPageTab = tab.dataset.dupTab; renderDuplicatesPage(); return; }
+    const pair = event.target.closest("[data-pair]");
+    if (pair) { dupOpenPair(pair.dataset.pair); return; }
+    const act = event.target.closest("[data-dup-act]");
+    if (act?.dataset.dupAct === "one") {
+      const queue = scanDuplicates().filter((item) => !item.kept).map((item) => item.key);
+      if (queue.length) dupOpenPair(queue[0], queue, 0);
+      return;
+    }
+    if (act?.dataset.dupAct === "exact") { duplicatesMergeExact(); return; }
+    const unkeep = event.target.closest("[data-unkeep]");
+    if (unkeep) {
+      const pair = scanDuplicates().find((item) => item.key === unkeep.dataset.unkeep);
+      if (pair) {
+        const a = state.songs.find((song) => song.id === pair.baseId);
+        const b = state.songs.find((song) => song.id === pair.otherId);
+        if (a) a.keptBoth = (a.keptBoth || []).filter((id) => id !== pair.otherId);
+        if (b) b.keptBoth = (b.keptBoth || []).filter((id) => id !== pair.baseId);
+        persist();
+        renderDuplicatesPage();
+        refreshDuplicatesRow();
+      }
+    }
+  });
+}
+
+// ---------- early hint while typing, and the flag in the song list ----------
+let titleHintTimer = null;
+
+function scheduleTitleHint() {
+  clearTimeout(titleHintTimer);
+  titleHintTimer = setTimeout(updateTitleHint, 350);
+}
+
+function hideTitleHint() {
+  if (els.songTitleHint) els.songTitleHint.hidden = true;
+}
+
+function updateTitleHint() {
+  if (!songInfoDraft || els.songInfoSheet.hidden) { hideTitleHint(); return; }
+  const english = els.songTitleEnglishInput.value.trim();
+  const hebrew = els.songTitleHebrewInput.value.trim();
+  const title = english && hebrew ? `${english} – ${hebrew}` : (english || hebrew);
+  if (title.length < 3) { hideTitleHint(); return; }
+  const others = normalizeStringArray(els.songAlternateTitlesInput.value);
+  const match = findExistingSongMatch(title, els.songArtistInput.value, [...others, english, hebrew].filter(Boolean), songInfoDraft.originalId);
+  const song = songInfoDraft.song;
+  if (!match || songInfoDraft.keepBoth?.has(match.id) || (match.keptBoth || []).includes(song.id) || (song.keptBoth || []).includes(match.id)) { hideTitleHint(); return; }
+  els.songTitleHintText.textContent = `${t("You already have a song like this:")} ${match.title}${match.artist ? `, ${match.artist}` : ""}.`;
+  els.songTitleHintCompareBtn.dataset.songId = match.id;
+  els.songTitleHint.hidden = false;
+}
+
+let dupFlagCache = { signature: "", ids: new Set() };
+
+// Songs that sit in an unreviewed "likely the same" pair. Cached until a song changes.
+function likelyDuplicateIds() {
+  const signature = state.songs.map((song) => `${song.id}${song.updatedAt}${(song.keptBoth || []).length}`).join("|");
+  if (signature !== dupFlagCache.signature) {
+    const ids = new Set();
+    scanDuplicates().filter((pair) => !pair.kept && pair.level === "likely").forEach((pair) => { ids.add(pair.baseId); ids.add(pair.otherId); });
+    dupFlagCache = { signature, ids };
+  }
+  return dupFlagCache.ids;
+}
 // Chords and transposition.
 //
 // Chords live inside the lyrics as [Am]-style tokens (ChordPro): "[Am]Modeh Ani [F]Lefanecha".
@@ -14889,7 +15979,41 @@ function undecorateChords(root) {
     pair.replaceWith(document.createTextNode(`[${pair.dataset.chord}]${word}`));
   });
   root.querySelectorAll(".cp-off").forEach((off) => off.replaceWith(document.createTextNode(`[${off.dataset.chord}]`)));
+  root.querySelectorAll(".chord-chip").forEach((chip) => chip.replaceWith(document.createTextNode(chip.textContent)));
   root.normalize();
+}
+
+// While editing, the [Am] tokens are drawn as small chord chips (left to right, so Hebrew lines cannot scramble the
+// brackets). A chip is one piece: it is moved and deleted as a whole, and saving turns it back into the plain [Am] text.
+// Chords typed by hand stay plain text until the song is opened for editing again.
+function decorateChordChips(root) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => (node.parentElement?.closest(".chord-chip, .cp, .cp-off") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT)
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach((node) => {
+    const pattern = new RegExp(CHORD_TOKEN_SOURCE, "g");
+    const text = node.nodeValue;
+    if (!pattern.test(text)) return;
+    pattern.lastIndex = 0;
+    const fragment = document.createDocumentFragment();
+    let last = 0;
+    let match;
+    while ((match = pattern.exec(text))) {
+      if (match.index > last) fragment.append(text.slice(last, match.index));
+      const chip = document.createElement("span");
+      chip.className = "chord-chip";
+      chip.contentEditable = "false";
+      chip.dir = "ltr";
+      chip.dataset.chord = match[1];
+      chip.innerHTML = `<span class="chord-chip__br">[</span>${escapeHtml(match[1])}<span class="chord-chip__br">]</span>`;
+      fragment.append(chip);
+      last = match.index + match[0].length;
+    }
+    if (last < text.length) fragment.append(text.slice(last));
+    node.replaceWith(fragment);
+  });
 }
 
 // Put the open song's lyrics back on screen from storage, with chords drawn (used after Done).
@@ -14916,6 +16040,7 @@ function showRawSongDocument() {
   hydrateDocumentImages(editor);
   applyDocumentDirections(song);
   decorateSections(editor);
+  decorateChordChips(editor);
   if (songTranspose(song)) showToast(`Editing chords in the original key${song.key ? ` (${song.key})` : ""}`);
 }
 
@@ -16406,7 +17531,7 @@ function writeSlpsong(draft, mode, matchId, folderIds, dest) {
   if (mode === "add") {
     song = normalizeSong({
       id: makeId(), title: draft.title, alternateTitles: draft.alternateTitles, language: draft.language,
-      artist: draft.artist, composer: draft.composer, lyricist: draft.lyricist, album: draft.album, timeSignature: draft.timeSignature, key: draft.key, style: draft.style, bpm: draft.bpm,
+      artist: draft.artist, artists: splitArtistCredits(draft.artist), composer: draft.composer, lyricist: draft.lyricist, album: draft.album, timeSignature: draft.timeSignature, key: draft.key, style: draft.style, bpm: draft.bpm,
       importSourceUrl: draft.sourceUrl, status: "learning", direction: "auto", folderIds,
       updatedAt: new Date().toISOString(), documentHtml
     });
@@ -18235,6 +19360,7 @@ function showSettingsMain(title = t("Settings & Backup")) {
   els.app?.classList.remove("context-editor-open");
   els.settingsMainView.classList.remove("hidden");
   els.appearanceSettingsView.classList.add("hidden");
+  document.querySelectorAll(".settings-page").forEach((page) => page.classList.add("hidden"));
   els.settingsTitle.textContent = title;
   appearanceDraft = null;
   refreshBackupStatus();
@@ -18244,6 +19370,8 @@ function showSettingsMain(title = t("Settings & Backup")) {
   refreshTitleAlignRow();
   refreshUndoImportRow();
   refreshFixArtistsRow();
+  refreshDuplicatesRow();
+  refreshSplitArtistsRow();
   els.appVersionText.textContent = APP_BUILD;
 }
 
@@ -18262,6 +19390,15 @@ function cycleTitleAlign() {
 function refreshPedalRow() {
   els.pedalConfirmBtn.setAttribute("aria-checked", String(perfPrefs.pedalConfirm));
   els.pedalConfirmSubtitle.textContent = t(perfPrefs.pedalConfirm ? "On: at the end of a song, press twice to go to the next" : "Off: one press at the end of a song goes to the next");
+}
+
+// The smaller pages behind a row of Settings: Song list and playing, Restore/undo/cloud, About and repair.
+function showSettingsPage(pageId) {
+  els.settingsMainView.classList.add("hidden");
+  els.appearanceSettingsView.classList.add("hidden");
+  document.querySelectorAll(".settings-page").forEach((page) => page.classList.toggle("hidden", page.id !== pageId));
+  document.getElementById(pageId)?.querySelector(".settings-page__body")?.scrollTo?.(0, 0);
+  refreshIcons();
 }
 
 function openAppearanceSettings() {
@@ -18283,7 +19420,8 @@ function syncAppearanceDraft() {
   document.querySelectorAll("[data-mode-choice]").forEach((button) => {
     button.classList.toggle("selected", button.dataset.modeChoice === appearanceDraft.appearanceMode);
   });
-  document.querySelectorAll("[data-font-choice]").forEach((button) => button.classList.toggle("selected", button.dataset.fontChoice === appearanceDraft.font));
+  const fontSelect = document.getElementById("fontSelect");
+  if (fontSelect) fontSelect.value = appearanceDraft.font;
   document.querySelectorAll("[data-align-choice]").forEach((button) => button.classList.toggle("selected", button.dataset.alignChoice === appearanceDraft.alignment));
   document.querySelectorAll("[data-bg-choice]").forEach((button) => button.classList.toggle("selected", button.dataset.bgChoice === appearanceDraft.background));
   els.lyricsSizeOutput.textContent = appearanceDraft.lyricSize;
@@ -20306,7 +21444,7 @@ function quickAddMatches(text) {
   const { title, artist } = parseQuickAddText(text);
   const query = normalizeComparisonText(title);
   if (!query) return [];
-  const wantedArtists = normalizeArtistNames(artist).map(normalizeComparisonText);
+  const wantedArtists = splitArtistCredits(artist).map(normalizeComparisonText);
   const scored = [];
   state.songs.forEach((song) => {
     const names = [song.title, song.titleEnglish, song.titleHebrew, song.titleYiddish, ...(song.alternateTitles || [])].map(normalizeComparisonText).filter(Boolean);
@@ -20363,7 +21501,7 @@ function quickAddSubmit() {
   // Never a duplicate: a title (and artist, if given) that already exists reuses that song.
   const existing = findExistingSongMatch(title, artist, [], null);
   if (existing) return quickAddExistingSong(existing, set);
-  const artists = normalizeArtistNames(artist);
+  const artists = splitArtistCredits(artist);
   const song = normalizeSong({
     id: makeId(),
     title,
@@ -21105,6 +22243,7 @@ function openGigsWorkspace() {
   render();
 }
 function openSongImport() {
+  importSkippedFiles = [];
   importCandidates = [];
   importMode = "paste";
   pendingMediaImport = null;
@@ -21455,6 +22594,7 @@ async function addImportFiles(files) {
     selectedFiles.splice(selectedFiles.indexOf(file), 1);
   }
   importIndexRows = indexRows.size ? new Map([...importIndexRows, ...indexRows]) : importIndexRows;
+  if (indexRows.size) applyImportIndex(importCandidates);
   for (const file of selectedFiles) {
     if (file.size > 15_000_000) {
       showToast(`${file.name || "A file"} is too large`);
@@ -21551,10 +22691,25 @@ function parseImportIndexCsv(text) {
 }
 
 // Details from the index CSV win over what was read from the file: they were written by hand.
+// The index row for a file: by its exact name, then by the name without a copy suffix ("Song (1).pdf", "Song 2.pdf"),
+// then by the English title (a phone or a download can rename a file).
+function indexRowForCandidate(candidate) {
+  const plain = (name) => normalizeComparisonText(String(name || "").replace(/\.[^.]+$/, "").replace(/\s*\(\d+\)$|\s+\d+$/, ""));
+  const file = String(candidate.sourceFile || "").toLowerCase();
+  if (importIndexRows.has(file)) return importIndexRows.get(file);
+  const rows = [...importIndexRows.entries()];
+  const byName = rows.filter(([name]) => plain(name) === plain(file));
+  if (byName.length === 1) return byName[0][1];
+  const title = normalizeComparisonText(candidate.titleEnglish || String(candidate.title || "").split(/\s+[–-]\s+/)[0]);
+  const byTitle = rows.filter(([, row]) => title && normalizeComparisonText(row.titleEnglish) === title);
+  return byTitle.length === 1 ? byTitle[0][1] : null;
+}
+
 function applyImportIndex(candidates) {
   if (!importIndexRows.size) return;
   candidates.forEach((candidate) => {
-    const row = importIndexRows.get(String(candidate.sourceFile || "").toLowerCase());
+    if (candidate.fromIndex) return;
+    const row = indexRowForCandidate(candidate);
     if (!row) return;
     const english = isPureLatinText(row.titleEnglish) ? row.titleEnglish : "";
     const hebrew = isPureHebrewText(row.titleHebrew) ? row.titleHebrew : "";
@@ -21632,14 +22787,32 @@ async function candidatesFromPdfFiles(files) {
   const additions = [];
   for (let fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
     const file = files[fileIndex];
-    if (file.size > 30_000_000) throw new Error(`${file.name} is larger than 30 MB`);
-    setMediaImportProgress(`Opening ${file.name}...`, fileIndex / files.length * 100);
+    // One file that cannot be read never stops the others: it is skipped and listed in the preview.
+    try {
+      additions.push(...await candidatesFromOnePdf(pdfjs, file, fileIndex, files.length));
+    } catch (error) {
+      if (error?.message === MEDIA_IMPORT_STOPPED) throw error;
+      importSkippedFiles.push({ name: file.name || "A PDF", reason: String(error?.message || "could not be read").slice(0, 120) });
+    }
+  }
+  setMediaImportProgress("Ready to review", 100);
+  return additions;
+}
+
+let importSkippedFiles = [];          // files the last import could not read, with the reason
+
+async function candidatesFromOnePdf(pdfjs, file, fileIndex, fileCount) {
+  const additions = [];
+  {
+    if (file.size > 30_000_000) throw new Error("larger than 30 MB");
+    setMediaImportProgress(`Opening ${file.name}...`, fileIndex / fileCount * 100);
     const loadingTask = pdfjs.getDocument({ data: new Uint8Array(await readFileBuffer(file)) });
     const pdf = await loadingTask.promise;
+    try {
     const pages = [];
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
       throwIfMediaImportCancelled();
-      setMediaImportProgress(`Reading page ${pageNumber} of ${pdf.numPages}...`, ((fileIndex + (pageNumber - 1) / pdf.numPages) / files.length) * 100);
+      setMediaImportProgress(`Reading page ${pageNumber} of ${pdf.numPages}...`, ((fileIndex + (pageNumber - 1) / pdf.numPages) / fileCount) * 100);
       const page = await pdf.getPage(pageNumber);
       pages.push({ page: pageNumber, lines: pdfPageLines(await page.getTextContent(), page.getViewport({ scale: 1 }).height) });
       page.cleanup?.();
@@ -21647,8 +22820,8 @@ async function candidatesFromPdfFiles(files) {
     pages.splice(0, pages.length, ...removeRunningPageLines(pages));
     const allText = pages.map((entry) => entry.lines.map((line) => line.text).join("\n")).join("\n\n").trim();
     if (normalizeComparisonText(allText).length < 30) {
-      setMediaImportProgress(`This PDF is scanned. Recognizing its ${pdf.numPages} pages, which takes a few seconds each...`, fileIndex / files.length * 100);
-      const text = await recognizePdfPages(pdf, fileIndex, files.length);
+      setMediaImportProgress(`This PDF is scanned. Recognizing its ${pdf.numPages} pages, which takes a few seconds each...`, fileIndex / fileCount * 100);
+      const text = await recognizePdfPages(pdf, fileIndex, fileCount);
       if (normalizeComparisonText(text).length >= 8) {
         const scanned = candidateFromExtractedText(text, file.name, "PDF");
         scanned.sourceFile = file.name;
@@ -21672,9 +22845,10 @@ async function candidatesFromPdfFiles(files) {
         additions.push(single);
       }
     }
-    await pdf.destroy();
+    } finally {
+      await pdf.destroy?.();
+    }
   }
-  setMediaImportProgress("Ready to review", 100);
   return additions;
 }
 
@@ -22001,7 +23175,15 @@ function pdfPageLines(content, pageHeight = 0) {
     }
   }
   // A web address or page number alone at the end is the page footer, not part of the song.
-  while (output.length && /^(?:(?:https?:\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:\/\S*)?|(?:page\s+)?\d{1,3}(?:\s*(?:of|\/)\s*\d{1,3})?|-\s*\d{1,3}\s*-)$/i.test(output[output.length - 1].trim()) || /^.{0,60}\bpage\s+\d{1,3}\s*(?:of|\/)\s*\d{1,3}$/i.test(output[output.length - 1].trim().replace(/\s+/g, " "))) { output.pop(); sizes.pop(); }
+  const footerPattern = /^(?:(?:https?:\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:\/\S*)?|(?:page\s+)?\d{1,3}(?:\s*(?:of|\/)\s*\d{1,3})?|-\s*\d{1,3}\s*-)$/i;
+  const pageOfPattern = /^.{0,60}\bpage\s+\d{1,3}\s*(?:of|\/)\s*\d{1,3}$/i;
+  while (output.length) {
+    const last = String(output[output.length - 1] ?? "").trim();
+    // (A page that is only a footer ends up with no lines at all, which is fine.)
+    if (!(footerPattern.test(last) || pageOfPattern.test(last.replace(/\s+/g, " ")))) break;
+    output.pop();
+    sizes.pop();
+  }
   return output.map((text, index) => ({ text, size: sizes[index] }));
 }
 
@@ -22814,8 +23996,18 @@ function refreshImportSummary() {
   if (toReview) chips.push(`<span class="import-chip review">${toReview} ${t("need review")}</span>`);
   if (inLibrary) chips.push(`<span class="import-chip skip">${inLibrary} ${t("already in your library")}</span>`);
   if (repeats) chips.push(`<span class="import-chip skip">${repeats} ${t("repeated in this batch")}</span>`);
+  const fromFiles = importCandidates.filter((candidate) => candidate.sourceFile);
+  const matched = fromFiles.filter((candidate) => candidate.fromIndex).length;
+  const indexNote = importIndexRows.size
+    ? (matched === fromFiles.length
+      ? `<p class="import-index-note ok">${t("Details read from the index file:")} ${matched} ${t("of")} ${fromFiles.length} ${t("songs")}.</p>`
+      : `<p class="import-index-note warn">${t("Index file read, but only")} ${matched} ${t("of")} ${fromFiles.length} ${t("songs were found in it. Check that the file names match the file column.")}</p>`)
+    : (fromFiles.some((candidate) => /^PDF/.test(candidate.sourceName)) ? `<p class="import-index-note warn">${t("No index.csv was chosen with these PDFs, so titles, album, style, tempo and links come only from the PDFs. Choose it too (Choose more) to add them.")}</p>` : "");
+  const skippedNote = importSkippedFiles.length
+    ? `<p class="import-index-note warn">${importSkippedFiles.length} ${t(importSkippedFiles.length === 1 ? "file was skipped because it could not be read:" : "files were skipped because they could not be read:")} ${escapeHtml(importSkippedFiles.slice(0, 4).map((item) => `${item.name} (${item.reason})`).join("; "))}${importSkippedFiles.length > 4 ? ` …+${importSkippedFiles.length - 4}` : ""}</p>`
+    : "";
   const fillable = importCandidates.filter((candidate) => candidate.duplicate && candidate.duplicateMatches[0]).length;
-  els.importSummary.innerHTML = `<div class="import-chips">${chips.join("")}</div>${fillable ? `<button class="slp-btn slp-btn--soft import-fill-btn" type="button" data-import-fill>${t("Fill in missing details for songs already in your library")} (${fillable})</button>` : ""}<p>${t("Tap a song to edit it before it is added. Unticked songs are skipped.")}</p>`;
+  els.importSummary.innerHTML = `<div class="import-chips">${chips.join("")}</div>${fillable ? `<button class="slp-btn slp-btn--soft import-fill-btn" type="button" data-import-fill>${t("Fill in missing details for songs already in your library")} (${fillable})</button>` : ""}${indexNote}${skippedNote}<p>${t("Tap a song to edit it before it is added. Unticked songs are skipped.")}</p>`;
   els.importSelectedBtn.textContent = `${t("Add")} ${added} ${t(plural(added, "song"))}`;
   els.importSelectedBtn.disabled = added === 0;
   els.importSummary.querySelector("[data-import-fill]")?.addEventListener("click", fillMissingDetailsFromImport);
@@ -22867,7 +24059,7 @@ function fillMissingDetailsFromImport() {
     if (!String(song.importSourceUrl || "").trim() && /^https?:\/\//i.test(candidate.sourceUrl || "")) { song.importSourceUrl = candidate.sourceUrl.trim(); touched = true; }
     if (!String(song.artistHebrew || "").trim() && candidate.artistHebrew) { song.artistHebrew = candidate.artistHebrew; touched = true; }
     if ((!String(song.artist || "").trim() || songArtistLooksLikeLyrics(song)) && candidate.artist.trim() && !/\[[^\]]+\]/.test(candidate.artist)) {
-      song.artists = normalizeArtistNames([candidate.artist, candidate.featuredArtist]);
+      song.artists = splitArtistCredits([candidate.artist, candidate.featuredArtist]);
       song.artist = song.artists.join(", ");
       touched = true;
     }
@@ -23012,7 +24204,7 @@ function mergeMissingImportMetadata(candidate, songId) {
   ["composer", "lyricist", "album", "style", "bpm", "language", "key"].forEach((field) => {
     if (!song[field] && candidate[field]) song[field] = candidate[field];
   });
-  song.artists = normalizeArtistNames([...(song.artists || []), candidate.artist, candidate.featuredArtist]);
+  song.artists = normalizeArtistNames([...(song.artists || []), ...splitArtistCredits([candidate.artist, candidate.featuredArtist])]);
   song.artist = song.artists.join(", ");
   if (!song.importSourceUrl && /^https?:\/\//i.test(candidate.sourceUrl || "")) song.importSourceUrl = candidate.sourceUrl.trim();
   if (!textFromDocumentHtml(song.documentHtml) && candidate.lyrics) song.documentHtml = plainTextToDocumentHtml(candidate.lyrics);
@@ -23071,6 +24263,7 @@ function importSelectedSongs() {
     title: candidate.title.trim(),
     alternateTitles: candidate.alternateTitles,
     artist: candidate.artist.trim(),
+    artists: splitArtistCredits([candidate.artist, candidate.featuredArtist]),
     featuredArtist: candidate.featuredArtist.trim(),
     composer: candidate.composer.trim(),
     lyricist: candidate.lyricist.trim(),
@@ -23245,6 +24438,44 @@ function fixLyricArtists() {
   render();
   refreshFixArtistsRow();
   persistThenToast(`Cleared the artist on ${songs.length} ${plural(songs.length, "song")}`);
+}
+
+// ---------- Combined artists ----------
+// "Avraham Fried, Yossi Green" saved as one artist: Settings offers to make them two, so the duet shows under both.
+function songsWithCombinedArtists() {
+  return state.songs.filter((song) => {
+    const current = song.artists || [];
+    const split = splitArtistCredits(current);
+    return split.length !== current.length;
+  });
+}
+
+function refreshSplitArtistsRow() {
+  if (!els.splitArtistsBtn) return;
+  const count = songsWithCombinedArtists().length;
+  els.splitArtistsBtn.hidden = !count;
+  els.splitArtistsBtn.classList.toggle("hidden", !count);
+  if (count) els.splitArtistsSubtitle.textContent = `${count} ${t(plural(count, "song"))} · ${t("a credit lists several people")}`;
+}
+
+function requestSplitArtists() {
+  const songs = songsWithCombinedArtists();
+  if (!songs.length) { refreshSplitArtistsRow(); return; }
+  const examples = songs.slice(0, 3).map((song) => `${(song.artists || []).join("; ")} → ${splitArtistCredits(song.artists).join(" + ")}`).join("\n");
+  openConfirm("Split combined artists?", `${songs.length} ${plural(songs.length, "song")} list several people as one artist. Each person becomes an artist of their own, and a duet shows under both.\n${examples}${songs.length > 3 ? "\n…" : ""}`, "Split artists", splitCombinedArtists);
+}
+
+function splitCombinedArtists() {
+  const songs = songsWithCombinedArtists();
+  songs.forEach((song) => {
+    song.artists = splitArtistCredits(song.artists);
+    song.artist = song.artists.join(", ");
+    song.updatedAt = new Date().toISOString();
+  });
+  closeOverlays();
+  render();
+  refreshSplitArtistsRow();
+  persistThenToast(`Split the artists on ${songs.length} ${plural(songs.length, "song")}`);
 }
 // Instrument sounds for the Tools. No sample files: each note is computed on the fly from a
 // small physical model, so the sounds work offline and add no download weight.
@@ -24709,7 +25940,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.slpsongSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigItemSheet, els.gigSetListSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.slpsongSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigItemSheet, els.gigSetListSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog, els.dupSheet, els.quickKeySheet].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -25417,6 +26648,14 @@ function parseNames(value) {
 
 // Artist names typed in one field: a semicolon, a new line (Return) or "feat." separates them.
 // Commas and "&" stay inside a name, so "Name, Jr." and "Simon & Garfunkel" are one artist each.
+// A credit such as "Avraham Fried, Yossi Green", "Pinky Weber & Avraham Fried" or "Avrum Mordche Schwartz: Anshie Friedman" is
+// several people. Each one is an artist of their own, so a duet shows up under both. Used wherever a person types or imports
+// a credit (and by the one-time cleanup of songs saved before); a saved list is never split again by loading it.
+function splitArtistCredits(value) {
+  const parts = Array.isArray(value) ? value.flatMap((item) => splitArtistCredits(item)) : String(value || "").split(/[\n;|]+|\s*,\s*|\s+&\s+|\s+\+\s+|\s+and\s+|\s*:\s*|\s+(?:feat\.?|ft\.?|featuring)\s+/i);
+  return normalizeArtistNames(parts);
+}
+
 function normalizeArtistNames(value) {
   const parts = Array.isArray(value) ? value.flatMap((item) => normalizeArtistNames(item)) : String(value || "").split(/[\n;|]+|\s+(?:feat\.?|ft\.?|featuring)\s+/i);
   const seen = new Set();
@@ -25641,7 +26880,7 @@ function initScreenTier() {
 //   3. adding selectCheckMarkup() inside the row while selectMode.active.
 // The context says where the rows live and what "here" means, so the bar can offer
 // Move / Remove only where a song actually belongs to somewhere (a folder or an event).
-// Nothing here deletes a song: "Remove from here" drops membership only.
+// "Remove from here" drops membership only. "Delete" removes songs from the library, after a confirmation.
 
 const SELECT_LONG_PRESS_MS = 500;
 const SELECT_LONG_PRESS_SLOP = 10;
@@ -25835,6 +27074,8 @@ function syncSelectModeUi() {
   els.selectRemoveBtn.disabled = !count;
   els.selectMoveBtn.classList.toggle("hidden", !context.canMove);
   els.selectRemoveBtn.classList.toggle("hidden", !context.canRemove);
+  els.selectDeleteBtn.disabled = !count;
+  els.selectDeleteBtn.classList.toggle("hidden", !(context.kind === "all" || context.kind === "unfiled" || context.kind === "folder" || context.kind === "artist" || context.kind === "search"));
   document.querySelectorAll("[data-select-id]").forEach((row) => {
     const selected = selectMode.ids.includes(row.dataset.selectId);
     row.classList.toggle("is-selected", selected);
@@ -25932,7 +27173,32 @@ function removeSelectedFromHere() {
   showToast(`${removed} ${plural(removed, "song")} removed from ${where}. Songs stay in your library.`);
 }
 
+// Songs used in an event or a reusable set are kept (deleting them would leave holes in a set list).
+function requestDeleteSelectedSongs() {
+  const ids = selectedSongIds();
+  if (!ids.length) return;
+  const deletable = ids.filter((id) => !songGigReferenceCount(id));
+  const kept = ids.length - deletable.length;
+  if (!deletable.length) {
+    showToast("These songs are used in events or sets. Take them out of those first.");
+    return;
+  }
+  const keptNote = kept ? ` ${kept} used in events ${kept === 1 ? "is" : "are"} kept.` : "";
+  openConfirm(`Delete ${deletable.length} ${plural(deletable.length, "song")}?`, `They and their lyrics will be permanently deleted from this device. Back up first if you are unsure.${keptNote}`, "Delete", () => {
+    const gone = new Set(deletable);
+    state.songs = state.songs.filter((song) => !gone.has(song.id));
+    Object.keys(state.songOrder).forEach((key) => { state.songOrder[key] = state.songOrder[key].filter((id) => !gone.has(id)); });
+    if (gone.has(selectedSongId)) selectedSongId = null;
+    leaveSelectMode({ rerender: false });
+    persist();
+    closeOverlays();
+    render();
+    showToast(`${deletable.length} ${plural(deletable.length, "song")} deleted`);
+  });
+}
+
 function initSelectModeUi() {
+  els.selectDeleteBtn.addEventListener("click", requestDeleteSelectedSongs);
   els.selectCancelBtn.addEventListener("click", () => leaveSelectMode());
   els.selectAllBtn.addEventListener("click", toggleSelectAll);
   els.selectAddBtn.addEventListener("click", () => {
@@ -26183,31 +27449,40 @@ els.editSubfoldersBtn.addEventListener("click", () => {
 els.songSortSelect.addEventListener("change", () => {
   setSongSort(els.songSortSelect.value);
 });
-els.songFilterStrip.addEventListener("click", (event) => {
+function onActiveFilterClick(event) {
   const button = event.target.closest("button");
   if (!button) return;
-  if (button.dataset.filterClear) { songChipFilters = { styles: [], languages: [], occasions: [], bpm: [] }; songChipOpen = ""; }
-  else if (button.dataset.filterValue !== undefined) {
-    const list = songChipFilters[button.dataset.filterGroup];
-    const value = button.dataset.filterValue;
-    songChipFilters[button.dataset.filterGroup] = list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
-  } else if (button.dataset.filterGroup) songChipOpen = songChipOpen === button.dataset.filterGroup ? "" : button.dataset.filterGroup;
+  if (button.dataset.activeClear) clearAllSongFilters();
+  else if (button.dataset.activeKind === "chip") songChipFilters[button.dataset.activeGroup] = songChipFilters[button.dataset.activeGroup].filter((item) => item !== button.dataset.activeValue);
+  else if (button.dataset.activeKind === "select") songFilters[button.dataset.activeGroup] = "";
   else return;
   renderFolder();
   refreshIcons();
-});
+}
+els.songFilterStrip.addEventListener("click", onActiveFilterClick);
+els.songList.addEventListener("click", (event) => { if (event.target.closest("[data-active-clear]")) onActiveFilterClick(event); });
 els.sortMenuBtn.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
-  showSongSortMenu();
+  openFilterSheet();
 });
+els.filterPanelBody.addEventListener("click", onFilterPanelClick);
+els.filterPanelBody.addEventListener("change", onFilterPanelChange);
 els.backToFolderBtn.addEventListener("click", backToFolder);
 els.songArtist.addEventListener("click", () => {
   const names = currentSong()?.artists || [];
   if (names.length > 1) showActionMenu(names.map((name) => ({ icon: "mic-vocal", label: name, action: () => openArtistSongs(name) })), els.songArtist);
   else if (names.length) openArtistSongs(names[0]);
 });
-els.songKey.addEventListener("click", openSongKeyEditor);
+els.songKey.addEventListener("click", openQuickKey);
+els.closeQuickKeyBtn.addEventListener("click", () => closeOverlays());
+els.quickKeyClearBtn.addEventListener("click", () => setQuickKey(""));
+els.quickKeySheet.addEventListener("click", (event) => {
+  const mode = event.target.closest("[data-quick-mode]");
+  if (mode) { quickKeyMode = mode.dataset.quickMode; renderQuickKey(); return; }
+  const note = event.target.closest("[data-quick-note]");
+  if (note) setQuickKey(keyValueFor(note.dataset.quickNote, quickKeyMode));
+});
 els.songTransposeBtn.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -26259,6 +27534,11 @@ els.settingsBtn.addEventListener("click", (event) => {
 });
 els.closeSettingsBtn.addEventListener("click", closeOverlays);
 els.openAppearanceSettingsBtn.addEventListener("click", openAppearanceSettings);
+els.openPlaySettingsBtn.addEventListener("click", () => showSettingsPage("playSettingsView"));
+els.openBackupSettingsBtn.addEventListener("click", () => showSettingsPage("backupSettingsView"));
+els.openAboutSettingsBtn.addEventListener("click", () => showSettingsPage("aboutSettingsView"));
+[els.backFromPlayBtn, els.backFromBackupBtn, els.backFromAboutBtn].forEach((button) => button.addEventListener("click", () => showSettingsMain()));
+document.querySelectorAll("[data-close-settings]").forEach((button) => button.addEventListener("click", closeOverlays));
 els.languageSettingsBtn.addEventListener("click", showLanguageMenu);
 els.backFromAppearanceBtn.addEventListener("click", showSettingsMain);
 els.cancelAppearanceBtn.addEventListener("click", showSettingsMain);
@@ -26438,7 +27718,7 @@ document.querySelectorAll("[data-mode-choice]").forEach((button) => button.addEv
   appearanceDraft.appearanceMode = button.dataset.modeChoice;
   syncAppearanceDraft();
 }));
-document.querySelectorAll("[data-font-choice]").forEach((button) => button.addEventListener("click", () => { appearanceDraft.font = button.dataset.fontChoice; syncAppearanceDraft(); }));
+document.getElementById("fontSelect")?.addEventListener("change", (event) => { appearanceDraft.font = event.target.value; syncAppearanceDraft(); });
 document.querySelectorAll("[data-align-choice]").forEach((button) => button.addEventListener("click", () => { appearanceDraft.alignment = button.dataset.alignChoice; syncAppearanceDraft(); }));
 document.querySelectorAll("[data-bg-choice]").forEach((button) => button.addEventListener("click", () => { appearanceDraft.background = button.dataset.bgChoice; syncAppearanceDraft(); }));
 document.querySelectorAll("[data-size-step]").forEach((button) => button.addEventListener("click", () => {
@@ -26496,6 +27776,7 @@ els.importSelectedBtn.addEventListener("click", importSelectedSongs);
 els.importUndoBtn.addEventListener("click", requestUndoLastImport);
 els.undoImportBtn.addEventListener("click", requestUndoLastImport);
 els.fixArtistsBtn.addEventListener("click", requestFixArtists);
+els.splitArtistsBtn.addEventListener("click", requestSplitArtists);
 els.importLibraryBtn.addEventListener("click", () => els.backupFileInput.click());
 els.backupFileInput.addEventListener("change", () => {
   importLibrary(els.backupFileInput.files[0]);
@@ -26671,6 +27952,7 @@ els.songArtistInput.addEventListener("keydown", (event) => {
 els.addNoteFolderBtn.addEventListener("click", () => openNoteFolderDialog());
 els.songsEmptyAddBtn.addEventListener("click", () => els.folderAddBtn.click());
 initSelectModeUi();
+initDuplicatesUi();
 initQuickAddUi();
 initBoardUi();
   initScreenTier();
