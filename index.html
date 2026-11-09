@@ -57,6 +57,7 @@
   --accent-green:  #16A34A;
   --accent-gold:   #F59E0B;
   --accent-coral:  #F2704A;
+  --accent-googleblue: #0B57D0;
 
   /* ---- Type ---- */
   --font-family: 'Inter', 'Heebo', sans-serif;
@@ -159,6 +160,8 @@
 :root[data-accent="green"]  { --accent: var(--accent-green); }
 :root[data-accent="gold"]   { --accent: var(--accent-gold); }
 :root[data-accent="coral"]  { --accent: var(--accent-coral); }
+:root[data-accent="googleblue"] { --accent: var(--accent-googleblue); }
+:root[data-color-mode="dark"][data-accent="googleblue"] { --accent: #7FA8F0; }
 
 /* Perf hint only (no visual styling) -- keeps list rows off-screen cheap
    to render. Harmless to keep regardless of which screen owns these
@@ -2249,6 +2252,7 @@ svg {
 .appearance-preview[data-preview-accent="green"] { --preview-accent: #43845f; }
 .appearance-preview[data-preview-accent="gold"] { --preview-accent: #a27624; }
 .appearance-preview[data-preview-accent="coral"] { --preview-accent: #bd6657; }
+.appearance-preview[data-preview-accent="googleblue"] { --preview-accent: #0B57D0; }
 .appearance-preview[data-preview-mode="dark"] { background: #202524; color: #eef7f4; border-color: #3a4542; }
 .appearance-preview.theme-plain:not([data-preview-mode="dark"]) { background: #ffffff; }
 .appearance-preview.theme-blue:not([data-preview-mode="dark"]) { background: #f2f7fb; }
@@ -6040,6 +6044,109 @@ a.perf-btn[hidden] { display: none; }
 :root[data-color-mode="light"] .practice-view .sec-bar-right { border-right-color: #D99A00; }
 :root[data-color-mode="light"] .practice-view .sec-bar-left { border-left-color: #D99A00; }
 
+.dup-banner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); padding: var(--space-5) var(--space-6); border-radius: var(--radius-lg); background: var(--accent-soft); color: var(--color-text); font-size: var(--text-sm); }
+.dup-banner .slp-btn { flex: none; min-height: 44px; }
+
+/* ============ Song rows: the group around key/tempo/tags ============
+   Classic keeps today's layout exactly: the group is transparent to layout and the key stays last in the
+   row, as before. The tempo text only exists for the New design. */
+.song-meta { display: contents; }
+.song-bpm { display: none; }
+.song-item .song-meta > .slp-badge--key { order: 10; }
+.song-item .slp-row__chevron { order: 11; }
+
+/* ============ New design: song rows ============
+   English (and the artist) on the left, Hebrew/Yiddish (and key, tempo, tags) on the right, flat rows with
+   separators. Only when Settings > Appearance > Design is New. */
+:root[data-design="new"] #songList { background: transparent; box-shadow: none; border-radius: 0; border: 0; }
+:root[data-design="new"] .song-item .slp-row {
+  display: grid;
+  grid-template-columns: 0 minmax(0, 1fr) minmax(0, 60%);
+  align-items: start;
+  column-gap: 0;
+  row-gap: 1px;
+  padding: var(--space-5) var(--space-9);
+  min-height: 60px;
+  background: transparent;
+  border-bottom: 1px solid var(--color-border);
+}
+:root[data-design="new"] .song-item .slp-row .select-check,
+:root[data-design="new"] .song-item .slp-row .slp-row__drag-handle { grid-column: 1; grid-row: 1 / span 2; align-self: center; margin: 0; }
+:root[data-design="new"] .song-item .slp-row__body,
+:root[data-design="new"] .song-item .song-title-button,
+:root[data-design="new"] .song-item .slp-row__title,
+:root[data-design="new"] .song-item .song-title-lines { display: contents; }
+:root[data-design="new"] .song-item .song-title-button::after,
+:root[data-design="new"] .song-item .slp-badge--key::after { content: none; }
+:root[data-design="new"] .song-item .song-title-lines > span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; font-size: var(--text-lg); font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--color-text); }
+:root[data-design="new"] .song-item .t-en,
+:root[data-design="new"] .song-item .t-one { grid-column: 2; grid-row: 1; text-align: start; }
+:root[data-design="new"] .song-item .t-he { grid-column: 3; grid-row: 1; justify-self: end; text-align: end; font-family: var(--font-family); font-size: var(--text-lg); line-height: 1.3; }
+:root[data-design="new"] .song-item .slp-row[data-sides="he"] .t-he { grid-column: 2 / 4; }
+:root[data-design="new"] .song-item .slp-row[data-sides="en"] .t-en { grid-column: 2 / 4; }
+:root[data-design="new"] .song-item .slp-row__artists { grid-column: 2; grid-row: 2; min-width: 0; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-md); color: var(--color-text-secondary); }
+:root[data-design="new"] .song-item .slp-row__artist-link { display: inline; color: var(--color-text-secondary); font-size: var(--text-md); }
+:root[data-design="new"] .song-item .slp-row__artist-link::after { content: none; }
+:root[data-design="new"] .song-item .song-meta { display: flex; grid-column: 3; grid-row: 2; justify-self: end; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 6px; min-width: 0; }
+:root[data-design="new"] .song-item .slp-row[data-sides="he"] .slp-row__artists { grid-column: 2; }
+:root[data-design="new"] .song-item .slp-badge--key { order: 1; min-width: 44px; min-height: 44px; margin: -12px 0 -12px; padding: 0 var(--space-3); background: transparent; color: var(--accent); font-size: var(--text-md); font-weight: var(--font-weight-semibold); }
+:root[data-design="new"] .song-item .slp-badge--key.transposed { background: transparent; color: var(--accent); text-decoration: underline dotted; text-underline-offset: 3px; }
+:root[data-design="new"] .song-item .song-bpm { display: inline; order: 2; margin-inline-start: -2px; color: var(--color-text-secondary); font-size: var(--text-md); }
+:root[data-design="new"] .song-item .song-bpm::before { content: "· "; }
+:root[data-design="new"] .song-item .song-review-chip { order: 3; }
+:root[data-design="new"] .song-item .song-chart-flag { order: 4; }
+:root[data-design="new"] .song-item .slp-row__chevron { display: none; }
+:root[data-design="new"] .song-item .song-details { padding-inline: var(--space-9); }
+
+:root[data-design="new"] .song-item .slp-row:has(.select-check, .slp-row__drag-handle) { grid-template-columns: 40px minmax(0, 1fr) minmax(0, 60%); }
+:root[data-design="new"] .song-item .t-en,
+:root[data-design="new"] .song-item .t-one,
+:root[data-design="new"] .song-item .slp-row__artists { padding-inline-end: var(--space-6); }
+:root[data-design="new"] .song-item .slp-row[data-sides="en"] .t-en,
+:root[data-design="new"] .song-item .slp-row[data-sides="he"] .t-he { padding-inline-end: 0; }
+:root[data-design="new"] .song-item .slp-badge--key { display: inline-flex; align-items: center; justify-content: flex-end; padding-inline: var(--space-3) 0; }
+
+/* ============ New design: setlist rows ============
+   The same two-column row as the song list, with the number (or grip) on the left and the event's key
+   (marked) under the Hebrew title. */
+:root[data-design="new"] .gig-song-reference {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) minmax(0, 60%) auto;
+  align-items: start;
+  column-gap: 0;
+  row-gap: 1px;
+  padding-block: var(--space-4);
+  min-height: 60px;
+  background: transparent;
+  border-bottom: 1px solid var(--color-border);
+}
+:root[data-design="new"] .gig-song-reference .gig-song-number,
+:root[data-design="new"] .gig-song-reference .gig-played-tick,
+:root[data-design="new"] .gig-song-reference .select-check { grid-column: 1; grid-row: 1 / span 2; align-self: center; width: auto; margin: 0; color: var(--color-text-secondary); font-size: var(--text-md); }
+:root[data-design="new"] .gig-song-reference .gig-drag-handle { grid-column: 4; grid-row: 1 / span 2; align-self: center; }
+:root[data-design="new"] .gig-song-reference .gig-song-reference-main,
+:root[data-design="new"] .gig-song-reference .slp-row__title,
+:root[data-design="new"] .gig-song-reference .song-title-lines { display: contents; }
+:root[data-design="new"] .gig-song-reference .song-title-lines > span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; font-size: var(--text-lg); font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--color-text); }
+:root[data-design="new"] .gig-song-reference .t-en,
+:root[data-design="new"] .gig-song-reference .t-one { grid-column: 2; grid-row: 1; text-align: start; padding-inline-end: var(--space-6); }
+:root[data-design="new"] .gig-song-reference .t-he { grid-column: 3; grid-row: 1; justify-self: end; text-align: end; font-family: var(--font-family); }
+:root[data-design="new"] .gig-song-reference[data-sides="he"] .t-he { grid-column: 2 / 4; }
+:root[data-design="new"] .gig-song-reference[data-sides="en"] .t-en { grid-column: 2 / 4; padding-inline-end: 0; }
+:root[data-design="new"] .gig-song-reference .slp-row__subtitle { grid-column: 2; grid-row: 2; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-inline-end: var(--space-6); font-size: var(--text-md); color: var(--color-text-secondary); }
+:root[data-design="new"] .gig-song-reference .gig-row-note { grid-column: 2 / 4; grid-row: 3; }
+:root[data-design="new"] .gig-song-reference > .slp-badge--key { grid-column: 3; grid-row: 2; justify-self: end; display: inline-flex; align-items: center; justify-content: flex-end; min-width: 44px; min-height: 44px; margin: -12px 0; padding-inline: var(--space-3) 0; background: transparent; color: var(--accent); font-size: var(--text-md); font-weight: var(--font-weight-semibold); }
+
+/* Event key: Classic shows "Dm → Em" as before; New shows the event's key in the accent color with a small
+   "event" label, and the song's own key small and gray when it differs ("Em event · orig Dm"). */
+.slp-badge--key .ek-label, .slp-badge--key .ek-orig { display: none; }
+:root[data-design="new"] .slp-badge--key .ek-classic { display: none; }
+:root[data-design="new"] .gig-song-reference > .slp-badge--key.event-key { background: transparent; color: var(--accent); gap: 6px; white-space: nowrap; }
+:root[data-design="new"] .slp-badge--key.event-key .ek-label { display: inline-flex; align-items: center; gap: 4px; font-size: var(--text-xs-plus); font-weight: var(--font-weight-semibold); letter-spacing: 0.02em; }
+:root[data-design="new"] .slp-badge--key.event-key .ek-label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+:root[data-design="new"] .slp-badge--key.event-key .ek-orig { display: inline; font-size: var(--text-xs-plus); font-weight: 400; color: var(--color-text-secondary); }
+:root[data-design="new"] .slp-badge--key.event-key .ek-orig::before { content: "· "; }
+
 }
 
 </style>
@@ -7432,6 +7539,13 @@ a.perf-btn[hidden] { display: none; }
           <section class="slp-group" aria-label="Theme">
             <div class="slp-card">
               <div class="slp-setting">
+                <span class="slp-setting__title">Design</span>
+                <div class="slp-segmented slp-segmented--full" role="group" aria-label="Design">
+                  <button type="button" data-design-choice="new">New</button>
+                  <button type="button" data-design-choice="classic">Classic</button>
+                </div>
+              </div>
+              <div class="slp-setting">
                 <span class="slp-setting__title">Mode</span>
                 <div class="slp-segmented slp-segmented--full" role="group" aria-label="Mode">
                   <button type="button" data-mode-choice="system">Auto</button>
@@ -7443,6 +7557,7 @@ a.perf-btn[hidden] { display: none; }
                 <span class="slp-setting__title">Accent color</span>
                 <div class="slp-swatch-row" role="group" aria-label="Accent color">
             <button type="button" class="slp-swatch" data-accent-choice="teal" aria-label="Deep teal"><span class="slp-swatch__dot" style="background:#0f6f6a;"></span><span class="slp-swatch__label">Teal</span></button>
+            <button type="button" class="slp-swatch" data-accent-choice="googleblue" aria-label="Google blue"><span class="slp-swatch__dot" style="background:#0B57D0;"></span><span class="slp-swatch__label">Google blue</span></button>
             <button type="button" class="slp-swatch" data-accent-choice="blue" aria-label="Cobalt blue"><span class="slp-swatch__dot" style="background:#4c7cf3;"></span><span class="slp-swatch__label">Blue</span></button>
             <button type="button" class="slp-swatch" data-accent-choice="violet" aria-label="Muted violet"><span class="slp-swatch__dot" style="background:#7868b5;"></span><span class="slp-swatch__label">Violet</span></button>
             <button type="button" class="slp-swatch" data-accent-choice="rose" aria-label="Rose"><span class="slp-swatch__dot" style="background:#b85f70;"></span><span class="slp-swatch__label">Rose</span></button>
@@ -7887,7 +8002,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "80282df1 · 1881424";
+const APP_BUILD = "91e138a9 · 97ea534";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -9567,6 +9682,12 @@ Object.assign(HEBREW_UI, {
  "These songs are used in events or sets. Take them out of those first.": "השירים האלה בשימוש באירועים או בסטים. קודם יש להוציא אותם משם.",
  "They and their lyrics will be permanently deleted from this device. Back up first if you are unsure.": "הם והמילים שלהם יימחקו לצמיתות מהמכשיר. אם יש ספק, קודם לגבות."
 });
+
+Object.assign(HEBREW_UI, { "Merged into the existing song": "אוחד לשיר הקיים" });
+
+Object.assign(HEBREW_UI, { "Match my key": "התאמה לסולם שלי", "Use as it was": "להשאיר כמו שהיה", "Moved the new chart to match your key": "הדף החדש הועבר כך שיתאים לסולם שלך", "The new chart looks like yours in another key": "הדף החדש נראה כמו שלך בסולם אחר", "semitones": "חצאי טונים", "chart in another key": "דף בסולם אחר" });
+
+Object.assign(HEBREW_UI, {"event": "אירוע", "orig": "מקורי", "Design": "עיצוב", "Classic": "קלאסי", "Google blue": "כחול גוגל"});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -10096,7 +10217,7 @@ function normalizeState(raw) {
     meta: normalizeRecordMeta(raw.meta),
     appearanceMode: ["system", "light", "dark"].includes(raw.appearanceMode) ? raw.appearanceMode : "system",
     language: ["auto", "en", "he"].includes(raw.language) ? raw.language : "auto",
-    accentTheme: ["teal", "blue", "violet", "rose", "green", "gold", "coral"].includes(raw.accentTheme) ? raw.accentTheme : "teal",
+    accentTheme: ["teal", "googleblue", "blue", "violet", "rose", "green", "gold", "coral"].includes(raw.accentTheme) ? raw.accentTheme : "teal",
     lyricPrefs: {
       fontSize: clamp(Number(raw.lyricPrefs?.fontSize) || 34, 18, 64),
       headingScale: clamp(Number(raw.lyricPrefs?.headingScale) || 1.15, 1, 1.5),
@@ -11425,13 +11546,10 @@ function renderSongList(sourceSongs, isArtistView = false) {
       // badge, trailing chevron, plain navigate. No preview-toggle
       // interaction here, unlike the All Songs/Unfiled row shape.
       item.innerHTML = `
-        <div class="slp-row ${selectedSongId === song.id ? "selected" : ""}" role="button" tabindex="0" aria-label="Open ${escapeAttribute(visibleTitle)}">
+        <div class="slp-row ${selectedSongId === song.id ? "selected" : ""}" data-sides="${songTitleSides(song)}" role="button" tabindex="0" aria-label="Open ${escapeAttribute(visibleTitle)}">
           ${selectMode.active ? selectCheckMarkup() : ""}
           <span class="slp-row__body"><span class="slp-row__title">${songTitleMarkup(song)}</span></span>
-          ${likelyDuplicateIds().has(song.id) ? `<span class="song-review-chip song-dup-chip">${t("Maybe duplicate")}</span>` : ""}
-        ${song.needsReview ? `<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>` : ""}
-        ${songChartFlag(song)}
-        ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
+        ${songRowMeta(song)}
           <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
       `;
@@ -11452,17 +11570,14 @@ function renderSongList(sourceSongs, isArtistView = false) {
     const folders = song.folderIds.map((id) => folderById(id)?.name).filter(Boolean).join(", ");
     const secondaryTitle = alternateDisplayTitle(song, visibleTitle);
     item.innerHTML = `
-      <div class="slp-row ${selectedSongId === song.id ? "selected" : ""} ${songReorderMode ? "slp-row--editable" : ""}" ${songReorderMode ? "" : `role="button" tabindex="0" aria-expanded="${expanded}" aria-label="${expanded ? "Hide" : "Show"} song details"`}>
+      <div class="slp-row ${selectedSongId === song.id ? "selected" : ""} ${songReorderMode ? "slp-row--editable" : ""}" data-sides="${songTitleSides(song)}" ${songReorderMode ? "" : `role="button" tabindex="0" aria-expanded="${expanded}" aria-label="${expanded ? "Hide" : "Show"} song details"`}>
         ${selectMode.active ? selectCheckMarkup() : ""}
         ${songReorderMode ? `<button class="slp-row__drag-handle song-grip" type="button" aria-label="Move ${escapeAttribute(song.title)}"><i data-lucide="grip-vertical"></i></button>` : ""}
         <div class="slp-row__body">
           <button class="song-title-button" type="button"><span class="slp-row__title">${songTitleMarkup(song)}</span></button>
           ${(song.artists || []).length ? `<span class="slp-row__artists">${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
         </div>
-        ${likelyDuplicateIds().has(song.id) ? `<span class="song-review-chip song-dup-chip">${t("Maybe duplicate")}</span>` : ""}
-        ${song.needsReview ? `<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>` : ""}
-        ${songChartFlag(song)}
-        ${songDisplayKey(song) ? `<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(songDisplayKey(song))}" aria-label="Show songs in ${escapeAttribute(songDisplayKey(song))}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(songDisplayKey(song))}</button>` : ""}
+        ${songRowMeta(song)}
       </div>
       ${expanded && !songReorderMode && !selectMode.active ? `<div class="song-details">
         <span><strong>${t("Folders:")}</strong> ${escapeHtml(folders || "Unfiled")}</span>
@@ -15209,6 +15324,46 @@ function dupLyricDiff(base, other) {
   return { chordDiffs, onlyNew, onlyMine, matched, aligned: matched / biggest >= 0.6, mineLines: mine.length, theirLines: theirs.length };
 }
 
+// Is the other chart the same chart moved to another key? Looks at the chords on lines with the same words;
+// when most of them are the same number of semitones away, that number is returned (-6..6), else 0.
+function dupChordShift(base, other) {
+  const mine = dupLyricLines(base);
+  const used = new Set();
+  const votes = {};
+  let pairs = 0;
+  dupLyricLines(other).forEach((line) => {
+    const plain = dupPlainLine(line);
+    if (!plain) return;
+    const at = mine.findIndex((candidate, index) => !used.has(index) && dupPlainLine(candidate) === plain);
+    if (at < 0) return;
+    used.add(at);
+    const a = dupChordsOf(mine[at]);
+    const b = dupChordsOf(line);
+    if (!a.length || a.length !== b.length) return;
+    a.forEach((token, i) => {
+      const rootA = /^[A-G][#b♯♭]?/.exec(token.slice(1, -1));
+      const rootB = /^[A-G][#b♯♭]?/.exec(b[i].slice(1, -1));
+      if (!rootA || !rootB) return;
+      const shift = (noteIndexOf(rootB[0]) - noteIndexOf(rootA[0]) + 12) % 12;
+      votes[shift] = (votes[shift] || 0) + 1;
+      pairs += 1;
+    });
+  });
+  if (pairs < 3) return 0;
+  const [best, count] = Object.entries(votes).sort((x, y) => y[1] - x[1])[0];
+  const steps = Number(best);
+  if (!steps || count / pairs < 0.7) return 0;
+  return steps > 6 ? steps - 12 : steps;
+}
+
+// The other chart with every chord (and its key) moved by -steps, so it lines up with the library's.
+function dupTransposeSong(song, steps, useFlats) {
+  const copy = JSON.parse(JSON.stringify(song));
+  copy.documentHtml = String(copy.documentHtml || "").replace(chordTokenPattern(), (token, chord) => `[${transposeChord(chord, steps, useFlats)}]`);
+  if (copy.key) copy.key = transposeKey(copy.key, steps);
+  return normalizeSong(copy);
+}
+
 function dupFolderNames(song) {
   return (song.folderIds || []).map((id) => folderById(id)?.name).filter(Boolean);
 }
@@ -15344,10 +15499,25 @@ function dupSongFromForm() {
   });
 }
 
-function openDuplicateCompare(baseId, other, source = "edit") {
+// An import candidate drawn as a song, so it can be compared and merged like any other.
+function dupSongFromCandidate(candidate) {
+  const artists = splitArtistCredits([candidate.artist, candidate.featuredArtist]);
+  return normalizeSong({
+    id: "import-candidate", title: String(candidate.title || "").trim(), titleEnglish: candidate.titleEnglish || "", titleHebrew: candidate.titleHebrew || "",
+    alternateTitles: candidate.alternateTitles || [], artists, artist: artists.join(", "), composer: candidate.composer || "", lyricist: candidate.lyricist || "",
+    album: candidate.album || "", styles: normalizeStringArray(candidate.style), occasions: candidate.occasions || [], youtubeUrl: candidate.youtubeUrl || "",
+    infoSources: candidate.infoSources || {}, bpm: candidate.bpm || "", language: candidate.language || "", key: String(candidate.key || "").trim(),
+    timeSignature: candidate.timeSignature || "", capo: candidate.capo || "", needsReview: candidate.needsReview === true, reviewNote: candidate.reviewNote || "",
+    audioLinks: normalizeUrlList(candidate.linkText).filter((url) => linkInfo(url).kind !== "video"),
+    videoLinks: normalizeUrlList(candidate.linkText).filter((url) => linkInfo(url).kind === "video"),
+    folderIds: candidate.selectedFolderIds || [], documentHtml: plainTextToDocumentHtml(candidate.lyrics || "")
+  });
+}
+
+function openDuplicateCompare(baseId, other, source = "edit", candidate = null) {
   const base = state.songs.find((song) => song.id === baseId);
   if (!base || !other) return;
-  dupCtx = { baseId, other, source, step: "compare", plan: defaultMergePlan(base, other) };
+  dupCtx = { baseId, other, source, candidate, step: "compare", plan: defaultMergePlan(base, other) };
   setElementVisible(els.dupSheet, true);
   els.app?.classList.add("dup-open");
   renderDuplicateSheet();
@@ -15380,19 +15550,24 @@ function renderDuplicateSheet() {
     ${diff.chordDiffs.slice(0, 12).map((e) => `<div class="dup-line" dir="auto"><span>${escapeHtml(e.mine)}</span><span class="dup-line__new">${escapeHtml(e.theirs)}</span></div>`).join("")}
     ${diff.onlyNew.slice(0, 6).map((line) => `<div class="dup-line" dir="auto"><span class="dup-empty">—</span><span class="dup-line__new">${escapeHtml(line)}</span></div>`).join("")}
   </div>` : "";
+  const shift = dupCtx.original ? dupCtx.shifted : dupChordShift(base, other);
+  const banner = step === "compare" && shift ? `<div class="dup-banner"><span>${dupCtx.original
+    ? `${t("Moved the new chart to match your key")} (${shift > 0 ? "−" : "+"}${Math.abs(shift)}).`
+    : `${t("The new chart looks like yours in another key")} (${shift > 0 ? "+" : "−"}${Math.abs(shift)} ${t("semitones")}).`}</span>
+    <button class="slp-btn slp-btn--soft" type="button" data-dup="${dupCtx.original ? "unmatch" : "match"}">${t(dupCtx.original ? "Use as it was" : "Match my key")}</button></div>` : "";
   let body = "";
   let footer = "";
   if (step === "compare" || step === "choose") {
     const blockedBase = dupGigReferences(base.id) > 0;
     const awayId = dupMergedAwayId();
     const blockedMerge = Boolean(awayId) && dupGigReferences(awayId) > 0;
-    body = `${table}${lineList}
+    body = `${banner}${table}${lineList}
     <div class="dup-choices">
       <button class="dup-choice" type="button" data-dup="keep"><strong>${t("Keep both")}</strong><small>${t("It's another version. This pair won't be flagged again.")}</small></button>
       <button class="dup-choice" type="button" data-dup="merge" ${blockedMerge ? "disabled" : ""}><strong>${t("Merge into the one I have")}</strong><small>${t(blockedMerge ? "This song is used in an event, so it can't be merged away." : "Fills empty details. You choose the rest.")}</small></button>
-      <button class="dup-choice" type="button" data-dup="replace" ${blockedBase ? "disabled" : ""}><strong>${t("Replace the old one")}</strong><small>${t(blockedBase ? "The old song is used in an event, so it can't be replaced." : "The song in your library is removed. Undo is available.")}</small></button>
+      ${dupCtx.source === "import" ? "" : `<button class="dup-choice" type="button" data-dup="replace" ${blockedBase ? "disabled" : ""}><strong>${t("Replace the old one")}</strong><small>${t(blockedBase ? "The old song is used in an event, so it can't be replaced." : "The song in your library is removed. Undo is available.")}</small></button>`}
     </div>`;
-    footer = `<button class="slp-btn slp-btn--ghost" type="button" data-dup="cancel">${t("Back to editing")}</button>`;
+    footer = `<button class="slp-btn slp-btn--ghost" type="button" data-dup="cancel">${t(dupCtx.source === "edit" ? "Back to editing" : "Back")}</button>`;
   } else {
     const plan = dupCtx.plan;
     const fieldRows = rows.filter((row) => row.differs && !row.list && plan.fields[row.key] !== undefined && row.mine && row.theirs);
@@ -15434,6 +15609,22 @@ function onDuplicateClick(event) {
   if (action === "keep") { duplicateKeepBoth(); return; }
   if (action === "merge") { dupCtx.step = "review"; renderDuplicateSheet(); els.dupBody.scrollTop = 0; return; }
   if (action === "replace") { duplicateReplace(); return; }
+  if (action === "match" || action === "unmatch") {
+    const base = state.songs.find((song) => song.id === dupCtx.baseId);
+    if (action === "match") {
+      const steps = dupChordShift(base, dupCtx.other);
+      dupCtx.original = dupCtx.other;
+      dupCtx.shifted = steps;
+      dupCtx.other = dupTransposeSong(dupCtx.other, -steps, keyPrefersFlats(base.key) === true);
+    } else {
+      dupCtx.other = dupCtx.original;
+      dupCtx.original = null;
+      dupCtx.shifted = 0;
+    }
+    dupCtx.plan = defaultMergePlan(base, dupCtx.other);
+    renderDuplicateSheet();
+    return;
+  }
   if (action === "richer") {
     const base = state.songs.find((song) => song.id === dupCtx.baseId);
     dupLyricDiff(base, dupCtx.other).chordDiffs.forEach((e) => { if (e.richer) dupCtx.plan.lines[e.aIndex] = "new"; });
@@ -15456,6 +15647,16 @@ function onDuplicateChange(event) {
 function duplicateKeepBoth() {
   if (!dupCtx) return;
   const baseId = dupCtx.baseId;
+  if (dupCtx.source === "import") {
+    const candidate = dupCtx.candidate;
+    candidate.duplicateDecision = { type: "create", songId: null };
+    candidate.keepBothWith = baseId;
+    candidate.pendingMergeId = null;
+    candidate.selected = true;
+    closeDuplicateSheet();
+    renderImportCandidates();
+    return;
+  }
   if (dupCtx.source === "pair") {
     const a = state.songs.find((song) => song.id === baseId);
     const b = state.songs.find((song) => song.id === dupCtx.other.id);
@@ -15506,6 +15707,11 @@ function duplicateApplyMerge() {
   if (!base) return;
   const editedId = dupMergedAwayId();
   if (editedId && dupGigReferences(editedId)) return;
+  if (dupCtx.source === "import") {
+    // Folders chosen (or newly named) in the import become real first, so they can be added to the song.
+    commitCandidateImportFolders([dupCtx.candidate]);
+    dupCtx.other = dupSongFromCandidate(dupCtx.candidate);
+  }
   const { song, report } = mergedSong(base, dupCtx.other, dupCtx.plan);
   const edited = editedId ? state.songs.find((item) => item.id === editedId) : null;
   duplicateSnapshot(edited ? [base, edited] : [base]);
@@ -15514,6 +15720,18 @@ function duplicateApplyMerge() {
   if (edited) {
     state.songs = state.songs.filter((item) => item.id !== edited.id);
     Object.keys(state.songOrder).forEach((key) => { state.songOrder[key] = state.songOrder[key].filter((id) => id !== edited.id); });
+  }
+  if (dupCtx.source === "import") {
+    const candidate = dupCtx.candidate;
+    candidate.duplicateDecision = { type: "merged", songId: song.id };
+    candidate.selected = false;
+    candidate.pendingMergeId = null;
+    closeDuplicateSheet();
+    persist();
+    render();
+    renderImportCandidates();
+    showUndoToast(report.length ? `Merged: ${report.join(", ")}` : "Merged. Nothing needed changing.", () => { undoDuplicateAction(); candidate.duplicateDecision = null; candidate.selected = false; renderImportCandidates(); });
+    return;
   }
   if (dupCtx.source === "pair") {
     persist();
@@ -15630,7 +15848,8 @@ function scanDuplicates() {
         const percent = exact ? 100 : Math.round(Math.max(lyricScore, sameArtist ? 0.7 : 0.5) * 100);
         const notes = [];
         valueDiffs.forEach((row) => notes.push(`${t(row.label)} ${row.mine} / ${row.theirs}`));
-        if (diff.chordDiffs.length) notes.push(t("chords differ"));
+        if (dupChordShift(base, other)) notes.push(t("chart in another key"));
+        else if (diff.chordDiffs.length) notes.push(t("chords differ"));
         else if (rows.find((row) => row.key === "chords")?.differs) notes.push(t("one has chords"));
         if (diff.onlyNew.length || diff.onlyMine.length) notes.push(t("lyrics differ"));
         pairs.push({ key, baseId: base.id, otherId: other.id, kept, level, exact, percent, title: base.title, artist: base.artist || other.artist, note: notes.join(" · ") || t("same details") });
@@ -19335,7 +19554,19 @@ function initPracticeUi() {
   });
   els.practiceAudioBtn?.addEventListener("click", requestClearUnusedPracticeAudio);
 }
+// "New" or "Classic" look. A device preference (like the title side), so a phone can try the new look
+// while the laptop stays as it is. Classic is the default.
+const DESIGN_KEY = "slp-design";
+function designStyle() {
+  try { return localStorage.getItem(DESIGN_KEY) === "new" ? "new" : "classic"; } catch { return "classic"; }
+}
+
+function setDesignStyle(value) {
+  try { localStorage.setItem(DESIGN_KEY, value === "new" ? "new" : "classic"); } catch {}
+}
+
 function applyAppAppearance() {
+  document.documentElement?.setAttribute?.("data-design", designStyle());
   const mode = state.appearanceMode || "system";
   const systemDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
   const resolved = mode === "system" ? (systemDark ? "dark" : "light") : mode;
@@ -19348,6 +19579,7 @@ function currentAppearanceDraft() {
   return {
     appearanceMode: state.appearanceMode || "system",
     accentTheme: state.accentTheme || "teal",
+    design: designStyle(),
     font: state.lyricPrefs.font,
     lyricSize: state.lyricPrefs.fontSize,
     alignment: state.lyricPrefs.alignment || "auto",
@@ -19420,6 +19652,7 @@ function syncAppearanceDraft() {
   document.querySelectorAll("[data-mode-choice]").forEach((button) => {
     button.classList.toggle("selected", button.dataset.modeChoice === appearanceDraft.appearanceMode);
   });
+  document.querySelectorAll("[data-design-choice]").forEach((button) => button.classList.toggle("selected", button.dataset.designChoice === appearanceDraft.design));
   const fontSelect = document.getElementById("fontSelect");
   if (fontSelect) fontSelect.value = appearanceDraft.font;
   document.querySelectorAll("[data-align-choice]").forEach((button) => button.classList.toggle("selected", button.dataset.alignChoice === appearanceDraft.alignment));
@@ -19442,6 +19675,8 @@ function saveAppearanceSettings() {
   if (!appearanceDraft) return;
   state.appearanceMode = appearanceDraft.appearanceMode;
   state.accentTheme = appearanceDraft.accentTheme;
+  setDesignStyle(appearanceDraft.design);
+  applyAppAppearance();
   state.lyricPrefs.font = appearanceDraft.font;
   state.lyricPrefs.fontSize = Number(appearanceDraft.lyricSize);
   state.lyricPrefs.alignment = appearanceDraft.alignment;
@@ -20237,10 +20472,10 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const ownKey = songDisplayKey(song);
   const eventKey = Boolean(item.keyOverride);
   const keyChip = songKey
-    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey && ownKey ? `${escapeHtml(compactKeyLabel(ownKey))} → ` : ""}${escapeHtml(compactKeyLabel(songKey))}</button>`
+    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? `<span class="ek-classic">${escapeHtml(compactKeyLabel(ownKey))} → </span>` : ""}<span class="ek-main">${escapeHtml(compactKeyLabel(songKey))}</span><span class="ek-label">${t("event")}</span>${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${escapeHtml(compactKeyLabel(ownKey))}</span>` : ""}` : escapeHtml(compactKeyLabel(songKey))}</button>`
     : gigStructureEditMode ? `<button class="slp-badge--key empty" type="button" data-gig-item-edit="${item.id}" aria-label="Add a key or note">${t("Key")}</button>` : "";
   const noteText = [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ");
-  const row = `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${item.performanceStatus === "played" ? "is-played" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "16px" : "28px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}">
+  const row = `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${item.performanceStatus === "played" ? "is-played" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "16px" : "28px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}" data-sides="${songTitleSides(song)}">
     ${selectMode.active ? selectCheckMarkup() : ""}
     ${item.performanceStatus === "played" ? `<i class="gig-played-tick" data-lucide="check" aria-label="Played"></i>` : `<span class="gig-song-number">${index + 1}</span>`}
     <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-song="${song.id}" data-open-gig-item="${item.id}">
@@ -23860,7 +24095,7 @@ function renderImportCandidates() {
         ${bulk
           ? `<label class="import-song-toggle"><input class="import-check slp-switch" type="checkbox" aria-label="${escapeAttribute(candidate.title || `Song ${index + 1}`)}" ${candidate.selected ? "checked" : ""}></label>
              <button class="import-row-main" type="button" aria-expanded="false" data-import-open><span class="import-row-title">${songTitleMarkup({ title: candidate.title || t("Untitled"), titleEnglish: "", titleHebrew: "", titleYiddish: "" })}</span><span class="import-source">${escapeHtml(candidate.sourceName)}</span></button>
-             <span class="import-status ${candidate.duplicate || candidate.batchDuplicate ? "skip" : candidate.needsReview ? "review" : "new"}" ${candidate.needsReview && candidate.reviewNote ? `title="${escapeAttribute(candidate.reviewNote)}"` : ""}>${candidate.duplicate ? t("Already in your library") : candidate.batchDuplicate ? t("Same as another song here") : candidate.needsReview ? t("Needs review") : t("New")}</span>`
+             <span class="import-status ${candidate.duplicate || candidate.batchDuplicate ? "skip" : candidate.needsReview ? "review" : "new"}" ${candidate.needsReview && candidate.reviewNote ? `title="${escapeAttribute(candidate.reviewNote)}"` : ""}>${candidate.duplicateDecision?.type === "merged" ? t("Merged into the existing song") : candidate.duplicate ? t("Already in your library") : candidate.batchDuplicate ? t("Same as another song here") : candidate.needsReview ? t("Needs review") : t("New")}</span>`
           : `<label class="import-song-toggle"><input class="import-check slp-switch" type="checkbox" ${candidate.selected ? "checked" : ""}><span>Import song ${index + 1}</span></label>
              <span class="import-source">${escapeHtml(candidate.sourceName)}</span>
              ${candidate.duplicate ? `<span class="duplicate-note">${t("Possible duplicate")}</span>` : ""}`}
@@ -24157,6 +24392,7 @@ function renderDuplicateMatches(candidate) {
         <div class="duplicate-match">
           <div><strong dir="auto">${escapeHtml(match.title)}</strong><span dir="auto">${escapeHtml(match.artist || "Unknown artist")} · ${match.score}% similar${match.reasons.length ? ` · ${escapeHtml(match.reasons.join(", "))}` : ""}</span></div>
           <div class="duplicate-actions">
+            <button class="slp-btn slp-btn--soft" type="button" data-duplicate-action="compare" data-song-id="${match.songId}">${t("Compare")}</button>
             <button class="slp-btn slp-btn--soft" type="button" data-duplicate-action="open" data-song-id="${match.songId}">${t("Open existing")}</button>
             <button class="slp-btn slp-btn--soft" type="button" data-duplicate-action="merge" data-song-id="${match.songId}">${candidate.pendingMergeId === match.songId ? "Confirm merge" : "Merge missing metadata"}</button>
             <button class="slp-btn slp-btn--soft ${decision?.type === "alternate" && decision.songId === match.songId ? "selected" : ""}" type="button" data-duplicate-action="alternate" data-song-id="${match.songId}">${t("Save as alternate version")}</button>
@@ -24169,6 +24405,10 @@ function renderDuplicateMatches(candidate) {
 function handleDuplicateAction(candidate, action, songId) {
   if (action === "open") {
     if (state.songs.some((song) => song.id === songId)) openSong(songId);
+    return;
+  }
+  if (action === "compare") {
+    if (state.songs.some((song) => song.id === songId)) openDuplicateCompare(songId, dupSongFromCandidate(candidate), "import", candidate);
     return;
   }
   if (action === "create") {
@@ -24285,6 +24525,7 @@ function importSelectedSongs() {
     bpm: candidate.bpm ? clamp(Number(candidate.bpm), 20, 300) : "",
     language: candidate.language.trim(),
     importSourceUrl: /^https?:\/\//i.test(candidate.sourceUrl.trim()) ? candidate.sourceUrl.trim() : "",
+    keptBoth: candidate.keepBothWith ? [candidate.keepBothWith] : [],
     alternateOfId: candidate.duplicateDecision?.type === "alternate" ? candidate.duplicateDecision.songId : null,
     key: candidate.key.trim(),
     status: candidate.status,
@@ -24294,6 +24535,11 @@ function importSelectedSongs() {
     documentHtml: plainTextToDocumentHtml(candidate.lyrics)
   }));
   state.songs.unshift(...imported);
+  // A pair chosen as "Keep both" while comparing is remembered on the existing song too.
+  imported.forEach((song) => song.keptBoth.forEach((id) => {
+    const existing = state.songs.find((item) => item.id === id);
+    if (existing) existing.keptBoth = [...new Set([...(existing.keptBoth || []), song.id])];
+  }));
   markStateDirty();
   ensureOrder(state.songOrder, ALL_SONGS, state.songs.map((song) => song.id));
   currentFolderId = ALL_SONGS;
@@ -26131,6 +26377,27 @@ function songTitleParts(song) {
   return { en, he };
 }
 
+// Which sides a title has: "en", "he", "both" or "one" (an unsplittable mixed title). The New design
+// puts English on the left and Hebrew/Yiddish on the right and uses this to place a single title.
+function songTitleSides(song) {
+  const parts = songTitleParts(song);
+  if (parts.one) return "one";
+  return parts.en && parts.he ? "both" : parts.he ? "he" : "en";
+}
+
+// Key, tempo and the small tags of a song row, in one group (the New design lays them out on line 2).
+function songRowMeta(song) {
+  const key = songDisplayKey(song);
+  const parts = [];
+  if (key) parts.push(`<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(key)}" aria-label="Show songs in ${escapeAttribute(key)}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(key)}</button>`);
+  if (song.bpm) parts.push(`<span class="song-bpm" dir="ltr">${escapeHtml(String(song.bpm))} bpm</span>`);
+  if (likelyDuplicateIds().has(song.id)) parts.push(`<span class="song-review-chip song-dup-chip">${t("Maybe duplicate")}</span>`);
+  if (song.needsReview) parts.push(`<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>`);
+  const flag = songChartFlag(song);
+  if (flag) parts.push(flag);
+  return `<span class="song-meta">${parts.join("")}</span>`;
+}
+
 function songTitleMarkup(song) {
   const parts = songTitleParts(song);
   const line = (cls, dir, text, lang = "") => `<span class="${cls}" dir="${dir}"${lang ? ` lang="${lang}"` : ""}>${escapeHtml(text)}</span>`;
@@ -27718,6 +27985,7 @@ document.querySelectorAll("[data-mode-choice]").forEach((button) => button.addEv
   appearanceDraft.appearanceMode = button.dataset.modeChoice;
   syncAppearanceDraft();
 }));
+document.querySelectorAll("[data-design-choice]").forEach((button) => button.addEventListener("click", () => { appearanceDraft.design = button.dataset.designChoice; syncAppearanceDraft(); }));
 document.getElementById("fontSelect")?.addEventListener("change", (event) => { appearanceDraft.font = event.target.value; syncAppearanceDraft(); });
 document.querySelectorAll("[data-align-choice]").forEach((button) => button.addEventListener("click", () => { appearanceDraft.alignment = button.dataset.alignChoice; syncAppearanceDraft(); }));
 document.querySelectorAll("[data-bg-choice]").forEach((button) => button.addEventListener("click", () => { appearanceDraft.background = button.dataset.bgChoice; syncAppearanceDraft(); }));
