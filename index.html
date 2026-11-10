@@ -6341,6 +6341,62 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 .key-current svg { width: 18px; height: 18px; flex: none; color: var(--accent); }
 .key-current small { color: var(--color-text-secondary); font-weight: 400; }
 
+/* ============ New design on the rest of the app: lean, text first (nothing moves) ============
+   Flat rows with a hairline drawn as an inset shadow (the border keeps its 1px, only its color goes), no card shadows, no icon tiles,
+   no filled pills; accent only for the active thing. Classic is untouched. */
+/* 1. Header plus buttons */
+:root[data-design="new"] #newRootFolderBtn,
+:root[data-design="new"] #notesAddMenuBtn,
+:root[data-design="new"] #newGigBtn,
+:root[data-design="new"] .slp-btn--fab { background: transparent; color: var(--accent); box-shadow: none; }
+:root[data-design="new"] .slp-btn--fab svg, :root[data-design="new"] #newRootFolderBtn svg, :root[data-design="new"] #notesAddMenuBtn svg, :root[data-design="new"] #newGigBtn svg { color: inherit; }
+/* 2. Icon tiles */
+:root[data-design="new"] .slp-row__icon-tile { background: transparent; color: var(--color-text-secondary); box-shadow: none; }
+:root[data-design="new"] .slp-row__icon-tile svg { width: 20px; height: 20px; stroke-width: var(--icon-stroke-width); }
+/* 3. Cards become flat rows */
+:root[data-design="new"] #songLibraryContent .slp-card,
+:root[data-design="new"] #folderContent .slp-card,
+:root[data-design="new"] #notesBrowserContent .slp-card,
+:root[data-design="new"] #settingsSheet .slp-card,
+:root[data-design="new"] #gigList .slp-card,
+:root[data-design="new"] .gig-section-card { background: transparent; box-shadow: none; border-radius: 0; }
+:root[data-design="new"] #songLibraryContent .slp-card > .slp-row,
+:root[data-design="new"] #folderContent .slp-card > .slp-row,
+:root[data-design="new"] #notesBrowserContent .slp-card > .slp-row,
+:root[data-design="new"] #settingsSheet .slp-card > .slp-row,
+:root[data-design="new"] #gigList .slp-card > .slp-row,
+:root[data-design="new"] .gig-section-card > .gig-toggle-row { background: transparent; }
+:root[data-design="new"] #songLibraryContent .slp-card > .slp-row:not(:last-child),
+:root[data-design="new"] #folderContent .slp-card > .slp-row:not(:last-child),
+:root[data-design="new"] #notesBrowserContent .slp-card > .slp-row:not(:last-child),
+:root[data-design="new"] #settingsSheet .slp-card > .slp-row:not(:last-child),
+:root[data-design="new"] #gigList .slp-card > .slp-row:not(:last-child),
+:root[data-design="new"] .gig-section-card > .gig-toggle-row { border-bottom-color: transparent; box-shadow: inset 0 -1px 0 var(--color-border); }
+:root[data-design="new"] #settingsSheet .slp-card--quiet { border-color: transparent; }
+/* 4. The selected row on Songs home: no tint, accent title */
+:root[data-design="new"] #songLibraryContent .slp-row.selected,
+:root[data-design="new"] #folderContent .slp-row.selected { background: transparent; }
+:root[data-design="new"] #songLibraryContent .slp-row.selected .slp-row__title,
+:root[data-design="new"] #folderContent .slp-row.selected .slp-row__title { color: var(--accent); }
+/* 5. List / Board and List / Calendar toggles */
+:root[data-design="new"] .slp-segmented { background: transparent; box-shadow: inset 0 0 0 1px var(--color-border); border-radius: var(--radius-lg); }
+:root[data-design="new"] .slp-segmented button.selected { box-shadow: none; background: var(--accent-soft); color: var(--accent); font-weight: var(--font-weight-semibold); border-radius: var(--radius-md); }
+:root[data-design="new"] .slp-segmented button.selected svg { color: inherit; }
+/* 6. The Events sort bar */
+:root[data-design="new"] #gigSortWrap { background: transparent; border-radius: 0; box-shadow: inset 0 -1px 0 var(--color-border); }
+/* 7. Tools */
+:root[data-design="new"] #toolsGrid .tool-card { background: transparent; border-radius: 0; border-color: transparent; box-shadow: inset 0 -1px 0 var(--color-border); }
+/* 8. Event sections */
+:root[data-design="new"] .gig-order-number { background: transparent; color: var(--color-text-secondary); font-size: var(--text-md); font-weight: 400; }
+:root[data-design="new"] #gigDetailsCollapse { background: transparent; border-radius: 0; border-color: transparent; box-shadow: inset 0 -1px 0 var(--color-border); }
+/* 9. The song More menu and the dropdown menus */
+:root[data-design="new"] #actionMenu.action-menu--grid { box-shadow: none; }
+:root[data-design="new"] #actionMenu.action-menu--grid button.action-tile,
+:root[data-design="new"] #actionMenu.action-menu--grid button.action-footer { background: transparent; }
+:root[data-design="new"] #actionMenu.action-menu--grid button.action-tile svg { width: 20px; height: 20px; color: var(--color-text-secondary); margin-block: 3px; stroke-width: var(--icon-stroke-width); }
+:root[data-design="new"] #actionMenu.action-menu--grid button.action-footer { border-radius: 0; box-shadow: inset 0 1px 0 var(--color-border); }
+:root[data-design="new"] .slp-menu-panel { box-shadow: none; }
+
 }
 
 </style>
@@ -8270,7 +8326,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "5083ed78 · ec748f2";
+const APP_BUILD = "5083ed78 · 6a93e4c";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
