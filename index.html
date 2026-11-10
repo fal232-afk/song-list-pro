@@ -5319,8 +5319,6 @@ a.slp-chip { min-height: 44px; }
 /* ---- Event setlist: Edit text button, labelled Add songs rows, swipe to remove ---- */
 .gig-edit-text-btn { min-width: 44px; min-height: 44px; padding: 0 var(--space-5); border-radius: var(--radius-md); background: transparent; color: var(--accent); font-weight: var(--font-weight-semibold); font-size: var(--text-base); }
 .gig-edit-text-btn.is-on { background: var(--accent); color: #fff; }
-.gig-add-row { display: flex; align-items: center; gap: var(--space-4); width: 100%; min-height: 48px; border: 0; background: transparent; color: var(--accent); font: inherit; font-weight: var(--font-weight-semibold); text-align: start; cursor: pointer; }
-.gig-add-row svg { width: 18px; height: 18px; flex: none; }
 .gig-direct-songs > .gig-add-row { padding-inline-start: 0; }
 .gig-song-swipe.swipeable { position: relative; overflow: hidden; }
 .gig-song-swipe.swipeable > .slp-row { position: relative; z-index: 1; touch-action: pan-y; background: var(--color-card); }
@@ -6002,7 +6000,9 @@ a.perf-btn[hidden] { display: none; }
 .dup-empty-note { padding: var(--space-6) var(--space-3); text-align: center; }
 
 /* Quick key picker on the lyrics page */
-.quick-key-body { display: grid; gap: var(--space-6); }
+.quick-key-body { display: grid; align-content: start; grid-auto-rows: min-content; gap: var(--space-6); }
+.quick-key-sheet .key-mode-control, .quick-key-sheet .key-note-grid { align-self: start; }
+.quick-key-sheet .clear-key-button { justify-self: stretch; width: 100%; border-radius: var(--radius-lg); background: var(--color-chip-bg); }
 .quick-key-sheet .key-mode-control button, .quick-key-sheet .key-note-grid button, .quick-key-sheet .clear-key-button { min-height: 44px; }
 
 /* ============ Practice view follows the app's light/dark setting ============
@@ -6179,6 +6179,136 @@ a.perf-btn[hidden] { display: none; }
 #backupMergeView .settings-page__body > * { flex-shrink: 0; }
 #backupMergeView .dup-chip { white-space: nowrap; }
 #backupMergeView .bm-diff-row .slp-row__subtitle { white-space: normal; }
+
+/* ============ Editing and event fixes (from the phone review) ============ */
+/* 1. The formatting tools on a phone: one slim row docked above the keyboard (no floating card on the lyrics). */
+@media (max-width: 900px) {
+  .slp-selection-popover {
+    left: 0 !important;
+    right: 0;
+    top: auto !important;
+    bottom: var(--writing-toolbar-inset, 0px);
+    width: 100%;
+    max-width: none;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    gap: 0;
+    padding: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .slp-selection-popover::-webkit-scrollbar { display: none; }
+  .slp-selection-popover .slp-btn--icon { flex: 0 0 44px; width: 44px; height: 44px; }
+  .slp-selection-popover__swatches { display: contents; margin: 0; }
+  .slp-popover-swatch { flex: 0 0 44px; width: 44px; height: 44px; border-width: 10px; }
+}
+
+/* 2. Search fields: a clear button inside, shown only while there is text. */
+.has-search-clear { position: relative; }
+.search-clear-input { padding-inline-end: 44px; }
+.search-clear-input::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+.search-clear { position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); display: none; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.search-clear svg { width: 20px; height: 20px; }
+.search-clear-input:not(:placeholder-shown) ~ .search-clear { display: inline-flex; }
+
+/* 3. Date and time fields never run past their card (iPhone gives them a minimum width of their own). */
+input[type="date"], input[type="time"] { -webkit-appearance: none; appearance: none; box-sizing: border-box; display: block; width: 100%; max-width: 100%; min-width: 0; }
+input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-date-and-time-value { min-width: 0; text-align: start; }
+
+/* 4. A plus at the end of each event list (no need for Edit) and at the end of each song row. */
+:root[data-design="new"] .song-item 
+/* 5. New design, Edit mode in an event: the empty key slot is a quiet "+ Key" link, not a dashed box. */
+.slp-badge--key.empty svg { display: none; }
+:root[data-design="new"] .gig-song-reference > .slp-badge--key.empty { border: 0; background: transparent; color: var(--color-text-secondary); }
+:root[data-design="new"] .gig-song-reference > .slp-badge--key.empty .empty-label { display: none; }
+:root[data-design="new"] .gig-song-reference > .slp-badge--key.empty svg { display: block; width: 18px; height: 18px; }
+
+/* A "+" next to a list's name in an event: add songs fast, no Edit needed. */
+.gig-quick-add { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-inline-start: auto; padding: 0; border: 0; border-radius: var(--radius-circle); background: transparent; color: var(--accent); cursor: pointer; }
+.gig-quick-add svg { width: 22px; height: 22px; }
+.gig-quick-add + .gig-sort, .gig-quick-add + * { margin-inline-start: 0; }
+
+/* Find on YouTube */
+.yt-find-btn { justify-self: start; min-height: 44px; margin-top: var(--space-3); }
+.yt-bar { position: fixed; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom, 0px) + 60px); z-index: 60; display: flex; align-items: center; gap: var(--space-4); margin-inline: var(--space-6); padding: var(--space-4) var(--space-6); border-radius: var(--radius-lg); background: var(--color-text); color: var(--color-card); box-shadow: var(--shadow-card); font-size: var(--text-md); }
+.yt-bar[hidden] { display: none; }
+.yt-bar span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.yt-bar .slp-btn { flex: none; min-height: 44px; }
+.yt-bar .slp-btn--ghost { min-width: 44px; color: inherit; }
+
+/* Swipe a song in an event: Key, Note, Remove. */
+.gig-song-swipe.has-row-actions { position: relative; overflow: hidden; }
+.gig-song-swipe.has-row-actions > .gig-song-reference { position: relative; z-index: 1; touch-action: pan-y; background: var(--color-card); }
+:root[data-design="new"] .gig-song-swipe.has-row-actions > .gig-song-reference { background: var(--color-card); }
+.gig-row-actions { position: absolute; inset: 0 0 0 auto; width: 192px; display: flex; z-index: 0; }
+.gig-row-actions button { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 0; border: 0; color: #fff; font: inherit; font-size: var(--text-xs-plus, 11.5px); font-weight: var(--font-weight-semibold); cursor: pointer; background: var(--accent); }
+.gig-row-actions button + button { background: #b8860b; }
+.gig-row-actions button.is-danger { background: var(--danger); }
+.gig-row-actions svg { width: 20px; height: 20px; }
+.slp-badge--key.quiet { background: transparent; color: var(--color-text-muted, var(--color-text-secondary)); border: 0; font-weight: 400; }
+:root[data-design="new"] .gig-song-reference > .slp-badge--key.quiet { color: var(--color-text-muted, var(--color-text-secondary)); }
+
+#gigItemModeRow button { min-height: 44px; }
+
+/* ============ Sort and filter: a list of categories, each opening a searchable list ============ */
+.filter-panel { display: grid; align-content: start; gap: var(--space-7); }
+.fp-seg { display: flex; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-card); }
+.fp-seg button { flex: 1 1 0; min-width: 0; min-height: 44px; padding: 0 var(--space-2); border: 0; border-inline-start: 1px solid var(--color-border); background: transparent; color: var(--color-text); font: inherit; font-size: var(--text-md); cursor: pointer; }
+.fp-seg button:first-child { border-inline-start: 0; }
+.fp-seg button.is-on { background: var(--accent-soft); color: var(--accent); font-weight: var(--font-weight-semibold); }
+.fp-list { border-top: 1px solid var(--color-border); }
+.fp-row { display: flex; align-items: center; gap: var(--space-5); width: 100%; min-height: 52px; padding: 0 var(--space-2); border: 0; border-bottom: 1px solid var(--color-border); background: transparent; color: var(--color-text); font: inherit; font-size: var(--text-lg); text-align: start; cursor: pointer; }
+.fp-row__label { flex: none; }
+.fp-row__value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: end; color: var(--color-text-secondary); font-size: var(--text-md); }
+.fp-row__value.is-on { color: var(--accent); font-weight: var(--font-weight-semibold); }
+.fp-row__chevron { flex: none; width: 18px; height: 18px; color: var(--color-text-muted, var(--color-text-secondary)); }
+.fp-back { display: flex; align-items: center; gap: var(--space-4); min-height: 44px; padding: 0; border: 0; background: transparent; color: var(--color-text); font: inherit; font-size: var(--text-xl); font-weight: var(--font-weight-semibold); cursor: pointer; }
+.fp-back svg { width: 22px; height: 22px; }
+.fp-search { position: relative; display: flex; align-items: center; gap: var(--space-4); min-height: 44px; padding: 0 var(--space-5); border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-card); }
+.fp-search svg { width: 18px; height: 18px; flex: none; color: var(--color-text-secondary); }
+.fp-search input { flex: 1; min-width: 0; min-height: 40px; border: 0; background: transparent; color: var(--color-text); font: inherit; font-size: var(--text-lg); outline: none; }
+.fp-options { border-top: 1px solid var(--color-border); }
+.fp-opt { display: flex; align-items: center; gap: var(--space-5); width: 100%; min-height: 48px; padding: 0 var(--space-2); border: 0; border-bottom: 1px solid var(--color-border); background: transparent; color: var(--color-text); font: inherit; font-size: var(--text-lg); text-align: start; cursor: pointer; }
+.fp-opt__mark { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border: 1.5px solid var(--color-border-strong, var(--color-text-secondary)); border-radius: 6px; color: #fff; }
+.fp-opt__mark.is-radio { border-radius: 50%; }
+.fp-opt__mark svg { width: 14px; height: 14px; }
+.fp-opt.is-on .fp-opt__mark { background: var(--accent); border-color: var(--accent); }
+.fp-opt.is-on .fp-opt__label { font-weight: var(--font-weight-semibold); }
+.fp-opt__label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.fp-opt__count { flex: none; color: var(--color-text-muted, var(--color-text-secondary)); font-size: var(--text-md); font-variant-numeric: tabular-nums; }
+.fp-empty { margin: 0; padding: var(--space-6) var(--space-2); color: var(--color-text-secondary); }
+
+/* Tidy styles */
+#tidyStylesView { display: flex; flex-direction: column; min-height: 0; }
+#tidyStylesView .settings-page__body { flex: 1; min-height: 0; overflow-y: auto; }
+#tidyStylesView .settings-page__body > * { flex-shrink: 0; }
+.tidy-kind { min-height: 56px; cursor: pointer; }
+.tidy-kind input { width: 22px; height: 22px; flex: none; }
+.tidy-example { display: grid; gap: 2px; padding: var(--space-5) var(--space-7); border-top: 1px solid var(--color-border); font-size: var(--text-md); }
+.tidy-example:first-child { border-top: 0; }
+.tidy-before { color: var(--color-text-secondary); text-decoration: line-through; text-decoration-thickness: 1px; overflow-wrap: anywhere; }
+.tidy-after { color: var(--accent); overflow-wrap: anywhere; }
+
+/* A note on a list or section in an event */
+.gig-list-note { display: flex; align-items: flex-start; gap: var(--space-4); width: 100%; min-height: 44px; padding: var(--space-3) var(--space-8); border: 0; border-top: 1px solid var(--color-border); background: transparent; color: var(--color-text-secondary); font: inherit; font-size: var(--text-md); font-style: italic; text-align: start; cursor: pointer; }
+.gig-list-note svg { width: 16px; height: 16px; flex: none; margin-top: 3px; }
+.gig-list-note span { min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+
+/* The note strip above the lyrics (opened from an event): a pencil changes it */
+.gig-reader-note__edit { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-5)) calc(-1 * var(--space-4)) 0; padding: 0; border: 0; border-radius: var(--radius-circle); background: transparent; color: inherit; cursor: pointer; }
+.gig-reader-note__edit svg { width: 18px; height: 18px; margin: 0; }
+
+/* Calendar controls (Events): round previous/next buttons and a Today chip, in the current style */
+.calendar-toolbar { display: flex; align-items: center; gap: var(--space-4); }
+.calendar-toolbar strong { flex: 1; min-width: 0; text-align: center; font-size: var(--text-xl); font-weight: var(--font-weight-semibold); }
+.calendar-toolbar .icon-button { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: var(--radius-circle); background: var(--color-chip-bg); color: var(--color-text); cursor: pointer; }
+.calendar-toolbar .icon-button svg { width: 20px; height: 20px; }
+.calendar-toolbar .text-button { flex: none; min-height: 44px; padding: 0 var(--space-7); border: 0; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font: inherit; font-size: var(--text-md); font-weight: var(--font-weight-semibold); cursor: pointer; }
+.gig-share-options label { min-height: 44px; }
 
 }
 
@@ -6923,6 +7053,7 @@ a.perf-btn[hidden] { display: none; }
             <input id="songOccasionsInput" class="slp-input" type="text" dir="auto" autocomplete="off" placeholder="Wedding; Shabbos" />
             <label class="slp-field-label" for="songYoutubeInput">YOUTUBE LINK</label>
             <input id="songYoutubeInput" class="slp-input" type="url" dir="ltr" autocomplete="off" placeholder="https://www.youtube.com/watch?v=..." />
+            <button id="songYoutubeFindBtn" class="slp-btn slp-btn--soft yt-find-btn" type="button"><i data-lucide="search"></i><span>Find on YouTube</span></button>
             <label class="slp-field-label" for="songLanguageInput">LANGUAGE</label>
             <input id="songLanguageInput" class="slp-input" type="text" dir="auto" list="languageSuggestions" autocomplete="off" placeholder="Hebrew, Yiddish, English..." />
             <div class="slp-form-row">
@@ -7173,6 +7304,7 @@ a.perf-btn[hidden] { display: none; }
       <div class="sheet-body gig-item-body">
         <div id="gigItemKeyGroup">
           <p id="gigItemKeyHint" class="gig-item-hint"></p>
+          <div id="gigItemModeRow" class="key-mode-control" role="group" aria-label="Key type" hidden><button type="button" data-gig-mode="major">Major</button><button type="button" data-gig-mode="minor">Minor</button><button type="button" data-gig-mode="freygish">Freygish</button></div>
           <div id="gigItemKeys" class="gig-key-grid" role="group" aria-label="Key for this event"></div>
           <div class="gig-item-links"><button id="gigItemKeyResetBtn" class="gig-text-link" type="button">Use song's key</button><button id="gigItemFilterBtn" class="gig-text-link" type="button">Show songs in this key</button></div>
         </div>
@@ -7227,6 +7359,17 @@ a.perf-btn[hidden] { display: none; }
       </div>
     </section>
 
+    <section id="gigListNoteSheet" class="sheet compact-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="gigListNoteTitle">
+      <div class="sheet-header"><div><span>Note for this list</span><h2 id="gigListNoteTitle" dir="auto">List</h2></div><button id="closeGigListNoteBtn" class="icon-button" type="button" aria-label="Close"><i data-lucide="x"></i></button></div>
+      <div class="sheet-body">
+        <textarea id="gigListNoteInput" class="slp-input" rows="4" dir="auto" maxlength="1000" placeholder="Remind yourself, for example: start with the slow ones" aria-label="Note for this list"></textarea>
+      </div>
+      <div class="sheet-footer">
+        <button id="cancelGigListNoteBtn" class="secondary-button" type="button">Cancel</button>
+        <button id="saveGigListNoteBtn" class="primary-button" type="button">Save</button>
+      </div>
+    </section>
+
     <section id="gigStructureSheet" class="sheet compact-sheet gig-structure-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="gigStructureTitle">
       <div class="sheet-header">
         <div><span>Event song plan</span><h2 id="gigStructureTitle">Add Section</h2></div>
@@ -7269,6 +7412,7 @@ a.perf-btn[hidden] { display: none; }
         <label><input id="shareGigContactInput" type="checkbox" /><span><strong>Contact information</strong></span></label>
         <label><input id="shareGigBandInput" type="checkbox" /><span><strong>Band information</strong></span></label>
         <label><input id="shareGigNotesInput" type="checkbox" /><span><strong>General notes</strong></span></label>
+        <label><input id="shareGigListNotesInput" type="checkbox" /><span><strong>Notes on lists</strong><small>The notes under Chuppah, Meal and the other lists</small></span></label>
         <label><input id="shareGigMoneyInput" type="checkbox" /><span><strong>Price and balance</strong><small>Private by default</small></span></label>
       </div>
       <div class="sheet-footer">
@@ -7536,6 +7680,20 @@ a.perf-btn[hidden] { display: none; }
         <div id="backupMergeBody" class="settings-page__body"></div>
         <div id="backupMergeFooter" class="slp-btn-row dup-footer" hidden></div>
       </div>
+      <div id="tidyStylesView" class="settings-page hidden">
+        <header class="slp-header">
+          <button id="backFromTidyBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back">
+            <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="slp-header__titles">
+            <h2 class="slp-header__title">Tidy styles</h2>
+            <p class="slp-subtitle">Move other things out of the Style tags</p>
+          </div>
+          <button class="slp-btn slp-btn--icon" type="button" data-close-settings aria-label="Close"><i data-lucide="x"></i></button>
+        </header>
+        <div id="tidyStylesBody" class="settings-page__body"></div>
+        <div id="tidyStylesFooter" class="slp-btn-row dup-footer" hidden></div>
+      </div>
       <div id="aboutSettingsView" class="settings-page hidden">
         <header class="slp-header">
           <button id="backFromAboutBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back to settings">
@@ -7556,6 +7714,11 @@ a.perf-btn[hidden] { display: none; }
         <button id="openDuplicatesBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="copy"></i></span>
           <span class="slp-row__body"><span class="slp-row__title">Duplicate songs</span><span id="duplicatesSubtitle" class="slp-row__subtitle"></span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <button id="tidyStylesBtn" class="slp-row hidden" type="button" hidden>
+          <span class="slp-row__icon-tile"><i data-lucide="tags"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Tidy styles</span><span id="tidyStylesSubtitle" class="slp-row__subtitle"></span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         <button id="splitArtistsBtn" class="slp-row hidden" type="button" hidden>
@@ -7767,6 +7930,7 @@ a.perf-btn[hidden] { display: none; }
         <div class="perf-bar__row">
           <button id="practiceCloseBtn" class="perf-btn" type="button" aria-label="Close practice"><i data-lucide="x"></i></button>
           <div id="practiceTitle" class="practice-title" dir="auto" role="button" tabindex="0" aria-expanded="false" title="Tap to see the whole title"></div>
+          <button id="practiceFindBtn" class="perf-btn" type="button" aria-label="Find another video on YouTube" title="Find on YouTube"><i data-lucide="search"></i></button>
           <a id="practiceOpenExternal" class="perf-btn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open in YouTube" title="Open in YouTube" hidden><i data-lucide="external-link"></i></a>
         </div>
       </header>
@@ -8003,6 +8167,12 @@ a.perf-btn[hidden] { display: none; }
     <datalist id="languageSuggestions"></datalist>
     <datalist id="styleSuggestions"></datalist>
     <input id="songImportInput" class="hidden" type="file" multiple accept=".txt,.csv,.docx,.pdf,.zip,application/zip,application/x-zip-compressed,application/pdf,image/*,text/plain,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+    <div id="youtubeLinkBar" class="yt-bar" role="status" hidden>
+      <span id="youtubeLinkBarText" dir="auto"></span>
+      <button id="youtubeLinkUseBtn" class="slp-btn slp-btn--primary" type="button">Use link</button>
+      <button id="youtubeLinkDismissBtn" class="slp-btn slp-btn--ghost" type="button" aria-label="Not now"><i data-lucide="x"></i></button>
+    </div>
+
     <section id="dupSheet" class="dup-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="dupTitle">
       <header class="slp-header">
         <button id="dupBackBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back"><svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -8067,7 +8237,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "e23ac4bb · 33bd719";
+const APP_BUILD = "de43382b · a614604";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -8145,7 +8315,7 @@ const els = Object.fromEntries(
     "songArtistInput", "songArtistHebrewInput", "songComposerInput", "songLyricistInput", "songAlbumInput",
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songCapoInput", "songNeedsReviewInput", "songOccasionsInput", "songYoutubeInput", "songInfoSourcesInput", "songReviewNoteInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
-    "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songTitleNoticeCompareBtn", "songTitleHint", "songOriginChip", "songMyNotesBtn", "songOverlayNote", "overlayNotesSheet", "overlayNotesSong", "overlayNotesInput", "closeOverlayNotesBtn", "cancelOverlayNotesBtn", "saveOverlayNotesBtn", "quickKeySheet", "quickKeySong", "quickKeyGrid", "quickKeyClearBtn", "closeQuickKeyBtn", "songTitleHintText", "songTitleHintCompareBtn", "dupSheet", "dupTitle", "dupBody", "dupFooter", "dupBackBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
+    "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songTitleNoticeCompareBtn", "songTitleHint", "shareGigListNotesInput", "gigListNoteSheet", "gigListNoteTitle", "gigListNoteInput", "closeGigListNoteBtn", "cancelGigListNoteBtn", "saveGigListNoteBtn", "songYoutubeFindBtn", "practiceFindBtn", "youtubeLinkBar", "youtubeLinkBarText", "youtubeLinkUseBtn", "youtubeLinkDismissBtn", "songOriginChip", "songMyNotesBtn", "songOverlayNote", "overlayNotesSheet", "overlayNotesSong", "overlayNotesInput", "closeOverlayNotesBtn", "cancelOverlayNotesBtn", "saveOverlayNotesBtn", "quickKeySheet", "quickKeySong", "quickKeyGrid", "quickKeyClearBtn", "closeQuickKeyBtn", "songTitleHintText", "songTitleHintCompareBtn", "dupSheet", "dupTitle", "dupBody", "dupFooter", "dupBackBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
     "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectDeleteBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "importSummary", "importUndoBar", "importUndoText", "importUndoBtn", "undoImportBtn", "fixArtistsBtn", "openPlaySettingsBtn", "openBackupSettingsBtn", "openAboutSettingsBtn", "backFromPlayBtn", "backFromBackupBtn", "backFromAboutBtn", "playSettingsView", "backupSettingsView", "aboutSettingsView", "splitArtistsBtn", "splitArtistsSubtitle", "fixArtistsSubtitle", "undoImportSubtitle", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
@@ -8255,7 +8425,7 @@ let pendingMediaImport = null;
 let pdfModulePromise = null;
 let songFilters = { artist: "", language: "", key: "", status: "", composer: "" };
 // The quick filter chips above the song list: any of the chosen styles / languages / occasions / tempo ranges, all groups together.
-let songChipFilters = { styles: [], languages: [], occasions: [], bpm: [] };
+let songChipFilters = { styles: [], languages: [], occasions: [], bpm: [], timeSignatures: [] };
 let songChipOpen = "";
 let keyPickerMode = "major";
 let selectedNoteFolderId = "all";
@@ -9757,6 +9927,22 @@ Object.assign(HEBREW_UI, {"Make my copy": "יצירת עותק שלי", "Make an
 Object.assign(HEBREW_UI, {"Add songs from a backup": "הוספת שירים מגיבוי", "Bring songs over from another device. Nothing is replaced.": "העברת שירים ממכשיר אחר. שום דבר לא מוחלף.", "Songs and lyrics only": "שירים ומילים בלבד", "Choose the backup files from your other devices. Songs already here are skipped, and nothing is replaced.": "בחרו את קבצי הגיבוי מהמכשירים האחרים. שירים שכבר כאן מדולגים, ושום דבר לא מוחלף.", "Choose backup files": "בחירת קבצי גיבוי", "Choose another file": "בחירת קובץ נוסף", "Already here": "כבר כאן", "Different": "שונה", "Different versions: you decide": "גרסאות שונות: אתם מחליטים", "Versions you don't decide on are skipped.": "גרסאות שלא החלטתם עליהן מדולגות.", "New songs": "שירים חדשים", "All new songs": "כל השירים החדשים", "selected": "נבחרו", "Choose songs": "בחירת שירים", "Hide list": "הסתרת הרשימה", "Events, setlists, folders, pictures and audio files are not brought over. New songs go to Unfiled.": "אירועים, סטים, תיקיות, תמונות וקבצי שמע לא מועברים. שירים חדשים נכנסים ל״ללא תיקייה״.", "Nothing to add": "אין מה להוסיף", "merged": "אוחדו", "Decide": "להחליט", "Merge into mine": "איחוד לשלי", "On this device": "במכשיר הזה", "In the backup": "בגיבוי", "newer in the backup": "חדש יותר בגיבוי", "newer on this device": "חדש יותר במכשיר הזה", "details differ": "הפרטים שונים", "also in another file": "גם בקובץ אחר", "This file is not a readable Song List Pro backup.": "הקובץ הזה אינו גיבוי קריא של Song List Pro.", "This file could not be read.": "לא ניתן היה לקרוא את הקובץ.", "Restore backup": "שחזור גיבוי"});
 
 Object.assign(HEBREW_UI, { "Replaces everything on this device": "מחליף את כל מה שיש במכשיר הזה" });
+
+Object.assign(HEBREW_UI, {"Find on YouTube": "חיפוש ביוטיוב", "Find another video on YouTube": "חיפוש סרטון אחר ביוטיוב", "Copied a YouTube link? Use it for": "העתקתם קישור מיוטיוב? להשתמש בו עבור", "Use link": "שימוש בקישור", "Not now": "לא עכשיו", "Add a title first": "קודם יש להוסיף כותרת", "No YouTube link was copied. Copy the video's link on YouTube, then tap again.": "לא הועתק קישור מיוטיוב. יש להעתיק את קישור הסרטון ביוטיוב ואז ללחוץ שוב.", "Link added. Save the song to keep it.": "הקישור נוסף. יש לשמור את השיר כדי לשמור אותו.", "YouTube link saved": "קישור היוטיוב נשמר"});
+
+Object.assign(HEBREW_UI, {"Set a key or add a note": "קביעת סולם או הוספת הערה", "This song has no key yet. Pick one for this event.": "לשיר הזה אין סולם עדיין. אפשר לבחור סולם לאירוע הזה."});
+
+Object.assign(HEBREW_UI, {"Filter by": "סינון לפי", "Any": "הכל", "Search": "חיפוש", "Nothing matches": "אין התאמות", "Custom": "מותאם", "Recent": "אחרונים"});
+
+Object.assign(HEBREW_UI, {"Tidy styles": "סידור סגנונות", "Move other things out of the Style tags": "הוצאת דברים אחרים מתגיות הסגנון", "the Style tags hold other things": "תגיות הסגנון כוללות דברים אחרים", "Your Style tags are tidy.": "תגיות הסגנון מסודרות.", "Choose what to tidy. Nothing changes until you tap Tidy, and Undo is offered.": "בחרו מה לסדר. שום דבר לא משתנה עד הלחיצה על ״סידור״, ויש אפשרות ביטול.", "Move time signatures to the Time signature field": "העברת משקלים לשדה המשקל", "Split tags that hold several styles": "פיצול תגיות שכוללות כמה סגנונות", "Move occasions out of Style": "הוצאת אירועים מהסגנון", "Examples": "דוגמאות", "Nothing selected.": "לא נבחר דבר.", "Tidy": "סידור", "tidied": "סודרו"});
+
+Object.assign(HEBREW_UI, {"Clear this event's key": "ניקוי הסולם של האירוע"});
+
+Object.assign(HEBREW_UI, {"Add a note": "הוספת הערה", "Edit note": "עריכת הערה", "Note for this list": "הערה לרשימה הזאת", "Remind yourself, for example: start with the slow ones": "תזכורת לעצמכם, למשל: להתחיל עם השקטים"});
+
+Object.assign(HEBREW_UI, {"Edit this note": "עריכת ההערה הזאת"});
+
+Object.assign(HEBREW_UI, {"Notes on lists": "הערות על רשימות", "The notes under Chuppah, Meal and the other lists": "ההערות שמתחת לחופה, לסעודה ולשאר הרשימות"});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -14431,12 +14617,19 @@ function updateSelectionPopover() {
   captureEditorSelection();
   const rect = selection.getRangeAt(0).getBoundingClientRect();
   setElementVisible(els.textFormatMenu, true);
-  const menuWidth = els.textFormatMenu.offsetWidth || 300;
-  const menuHeight = els.textFormatMenu.offsetHeight || 44;
-  const viewportWidth = globalThis.innerWidth || 390;
-  const above = rect.top - menuHeight - 8;
-  els.textFormatMenu.style.left = `${Math.max(8, Math.min(rect.left + rect.width / 2 - menuWidth / 2, viewportWidth - menuWidth - 8))}px`;
-  els.textFormatMenu.style.top = `${above >= 8 ? above : rect.bottom + 8}px`;
+  // On a phone the formatting tools are one slim row docked above the keyboard (CSS); beside the lists they float over the selection.
+  if ((globalThis.innerWidth || 390) <= 900) {
+    els.textFormatMenu.style.removeProperty("left");
+    els.textFormatMenu.style.removeProperty("top");
+    updateWritingToolbarPosition();
+  } else {
+    const menuWidth = els.textFormatMenu.offsetWidth || 300;
+    const menuHeight = els.textFormatMenu.offsetHeight || 44;
+    const viewportWidth = globalThis.innerWidth || 390;
+    const above = rect.top - menuHeight - 8;
+    els.textFormatMenu.style.left = `${Math.max(8, Math.min(rect.left + rect.width / 2 - menuWidth / 2, viewportWidth - menuWidth - 8))}px`;
+    els.textFormatMenu.style.top = `${above >= 8 ? above : rect.bottom + 8}px`;
+  }
   refreshIcons();
 }
 
@@ -14960,11 +15153,22 @@ function showFolderMenu() {
   showActionMenu(items, els.folderMoreBtn);
 }
 
+// Songs chosen stay chosen while the search changes (the list is redrawn on every search).
+let folderPickerChosen = new Set();
+
+function onFolderPickerChange(event) {
+  const input = event.target.closest("input[type=checkbox]");
+  if (!input) return;
+  if (input.checked) folderPickerChosen.add(input.value);
+  else folderPickerChosen.delete(input.value);
+}
+
 function openFolderSongPicker(folderId) {
   const folder = folderById(folderId);
   if (!folder) return;
   folderSongPickerFolderId = folder.id;
   els.folderSongPickerSearch.value = "";
+  folderPickerChosen = new Set();
   renderFolderSongPicker();
   showOverlay(els.folderSongPickerSheet);
   requestAnimationFrame(() => els.folderSongPickerSearch.focus());
@@ -14975,14 +15179,14 @@ function renderFolderSongPicker() {
   if (!folder) return;
   const query = els.folderSongPickerSearch.value.trim().toLocaleLowerCase();
   const songs = state.songs.filter((song) => !song.folderIds.includes(folder.id) && (!query || songSearchText(song).includes(query)));
-  els.folderSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="folder-song-pick"><input type="checkbox" value="${song.id}"><span><strong>${songTitleMarkup(song)}</strong><small dir="auto">${escapeHtml([song.artist, compactKeyLabel(songDisplayKey(song))].filter(Boolean).join(" · ") || "No artist or key")}</small></span></label>`).join("") : `<div class="picker-empty"><i data-lucide="music-2"></i><strong>${query ? "No matching songs" : "Every song is already here"}</strong></div>`;
+  els.folderSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="folder-song-pick"><input type="checkbox" value="${song.id}" ${folderPickerChosen.has(song.id) ? "checked" : ""}><span><strong>${songTitleMarkup(song)}</strong><small dir="auto">${escapeHtml([song.artist, compactKeyLabel(songDisplayKey(song))].filter(Boolean).join(" · ") || "No artist or key")}</small></span></label>`).join("") : `<div class="picker-empty"><i data-lucide="music-2"></i><strong>${query ? "No matching songs" : "Every song is already here"}</strong></div>`;
   refreshIcons();
 }
 
 function addSelectedSongsToFolder() {
   const folder = folderById(folderSongPickerFolderId);
   if (!folder) return;
-  const ids = [...els.folderSongPickerList.querySelectorAll("input:checked")].map((input) => input.value);
+  const ids = [...new Set([...folderPickerChosen, ...[...els.folderSongPickerList.querySelectorAll("input:checked")].map((input) => input.value)])].filter((id) => state.songs.some((song) => song.id === id));
   if (!ids.length) return showToast("Select at least one song");
   ids.forEach((id) => {
     const song = state.songs.find((item) => item.id === id);
@@ -15024,50 +15228,100 @@ function showSongSortMenu() {
 // older ones (artist, composer, key, status). Choices apply at once; "Show N songs" just closes the panel.
 let filterPanelSongs = [];            // the songs of the list that is open, so the choices offered are the ones that exist there
 
-function filterGroupOptions(group) {
+// The filter panel: a short list of categories; tapping one opens a searchable list of its options (with counts).
+const FILTER_CATEGORIES = [
+  { key: "styles", label: "Style", kind: "chip" },
+  { key: "languages", label: "Language", kind: "chip" },
+  { key: "occasions", label: "Occasion", kind: "chip" },
+  { key: "bpm", label: "Tempo", kind: "chip" },
+  { key: "timeSignatures", label: "Time signature", kind: "chip" },
+  { key: "key", label: "Key", kind: "select" },
+  { key: "artist", label: "Artist", kind: "select" },
+  { key: "composer", label: "Composer", kind: "select" },
+  { key: "status", label: "Status", kind: "select" }
+];
+let filterPanelView = "main";
+let filterPanelSearch = "";
+
+function filterOptionsFor(category) {
   const counts = new Map();
+  const add = (value) => { if (value) counts.set(value, (counts.get(value) || 0) + 1); };
   filterPanelSongs.forEach((song) => {
-    const values = group === "styles" ? (song.styles || []) : group === "occasions" ? (song.occasions || []) : group === "languages" ? (song.language ? [song.language] : []) : [songBpmRangeKey(song)].filter(Boolean);
-    values.forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+    switch (category.key) {
+      case "styles": (song.styles || []).forEach(add); break;
+      case "occasions": (song.occasions || []).forEach(add); break;
+      case "languages": add(song.language); break;
+      case "timeSignatures": String(song.timeSignature || "").split(/[,;]\s*/).map((v) => v.trim()).filter(Boolean).forEach(add); break;
+      case "bpm": add(songBpmRangeKey(song)); break;
+      case "key": add(songDisplayKey(song)); break;
+      case "artist": [...new Set([...(song.artists || []), song.artistHebrew].filter(Boolean))].forEach(add); break;
+      case "composer": add(song.composer); break;
+      case "status": add(song.status); break;
+      default: break;
+    }
   });
-  if (group === "bpm") return SONG_BPM_RANGES.filter((range) => counts.has(range.key)).map((range) => ({ value: range.key, label: range.label }));
-  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([value]) => ({ value, label: value }));
+  if (category.key === "bpm") return SONG_BPM_RANGES.filter((range) => counts.has(range.key)).map((range) => ({ value: range.key, label: range.label, count: counts.get(range.key) }));
+  if (category.key === "status") return [["learning", "Learning"], ["polishing", "Polishing"], ["ready", "Ready"]].filter(([value]) => counts.has(value)).map(([value, label]) => ({ value, label: t(label), count: counts.get(value) }));
+  const byAlpha = (a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: "base" });
+  const entries = [...counts];
+  entries.sort(["key", "artist", "composer"].includes(category.key) ? byAlpha : (a, b) => b[1] - a[1] || byAlpha(a, b));
+  return entries.map(([value, count]) => ({ value, label: value, count }));
+}
+
+function filterCategoryValue(category) {
+  return category.kind === "chip" ? songChipFilters[category.key] : (songFilters[category.key] ? [songFilters[category.key]] : []);
+}
+
+function filterCategorySummary(category) {
+  const values = filterCategoryValue(category);
+  if (!values.length) return "";
+  const options = filterOptionsFor(category);
+  const labels = values.map((value) => options.find((option) => option.value === value)?.label || value);
+  return labels.length > 2 ? `${labels.slice(0, 2).join(", ")} +${labels.length - 2}` : labels.join(", ");
 }
 
 function filteredSongCount() {
   return filterPanelSongs.filter((song) => songMatchesFilters(song)).length;
 }
 
+function renderFilterOptions(category) {
+  const query = normalizeComparisonText(filterPanelSearch);
+  const selected = filterCategoryValue(category);
+  const single = category.kind === "select";
+  const options = filterOptionsFor(category).filter((option) => !query || normalizeComparisonText(option.label).includes(query));
+  const rows = options.map((option) => {
+    const on = selected.includes(option.value);
+    const attrs = single ? `data-select-pick="${category.key}" data-pick-value="${escapeAttribute(option.value)}"` : `data-chip-group="${category.key}" data-chip-value="${escapeAttribute(option.value)}"`;
+    return `<button type="button" class="fp-opt${on ? " is-on" : ""}" role="${single ? "radio" : "checkbox"}" aria-checked="${on}" ${attrs}><span class="fp-opt__mark${single ? " is-radio" : ""}">${on ? '<svg viewBox="0 0 24 24" fill="none"><path d="M6 12.5l4 4 8-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ""}</span><span class="fp-opt__label" dir="auto">${escapeHtml(option.label)}</span><span class="fp-opt__count">${option.count}</span></button>`;
+  });
+  const any = single ? `<button type="button" class="fp-opt${selected.length ? "" : " is-on"}" role="radio" aria-checked="${!selected.length}" data-select-pick="${category.key}" data-pick-value=""><span class="fp-opt__mark is-radio">${selected.length ? "" : '<svg viewBox="0 0 24 24" fill="none"><path d="M6 12.5l4 4 8-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'}</span><span class="fp-opt__label">${t("Any")}</span></button>` : "";
+  return `${any}${rows.join("") || `<p class="fp-empty">${t("Nothing matches")}</p>`}`;
+}
+
 function renderFilterPanel() {
-  const chip = (attrs, text, on) => `<button type="button" class="filter-chip${on ? " is-on" : ""}" ${attrs} aria-pressed="${Boolean(on)}">${escapeHtml(text)}</button>`;
-  const sorts = [["custom", "Custom order"], ["titleEnglish", "A-Z"], ["titleHebrew", "א-ת"], ["key", "Key"], ["date", "Recently edited"]];
-  const group = (key, label) => {
-    const options = filterGroupOptions(key);
-    if (!options.length) return "";
-    return `<div class="filter-group"><span class="filter-group__label">${t(label)}</span><div class="filter-chips">${options.map((option) => chip(`data-chip-group="${key}" data-chip-value="${escapeAttribute(option.value)}"`, option.label, songChipFilters[key].includes(option.value))).join("")}</div></div>`;
-  };
-  const select = (key, label, values, allLabel) => {
-    const options = [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-    return `<label class="filter-select"><span>${t(label)}</span><select data-select-filter="${key}"><option value="">${t(allLabel)}</option>${options.map((value) => `<option value="${escapeAttribute(value)}"${songFilters[key] === value ? " selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></label>`;
-  };
-  const artists = [...new Set(filterPanelSongs.flatMap((song) => song.artists || []))].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-  const moreOpen = Boolean(songFilters.artist || songFilters.composer || songFilters.key || songFilters.status);
-  els.filterPanelBody.innerHTML = `
-    <div class="filter-group"><span class="filter-group__label">${t("Sort")}</span><div class="filter-chips">${sorts.map(([value, label]) => chip(`data-sort-value="${value}"`, t(label), songSort === value)).join("")}${songSort !== "custom" ? chip('data-sort-direction="1"', songSortDirection === "asc" ? t("Ascending") : t("Descending"), false) : ""}</div></div>
-    ${group("styles", "Style")}${group("languages", "Language")}${group("occasions", "Occasion")}${group("bpm", "BPM")}
-    <details class="filter-more"${moreOpen ? " open" : ""}><summary>${t("More filters")}</summary>
-      ${select("artist", "Artist", artists, "All artists")}
-      ${select("composer", "Composer", filterPanelSongs.map((song) => song.composer), "All composers")}
-      ${select("key", "Key", filterPanelSongs.map(songDisplayKey), "All keys")}
-      <label class="filter-select"><span>${t("Status")}</span><select data-select-filter="status"><option value="">${t("All statuses")}</option>${[["learning", "Learning"], ["polishing", "Polishing"], ["ready", "Ready"]].map(([value, label]) => `<option value="${value}"${songFilters.status === value ? " selected" : ""}>${t(label)}</option>`).join("")}</select></label>
-    </details>
-    <button type="button" class="filter-select-songs" data-select-songs="1"><i data-lucide="check-circle-2"></i><span>${t("Select songs")}</span></button>`;
+  const sorts = [["custom", "Custom"], ["titleEnglish", "A-Z"], ["titleHebrew", "א-ת"], ["key", "Key"], ["date", "Recent"]];
+  const category = FILTER_CATEGORIES.find((item) => item.key === filterPanelView);
+  if (category) {
+    const total = filterOptionsFor(category).length;
+    els.filterPanelBody.innerHTML = `
+      <button type="button" class="fp-back" data-fp-back="1"><i data-lucide="arrow-left"></i><span>${t(category.label)}</span></button>
+      ${total > 8 ? `<label class="fp-search"><i data-lucide="search"></i><input id="fpSearchInput" type="search" dir="auto" autocomplete="off" placeholder="${escapeAttribute(`${t("Search")} ${t(category.label).toLocaleLowerCase()}`)}" value="${escapeAttribute(filterPanelSearch)}"></label>` : ""}
+      <div id="fpOptions" class="fp-options" role="${category.kind === "select" ? "radiogroup" : "group"}" aria-label="${escapeAttribute(t(category.label))}">${renderFilterOptions(category)}</div>`;
+    initSearchClearButtons();
+  } else {
+    els.filterPanelBody.innerHTML = `
+      <div class="filter-group"><span class="filter-group__label">${t("Sort")}</span><div class="fp-seg" role="group" aria-label="${escapeAttribute(t("Sort"))}">${sorts.map(([value, label]) => `<button type="button" data-sort-value="${value}" class="${songSort === value ? "is-on" : ""}" aria-pressed="${songSort === value}">${escapeHtml(t(label))}</button>`).join("")}</div></div>
+      <div class="filter-group"><span class="filter-group__label">${t("Filter by")}</span><div class="fp-list">${FILTER_CATEGORIES.filter((item) => item.kind === "select" || filterOptionsFor(item).length || filterCategoryValue(item).length).map((item) => { const value = filterCategorySummary(item); return `<button type="button" class="fp-row" data-fp-open="${item.key}"><span class="fp-row__label">${t(item.label)}</span><span class="fp-row__value${value ? " is-on" : ""}" dir="auto">${escapeHtml(value || t("Any"))}</span><i data-lucide="chevron-right" class="fp-row__chevron"></i></button>`; }).join("")}</div></div>
+      <button type="button" class="filter-select-songs" data-select-songs="1"><i data-lucide="check-circle-2"></i><span>${t("Select songs")}</span></button>`;
+  }
   els.applyFiltersBtn.textContent = `${t("Show")} ${filteredSongCount()} ${t(plural(filteredSongCount(), "song"))}`;
   els.clearFiltersBtn.hidden = activeFilterCount() === 0;
   refreshIcons();
 }
 
 function openFilterSheet() {
+  filterPanelView = "main";
+  filterPanelSearch = "";
   renderFilterPanel();
   showOverlay(els.filterSheet);
 }
@@ -15075,10 +15329,26 @@ function openFilterSheet() {
 function onFilterPanelClick(event) {
   const button = event.target.closest("button");
   if (!button) return;
+  if (button.dataset.fpOpen) {
+    filterPanelView = button.dataset.fpOpen;
+    filterPanelSearch = "";
+    renderFilterPanel();
+    return;
+  }
+  if (button.dataset.fpBack) {
+    filterPanelView = "main";
+    filterPanelSearch = "";
+    renderFilterPanel();
+    return;
+  }
   if (button.dataset.chipGroup) {
     const list = songChipFilters[button.dataset.chipGroup];
     const value = button.dataset.chipValue;
     songChipFilters[button.dataset.chipGroup] = list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+  } else if (button.dataset.selectPick) {
+    songFilters[button.dataset.selectPick] = button.dataset.pickValue || "";
+    filterPanelView = "main";
+    filterPanelSearch = "";
   } else if (button.dataset.sortValue) {
     songSort = button.dataset.sortValue;
     if (songSort === "date") songSortDirection = "desc";
@@ -15092,20 +15362,30 @@ function onFilterPanelClick(event) {
     return;
   } else return;
   renderFolder();
+  // Choosing inside a list keeps the list (and the keyboard) where it is; only the rows and the count change.
+  const category = FILTER_CATEGORIES.find((item) => item.key === filterPanelView);
+  if (category && button.dataset.chipGroup) {
+    const options = document.getElementById("fpOptions");
+    if (options) options.innerHTML = renderFilterOptions(category);
+    els.applyFiltersBtn.textContent = `${t("Show")} ${filteredSongCount()} ${t(plural(filteredSongCount(), "song"))}`;
+    els.clearFiltersBtn.hidden = activeFilterCount() === 0;
+    return;
+  }
   renderFilterPanel();
 }
 
-function onFilterPanelChange(event) {
-  const select = event.target.closest("[data-select-filter]");
-  if (!select) return;
-  songFilters[select.dataset.selectFilter] = select.value;
-  renderFolder();
-  renderFilterPanel();
+function onFilterPanelInput(event) {
+  const input = event.target.closest("#fpSearchInput");
+  if (!input) return;
+  filterPanelSearch = input.value;
+  const category = FILTER_CATEGORIES.find((item) => item.key === filterPanelView);
+  const options = document.getElementById("fpOptions");
+  if (category && options) options.innerHTML = renderFilterOptions(category);
 }
 
 function clearAllSongFilters() {
   songFilters = { artist: "", language: "", key: "", status: "", composer: "" };
-  songChipFilters = { styles: [], languages: [], occasions: [], bpm: [] };
+  songChipFilters = { styles: [], languages: [], occasions: [], bpm: [], timeSignatures: [] };
 }
 
 function applySongFilters() {
@@ -15144,6 +15424,7 @@ function songMatchesChipFilters(song) {
   if (!has(songChipFilters.languages, song.language ? [song.language] : [])) return false;
   if (!has(songChipFilters.occasions, song.occasions || [])) return false;
   if (songChipFilters.bpm.length && !songChipFilters.bpm.includes(songBpmRangeKey(song))) return false;
+  if (!has(songChipFilters.timeSignatures, String(song.timeSignature || "").split(/[,;]\s*/).map((v) => v.trim()).filter(Boolean))) return false;
   return true;
 }
 
@@ -15208,6 +15489,7 @@ function showSongMenu() {
     { icon: "folder-plus", label: t("Add to folder or event"), action: openSongAddTo },
     ...(locked ? [] : [{ icon: "music", label: songHasChords(song) ? t("Edit chords") : t("Add chords"), action: openChordEditor }]),
     { icon: "file-music", label: (song.notePictures || []).length ? t("Sheet music") : t("Add sheet music"), action: openSongNotes },
+    { icon: "youtube", label: t("Find on YouTube"), action: () => { closeOverlays(); openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id }); } },
     { icon: "maximize-2", label: t("Performance mode"), action: openPerformanceMode },
     ...(songTextRestricted(song) ? [] : [{ icon: "share-2", label: t("Share lyrics"), action: shareCurrentSong }]),
     { icon: "printer", label: t("Print"), action: () => { closeOverlays(); window.print(); } }
@@ -19394,6 +19676,7 @@ async function startPracticeSource(source) {
   els.practiceVideo.hidden = source.kind !== "youtube";
   els.practiceFileCard.hidden = source.kind !== "file";
   els.practiceOpenExternal.hidden = source.kind !== "youtube";
+  fitPracticeTitle();   // the header just gained or lost a button, so the title may need another size
   usePracticeLoopFor(source.kind);
   renderPracticeSpeed();
   renderPracticeLoop();
@@ -19818,6 +20101,87 @@ function initPracticeUi() {
   });
   els.practiceAudioBtn?.addEventListener("click", requestClearUnusedPracticeAudio);
 }
+// "Find on YouTube": open YouTube's own search for the song, then offer the link that was copied there.
+// No key and no server: the search happens on YouTube, and when the person comes back the app offers "Use this link".
+// (Reading the clipboard needs a tap, so the offer is a bar with a button, not an automatic paste.)
+let youtubeFindPending = null; // { songId, at, form }
+
+function youtubeSearchQuery({ en, he, title, artist }) {
+  const name = (en || he || title || "").trim();
+  if (!name) return "";
+  return [name, (artist || "").trim()].filter(Boolean).join(" ");
+}
+
+function youtubeQueryForSong(song) {
+  const parts = songTitleParts(song);
+  return youtubeSearchQuery({ en: parts.en, he: parts.he || parts.one, title: song.title, artist: (song.artists || [])[0] || song.artist });
+}
+
+function youtubeQueryFromForm() {
+  const en = els.songTitleEnglishInput.value.trim();
+  const he = els.songTitleHebrewInput.value.trim();
+  const artist = splitArtistCredits(els.songArtistInput.value)[0] || "";
+  return youtubeSearchQuery({ en, he, title: en || he, artist });
+}
+
+function openYoutubeSearch(query, { songId = null, form = false } = {}) {
+  if (!query) { showToast("Add a title first"); return; }
+  youtubeFindPending = { songId, at: Date.now(), form };
+  const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+  window.open(url, "_blank", "noopener");
+}
+
+function youtubeLinkFromText(text) {
+  const match = String(text || "").match(/https?:\/\/\S+/);
+  const url = match ? match[0].replace(/[)\].,;]+$/, "") : "";
+  return url && youtubeIdFromUrl(url) ? url : "";
+}
+
+function showYoutubeLinkBar() {
+  if (!youtubeFindPending || Date.now() - youtubeFindPending.at > 30 * 60 * 1000) { youtubeFindPending = null; return; }
+  const song = youtubeFindPending.form ? songInfoDraft?.song : state.songs.find((item) => item.id === youtubeFindPending.songId);
+  if (!song) { youtubeFindPending = null; return; }
+  els.youtubeLinkBarText.textContent = `${t("Copied a YouTube link? Use it for")} “${song.title}”`;
+  els.youtubeLinkBar.hidden = false;
+}
+
+function hideYoutubeLinkBar() {
+  els.youtubeLinkBar.hidden = true;
+}
+
+async function useCopiedYoutubeLink() {
+  const pending = youtubeFindPending;
+  if (!pending) { hideYoutubeLinkBar(); return; }
+  let text = "";
+  try { text = await navigator.clipboard.readText(); } catch { text = ""; }
+  const url = youtubeLinkFromText(text);
+  if (!url) { showToast("No YouTube link was copied. Copy the video's link on YouTube, then tap again."); return; }
+  hideYoutubeLinkBar();
+  youtubeFindPending = null;
+  if (pending.form && songInfoDraft) {
+    els.songYoutubeInput.value = url;
+    showToast("Link added. Save the song to keep it.");
+    return;
+  }
+  const song = state.songs.find((item) => item.id === pending.songId);
+  if (!song) return;
+  song.youtubeUrl = url;
+  song.updatedAt = new Date().toISOString();
+  persist();
+  selectedSongId = song.id;
+  render();
+  showToast("YouTube link saved");
+  if (practiceSources(song).length) openPractice();
+}
+
+function initYoutubeFind() {
+  els.songYoutubeFindBtn.addEventListener("click", () => openYoutubeSearch(youtubeQueryFromForm(), { form: true }));
+  els.practiceFindBtn.addEventListener("click", () => { const song = currentSong(); if (song) openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id }); });
+  els.youtubeLinkUseBtn.addEventListener("click", useCopiedYoutubeLink);
+  els.youtubeLinkDismissBtn.addEventListener("click", () => { hideYoutubeLinkBar(); youtubeFindPending = null; });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && youtubeFindPending) showYoutubeLinkBar(); });
+  window.addEventListener?.("pageshow", () => { if (youtubeFindPending) showYoutubeLinkBar(); });
+}
 // "New" or "Classic" look. A device preference (like the title side), so a phone can try the new look
 // while the laptop stays as it is. Classic is the default.
 const DESIGN_KEY = "slp-design";
@@ -19867,6 +20231,7 @@ function showSettingsMain(title = t("Settings & Backup")) {
   refreshUndoImportRow();
   refreshFixArtistsRow();
   refreshDuplicatesRow();
+  refreshTidyStylesRow();
   refreshSplitArtistsRow();
   els.appVersionText.textContent = APP_BUILD;
 }
@@ -20407,6 +20772,163 @@ function initSaveGuardUi() {
   globalThis.addEventListener?.("storage", (event) => { if (event.key === STORAGE_KEY || event.key === null) checkForExternalChange(); });
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkForExternalChange(); });
 }
+// Tidy styles: the Style tags in a library often hold other things. A time signature ("3/4", "6/8"), several styles in one
+// tag ("Ad Lib-Ballad", "Oompah/Soft Disco") or an occasion ("Shabbos", "Wedding"). This moves each to where it belongs, after a
+// preview, and only touches tags it can read for certain: a combined tag is split only when every part is a tag the library
+// already uses on its own (or a time signature or a known occasion).
+const TIDY_OCCASION_WORDS = ["Rosh Hashanah", "Motzei Shabbos", "Melave Malka", "Shabbos", "Wedding", "Purim", "Chanukah", "Pesach", "Succos", "Sukkos", "Simchas Torah", "Yom Kippur", "Shavuos", "Sheva Brachos", "Bar Mitzvah"];
+const TIDY_METER = /^\d{1,2}\/\d{1,2}$/;
+const TIDY_KINDS = { meter: "Move time signatures to the Time signature field", split: "Split tags that hold several styles", occasion: "Move occasions out of Style" };
+
+function tidyNorm(value) {
+  return normalizeComparisonText(value);
+}
+
+function tidyKnownTags() {
+  const known = new Set(TIDY_OCCASION_WORDS.map(tidyNorm));
+  state.songs.forEach((song) => (song.styles || []).forEach((tag) => {
+    if (!/[\/–—-]/.test(tag.replace(/\d{1,2}\/\d{1,2}/g, ""))) known.add(tidyNorm(tag));
+  }));
+  return known;
+}
+
+// One tag -> its pieces, or null when it cannot be read for certain.
+function tidySplitTag(tag, known) {
+  const meters = [];
+  const protectedText = tag.replace(/\d{1,2}\/\d{1,2}/g, (m) => { meters.push(m); return `§${meters.length - 1}§`; });
+  if (!/[\/–—-]/.test(protectedText) && !/^§\d+§\s+\S/.test(protectedText) && !/\S\s+§\d+§$/.test(protectedText)) return null;
+  const pieces = protectedText.split(/\s*[\/–—-]\s*/).flatMap((part) => {
+    const lead = /^(§\d+§)\s+(.+)$/.exec(part.trim());
+    if (lead) return [lead[1], lead[2]];
+    const tail = /^(.+?)\s+(§\d+§)$/.exec(part.trim());
+    return tail ? [tail[1], tail[2]] : [part.trim()];
+  }).filter(Boolean);
+  const out = [];
+  for (const piece of pieces) {
+    const meter = /^§(\d+)§$/.exec(piece);
+    if (meter) { out.push({ meter: meters[Number(meter[1])] }); continue; }
+    if (!known.has(tidyNorm(piece))) return null;
+    out.push({ style: piece });
+  }
+  return out.length > 1 || out.some((p) => p.meter) ? out : null;
+}
+
+// What a song would look like after tidying, for the kinds that are switched on.
+function tidySong(song, kinds, known) {
+  const styles = [];
+  const occasions = [...(song.occasions || [])];
+  const meters = [];
+  const actions = [];
+  const keepStyle = (name) => {
+    if (kinds.has("occasion") && TIDY_OCCASION_WORDS.some((word) => tidyNorm(word) === tidyNorm(name))) { occasions.push(name); actions.push("occasion"); }
+    else styles.push(name);
+  };
+  (song.styles || []).forEach((tag) => {
+    if (TIDY_METER.test(tag.trim())) {
+      if (kinds.has("meter")) { meters.push(tag.trim()); actions.push("meter"); } else styles.push(tag);
+      return;
+    }
+    const pieces = kinds.has("split") ? tidySplitTag(tag, known) : null;
+    if (pieces) {
+      actions.push("split");
+      pieces.forEach((piece) => { if (piece.meter) meters.push(piece.meter); else keepStyle(piece.style); });
+      return;
+    }
+    keepStyle(tag);
+  });
+  const dedupe = (list) => { const seen = new Set(); return list.filter((item) => { const key = tidyNorm(item); if (!key || seen.has(key)) return false; seen.add(key); return true; }); };
+  const existingMeters = String(song.timeSignature || "").split(/[,;]\s*/).map((item) => item.trim()).filter(Boolean);
+  const timeSignature = dedupe([...existingMeters, ...meters]).join(", ");
+  return { styles: dedupe(styles), occasions: dedupe(occasions), timeSignature, actions: [...new Set(actions)] };
+}
+
+function planTidyStyles(kinds = new Set(Object.keys(TIDY_KINDS))) {
+  const known = tidyKnownTags();
+  const changes = [];
+  const counts = { meter: 0, split: 0, occasion: 0 };
+  state.songs.forEach((song) => {
+    if (!(song.styles || []).length) return;
+    const after = tidySong(song, kinds, known);
+    if (!after.actions.length) return;
+    after.actions.forEach((kind) => { counts[kind] += 1; });
+    changes.push({ song, after });
+  });
+  return { changes, counts };
+}
+
+function refreshTidyStylesRow() {
+  const row = document.getElementById("tidyStylesBtn");
+  if (!row) return;
+  const { changes } = planTidyStyles();
+  row.hidden = !changes.length;
+  row.classList.toggle("hidden", !changes.length);
+  if (changes.length) document.getElementById("tidyStylesSubtitle").textContent = `${changes.length} ${t(plural(changes.length, "song"))} · ${t("the Style tags hold other things")}`;
+}
+
+let tidyKindsOn = new Set(Object.keys(TIDY_KINDS));
+
+function renderTidyStyles() {
+  const body = document.getElementById("tidyStylesBody");
+  const footer = document.getElementById("tidyStylesFooter");
+  const { changes, counts } = planTidyStyles(tidyKindsOn);
+  const all = planTidyStyles();
+  if (!all.changes.length) {
+    body.innerHTML = `<p class="dup-note">${t("Your Style tags are tidy.")}</p>`;
+    footer.hidden = true;
+    return;
+  }
+  const row = (kind) => `<label class="slp-row tidy-kind"><input type="checkbox" data-tidy-kind="${kind}" ${tidyKindsOn.has(kind) ? "checked" : ""}><span class="slp-row__body"><span class="slp-row__title">${t(TIDY_KINDS[kind])}</span><span class="slp-row__subtitle">${all.counts[kind]} ${t(plural(all.counts[kind], "song"))}</span></span></label>`;
+  const show = (list) => (list.length ? list.join(", ") : "—");
+  const examples = changes.slice(0, 10).map(({ song, after }) => `<div class="tidy-example"><strong dir="auto">${escapeHtml(song.title)}</strong><span class="tidy-before" dir="auto">${escapeHtml(show(song.styles))}</span><span class="tidy-after" dir="auto">${escapeHtml([show(after.styles), after.timeSignature && `${t("Time signature")}: ${after.timeSignature}`, after.occasions.length > (song.occasions || []).length && `${t("Occasion")}: ${after.occasions.join(", ")}`].filter(Boolean).join(" · "))}</span></div>`).join("");
+  body.innerHTML = `<p class="dup-note">${t("Choose what to tidy. Nothing changes until you tap Tidy, and Undo is offered.")}</p>
+    <section class="slp-card">${["meter", "split", "occasion"].map(row).join("")}</section>
+    <span class="slp-section-label">${t("Examples")} (${changes.length})</span>
+    <section class="slp-card tidy-examples">${examples || `<p class="dup-note">${t("Nothing selected.")}</p>`}</section>`;
+  footer.hidden = false;
+  footer.innerHTML = `<button class="slp-btn slp-btn--ghost" type="button" data-tidy="cancel">${t("Cancel")}</button><button class="slp-btn slp-btn--primary" type="button" data-tidy="apply" ${changes.length ? "" : "disabled"}>${t("Tidy")} (${changes.length})</button>`;
+}
+
+function applyTidyStyles() {
+  const known = tidyKnownTags();
+  const before = [];
+  let changed = 0;
+  state.songs.forEach((song, index) => {
+    if (!(song.styles || []).length) return;
+    const after = tidySong(song, tidyKindsOn, known);
+    if (!after.actions.length) return;
+    before.push(JSON.parse(JSON.stringify(song)));
+    state.songs[index] = normalizeSong({ ...JSON.parse(JSON.stringify(song)), styles: after.styles, style: after.styles.join("; "), occasions: after.occasions, timeSignature: after.timeSignature, updatedAt: new Date().toISOString() });
+    changed += 1;
+  });
+  if (!changed) { showToast("Nothing to tidy"); return; }
+  persist();
+  render();
+  refreshTidyStylesRow();
+  showSettingsPage("aboutSettingsView");
+  showUndoToast(`${changed} ${plural(changed, "song")} tidied`, () => {
+    before.forEach((old) => { const i = state.songs.findIndex((s) => s.id === old.id); if (i >= 0) state.songs[i] = normalizeSong(old); });
+    persist();
+    render();
+    refreshTidyStylesRow();
+    showToast("Undone");
+  });
+}
+
+function initTidyStyles() {
+  document.getElementById("tidyStylesBtn").addEventListener("click", () => { tidyKindsOn = new Set(Object.keys(TIDY_KINDS)); renderTidyStyles(); showSettingsPage("tidyStylesView"); });
+  document.getElementById("backFromTidyBtn").addEventListener("click", () => showSettingsPage("aboutSettingsView"));
+  document.getElementById("tidyStylesView").addEventListener("click", (event) => {
+    const action = event.target.closest("[data-tidy]")?.dataset.tidy;
+    if (action === "cancel") showSettingsPage("aboutSettingsView");
+    else if (action === "apply") applyTidyStyles();
+  });
+  document.getElementById("tidyStylesView").addEventListener("change", (event) => {
+    const box = event.target.closest("[data-tidy-kind]");
+    if (!box) return;
+    if (box.checked) tidyKindsOn.add(box.dataset.tidyKind); else tidyKindsOn.delete(box.dataset.tidyKind);
+    renderTidyStyles();
+  });
+}
 function renderGigs() {
   if (workspaceMode !== "gigs") {
     els.app.classList.remove("gig-builder-active");
@@ -20511,6 +21033,7 @@ function renderGigBuilder(gig) {
   const sectionMarkup = sections.map((section, sectionIndex) => gigSectionMarkup(section, sectionIndex, sections.length)).filter(Boolean);
   els.gigSectionList.innerHTML = sectionMarkup.join("") || (planQuery ? `<div class="gig-plan-search-empty"><i data-lucide="search-x"></i><strong>${t("No matching songs")}</strong><span>${t("Try another title, artist, key, or setlist.")}</span></div>` : "");
   els.gigSectionList.querySelectorAll("[data-add-gig-section-songs]").forEach((button) => button.addEventListener("click", () => openGigSectionSongPicker(button.dataset.addGigSectionSongs)));
+  els.gigSectionList.querySelectorAll("[data-gig-list-note]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); button.closest("details")?.removeAttribute("open"); openGigListNote(button.dataset.gigListNote); }));
   els.gigSectionList.querySelectorAll("[data-add-gig-set]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); promptAddGigSet(button.dataset.addGigSet); }));
   els.gigSectionList.querySelectorAll("[data-rename-gig-section]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); promptRenameGigSection(button.dataset.renameGigSection); }));
   els.gigSectionList.querySelectorAll("[data-delete-gig-section]").forEach((button) => button.addEventListener("click", () => { button.closest("details")?.removeAttribute("open"); requestDeleteGigSection(button.dataset.deleteGigSection); }));
@@ -20536,10 +21059,11 @@ function renderGigBuilder(gig) {
   els.gigSectionList.querySelectorAll("[data-gig-item-edit]").forEach((badge) => badge.addEventListener("click", () => openGigItemSheet(badge.dataset.gigItemEdit)));
   els.gigSectionList.querySelectorAll("[data-gig-sort-btn]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); openGigSortMenu(button.dataset.gigSortBtn, button); }));
   els.gigSectionList.querySelectorAll(".gig-drag-handle").forEach(wireGigDrag);
+  openGigRowActions = null;
   if (!gigStructureEditMode && !selectMode.active) {
     els.gigSectionList.querySelectorAll(".gig-song-swipe").forEach((wrap) => {
       const row = wrap.querySelector(".gig-song-reference");
-      if (row) wireSwipeAction(wrap, row, { label: t("Remove"), icon: "trash-2", danger: true, onTrigger: () => requestRemoveGigSong(row.dataset.gigSongRow), right: { label: row.classList.contains("is-played") ? t("Not played") : t("Played"), icon: row.classList.contains("is-played") ? "undo-2" : "check", onTrigger: () => toggleGigSongPlayed(row.dataset.gigSongRow) } });
+      if (row) wireGigRowActions(wrap, row);
     });
   }
   // Rows can be long-pressed into Select mode, except while Rearrange / Edit own the gesture.
@@ -20547,6 +21071,92 @@ function renderGigBuilder(gig) {
     els.gigSectionList.querySelectorAll("[data-gig-song-row]").forEach((row) => wireSelectableRow(row, row.dataset.gigSongRow, () => eventSelectContext(gig.id)));
   }
 }
+
+// Swipe a song in an event to the left: Key, Note and Remove appear (tap one). Swipe it to the right: Played.
+let openGigRowActions = null;
+
+function wireGigRowActions(wrap, row) {
+  if (!globalThis.PointerEvent) return;
+  const itemId = row.dataset.gigSongRow;
+  const played = row.classList.contains("is-played");
+  const panel = document.createElement("div");
+  panel.className = "gig-row-actions";
+  panel.innerHTML = `<button type="button" data-row-action="key"><i data-lucide="music"></i><span>${t("Key")}</span></button><button type="button" data-row-action="note"><i data-lucide="sticky-note"></i><span>${t("Note")}</span></button><button type="button" data-row-action="remove" class="is-danger"><i data-lucide="trash-2"></i><span>${t("Remove")}</span></button>`;
+  const playedReveal = document.createElement("div");
+  playedReveal.className = "swipe-action swipe-action--right";
+  playedReveal.setAttribute("aria-hidden", "true");
+  playedReveal.innerHTML = `<i data-lucide="${played ? "undo-2" : "check"}"></i><span>${t(played ? "Not played" : "Played")}</span>`;
+  wrap.prepend(playedReveal);
+  wrap.append(panel);
+  wrap.classList.add("has-row-actions", "swipeable");
+  const WIDTH = 192;
+  let startX = 0, startY = 0, base = 0, dx = 0, active = false, swiping = false, swallow = false, open = false;
+  const apply = (x, animate) => { row.style.transition = animate ? "transform 180ms cubic-bezier(.2,.8,.2,1)" : "none"; row.style.transform = x ? `translateX(${x}px)` : ""; };
+  const setOpen = (value) => {
+    open = value;
+    wrap.classList.toggle("is-actions-open", value);
+    playedReveal.style.opacity = "0";
+    apply(value ? -WIDTH : 0, true);
+    if (value) { if (openGigRowActions && openGigRowActions.wrap !== wrap) openGigRowActions.close(); openGigRowActions = { wrap, close: () => setOpen(false) }; }
+    else if (openGigRowActions?.wrap === wrap) openGigRowActions = null;
+  };
+  row.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (event.target.closest("a, input, textarea, .slp-badge--key, .gig-drag-handle, .select-check")) return;
+    active = true; swiping = false; dx = 0; base = open ? -WIDTH : 0; startX = event.clientX; startY = event.clientY;
+  });
+  row.addEventListener("pointermove", (event) => {
+    if (!active) return;
+    const mx = event.clientX - startX, my = event.clientY - startY;
+    if (!swiping) {
+      if (Math.abs(my) > 12 && Math.abs(my) > Math.abs(mx)) { active = false; return; }
+      if (Math.abs(mx) < 10 || Math.abs(mx) < Math.abs(my) * 1.5) return;
+      swiping = true;
+      row.setPointerCapture?.(event.pointerId);
+      row.classList.add("swiping");
+    }
+    dx = Math.max(-WIDTH, Math.min(120, base + mx));
+    apply(dx, false);
+    playedReveal.style.opacity = String(dx > 0 ? Math.min(1, dx / 72) : 0);
+    playedReveal.classList.toggle("armed", dx >= 72);
+  });
+  const end = (cancelled) => {
+    if (!active) return;
+    active = false;
+    if (!swiping) return;
+    swiping = false;
+    swallow = true;
+    setTimeout(() => { swallow = false; }, 60);
+    row.classList.remove("swiping");
+    playedReveal.classList.remove("armed");
+    if (cancelled) { setOpen(open); return; }
+    if (dx >= 72 && !open) { setOpen(false); toggleGigSongPlayed(itemId); return; }
+    setOpen(dx <= -WIDTH / 3);
+  };
+  row.addEventListener("pointerup", () => end(false));
+  row.addEventListener("pointercancel", () => end(true));
+  row.addEventListener("click", (event) => {
+    if (swallow) { event.stopPropagation(); event.preventDefault(); return; }
+    if (open) { event.stopPropagation(); event.preventDefault(); setOpen(false); }
+  }, true);
+  row.addEventListener("keydown", (event) => {
+    if (event.target !== row) return;
+    if (event.key === "ArrowLeft") { event.preventDefault(); setOpen(true); }
+    else if (event.key === "ArrowRight") { event.preventDefault(); setOpen(false); }
+  });
+  panel.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-row-action]");
+    if (!button) return;
+    setOpen(false);
+    if (button.dataset.rowAction === "key") openGigItemSheet(itemId);
+    else if (button.dataset.rowAction === "note") openGigItemSheet(itemId, "note");
+    else requestRemoveGigSong(itemId);
+  });
+}
+
+document.addEventListener("pointerdown", (event) => {
+  if (openGigRowActions && !openGigRowActions.wrap.contains(event.target)) openGigRowActions.close();
+}, true);
 
 function renderGigPlanSearchOptions(gig, sections) {
   const currentScope = state.gigNavigation.builderSearchSetId || "event";
@@ -20690,7 +21300,7 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
   const searchActive = gigBuilderFilterActive();
   const visiblyExpanded = searchActive || !collapsed;
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("section", section.id, section.gigId, `Move ${section.name}`) : "";
-  const manageActions = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-section="${section.id}"><i data-lucide="pencil"></i><span>${t("Rename section")}</span></button><button class="slp-picker-item" type="button" data-add-gig-set="${section.id}"><i data-lucide="list-plus"></i><span>${t("Add a list")}</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-section="${section.id}"><i data-lucide="trash-2"></i><span>${t("Delete section")}</span></button>`, `More options for ${section.name}`) : "";
+  const manageActions = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-section="${section.id}"><i data-lucide="pencil"></i><span>${t("Rename section")}</span></button><button class="slp-picker-item" type="button" data-gig-list-note="section:${section.id}"><i data-lucide="sticky-note"></i><span>${t(section.notes ? "Edit note" : "Add a note")}</span></button><button class="slp-picker-item" type="button" data-add-gig-set="${section.id}"><i data-lucide="list-plus"></i><span>${t("Add a list")}</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-section="${section.id}"><i data-lucide="trash-2"></i><span>${t("Delete section")}</span></button>`, `More options for ${section.name}`) : "";
   const setMarkup = sets.map(gigSetMarkup).filter(Boolean);
   const addSongsBtn = gigStructureEditMode ? `<button class="gig-add-text" type="button" data-add-gig-section-songs="${section.id}"><i data-lucide="plus"></i><span>${t("Add songs")}</span></button>` : "";
   const directSongs = directItems.length ? `<div class="gig-direct-songs">${directItems.map((item, index) => gigSongReferenceMarkup(item, index, directItems.length, true)).join("")}</div>` : "";
@@ -20702,8 +21312,9 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
         <span class="slp-row__title" dir="auto">${escapeHtml(section.name)}</span>
         <span class="slp-row__subtitle">${sets.length ? `${sets.length} ${plural(sets.length, "list")} · ` : ""}${songCount} ${plural(songCount, "song")}${sectionPlayed ? ` · ${sectionPlayed} played` : ""}</span>
       </span>
-      ${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${addSongsBtn}${dragHandle}${manageActions}
+      ${gigQuickAddMarkup(`data-add-gig-section-songs="${section.id}"`, section.name)}${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${addSongsBtn}${dragHandle}${manageActions}
     </div>
+    ${gigListNoteMarkup(`section:${section.id}`, section.notes)}
     <div class="gig-section-content ${visiblyExpanded ? "" : "hidden"}">${directSongs}${setMarkup.join("")}</div>
   </section>`;
 }
@@ -20715,17 +21326,60 @@ function gigSetMarkup(set) {
   const collapsed = gigNavigationArray("collapsedSetIds").includes(set.id);
   const visiblyExpanded = searchActive || !collapsed;
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("set", set.id, set.sectionId, `Move ${set.name}`) : "";
-  const manageActions = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-set="${set.id}"><i data-lucide="pencil"></i><span>${t("Rename list")}</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-set="${set.id}"><i data-lucide="trash-2"></i><span>${t("Delete list")}</span></button>`, `More options for ${set.name}`) : "";
+  const manageActions = gigStructureEditMode ? gigMoreMenuMarkup(`<button class="slp-picker-item" type="button" data-rename-gig-set="${set.id}"><i data-lucide="pencil"></i><span>${t("Rename list")}</span></button><button class="slp-picker-item" type="button" data-gig-list-note="set:${set.id}"><i data-lucide="sticky-note"></i><span>${t(set.notes ? "Edit note" : "Add a note")}</span></button><button class="slp-picker-item danger-icon" type="button" data-delete-gig-set="${set.id}"><i data-lucide="trash-2"></i><span>${t("Delete list")}</span></button>`, `More options for ${set.name}`) : "";
   return `<div class="gig-set-card" data-gig-drag-type="set" data-gig-drag-id="${set.id}" data-gig-parent-id="${set.sectionId}">
     <div class="slp-row gig-toggle-row ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""}" role="button" tabindex="0" data-toggle-gig-set="${set.id}" aria-expanded="${visiblyExpanded}" aria-label="${visiblyExpanded ? "Collapse" : "Expand"} ${escapeAttribute(set.name)}" style="padding-inline-start:16px; background:var(--color-card-2);">
       <span class="slp-row__body">
         <span class="slp-row__title" dir="auto">${escapeHtml(set.name)}</span>
         <span class="slp-row__subtitle">${items.length} ${plural(items.length, "song")}</span>
       </span>
-      ${items.length > 1 ? gigListSortControl(set.id, set.name) : ""}${gigStructureEditMode ? `<button class="gig-add-text" type="button" data-add-gig-songs="${set.id}"><i data-lucide="plus"></i><span>${t("Add songs")}</span></button>` : ""}${dragHandle}${manageActions}
+      ${gigQuickAddMarkup(`data-add-gig-songs="${set.id}"`, set.name)}${items.length > 1 ? gigListSortControl(set.id, set.name) : ""}${gigStructureEditMode ? `<button class="gig-add-text" type="button" data-add-gig-songs="${set.id}"><i data-lucide="plus"></i><span>${t("Add songs")}</span></button>` : ""}${dragHandle}${manageActions}
     </div>
+    ${gigListNoteMarkup(`set:${set.id}`, set.notes)}
     <div class="gig-set-songs ${visiblyExpanded ? "" : "hidden"}">${items.map((item, index) => gigSongReferenceMarkup(item, index, items.length)).join("")}</div>
   </div>`;
+}
+
+// A note on a list or section (like "Chuppah"): shown under its name, tap to change it. It is added from the list's ... menu in Edit.
+function gigListNoteMarkup(ref, notes) {
+  const text = String(notes || "").trim();
+  if (!text) return "";
+  return `<button class="gig-list-note" type="button" data-gig-list-note="${escapeAttribute(ref)}"><i data-lucide="sticky-note"></i><span dir="auto">${escapeHtml(text)}</span></button>`;
+}
+
+let gigListNoteTarget = null;
+
+function gigListNoteRecord(ref) {
+  const [kind, id] = String(ref || "").split(":");
+  const record = kind === "set" ? state.gigSets.find((item) => item.id === id) : state.gigSections.find((item) => item.id === id);
+  return record ? { kind, record } : null;
+}
+
+function openGigListNote(ref) {
+  const found = gigListNoteRecord(ref);
+  if (!found) return;
+  gigListNoteTarget = ref;
+  els.gigListNoteTitle.textContent = found.record.name;
+  els.gigListNoteInput.value = found.record.notes || "";
+  showOverlay(els.gigListNoteSheet);
+  requestAnimationFrame(() => els.gigListNoteInput.focus());
+}
+
+function saveGigListNote() {
+  const found = gigListNoteRecord(gigListNoteTarget);
+  if (!found) return closeOverlays();
+  found.record.notes = els.gigListNoteInput.value.trim().slice(0, 1000);
+  found.record.updatedAt = new Date().toISOString();
+  gigListNoteTarget = null;
+  persist();
+  closeOverlays();
+  render();
+}
+
+// A "+" next to a list's name, so songs can be added fast without going into Edit (Edit mode has its own "Add songs" button).
+function gigQuickAddMarkup(attribute, name) {
+  if (gigStructureEditMode || gigReorderMode || selectMode.active || gigBuilderFilterActive()) return "";
+  return `<button class="gig-quick-add" type="button" ${attribute} aria-label="${escapeAttribute(`${t("Add songs")}: ${name}`)}"><i data-lucide="plus"></i></button>`;
 }
 
 function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
@@ -20736,8 +21390,9 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const ownKey = songDisplayKey(song);
   const eventKey = Boolean(item.keyOverride);
   const keyChip = songKey
-    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? `<span class="ek-classic">${escapeHtml(compactKeyLabel(ownKey))} → </span>` : ""}<span class="ek-main">${escapeHtml(compactKeyLabel(songKey))}</span><span class="ek-label">${t("event")}</span>${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${escapeHtml(compactKeyLabel(ownKey))}</span>` : ""}` : escapeHtml(compactKeyLabel(songKey))}</button>`
-    : gigStructureEditMode ? `<button class="slp-badge--key empty" type="button" data-gig-item-edit="${item.id}" aria-label="Add a key or note">${t("Key")}</button>` : "";
+    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? `<span class="ek-classic">${escapeHtml(compactKeyLabel(ownKey))} → </span>` : ""}<span class="ek-main">${escapeHtml(compactKeyLabel(songKey))}</span>${ownKey ? `<span class="ek-label">${t("event")}</span>` : ""}${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${escapeHtml(compactKeyLabel(ownKey))}</span>` : ""}` : escapeHtml(compactKeyLabel(songKey))}</button>`
+    : !gigStructureEditMode && !gigReorderMode && !selectMode.active ? `<button class="slp-badge--key empty quiet" type="button" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(t("Set a key or add a note"))}">–</button>`
+    : gigStructureEditMode ? `<button class="slp-badge--key empty" type="button" data-gig-item-edit="${item.id}" aria-label="Add a key or note"><i data-lucide="sticky-note"></i><span class="empty-label">${t("Key")}</span></button>` : "";
   const noteText = [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ");
   const row = `<div class="slp-row gig-song-reference ${item.id === gigReadItemId ? "is-reading" : ""} ${item.performanceStatus === "played" ? "is-played" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "16px" : "28px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}" data-sides="${songTitleSides(song)}">
     ${selectMode.active ? selectCheckMarkup() : ""}
@@ -21287,8 +21942,17 @@ function openGigShare(gigId = null) {
   gigShareTargetId = typeof gigId === "string" ? gigId : state.gigNavigation.gigId;
   if (!state.gigs.some((gig) => gig.id === gigShareTargetId)) return;
   els.shareGigSongsInput.checked = true;
-  [els.shareGigLocationInput, els.shareGigCustomerInput, els.shareGigContactInput, els.shareGigBandInput, els.shareGigNotesInput, els.shareGigMoneyInput].forEach((input) => { input.checked = false; });
+  [els.shareGigLocationInput, els.shareGigCustomerInput, els.shareGigContactInput, els.shareGigBandInput, els.shareGigNotesInput, els.shareGigListNotesInput, els.shareGigMoneyInput].forEach((input) => { input.checked = false; });
   showOverlay(els.gigShareSheet);
+}
+
+// One song in the shared list: "1. English | עברית / Artist". English and Hebrew are joined by a bar, the title and the
+// artist by a slash, and the key (the event's own key when it has one) follows after a dot. Nothing is written for a
+// missing artist or a missing key.
+function gigShareSongLine(index, song, key = "") {
+  const parts = songTitleParts(song);
+  const title = parts.one || [parts.en, parts.he].filter(Boolean).join(" | ") || song.title;
+  return `${index + 1}. ${title}${song.artist ? ` / ${song.artist}` : ""}${key ? ` · ${key}` : ""}`;
 }
 
 function buildGigShareText(gigId, options = {}) {
@@ -21313,16 +21977,18 @@ function buildGigShareText(gigId, options = {}) {
   if (options.songs !== false) {
     state.gigSections.filter((section) => section.gigId === gig.id && !section.isHidden).sort((a, b) => a.position - b.position).forEach((section) => {
       lines.push("", section.name);
+      if (options.listNotes && String(section.notes || "").trim()) lines.push(`(${section.notes.trim().replace(/\s*\n\s*/g, " ")})`);
       const directSet = state.gigSets.find((set) => set.sectionId === section.id && set.isDirect);
       if (directSet) state.gigSetItems.filter((item) => item.setId === directSet.id).sort((a, b) => a.position - b.position).forEach((item, index) => {
         const song = state.songs.find((candidate) => candidate.id === item.songId);
-        if (song) lines.push(`${index + 1}. ${song.title} — ${song.artist || "Artist not added"} — ${eventItemKey(item, song) || "Key not added"}`);
+        if (song) lines.push(gigShareSongLine(index, song, eventItemKey(item, song)));
       });
       state.gigSets.filter((set) => set.sectionId === section.id && !set.isDirect).sort((a, b) => a.position - b.position).forEach((set) => {
         lines.push(set.name);
+        if (options.listNotes && String(set.notes || "").trim()) lines.push(`(${set.notes.trim().replace(/\s*\n\s*/g, " ")})`);
         state.gigSetItems.filter((item) => item.setId === set.id).sort((a, b) => a.position - b.position).forEach((item, index) => {
           const song = state.songs.find((candidate) => candidate.id === item.songId);
-          if (song) lines.push(`${index + 1}. ${song.title} — ${song.artist || "Artist not added"} — ${eventItemKey(item, song) || "Key not added"}`);
+          if (song) lines.push(gigShareSongLine(index, song, eventItemKey(item, song)));
         });
       });
     });
@@ -21333,7 +21999,7 @@ function buildGigShareText(gigId, options = {}) {
 async function shareCurrentGig() {
   const gig = state.gigs.find((item) => item.id === (gigShareTargetId || state.gigNavigation.gigId));
   if (!gig) return;
-  const text = buildGigShareText(gig.id, { songs: els.shareGigSongsInput.checked, location: els.shareGigLocationInput.checked, customer: els.shareGigCustomerInput.checked, contact: els.shareGigContactInput.checked, band: els.shareGigBandInput.checked, notes: els.shareGigNotesInput.checked, money: els.shareGigMoneyInput.checked });
+  const text = buildGigShareText(gig.id, { songs: els.shareGigSongsInput.checked, location: els.shareGigLocationInput.checked, customer: els.shareGigCustomerInput.checked, contact: els.shareGigContactInput.checked, band: els.shareGigBandInput.checked, notes: els.shareGigNotesInput.checked, listNotes: els.shareGigListNotesInput.checked, money: els.shareGigMoneyInput.checked });
   try {
     if (navigator.share) await navigator.share({ title: gigDisplayName(gig), text });
     else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); showToast("Event details copied"); }
@@ -21450,6 +22116,22 @@ function requestDeleteGigSet(setId) {
   });
 }
 
+// The songs chosen in the picker stay chosen while the search changes (the list is redrawn on every search).
+let gigPickerChosen = new Set();
+
+function updateGigPickerButton() {
+  const n = gigPickerChosen.size;
+  els.addSelectedGigSongsBtn.textContent = n ? `${t("Add selected")} (${n})` : t("Add selected");
+}
+
+function onGigPickerChange(event) {
+  const input = event.target.closest("input[data-gig-song-id]");
+  if (!input || input.disabled) return;
+  if (input.checked) gigPickerChosen.add(input.dataset.gigSongId);
+  else gigPickerChosen.delete(input.dataset.gigSongId);
+  updateGigPickerButton();
+}
+
 function openGigSongPicker(setId) {
   const set = state.gigSets.find((item) => item.id === setId);
   if (!set) return;
@@ -21457,6 +22139,8 @@ function openGigSongPicker(setId) {
   const section = state.gigSections.find((item) => item.id === set.sectionId);
   els.gigSongPickerTitle.textContent = t(`Add Songs to ${set.isDirect ? section?.name || "Section" : set.name}`);
   els.gigSongPickerSearch.value = "";
+  gigPickerChosen = new Set();
+  updateGigPickerButton();
   renderGigSongPicker();
   showOverlay(els.gigSongPickerSheet);
 }
@@ -21465,13 +22149,16 @@ function renderGigSongPicker() {
   const query = normalizeComparisonText(els.gigSongPickerSearch.value);
   const existing = new Set(state.gigSetItems.filter((item) => item.setId === activeGigSetId).map((item) => item.songId));
   const songs = state.songs.filter((song) => !query || normalizeComparisonText([song.title, song.titleEnglish, song.titleHebrew, song.artist, song.key].join(" ")).includes(query)).sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }));
-  els.gigSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="gig-song-choice"><input type="checkbox" data-gig-song-id="${song.id}" ${existing.has(song.id) ? "checked disabled" : ""}><span><strong>${songTitleMarkup(song)}</strong><small>${escapeHtml([song.artist, song.key].filter(Boolean).join(" · ") || "Song details not added")}</small></span>${existing.has(song.id) ? "<em>Added</em>" : ""}</label>`).join("") : `<p class="gig-picker-empty">${t("No matching songs.")}</p>`;
+  els.gigSongPickerList.innerHTML = songs.length ? songs.map((song) => `<label class="gig-song-choice"><input type="checkbox" data-gig-song-id="${song.id}" ${existing.has(song.id) ? "checked disabled" : gigPickerChosen.has(song.id) ? "checked" : ""}><span><strong>${songTitleMarkup(song)}</strong><small>${escapeHtml([song.artist, song.key].filter(Boolean).join(" · ") || "Song details not added")}</small></span>${existing.has(song.id) ? "<em>Added</em>" : ""}</label>`).join("") : `<p class="gig-picker-empty">${t("No matching songs.")}</p>`;
 }
 
 function addSelectedGigSongs() {
-  const songIds = [...els.gigSongPickerList.querySelectorAll("input[data-gig-song-id]:checked:not(:disabled)")].map((input) => input.dataset.gigSongId);
+  const already = new Set(state.gigSetItems.filter((item) => item.setId === activeGigSetId).map((item) => item.songId));
+  const songIds = [...new Set([...gigPickerChosen, ...[...els.gigSongPickerList.querySelectorAll("input[data-gig-song-id]:checked:not(:disabled)")].map((input) => input.dataset.gigSongId)])].filter((id) => !already.has(id) && state.songs.some((song) => song.id === id));
   if (!songIds.length) return showToast("Select at least one song");
   const additions = addSongReferencesToGigSet(activeGigSetId, songIds);
+  gigPickerChosen = new Set();
+  updateGigPickerButton();
   render();
   renderGigSongPicker();
   showToast(`${additions.length} ${plural(additions.length, "song")} added. Keep choosing or press Done.`);
@@ -21706,7 +22393,7 @@ function renderGigReaderNote() {
   els.gigReaderNote.classList.toggle("hidden", !text);
   els.gigReaderNote.hidden = !text;
   if (!text) return;
-  els.gigReaderNote.innerHTML = `<i data-lucide="sticky-note"></i><span dir="auto">${escapeHtml(text)}</span>`;
+  els.gigReaderNote.innerHTML = `<i data-lucide="sticky-note"></i><span dir="auto">${escapeHtml(text)}</span><button class="gig-reader-note__edit" type="button" aria-label="${escapeAttribute(t("Edit this note"))}"><i data-lucide="pencil"></i></button>`;
   els.gigReaderNote.classList.remove("is-open");
   els.gigReaderNote.setAttribute("role", "button");
   els.gigReaderNote.tabIndex = 0;
@@ -21716,20 +22403,21 @@ function renderGigReaderNote() {
 
 let gigItemDraft = null;
 
-function openGigItemSheet(itemId) {
+function openGigItemSheet(itemId, focus = "") {
   const item = state.gigSetItems.find((candidate) => candidate.id === itemId);
   const song = item && state.songs.find((candidate) => candidate.id === item.songId);
   if (!song) return;
   const own = songCurrentKey(song, { ignoreEvent: true }) || song.key || "";
-  gigItemDraft = { itemId, key: item.keyOverride || "", own };
+  gigItemDraft = { itemId, key: item.keyOverride || "", own, mode: /Phrygian/i.test(item.keyOverride || "") ? "freygish" : /^[A-G][#b]?m(?!aj)/.test(item.keyOverride || "") ? "minor" : "major" };
   els.gigItemSong.textContent = song.title;
   els.gigItemNoteInput.value = item.gigNote || "";
   els.gigItemTransitionInput.value = item.transitionNote || "";
   [els.gigItemNoteInput, els.gigItemTransitionInput].forEach((box) => { box.style.height = ""; });
-  document.getElementById("gigItemKeyGroup").hidden = !own;
+  document.getElementById("gigItemKeyGroup").hidden = false;
   renderGigItemKeys();
   showOverlay(els.gigItemSheet);
   [els.gigItemNoteInput, els.gigItemTransitionInput].forEach(growNoteBox);
+  if (focus === "note") requestAnimationFrame(() => els.gigItemNoteInput.focus());
 }
 
 function growNoteBox(box) {
@@ -21739,7 +22427,29 @@ function growNoteBox(box) {
 
 function renderGigItemKeys() {
   const draft = gigItemDraft;
-  if (!draft?.own) return;
+  if (!draft) return;
+  const modeRow = document.getElementById("gigItemModeRow");
+  modeRow.hidden = Boolean(draft.own);
+  if (!draft.own) {
+    // A song with no key of its own: the key for this event is chosen outright (major or minor, then the note).
+    modeRow.querySelectorAll("[data-gig-mode]").forEach((button) => button.classList.toggle("selected", button.dataset.gigMode === draft.mode));
+    const suffixNew = draft.mode === "minor" ? "m" : draft.mode === "freygish" ? " Phrygian" : "";
+    els.gigItemKeys.innerHTML = KEY_NOTE_NAMES.map((root) => {
+      const key = `${root}${suffixNew}`;
+      const on = Boolean(draft.key) && noteIndexOf(parseKey(draft.key).root) === noteIndexOf(root);
+      return `<button class="gig-key-pill ${on ? "on" : ""}" type="button" dir="ltr" data-gig-key="${escapeAttribute(key)}" aria-pressed="${on}">${escapeHtml(compactKeyLabel(key))}</button>`;
+    }).join("");
+    els.gigItemKeys.querySelectorAll("[data-gig-key]").forEach((button) => button.addEventListener("click", () => {
+      gigItemDraft.key = gigItemDraft.key === button.dataset.gigKey ? "" : button.dataset.gigKey;
+      renderGigItemKeys();
+    }));
+    els.gigItemKeyHint.textContent = draft.key ? t(`Key for this event: ${compactKeyLabel(draft.key)}`) : t("This song has no key yet. Pick one for this event.");
+    els.gigItemKeyResetBtn.hidden = !draft.key;
+    els.gigItemKeyResetBtn.textContent = t("Clear this event's key");
+    els.gigItemFilterBtn.hidden = true;
+    return;
+  }
+  els.gigItemKeyResetBtn.textContent = t("Use song's key");
   const suffix = parseKey(draft.own)?.suffix || "";
   const chosen = draft.key || draft.own;
   els.gigItemKeys.innerHTML = KEY_NOTE_NAMES.map((root) => {
@@ -21812,8 +22522,17 @@ function initGigSideUi() {
   els.closeGigSetListBtn.addEventListener("click", closeOverlays);
   els.gigSideListBtn.addEventListener("click", openGigSetListSheet);
   const toggleNote = () => { const open = els.gigReaderNote.classList.toggle("is-open"); els.gigReaderNote.setAttribute("aria-expanded", String(open)); };
-  els.gigReaderNote.addEventListener("click", toggleNote);
-  els.gigReaderNote.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggleNote(); } });
+  els.gigReaderNote.addEventListener("click", (event) => {
+    // The pencil changes the note (a small sheet with the notes and the event key); a tap on the text reads all of it.
+    if (event.target.closest(".gig-reader-note__edit")) {
+      event.stopPropagation();
+      const item = eventReadingItem(currentSong());
+      if (item) openGigItemSheet(item.id, "note");
+      return;
+    }
+    toggleNote();
+  });
+  els.gigReaderNote.addEventListener("keydown", (event) => { if (event.target !== els.gigReaderNote) return; if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggleNote(); } });
   els.gigSidePrevBtn.addEventListener("click", () => stepGigSong(-1));
   els.gigSideNextBtn.addEventListener("click", () => stepGigSong(1));
   const handle = els.gigSideResizer;
@@ -23170,6 +23889,9 @@ function parseImportIndexCsv(text) {
       artistHebrew: cell(row, "hebrew artist"),
       capo: cell(row, "capo"),
       album: cell(row, "album"),
+      composer: cell(row, "composer"),
+      lyricist: cell(row, "lyricist", "lyrics by"),
+      key: cell(row, "key", "song key", "my key"),
       style: cell(row, "style", "genre"),
       timeSignature: cell(row, "time signature"),
       language: cell(row, "language"),
@@ -23222,6 +23944,9 @@ function applyImportIndex(candidates) {
     if (row.artistHebrew) candidate.artistHebrew = row.artistHebrew;
     if (/^(?:[1-9]|1[0-2])$/.test(row.capo)) candidate.capo = row.capo;          // 0 means no capo
     if (row.album) candidate.album = row.album;
+    if (row.composer) candidate.composer = row.composer;
+    if (row.lyricist) candidate.lyricist = row.lyricist;
+    if (row.key) candidate.key = row.key;
     if (row.style) candidate.style = row.style;
     if (/^\d{1,2}\/\d{1,2}$/.test(row.timeSignature)) candidate.timeSignature = row.timeSignature;
     if (row.language) candidate.language = row.language;
@@ -26661,7 +27386,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.slpsongSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigItemSheet, els.gigSetListSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog, els.dupSheet, els.quickKeySheet, els.overlayNotesSheet].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.slpsongSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigItemSheet, els.gigSetListSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog, els.dupSheet, els.quickKeySheet, els.overlayNotesSheet, els.gigListNoteSheet].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -26824,7 +27549,8 @@ function isPureHebrewText(value) {
 
 // "Ich Bin Ich – איך בין איך" -> { en, he }, only when one side is all Latin and the other all Hebrew letters.
 function splitBilingualTitle(title) {
-  const parts = String(title || "").split(/\s+[–—-]\s+/).map((part) => part.trim()).filter(Boolean);
+  // English and Hebrew can be joined by a dash, a vertical bar or a slash ("Tefilas Chana | תפילת חנה").
+  const parts = String(title || "").split(/\s+(?:[–—-]|\||\/)\s+/).map((part) => part.trim()).filter(Boolean);
   if (parts.length !== 2) return null;
   const [first, second] = parts;
   if (isPureLatinText(first) && isPureHebrewText(second)) return { en: first, he: second };
@@ -27542,6 +28268,30 @@ function downloadText(filename, text, type = "text/plain") {
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+// A clear button (X) inside every search field, so what was typed can be removed without Backspace.
+// It shows only while the field has text (CSS :placeholder-shown, so fields cleared by code update too).
+function initSearchClearButtons() {
+  document.querySelectorAll('input[type="search"]').forEach((input) => {
+    if (input.dataset.clearReady) return;
+    input.dataset.clearReady = "1";
+    const host = input.parentElement;
+    if (!host) return;
+    host.classList.add("has-search-clear");
+    input.classList.add("search-clear-input");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "search-clear";
+    button.setAttribute("aria-label", "Clear search");
+    button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="currentColor" opacity=".25"/><path d="M9 9l6 6M15 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    button.addEventListener("pointerdown", (event) => event.preventDefault());
+    button.addEventListener("click", () => {
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+    });
+    input.after(button);
+  });
+}
 // What kind of screen the app is on right now, from its width, height and shape - never from
 // the device name. A foldable changes this while the app is open, so it is re-measured on every
 // resize. Layouts read the result from data-* attributes on #app (see applyScreenTier).
@@ -28041,6 +28791,7 @@ els.addFirstGigSectionBtn.addEventListener("click", promptAddGigSection);
 els.closeGigSongPickerBtn.addEventListener("click", closeOverlays);
 els.cancelGigSongPickerBtn.addEventListener("click", closeOverlays);
 els.gigSongPickerSearch.addEventListener("input", renderGigSongPicker);
+els.gigSongPickerList.addEventListener("change", onGigPickerChange);
 els.addSelectedGigSongsBtn.addEventListener("click", addSelectedGigSongs);
 els.closeGigStructureBtn.addEventListener("click", closeOverlays);
 els.cancelGigStructureBtn.addEventListener("click", closeOverlays);
@@ -28103,6 +28854,7 @@ els.deleteNoteBtn.addEventListener("click", requestDeleteNote);
 els.closeFolderSongPickerBtn.addEventListener("click", closeOverlays);
 els.cancelFolderSongPickerBtn.addEventListener("click", closeOverlays);
 els.folderSongPickerSearch.addEventListener("input", renderFolderSongPicker);
+els.folderSongPickerList.addEventListener("change", onFolderPickerChange);
 els.addFolderSongsBtn.addEventListener("click", addSelectedSongsToFolder);
 els.allSongsBtn.addEventListener("click", () => openFolder(ALL_SONGS));
 els.unfiledBtn.addEventListener("click", () => openFolder(UNFILED));
@@ -28211,7 +28963,7 @@ els.sortMenuBtn.addEventListener("click", (event) => {
   openFilterSheet();
 });
 els.filterPanelBody.addEventListener("click", onFilterPanelClick);
-els.filterPanelBody.addEventListener("change", onFilterPanelChange);
+els.filterPanelBody.addEventListener("input", onFilterPanelInput);
 els.backToFolderBtn.addEventListener("click", backToFolder);
 els.songArtist.addEventListener("click", () => {
   const names = currentSong()?.artists || [];
@@ -28700,6 +29452,13 @@ initSelectModeUi();
 initDuplicatesUi();
 initLicensedSongs();
 initBackupMerge();
+initSearchClearButtons();
+initYoutubeFind();
+initTidyStyles();
+els.closeGigListNoteBtn.addEventListener("click", () => closeOverlays());
+els.cancelGigListNoteBtn.addEventListener("click", () => closeOverlays());
+els.saveGigListNoteBtn.addEventListener("click", saveGigListNote);
+document.getElementById("gigItemModeRow").addEventListener("click", (event) => { const b = event.target.closest("[data-gig-mode]"); if (b && gigItemDraft) { gigItemDraft.mode = b.dataset.gigMode; if (gigItemDraft.key) gigItemDraft.key = ""; renderGigItemKeys(); } });
 initQuickAddUi();
 initBoardUi();
   initScreenTier();
