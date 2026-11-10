@@ -8326,7 +8326,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "5083ed78 · 6a93e4c";
+const APP_BUILD = "476b2412 · 6a93e4c";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -16732,16 +16732,19 @@ function parseKey(key) {
 
 // A key is whatever the person typed: "Am", "Fm/Gm", "D fragish Gm", "Am-Bbm", or a note to self ("Benny", "?").
 // Every note in it moves; every other word, slash, dash and space stays exactly as typed. Text with no note in it is returned unchanged.
-const KEY_NOTE_SOURCE = String.raw`\b([A-G])([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M)?\d*)(?=$|[\s\/\-–—,;:)\]])`;
-const PLACEHOLDER_KEYS = new Set(["", "-", "—", "–", "?", "??"]);
+// (These helpers run while the saved library loads, before this file's own top-level constants exist,
+// so they keep their patterns and lists inside functions.)
+function keyNoteSource() {
+  return String.raw`\b([A-G])([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M)?\d*)(?=$|[\s\/\-–—,;:)\]])`;
+}
 
 function keyHasNote(key) {
-  return new RegExp(KEY_NOTE_SOURCE).test(String(key || ""));
+  return new RegExp(keyNoteSource()).test(String(key || ""));
 }
 
 // "-", "—", "?" and the like mean "no key yet"; every other key is kept exactly as typed.
 function keyIsPlaceholder(key) {
-  return PLACEHOLDER_KEYS.has(String(key ?? "").trim());
+  return ["", "-", "—", "–", "?", "??"].includes(String(key ?? "").trim());
 }
 
 function songKeyText(song) {
@@ -16751,12 +16754,12 @@ function songKeyText(song) {
 function transposeKey(key, steps) {
   const text = String(key || "");
   if (!steps || keyIsPlaceholder(text) || !keyHasNote(text)) return text;
-  return text.replace(new RegExp(KEY_NOTE_SOURCE, "g"), (match, root, accidental, quality) => `${KEY_NOTE_NAMES[(noteIndexOf(`${root}${accidental}`) + steps + 1200) % 12]}${quality}`);
+  return text.replace(new RegExp(keyNoteSource(), "g"), (match, root, accidental, quality) => `${KEY_NOTE_NAMES[(noteIndexOf(`${root}${accidental}`) + steps + 1200) % 12]}${quality}`);
 }
 
 // The first key in the text, as a filter group: "Am-Bbm" and "Am - Bbm" are both "Am". "" when there is no note in it.
 function keyGroupLabel(key) {
-  const match = new RegExp(KEY_NOTE_SOURCE).exec(String(key || ""));
+  const match = new RegExp(keyNoteSource()).exec(String(key || ""));
   if (!match || keyIsPlaceholder(key)) return "";
   const minor = /^(?:m(?!aj)|min)/.test(match[3]);
   return `${KEY_NOTE_NAMES[noteIndexOf(`${match[1]}${match[2]}`)]}${minor ? "m" : ""}`;
@@ -16765,7 +16768,7 @@ function keyGroupLabel(key) {
 // Whether the key says more than its first key ("Am-Bbm", "D fragish Gm").
 function keyIsCompound(key) {
   const text = String(key || "").trim();
-  const match = new RegExp(KEY_NOTE_SOURCE).exec(text);
+  const match = new RegExp(keyNoteSource()).exec(text);
   return Boolean(match) && (match.index > 0 || text.length > match[0].length);
 }
 
