@@ -5317,8 +5317,8 @@ a.slp-chip { min-height: 44px; }
 .gig-chuppah-row[hidden] { display: none; }
 
 /* ---- Event setlist: Edit text button, labelled Add songs rows, swipe to remove ---- */
-.gig-edit-text-btn { min-width: 44px; min-height: 44px; padding: 0 var(--space-5); border-radius: var(--radius-md); background: transparent; color: var(--accent); font-weight: var(--font-weight-semibold); font-size: var(--text-base); }
-.gig-edit-text-btn.is-on { background: var(--accent); color: #fff; }
+.gig-edit-text-btn { min-width: 4.5em; text-align: center; justify-content: center; min-height: 44px; padding: 0 var(--space-5); border-radius: var(--radius-md); background: transparent; color: var(--accent); font-weight: var(--font-weight-semibold); font-size: var(--text-base); }
+.gig-edit-text-btn.is-on { background: transparent; color: var(--accent); }
 .gig-direct-songs > .gig-add-row { padding-inline-start: 0; }
 .gig-song-swipe.swipeable { position: relative; overflow: hidden; }
 .gig-song-swipe.swipeable > .slp-row { position: relative; z-index: 1; touch-action: pan-y; background: var(--color-card); }
@@ -5865,9 +5865,9 @@ a.perf-btn[hidden] { display: none; }
 .perf-bar__row--event[hidden] { display: none; }
 .perf-event-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #D7DDE6; font-size: 14px; font-weight: 600; text-align: center; }
 .perf-btn:disabled { opacity: 0.35; cursor: default; }
-.perf-notice { position: absolute; inset-inline: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 14px; background: #FFC857; color: #0E1116; font-size: 16px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,.45); }
+.perf-notice { position: absolute; inset-inline: 12px; top: var(--perf-notice-top, 64px); bottom: auto; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 8px 0 14px; border-radius: 12px; background: #FFC857; color: #0E1116; font-size: 14px; font-weight: 700; white-space: nowrap; box-shadow: 0 6px 20px rgba(0,0,0,.45); }
 .perf-notice[hidden] { display: none; }
-.perf-notice span { min-width: 0; overflow-wrap: anywhere; }
+.perf-notice span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .perf-notice .perf-chip { flex-shrink: 0; background: #0E1116; color: #FFC857; }
 
 /* ============ Two-line song titles: English above, Hebrew below, both on one side ============ */
@@ -6221,7 +6221,6 @@ input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-dat
 input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-edit { padding: 0; }
 
 /* 4. A plus at the end of each event list (no need for Edit) and at the end of each song row. */
-:root[data-design="new"] .song-item 
 /* 5. New design, Edit mode in an event: the empty key slot is a quiet "+ Key" link, not a dashed box. */
 .slp-badge--key.empty svg { display: none; }
 :root[data-design="new"] .gig-song-reference > .slp-badge--key.empty { border: 0; background: transparent; color: var(--color-text-secondary); }
@@ -6229,9 +6228,8 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="new"] .gig-song-reference > .slp-badge--key.empty svg { display: block; width: 18px; height: 18px; }
 
 /* A "+" next to a list's name in an event: add songs fast, no Edit needed. */
-.gig-quick-add { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-inline-start: auto; padding: 0; border: 0; border-radius: var(--radius-circle); background: transparent; color: var(--accent); cursor: pointer; }
+.gig-quick-add { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-inline-start: 0; padding: 0; border: 0; border-radius: var(--radius-circle); background: transparent; color: var(--accent); cursor: pointer; }
 .gig-quick-add svg { width: 22px; height: 22px; }
-.gig-quick-add + .gig-sort, .gig-quick-add + * { margin-inline-start: 0; }
 
 /* Find on YouTube */
 .yt-find-btn { justify-self: start; min-height: 44px; margin-top: var(--space-3); }
@@ -6310,6 +6308,38 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 .calendar-toolbar .icon-button svg { width: 20px; height: 20px; }
 .calendar-toolbar .text-button { flex: none; min-height: 44px; padding: 0 var(--space-7); border: 0; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font: inherit; font-size: var(--text-md); font-weight: var(--font-weight-semibold); cursor: pointer; }
 .gig-share-options label { min-height: 44px; }
+
+/* ===== Fixes: setlist swipe panels, performance key pill, key chip, key text in rows ===== */
+/* The swipe panels sit under the rows; they stay hidden until a swipe starts (sub-pixel gaps between rows showed them as colored lines). */
+.gig-song-swipe .gig-row-actions, .gig-song-swipe .swipe-action { visibility: hidden; transition: visibility 0s linear 220ms; }
+.gig-song-swipe.is-actions-open .gig-row-actions,
+.gig-song-swipe.is-swiping .gig-row-actions,
+.gig-song-swipe.is-swiping .swipe-action { visibility: visible; transition-delay: 0s; }
+/* The key in Performance mode keeps one width, so the buttons beside it never slide when the song changes. */
+#perfKeyPill { width: 7.5em; box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
+/* The key chip on the song page never grows past a limit, so the chips after it stay put. */
+#songKey { max-width: 11em; }
+#songKey > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A key with more than one key in it: the whole text, small and gray, after the chip. */
+.song-key-full { flex: none; max-width: 12em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); font-size: var(--text-sm); }
+.song-item .song-meta > .song-key-full { order: 10; }
+:root[data-design="new"] .song-item .song-meta > .song-key-full { order: 2; }
+
+/* ===== Second round of fixes ===== */
+/* Toasts: above a sheet's bottom buttons (placed by code), and at the top in Performance mode. */
+.toast.toast--perf { z-index: 95; bottom: auto; }
+/* A long lyric line that wraps hangs its continuation under the first words, so it does not look like a new line. */
+.song-document > div, #perfDoc > div { padding-inline-start: 1.2em; text-indent: -1.2em; }
+/* The performance title lines up with the lyrics in a right-to-left song. */
+#perfTitle[data-dir="rtl"] { --title-text-align: right; text-align: right; }
+/* The key badge in a setlist row keeps its width and its focus ring clear of the title. */
+.gig-song-reference .slp-badge--key { flex-shrink: 0; }
+.gig-song-reference .slp-badge--key:focus-visible { outline-offset: 2px; }
+/* The key in the song as written, when it is not one of the grid keys. */
+.key-current { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-6); border-radius: var(--radius-lg); background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); color: var(--color-text); font-size: var(--text-md); font-weight: var(--font-weight-semibold); overflow-wrap: anywhere; }
+.key-current[hidden] { display: none; }
+.key-current svg { width: 18px; height: 18px; flex: none; color: var(--accent); }
+.key-current small { color: var(--color-text-secondary); font-weight: 400; }
 
 }
 
@@ -7023,6 +7053,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
                   <button type="button" data-key-mode="minor">Minor</button>
                   <button type="button" data-key-mode="freygish">Freygish</button>
                 </div>
+                <div id="keyCurrentChip" class="key-current" hidden></div>
                 <div id="keyNoteGrid" class="key-note-grid" role="group" aria-label="Select key note"></div>
                 <button id="clearSongKeyBtn" class="text-button clear-key-button" type="button">No key</button>
               </div>
@@ -7144,6 +7175,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
           <button type="button" data-quick-mode="minor">Minor</button>
           <button type="button" data-quick-mode="freygish">Freygish</button>
         </div>
+        <div id="quickKeyCurrent" class="key-current" hidden></div>
         <div id="quickKeyGrid" class="key-note-grid" role="group" aria-label="Select key note"></div>
         <button id="quickKeyClearBtn" class="text-button clear-key-button" type="button">No key</button>
       </div>
@@ -8238,7 +8270,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "a04355f9 · e37eb0f";
+const APP_BUILD = "5083ed78 · ec748f2";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -8316,7 +8348,7 @@ const els = Object.fromEntries(
     "songArtistInput", "songArtistHebrewInput", "songComposerInput", "songLyricistInput", "songAlbumInput",
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songCapoInput", "songNeedsReviewInput", "songOccasionsInput", "songYoutubeInput", "songInfoSourcesInput", "songReviewNoteInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
-    "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songTitleNoticeCompareBtn", "songTitleHint", "shareGigListNotesInput", "gigListNoteSheet", "gigListNoteTitle", "gigListNoteInput", "closeGigListNoteBtn", "cancelGigListNoteBtn", "saveGigListNoteBtn", "songYoutubeFindBtn", "practiceFindBtn", "youtubeLinkBar", "youtubeLinkBarText", "youtubeLinkUseBtn", "youtubeLinkDismissBtn", "songOriginChip", "songMyNotesBtn", "songOverlayNote", "overlayNotesSheet", "overlayNotesSong", "overlayNotesInput", "closeOverlayNotesBtn", "cancelOverlayNotesBtn", "saveOverlayNotesBtn", "quickKeySheet", "quickKeySong", "quickKeyGrid", "quickKeyClearBtn", "closeQuickKeyBtn", "songTitleHintText", "songTitleHintCompareBtn", "dupSheet", "dupTitle", "dupBody", "dupFooter", "dupBackBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
+    "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songTitleNoticeCompareBtn", "songTitleHint", "keyCurrentChip", "quickKeyCurrent", "shareGigListNotesInput", "gigListNoteSheet", "gigListNoteTitle", "gigListNoteInput", "closeGigListNoteBtn", "cancelGigListNoteBtn", "saveGigListNoteBtn", "songYoutubeFindBtn", "practiceFindBtn", "youtubeLinkBar", "youtubeLinkBarText", "youtubeLinkUseBtn", "youtubeLinkDismissBtn", "songOriginChip", "songMyNotesBtn", "songOverlayNote", "overlayNotesSheet", "overlayNotesSong", "overlayNotesInput", "closeOverlayNotesBtn", "cancelOverlayNotesBtn", "saveOverlayNotesBtn", "quickKeySheet", "quickKeySong", "quickKeyGrid", "quickKeyClearBtn", "closeQuickKeyBtn", "songTitleHintText", "songTitleHintCompareBtn", "dupSheet", "dupTitle", "dupBody", "dupFooter", "dupBackBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
     "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectDeleteBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "importSummary", "importUndoBar", "importUndoText", "importUndoBtn", "undoImportBtn", "fixArtistsBtn", "openPlaySettingsBtn", "openBackupSettingsBtn", "openAboutSettingsBtn", "backFromPlayBtn", "backFromBackupBtn", "backFromAboutBtn", "playSettingsView", "backupSettingsView", "aboutSettingsView", "splitArtistsBtn", "splitArtistsSubtitle", "fixArtistsSubtitle", "undoImportSubtitle", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
@@ -9946,6 +9978,10 @@ Object.assign(HEBREW_UI, {"Edit this note": "עריכת ההערה הזאת"});
 Object.assign(HEBREW_UI, {"Notes on lists": "הערות על רשימות", "The notes under Chuppah, Meal and the other lists": "ההערות שמתחת לחופה, לסעודה ולשאר הרשימות"});
 
 Object.assign(HEBREW_UI, {"Notes on lists and songs": "הערות על רשימות ושירים", "The notes under Chuppah, Meal and the songs": "ההערות שמתחת לחופה, לסעודה ולשירים"});
+
+Object.assign(HEBREW_UI, {"Open on YouTube": "פתיחה ביוטיוב"});
+
+Object.assign(HEBREW_UI, {"Languages": "שפות", "Style & Tempo": "סגנון וקצב", "Performance Lists": "רשימות הופעה", "Events": "אירועים", "as written": "כפי שנכתב"});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -11442,7 +11478,7 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
     row.dataset.folderId = folder.id;
     row.innerHTML = editMode ? `
       <button class="slp-row__drag-handle folder-grip" type="button" aria-label="Move ${escapeAttribute(folder.name)}" title="Drag to move"><i data-lucide="grip-vertical"></i></button>
-      <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(folder.name)}</span></span>
+      <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(folderDisplayName(folder))}</span></span>
       <span class="slp-row__count">${count}</span>
       <button class="slp-btn slp-btn--icon rename-folder-btn" type="button" aria-label="Rename ${escapeAttribute(folder.name)}"><i data-lucide="pencil"></i></button>
       <button class="slp-btn slp-btn--icon delete-folder-btn danger-icon" type="button" aria-label="Delete ${escapeAttribute(folder.name)}"><i data-lucide="trash-2"></i></button>
@@ -11450,7 +11486,7 @@ function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaL
       ${subfolders.length
         ? `<button class="folder-expand-btn" type="button" aria-expanded="${expanded}" aria-label="${expanded ? "Hide" : "Show"} subfolders of ${escapeAttribute(folder.name)}"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
         : `<span class="folder-expand-spacer"></span>`}
-      <button class="slp-row__body folder-open-btn" type="button"><span class="slp-row__title" dir="auto">${escapeHtml(folder.name)}</span></button>
+      <button class="slp-row__body folder-open-btn" type="button"><span class="slp-row__title" dir="auto">${escapeHtml(folderDisplayName(folder))}</span></button>
       <span class="slp-row__count">${count}</span>
     `;
 
@@ -11597,7 +11633,7 @@ function renderFolder() {
     : currentFolderId === UNFILED ? t("Unfiled")
       : currentFolderId === NEEDS_LYRICS ? t("Needs lyrics")
       : isArtistIndex ? t("Artists")
-        : artistName || folder?.name || t("Folder");
+        : artistName || (folder ? folderDisplayName(folder) : "") || t("Folder");
   const subfolders = folder ? childFolders(folder.id) : [];
   const songs = songsInCurrentFolder();
   const attachedNotes = folder ? notesLinkedToFolder(folder.id) : [];
@@ -11747,7 +11783,7 @@ function renderSubfolders(folders, parentFolder) {
       <button class="slp-btn slp-btn--icon rename-subfolder-btn" type="button" aria-label="Rename ${escapeAttribute(folder.name)}"><i data-lucide="pencil"></i></button>
       <button class="slp-btn slp-btn--icon delete-subfolder-btn danger-icon" type="button" aria-label="Delete ${escapeAttribute(folder.name)}"><i data-lucide="trash-2"></i></button>
     ` : `
-      <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(folder.name)}</span></span>
+      <span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(folderDisplayName(folder))}</span></span>
       <span class="slp-row__count">${count}</span>
       <svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     `;
@@ -11918,7 +11954,7 @@ function renderSong() {
     ? `Key ${fullKeyLabel(currentKey)}${shift ? `, transposed from ${fullKeyLabel(song.key)}` : ""}. Change key`
     : "Set the key");
   // Transposing needs something to move: a key, or chords in the lyrics.
-  els.songTransposeBtn.hidden = !(song.key || songHasChords(song));
+  els.songTransposeBtn.hidden = !(keyHasNote(songKeyText(song)) || songHasChords(song));
   els.songTransposeBtn.setAttribute("aria-pressed", String(shift !== 0));
   els.songTransposeBtn.setAttribute("aria-label", shift ? `Transposed ${transposeLabel(shift)}. Change transposition` : "Transpose");
   if (elementIsVisible(els.transposePopover)) refreshTransposePanel(song);
@@ -12011,7 +12047,7 @@ function renderSongLocations(song) {
   const past = events.filter((entry) => entry.gig.date < today);
   const rows = [];
   if (folders.length) {
-    const shown = folders.slice(0, 3).map((folder) => `<button class="song-loc-link" type="button" dir="auto" data-location-folder="${escapeAttribute(folder.id)}">${escapeHtml(folder.name)}</button>`).join('<span class="song-loc-sep">,</span>');
+    const shown = folders.slice(0, 3).map((folder) => `<button class="song-loc-link" type="button" dir="auto" data-location-folder="${escapeAttribute(folder.id)}">${escapeHtml(folderDisplayName(folder))}</button>`).join('<span class="song-loc-sep">,</span>');
     rows.push(`<div class="song-locations__group"><span class="song-locations__label">${t("Folders")}</span><div class="song-locations__text">${shown}${folders.length > 3 ? `<button class="song-loc-more" type="button" data-location-more>+${folders.length - 3} more</button>` : ""}</div></div>`);
   }
   if (upcoming.length) {
@@ -13923,6 +13959,7 @@ function renderQuickKey() {
   const song = currentSong();
   if (!song) return;
   const notes = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab"];
+  renderKeyCurrent(els.quickKeyCurrent, song.key);
   els.quickKeySheet.querySelectorAll("[data-quick-mode]").forEach((button) => button.classList.toggle("selected", button.dataset.quickMode === quickKeyMode));
   els.quickKeyGrid.innerHTML = notes.map((note) => {
     const value = keyValueFor(note, quickKeyMode);
@@ -13988,9 +14025,25 @@ function renderDatalist(list, values) {
   list.innerHTML = suggestions.map((value) => `<option value="${escapeAttribute(value)}"></option>`).join("");
 }
 
+// A key that is not one of the grid keys ("E/F", "D fragish Gm") is shown as the selected chip above the grid, so it is clear it is kept.
+// It only changes when a grid key is tapped.
+function keyIsGridKey(value) {
+  const text = String(value || "").trim();
+  const notes = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab"];
+  return ["major", "minor", "freygish"].some((mode) => notes.some((note) => keyValueFor(note, mode) === text));
+}
+
+function renderKeyCurrent(element, value) {
+  const text = String(value || "").trim();
+  const show = Boolean(text) && !keyIsPlaceholder(text) && !keyIsGridKey(text);
+  element.hidden = !show;
+  element.innerHTML = show ? `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 12.5l4 4 8-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span dir="auto">${escapeHtml(text)} <small>— ${t("as written")}</small></span>` : "";
+}
+
 function renderKeyOptions(currentKey = "") {
   const notes = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab"];
   els.songKeyInput.value = currentKey;
+  renderKeyCurrent(els.keyCurrentChip, currentKey);
   keyPickerMode = keyModeFromValue(currentKey);
   els.songKeyDisplay.textContent = compactKeyLabel(currentKey) || t("No key");
   els.keyPicker.classList.add("hidden");
@@ -14141,7 +14194,7 @@ function commitSongInfoFolders() {
 function appendFolderChoice(folder, song, child, container = els.songFolderChoices) {
   const label = document.createElement("label");
   label.className = `folder-choice ${child ? "child" : ""}`;
-  label.innerHTML = `<input type="checkbox" value="${folder.id}" ${song.folderIds.includes(folder.id) ? "checked" : ""} /><span>${escapeHtml(folder.name)}</span>`;
+  label.innerHTML = `<input type="checkbox" value="${folder.id}" ${song.folderIds.includes(folder.id) ? "checked" : ""} /><span>${escapeHtml(folderDisplayName(folder))}</span>`;
   container.append(label);
 }
 
@@ -14929,7 +14982,7 @@ function appendSongAddToChoice(folder, song, child, options = {}, parent = els.s
   if (options.excludeFolderId && folder.id === options.excludeFolderId) return;
   const label = document.createElement("label");
   label.className = `folder-choice ${child ? "child" : ""}`;
-  label.innerHTML = `<input type="${options.radio ? "radio" : "checkbox"}" ${options.radio ? 'name="song-move-destination"' : ""} data-add-to-kind="folder" value="${folder.id}" ${song?.folderIds.includes(folder.id) ? "checked" : ""}><span>${escapeHtml(folder.name)}</span>`;
+  label.innerHTML = `<input type="${options.radio ? "radio" : "checkbox"}" ${options.radio ? 'name="song-move-destination"' : ""} data-add-to-kind="folder" value="${folder.id}" ${song?.folderIds.includes(folder.id) ? "checked" : ""}><span>${escapeHtml(folderDisplayName(folder))}</span>`;
   label.dataset.choiceText = folder.name.toLowerCase();
   parent.append(label);
 }
@@ -15256,7 +15309,7 @@ function filterOptionsFor(category) {
       case "languages": add(song.language); break;
       case "timeSignatures": String(song.timeSignature || "").split(/[,;]\s*/).map((v) => v.trim()).filter(Boolean).forEach(add); break;
       case "bpm": add(songBpmRangeKey(song)); break;
-      case "key": add(songDisplayKey(song)); break;
+      case "key": add(keyGroupLabel(songDisplayKey(song))); break;
       case "artist": [...new Set([...(song.artists || []), song.artistHebrew].filter(Boolean))].forEach(add); break;
       case "composer": add(song.composer); break;
       case "status": add(song.status); break;
@@ -15433,7 +15486,7 @@ function songMatchesChipFilters(song) {
 
 function songMatchesFilters(song) {
   if (songFilters.artist && ![...(song.artists || []), song.artistHebrew].includes(songFilters.artist)) return false;
-  if (songFilters.key && songDisplayKey(song) !== songFilters.key) return false;
+  if (songFilters.key && keyGroupLabel(songDisplayKey(song)) !== songFilters.key) return false;
   if (songFilters.status && song.status !== songFilters.status) return false;
   if (songFilters.composer && song.composer !== songFilters.composer) return false;
   return songMatchesChipFilters(song);
@@ -15492,7 +15545,7 @@ function showSongMenu() {
     { icon: "folder-plus", label: t("Add to folder or event"), action: openSongAddTo },
     ...(locked ? [] : [{ icon: "music", label: songHasChords(song) ? t("Edit chords") : t("Add chords"), action: openChordEditor }]),
     { icon: "file-music", label: (song.notePictures || []).length ? t("Sheet music") : t("Add sheet music"), action: openSongNotes },
-    { icon: "youtube", label: t("Find on YouTube"), action: () => { closeOverlays(); openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id }); } },
+    { icon: "circle-play", label: t(song.youtubeUrl ? "Open on YouTube" : "Find on YouTube"), action: () => { closeOverlays(); if (song.youtubeUrl) window.open(song.youtubeUrl, "_blank", "noopener"); else openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id }); } },
     { icon: "maximize-2", label: t("Performance mode"), action: openPerformanceMode },
     ...(songTextRestricted(song) ? [] : [{ icon: "share-2", label: t("Share lyrics"), action: shareCurrentSong }]),
     { icon: "printer", label: t("Print"), action: () => { closeOverlays(); window.print(); } }
@@ -16170,6 +16223,7 @@ function showUndoToast(message, action) {
   button.textContent = t("Undo");
   button.addEventListener("click", () => { els.toast.classList.add("hidden"); action(); });
   els.toast.append(text, button);
+  positionToast();
   els.toast.classList.remove("hidden");
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => els.toast.classList.add("hidden"), 8000);
@@ -16620,10 +16674,43 @@ function parseKey(key) {
   return match ? { root: match[1], suffix: match[2] } : null;
 }
 
+// A key is whatever the person typed: "Am", "Fm/Gm", "D fragish Gm", "Am-Bbm", or a note to self ("Benny", "?").
+// Every note in it moves; every other word, slash, dash and space stays exactly as typed. Text with no note in it is returned unchanged.
+const KEY_NOTE_SOURCE = String.raw`\b([A-G])([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M)?\d*)(?=$|[\s\/\-–—,;:)\]])`;
+const PLACEHOLDER_KEYS = new Set(["", "-", "—", "–", "?", "??"]);
+
+function keyHasNote(key) {
+  return new RegExp(KEY_NOTE_SOURCE).test(String(key || ""));
+}
+
+// "-", "—", "?" and the like mean "no key yet"; every other key is kept exactly as typed.
+function keyIsPlaceholder(key) {
+  return PLACEHOLDER_KEYS.has(String(key ?? "").trim());
+}
+
+function songKeyText(song) {
+  return keyIsPlaceholder(song?.key) ? "" : String(song?.key || "");
+}
+
 function transposeKey(key, steps) {
-  const parsed = parseKey(key);
-  if (!parsed || !steps) return String(key || "");
-  return `${KEY_NOTE_NAMES[(noteIndexOf(parsed.root) + steps + 1200) % 12]}${parsed.suffix}`;
+  const text = String(key || "");
+  if (!steps || keyIsPlaceholder(text) || !keyHasNote(text)) return text;
+  return text.replace(new RegExp(KEY_NOTE_SOURCE, "g"), (match, root, accidental, quality) => `${KEY_NOTE_NAMES[(noteIndexOf(`${root}${accidental}`) + steps + 1200) % 12]}${quality}`);
+}
+
+// The first key in the text, as a filter group: "Am-Bbm" and "Am - Bbm" are both "Am". "" when there is no note in it.
+function keyGroupLabel(key) {
+  const match = new RegExp(KEY_NOTE_SOURCE).exec(String(key || ""));
+  if (!match || keyIsPlaceholder(key)) return "";
+  const minor = /^(?:m(?!aj)|min)/.test(match[3]);
+  return `${KEY_NOTE_NAMES[noteIndexOf(`${match[1]}${match[2]}`)]}${minor ? "m" : ""}`;
+}
+
+// Whether the key says more than its first key ("Am-Bbm", "D fragish Gm").
+function keyIsCompound(key) {
+  const text = String(key || "").trim();
+  const match = new RegExp(KEY_NOTE_SOURCE).exec(text);
+  return Boolean(match) && (match.index > 0 || text.length > match[0].length);
 }
 
 // Whether chords in this key are conventionally spelled with flats (F, B♭, Dm, Gm...).
@@ -16657,7 +16744,8 @@ function songTranspose(song, { ignoreEvent = false } = {}) {
 }
 
 function songCurrentKey(song, options) {
-  return song?.key ? transposeKey(song.key, songTranspose(song, options)) : "";
+  const text = songKeyText(song);
+  return text ? transposeKey(text, songTranspose(song, options)) : "";
 }
 
 function songHasChords(song) {
@@ -19014,6 +19102,8 @@ function renderPerformanceDocument() {
   els.perfKeyPill.innerHTML = key
     ? `${escapeHtml(compactKeyLabel(key))}${shift ? ` <small>was ${escapeHtml(compactKeyLabel(song.key))}</small>` : ""}`
     : (shift ? escapeHtml(transposeLabel(shift)) : "No key");
+  els.perfTitle.dataset.dir = resolvedDocumentDirection(song);
+  els.perfKeyPill.title = key ? (shift ? `${key} (was ${song.key})` : key) : "";
   els.perfSimplifyBtn.setAttribute("aria-pressed", String(perfPrefs.simplify));
   els.perfSpeedOut.textContent = t(`Speed ${perfPrefs.speed}`);
   renderPerformanceEventRow();
@@ -19046,6 +19136,7 @@ function renderPerformanceEventRow() {
 function showPerfNotice(text, { undo = false, ms = 6000 } = {}) {
   els.perfNoticeText.textContent = text;
   els.perfNoticeUndo.hidden = !undo;
+  els.perfNotice.style.setProperty("--perf-notice-top", `${Math.round((document.getElementById("perfBar")?.getBoundingClientRect().bottom || 56) + 8)}px`);
   els.perfNotice.hidden = false;
   clearTimeout(perfNoticeTimer);
   perfNoticeTimer = setTimeout(hidePerfNotice, ms);
@@ -19090,7 +19181,7 @@ function stepPerformanceSong(step) {
   render();
   els.perfScroll.scrollTop = 0;
   renderPerformanceDocument();
-  if (marked) showPerfNotice(t("Marked as played"), { undo: true });
+  if (marked) showPerfNotice(t("Marked as played"), { undo: true, ms: 2000 });
   return true;
 }
 
@@ -21117,6 +21208,7 @@ function wireGigRowActions(wrap, row) {
       swiping = true;
       row.setPointerCapture?.(event.pointerId);
       row.classList.add("swiping");
+      wrap.classList.add("is-swiping");
     }
     dx = Math.max(-WIDTH, Math.min(120, base + mx));
     apply(dx, false);
@@ -21132,6 +21224,7 @@ function wireGigRowActions(wrap, row) {
     setTimeout(() => { swallow = false; }, 60);
     row.classList.remove("swiping");
     playedReveal.classList.remove("armed");
+    setTimeout(() => wrap.classList.remove("is-swiping"), 220);   // after the row has slid back
     if (cancelled) { setOpen(open); return; }
     if (dx >= 72 && !open) { setOpen(false); toggleGigSongPlayed(itemId); return; }
     setOpen(dx <= -WIDTH / 3);
@@ -21315,7 +21408,7 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
         <span class="slp-row__title" dir="auto">${escapeHtml(section.name)}</span>
         <span class="slp-row__subtitle">${sets.length ? `${sets.length} ${plural(sets.length, "list")} · ` : ""}${songCount} ${plural(songCount, "song")}${sectionPlayed ? ` · ${sectionPlayed} played` : ""}</span>
       </span>
-      ${gigQuickAddMarkup(`data-add-gig-section-songs="${section.id}"`, section.name)}${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${addSongsBtn}${dragHandle}${manageActions}
+      ${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${gigQuickAddMarkup(`data-add-gig-section-songs="${section.id}"`, section.name)}${addSongsBtn}${dragHandle}${manageActions}
     </div>
     ${gigListNoteMarkup(`section:${section.id}`, section.notes)}
     <div class="gig-section-content ${visiblyExpanded ? "" : "hidden"}">${directSongs}${setMarkup.join("")}</div>
@@ -21336,7 +21429,7 @@ function gigSetMarkup(set) {
         <span class="slp-row__title" dir="auto">${escapeHtml(set.name)}</span>
         <span class="slp-row__subtitle">${items.length} ${plural(items.length, "song")}</span>
       </span>
-      ${gigQuickAddMarkup(`data-add-gig-songs="${set.id}"`, set.name)}${items.length > 1 ? gigListSortControl(set.id, set.name) : ""}${gigStructureEditMode ? `<button class="gig-add-text" type="button" data-add-gig-songs="${set.id}"><i data-lucide="plus"></i><span>${t("Add songs")}</span></button>` : ""}${dragHandle}${manageActions}
+      ${items.length > 1 ? gigListSortControl(set.id, set.name) : ""}${gigQuickAddMarkup(`data-add-gig-songs="${set.id}"`, set.name)}${gigStructureEditMode ? `<button class="gig-add-text" type="button" data-add-gig-songs="${set.id}"><i data-lucide="plus"></i><span>${t("Add songs")}</span></button>` : ""}${dragHandle}${manageActions}
     </div>
     ${gigListNoteMarkup(`set:${set.id}`, set.notes)}
     <div class="gig-set-songs ${visiblyExpanded ? "" : "hidden"}">${items.map((item, index) => gigSongReferenceMarkup(item, index, items.length)).join("")}</div>
@@ -22458,8 +22551,10 @@ function renderGigItemKeys() {
   els.gigItemKeyResetBtn.textContent = t("Use song's key");
   const suffix = parseKey(draft.own)?.suffix || "";
   const chosen = draft.key || draft.own;
+  const ownRoot = parseKey(draft.own).root;
+  const compound = keyIsCompound(draft.own);
   els.gigItemKeys.innerHTML = KEY_NOTE_NAMES.map((root) => {
-    const key = `${root}${suffix}`;
+    const key = compound ? transposeKey(draft.own, (noteIndexOf(root) - noteIndexOf(ownRoot) + 12) % 12) : `${root}${suffix}`;
     const same = noteIndexOf(parseKey(key).root) === noteIndexOf(parseKey(chosen)?.root || "C") ;
     const isOwn = noteIndexOf(parseKey(key).root) === noteIndexOf(parseKey(draft.own).root);
     return `<button class="gig-key-pill ${same ? "on" : ""}" type="button" dir="ltr" data-gig-key="${escapeAttribute(key)}" aria-pressed="${same}">${escapeHtml(compactKeyLabel(key))}${isOwn ? '<small>song</small>' : ""}</button>`;
@@ -27414,8 +27509,29 @@ function openConfirm(title, message, actionLabel, action) {
   showOverlay(els.confirmDialog);
 }
 
+// Where the toast goes: above the buttons of an open sheet (so it never covers Add / Done), at the top under the bar in
+// Performance mode, and at the bottom otherwise.
+function positionToast() {
+  const toast = els.toast;
+  if (!toast) return;
+  const perf = document.getElementById("performanceView");
+  const inPerf = Boolean(perf) && !perf.hidden && !perf.classList.contains("hidden");
+  toast.classList.toggle("toast--perf", inPerf);
+  if (inPerf) {
+    const bar = document.getElementById("perfBar")?.getBoundingClientRect();
+    toast.style.top = `${Math.round((bar?.bottom || 56) + 8)}px`;
+    toast.style.bottom = "auto";
+    return;
+  }
+  toast.style.top = "";
+  const footers = [...document.querySelectorAll(".sheet:not(.hidden) .sheet-footer, .sheet:not(.hidden) .slp-sheet__footer, .dup-footer")].filter((el) => { const r = el.getBoundingClientRect(); return r.height > 0 && r.width > 0; });
+  const footer = footers[footers.length - 1];
+  toast.style.bottom = footer ? `${Math.round(window.innerHeight - footer.getBoundingClientRect().top + 10)}px` : "";
+}
+
 function showToast(message) {
   els.toast.textContent = t(message);
+  positionToast();
   els.toast.classList.remove("hidden");
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => els.toast.classList.add("hidden"), 1900);
@@ -27586,6 +27702,13 @@ function songTitleParts(song) {
 
 // Which sides a title has: "en", "he", "both" or "one" (an unsplittable mixed title). The New design
 // puts English on the left and Hebrew/Yiddish on the right and uses this to place a single title.
+// The four built-in folders are shown in the app's language; a folder the person renamed (or made) keeps its own name.
+const DEFAULT_FOLDER_NAMES = ["Languages", "Style & Tempo", "Performance Lists", "Events"];
+function folderDisplayName(folder) {
+  const name = String(folder?.name || "");
+  return !folder?.parentId && folder?.kind === "category" && DEFAULT_FOLDER_NAMES.includes(name) ? t(name) : name;
+}
+
 function songTitleSides(song) {
   const parts = songTitleParts(song);
   if (parts.one) return "one";
@@ -27596,7 +27719,13 @@ function songTitleSides(song) {
 function songRowMeta(song) {
   const key = songDisplayKey(song);
   const parts = [];
-  if (key) parts.push(`<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(key)}" aria-label="Show songs in ${escapeAttribute(key)}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(key)}</button>`);
+  if (key) {
+    // A key with more than one key in it ("Am-Bbm") shows its first key on the chip and the whole text small and gray beside it.
+    const group = keyGroupLabel(key);
+    const compound = Boolean(group) && keyIsCompound(key);
+    parts.push(`<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(group || key)}" aria-label="Show songs in ${escapeAttribute(group || key)}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(compound ? group : key)}</button>`);
+    if (compound) parts.push(`<small class="song-key-full" dir="auto">${escapeHtml(key)}</small>`);
+  }
   if (song.bpm) parts.push(`<span class="song-bpm" dir="ltr">${escapeHtml(String(song.bpm))} bpm</span>`);
   const origin = songOriginTag(song);
   if (origin) parts.push(origin);
@@ -28180,7 +28309,7 @@ function songIsUnfiled(song) {
 // Every key chip, filter, search and sort uses this, so what you tap is what you see. (The
 // original key stays in song.key and in the song's Details.)
 function songDisplayKey(song) {
-  return songCurrentKey(song, { ignoreEvent: true }) || song.key || "";
+  return songCurrentKey(song, { ignoreEvent: true }) || songKeyText(song);
 }
 
 // In an event the key can also be overridden for that one appearance of the song.
@@ -28193,9 +28322,12 @@ function eventItemKey(item, song) {
 function eventKeyFor(song, override) {
   const text = String(override || "").trim();
   if (!text) return "";
-  const own = parseKey(song?.key);
+  const ownText = songKeyText(song);
+  const own = parseKey(ownText);
   const chosen = parseKey(text);
   if (!own || !chosen) return text;
+  // A key with more than one key in it ("D fragish Gm") moves as a whole; a simple key only changes its note.
+  if (keyIsCompound(ownText)) return transposeKey(ownText, noteIndexOf(chosen.root) - noteIndexOf(own.root));
   return `${chosen.root}${own.suffix}`;
 }
 
@@ -28282,6 +28414,8 @@ function initSearchClearButtons() {
     input.dataset.clearReady = "1";
     const host = input.parentElement;
     if (!host) return;
+    // A search bar that already has its own "Close search" X keeps just that one (two X's side by side were confusing).
+    if (host.querySelector('button[aria-label*="Close" i][aria-label*="search" i]')) return;
     host.classList.add("has-search-clear");
     input.classList.add("search-clear-input");
     const button = document.createElement("button");
