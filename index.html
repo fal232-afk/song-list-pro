@@ -6058,11 +6058,36 @@ a.perf-btn[hidden] { display: none; }
 /* ============ New design: song rows ============
    English (and the artist) on the left, Hebrew/Yiddish (and key, tempo, tags) on the right, flat rows with
    separators. Only when Settings > Appearance > Design is New. */
+
+
+/* ============ New design: setlist rows ============
+   The same two-column row as the song list, with the number (or grip) on the left and the event's key
+   (marked) under the Hebrew title. */
+
+/* Event key: Classic shows "Dm → Em" as before; New shows the event's key in the accent color with a small
+   "event" label, and the song's own key small and gray when it differs ("Em event · orig Dm"). */
+.slp-badge--key .ek-label, .slp-badge--key .ek-orig { display: none; }
+:root[data-design="new"] .slp-badge--key .ek-classic { display: none; }
+:root[data-design="new"] .slp-badge--key.event-key .ek-label { display: inline-flex; align-items: center; gap: 4px; font-size: var(--text-xs-plus); font-weight: var(--font-weight-semibold); letter-spacing: 0.02em; }
+:root[data-design="new"] .slp-badge--key.event-key .ek-label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+:root[data-design="new"] .slp-badge--key.event-key .ek-orig { display: inline; font-size: var(--text-xs-plus); font-weight: 400; color: var(--color-text-secondary); }
+:root[data-design="new"] .slp-badge--key.event-key .ek-orig::before { content: "· "; }
+
+/* ============ New design: song rows and setlist rows (layout v2) ============
+   Line 1 is a flex row: the English title on the left and the Hebrew/Yiddish title on the right, each up to
+   60% of the row (a lone title may use the whole row), two lines at most. Line 2 is another row: the artist
+   takes the free space and is cut with an ellipsis, then key, tempo and tags at the end. The row is always
+   left-to-right, so English stays on the left and Hebrew on the right in the Hebrew interface too; the Hebrew
+   text itself keeps dir="rtl". Only when Settings > Appearance > Design is New. */
 :root[data-design="new"] #songList { background: transparent; box-shadow: none; border-radius: 0; border: 0; }
-:root[data-design="new"] .song-item .slp-row {
-  display: grid;
-  grid-template-columns: 0 minmax(0, 1fr) minmax(0, 60%);
-  align-items: start;
+:root[data-design="new"] .song-item .slp-row,
+:root[data-design="new"] .gig-song-reference {
+  direction: ltr;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
   column-gap: 0;
   row-gap: 1px;
   padding: var(--space-5) var(--space-9);
@@ -6070,82 +6095,90 @@ a.perf-btn[hidden] { display: none; }
   background: transparent;
   border-bottom: 1px solid var(--color-border);
 }
+:root[data-design="new"] .gig-song-reference { padding-inline-start: 44px !important; padding-inline-end: var(--space-9); }
+:root[data-design="new"] .gig-song-reference:has(.gig-drag-handle) { padding-inline-end: 52px; }
+:root[data-design="new"] .song-item .slp-row:has(.select-check, .slp-row__drag-handle) { padding-inline-start: 52px; }
+/* Number, tick, tick-box and grip stay where they are (start and end of the row) but are taken out of the lines. */
 :root[data-design="new"] .song-item .slp-row .select-check,
-:root[data-design="new"] .song-item .slp-row .slp-row__drag-handle { grid-column: 1; grid-row: 1 / span 2; align-self: center; margin: 0; }
+:root[data-design="new"] .song-item .slp-row .slp-row__drag-handle,
+:root[data-design="new"] .gig-song-reference .select-check,
+:root[data-design="new"] .gig-song-reference .gig-song-number,
+:root[data-design="new"] .gig-song-reference .gig-played-tick { position: absolute; inset-inline-start: 12px; top: 50%; transform: translateY(-50%); margin: 0; }
+:root[data-design="new"] .song-item .slp-row .slp-row__drag-handle { inset-inline-start: 4px; }
+:root[data-design="new"] .gig-song-reference .gig-song-number { width: 24px; text-align: center; color: var(--color-text-secondary); font-size: var(--text-md); }
+:root[data-design="new"] .gig-song-reference .gig-drag-handle { position: absolute; inset-inline-start: auto; inset-inline-end: 4px; top: 50%; transform: translateY(-50%); margin: 0; }
 :root[data-design="new"] .song-item .slp-row__body,
 :root[data-design="new"] .song-item .song-title-button,
 :root[data-design="new"] .song-item .slp-row__title,
-:root[data-design="new"] .song-item .song-title-lines { display: contents; }
+:root[data-design="new"] .gig-song-reference .gig-song-reference-main,
+:root[data-design="new"] .gig-song-reference .slp-row__title { display: contents; }
 :root[data-design="new"] .song-item .song-title-button::after,
-:root[data-design="new"] .song-item .slp-badge--key::after { content: none; }
-:root[data-design="new"] .song-item .song-title-lines > span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; font-size: var(--text-lg); font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--color-text); }
-:root[data-design="new"] .song-item .t-en,
-:root[data-design="new"] .song-item .t-one { grid-column: 2; grid-row: 1; text-align: start; }
-:root[data-design="new"] .song-item .t-he { grid-column: 3; grid-row: 1; justify-self: end; text-align: end; font-family: var(--font-family); font-size: var(--text-lg); line-height: 1.3; }
-:root[data-design="new"] .song-item .slp-row[data-sides="he"] .t-he { grid-column: 2 / 4; }
-:root[data-design="new"] .song-item .slp-row[data-sides="en"] .t-en { grid-column: 2 / 4; }
-:root[data-design="new"] .song-item .slp-row__artists { grid-column: 2; grid-row: 2; min-width: 0; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-md); color: var(--color-text-secondary); }
-:root[data-design="new"] .song-item .slp-row__artist-link { display: inline; color: var(--color-text-secondary); font-size: var(--text-md); }
+:root[data-design="new"] .song-item .slp-badge--key::after,
 :root[data-design="new"] .song-item .slp-row__artist-link::after { content: none; }
-:root[data-design="new"] .song-item .song-meta { display: flex; grid-column: 3; grid-row: 2; justify-self: end; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 6px; min-width: 0; }
-:root[data-design="new"] .song-item .slp-row[data-sides="he"] .slp-row__artists { grid-column: 2; }
-:root[data-design="new"] .song-item .slp-badge--key { order: 1; min-width: 44px; min-height: 44px; margin: -12px 0 -12px; padding: 0 var(--space-3); background: transparent; color: var(--accent); font-size: var(--text-md); font-weight: var(--font-weight-semibold); }
+/* line 1 */
+:root[data-design="new"] .song-item .song-title-lines,
+:root[data-design="new"] .gig-song-reference .song-title-lines { order: 1; display: flex; flex: 0 0 100%; width: 100%; min-width: 0; justify-content: space-between; align-items: flex-start; gap: var(--space-6); }
+:root[data-design="new"] .song-item .song-title-lines > span,
+:root[data-design="new"] .gig-song-reference .song-title-lines > span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; flex: 0 1 auto; min-width: 0; max-width: 60%; font-size: var(--text-lg); font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--color-text); }
+:root[data-design="new"] .song-item .t-en, :root[data-design="new"] .song-item .t-one,
+:root[data-design="new"] .gig-song-reference .t-en, :root[data-design="new"] .gig-song-reference .t-one { text-align: left; }
+:root[data-design="new"] .song-item .t-he,
+:root[data-design="new"] .gig-song-reference .t-he { margin-left: auto; margin-right: 0; text-align: right; font-family: var(--font-family); }
+:root[data-design="new"] .slp-row[data-sides="en"] .t-en,
+:root[data-design="new"] .slp-row[data-sides="one"] .t-one,
+:root[data-design="new"] .slp-row[data-sides="he"] .t-he { max-width: 100%; }
+/* line 2 */
+:root[data-design="new"] .song-item .slp-row__artists,
+:root[data-design="new"] .gig-song-reference .slp-row__subtitle { order: 2; display: block; flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; padding-left: 0; padding-right: var(--space-5); font-size: var(--text-md); color: var(--color-text-secondary); }
+:root[data-design="new"] .song-item .slp-row__artist-link { display: inline; color: var(--color-text-secondary); font-size: var(--text-md); }
+:root[data-design="new"] .song-item .song-meta { order: 3; display: flex; flex: none; max-width: 100%; margin-left: auto; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 6px; }
+:root[data-design="new"] .gig-song-reference > .slp-badge--key { order: 3; flex: none; margin-left: auto; }
+:root[data-design="new"] .gig-song-reference .gig-row-note { order: 4; flex: 0 0 100%; }
+:root[data-design="new"] .song-item .slp-badge--key,
+:root[data-design="new"] .gig-song-reference > .slp-badge--key { order: 1; display: inline-flex; align-items: center; justify-content: flex-end; min-width: 44px; min-height: 44px; margin-block: -12px; padding-inline: var(--space-3) 0; background: transparent; color: var(--accent); font-size: var(--text-md); font-weight: var(--font-weight-semibold); }
+:root[data-design="new"] .gig-song-reference > .slp-badge--key { order: 3; }
 :root[data-design="new"] .song-item .slp-badge--key.transposed { background: transparent; color: var(--accent); text-decoration: underline dotted; text-underline-offset: 3px; }
-:root[data-design="new"] .song-item .song-bpm { display: inline; order: 2; margin-inline-start: -2px; color: var(--color-text-secondary); font-size: var(--text-md); }
+:root[data-design="new"] .song-item .song-bpm { display: inline; order: 2; margin-inline-start: -2px; color: var(--color-text-secondary); font-size: var(--text-md); white-space: nowrap; }
 :root[data-design="new"] .song-item .song-bpm::before { content: "· "; }
 :root[data-design="new"] .song-item .song-review-chip { order: 3; }
 :root[data-design="new"] .song-item .song-chart-flag { order: 4; }
 :root[data-design="new"] .song-item .slp-row__chevron { display: none; }
 :root[data-design="new"] .song-item .song-details { padding-inline: var(--space-9); }
-
-:root[data-design="new"] .song-item .slp-row:has(.select-check, .slp-row__drag-handle) { grid-template-columns: 40px minmax(0, 1fr) minmax(0, 60%); }
-:root[data-design="new"] .song-item .t-en,
-:root[data-design="new"] .song-item .t-one,
-:root[data-design="new"] .song-item .slp-row__artists { padding-inline-end: var(--space-6); }
-:root[data-design="new"] .song-item .slp-row[data-sides="en"] .t-en,
-:root[data-design="new"] .song-item .slp-row[data-sides="he"] .t-he { padding-inline-end: 0; }
-:root[data-design="new"] .song-item .slp-badge--key { display: inline-flex; align-items: center; justify-content: flex-end; padding-inline: var(--space-3) 0; }
-
-/* ============ New design: setlist rows ============
-   The same two-column row as the song list, with the number (or grip) on the left and the event's key
-   (marked) under the Hebrew title. */
-:root[data-design="new"] .gig-song-reference {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) minmax(0, 60%) auto;
-  align-items: start;
-  column-gap: 0;
-  row-gap: 1px;
-  padding-block: var(--space-4);
-  min-height: 60px;
-  background: transparent;
-  border-bottom: 1px solid var(--color-border);
-}
-:root[data-design="new"] .gig-song-reference .gig-song-number,
-:root[data-design="new"] .gig-song-reference .gig-played-tick,
-:root[data-design="new"] .gig-song-reference .select-check { grid-column: 1; grid-row: 1 / span 2; align-self: center; width: auto; margin: 0; color: var(--color-text-secondary); font-size: var(--text-md); }
-:root[data-design="new"] .gig-song-reference .gig-drag-handle { grid-column: 4; grid-row: 1 / span 2; align-self: center; }
-:root[data-design="new"] .gig-song-reference .gig-song-reference-main,
-:root[data-design="new"] .gig-song-reference .slp-row__title,
-:root[data-design="new"] .gig-song-reference .song-title-lines { display: contents; }
-:root[data-design="new"] .gig-song-reference .song-title-lines > span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; font-size: var(--text-lg); font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--color-text); }
-:root[data-design="new"] .gig-song-reference .t-en,
-:root[data-design="new"] .gig-song-reference .t-one { grid-column: 2; grid-row: 1; text-align: start; padding-inline-end: var(--space-6); }
-:root[data-design="new"] .gig-song-reference .t-he { grid-column: 3; grid-row: 1; justify-self: end; text-align: end; font-family: var(--font-family); }
-:root[data-design="new"] .gig-song-reference[data-sides="he"] .t-he { grid-column: 2 / 4; }
-:root[data-design="new"] .gig-song-reference[data-sides="en"] .t-en { grid-column: 2 / 4; padding-inline-end: 0; }
-:root[data-design="new"] .gig-song-reference .slp-row__subtitle { grid-column: 2; grid-row: 2; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-inline-end: var(--space-6); font-size: var(--text-md); color: var(--color-text-secondary); }
-:root[data-design="new"] .gig-song-reference .gig-row-note { grid-column: 2 / 4; grid-row: 3; }
-:root[data-design="new"] .gig-song-reference > .slp-badge--key { grid-column: 3; grid-row: 2; justify-self: end; display: inline-flex; align-items: center; justify-content: flex-end; min-width: 44px; min-height: 44px; margin: -12px 0; padding-inline: var(--space-3) 0; background: transparent; color: var(--accent); font-size: var(--text-md); font-weight: var(--font-weight-semibold); }
-
-/* Event key: Classic shows "Dm → Em" as before; New shows the event's key in the accent color with a small
-   "event" label, and the song's own key small and gray when it differs ("Em event · orig Dm"). */
-.slp-badge--key .ek-label, .slp-badge--key .ek-orig { display: none; }
-:root[data-design="new"] .slp-badge--key .ek-classic { display: none; }
 :root[data-design="new"] .gig-song-reference > .slp-badge--key.event-key { background: transparent; color: var(--accent); gap: 6px; white-space: nowrap; }
-:root[data-design="new"] .slp-badge--key.event-key .ek-label { display: inline-flex; align-items: center; gap: 4px; font-size: var(--text-xs-plus); font-weight: var(--font-weight-semibold); letter-spacing: 0.02em; }
-:root[data-design="new"] .slp-badge--key.event-key .ek-label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-:root[data-design="new"] .slp-badge--key.event-key .ek-orig { display: inline; font-size: var(--text-xs-plus); font-weight: 400; color: var(--color-text-secondary); }
-:root[data-design="new"] .slp-badge--key.event-key .ek-orig::before { content: "· "; }
+
+/* Licensed songs and their copies: the text cannot be selected or dragged out (friction only; see the product direction). */
+#app[data-song-restricted="true"] .song-document,
+#app[data-song-restricted="true"] .perf-scroll,
+#app[data-song-restricted="true"] .practice-view .song-document { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+#app[data-song-restricted="true"] .song-document[contenteditable="true"] { -webkit-user-select: text; user-select: text; }
+
+/* Licensed songs: labels, the notes line and the small tag in song rows */
+.song-origin-chip { display: inline-flex; align-items: center; gap: var(--space-2); }
+.song-origin-chip svg { width: 14px; height: 14px; }
+.song-origin-chip[hidden], #songMyNotesBtn[hidden], .song-overlay-note[hidden] { display: none; }
+.song-overlay-note { display: flex; align-items: flex-start; gap: var(--space-4); width: calc(100% - 2 * var(--space-9)); min-height: 44px; margin: var(--space-3) var(--space-9) var(--space-4); padding: var(--space-4) var(--space-6); border: 0; border-radius: var(--radius-lg); background: var(--color-warning-soft, #fbeed0); color: var(--color-warning-text, #7a4a00); font: inherit; font-size: var(--text-md); text-align: start; cursor: pointer; }
+.song-overlay-note svg { width: 16px; height: 16px; flex: none; margin-top: 3px; }
+.song-overlay-note span { min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.song-origin-tag { display: inline-flex; align-items: center; background: var(--accent-soft); color: var(--accent); }
+.song-origin-tag svg { width: 12px; height: 12px; }
+/* Add songs from a backup */
+#backupMergeView { display: flex; flex-direction: column; min-height: 0; }
+#backupMergeView .settings-page__body { flex: 1; min-height: 0; overflow-y: auto; }
+.bm-sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+.bm-sum div { padding: var(--space-5) var(--space-3); border-radius: var(--radius-lg); background: var(--color-chip-bg); text-align: center; }
+.bm-sum b { display: block; font-size: var(--text-2xl, 24px); font-weight: var(--font-weight-semibold); }
+.bm-sum span { font-size: var(--text-sm); color: var(--color-text-secondary); }
+.bm-new b { color: var(--accent); }
+.bm-diff b { color: var(--color-warning-text, #7a4a00); }
+.bm-file .slp-btn { flex: none; min-width: 44px; min-height: 44px; }
+.bm-all, .bm-song { min-height: 56px; cursor: pointer; }
+.bm-all input, .bm-song input { width: 22px; height: 22px; flex: none; }
+.bm-all .slp-btn { flex: none; min-height: 44px; }
+.bm-diff-row { min-height: 56px; }
+.dup-footer[hidden] { display: none; }
+#backupMergeView .settings-page__body > * { flex-shrink: 0; }
+#backupMergeView .dup-chip { white-space: nowrap; }
+#backupMergeView .bm-diff-row .slp-row__subtitle { white-space: normal; }
 
 }
 
@@ -6639,11 +6672,14 @@ a.perf-btn[hidden] { display: none; }
             <button id="songKey" class="slp-chip song-chip" type="button" aria-label="Change key"><i data-lucide="music-2"></i><span>No key</span><small id="songKeyWas" hidden></small></button>
             <button id="songTransposeBtn" class="slp-chip song-chip song-chip--icon" type="button" aria-label="Transpose" aria-haspopup="dialog" aria-pressed="false"><i data-lucide="arrow-up-down"></i></button>
             <button id="songArtistChip" class="slp-chip song-chip song-artist-chip" type="button" aria-label="Songs by this artist" hidden><span dir="auto"></span></button>
+            <span id="songOriginChip" class="slp-chip song-chip song-origin-chip" hidden><i data-lucide="lock"></i><span></span></span>
+            <button id="songMyNotesBtn" class="slp-chip song-chip" type="button" hidden><i data-lucide="sticky-note"></i><span>My notes</span></button>
             <button id="songNotesToggleBtn" class="slp-chip song-chip hidden" type="button" aria-label="Show the notes"><i data-lucide="file-music"></i><span>Notes</span></button>
             <button id="songCategoryBtn" class="slp-chip song-chip" type="button" aria-label="Change folders"><i data-lucide="folder"></i><span>Unfiled</span></button>
             <button id="songPracticeBtn" class="slp-chip song-chip hidden" type="button" aria-label="Practice"><i data-lucide="headphones"></i><span>Practice</span></button>
             <button id="songDetailsViewCollapse" class="slp-chip song-chip" type="button" aria-expanded="false" aria-controls="songDetailsViewPanel"><span>More</span><svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
+          <button id="songOverlayNote" class="song-overlay-note" type="button" hidden aria-label="Edit my notes"><i data-lucide="sticky-note"></i><span dir="auto"></span></button>
           <div id="songDetailsViewPanel" class="slp-collapse__panel" hidden>
             <div class="slp-details-row"><button id="songArtist" class="slp-details-row__link" type="button" dir="auto"></button></div>
             <div id="songSecondaryMeta" class="slp-details-grid"></div>
@@ -6978,6 +7014,15 @@ a.perf-btn[hidden] { display: none; }
         </div>
         <div id="quickKeyGrid" class="key-note-grid" role="group" aria-label="Select key note"></div>
         <button id="quickKeyClearBtn" class="text-button clear-key-button" type="button">No key</button>
+      </div>
+    </section>
+
+    <section id="overlayNotesSheet" class="sheet compact-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="overlayNotesTitle">
+      <div class="sheet-header"><div><span id="overlayNotesSong">Song</span><h2 id="overlayNotesTitle">My notes</h2></div><button id="closeOverlayNotesBtn" class="icon-button" type="button" aria-label="Close"><i data-lucide="x"></i></button></div>
+      <div class="sheet-body">
+        <p class="slp-subtitle">Your notes sit on top of this song. They are saved with your library and never change the song.</p>
+        <textarea id="overlayNotesInput" class="slp-input" rows="6" dir="auto" maxlength="4000" placeholder="Start slow, second verse up a half step"></textarea>
+        <div class="slp-btn-row"><button id="cancelOverlayNotesBtn" class="slp-btn slp-btn--ghost" type="button">Cancel</button><button id="saveOverlayNotesBtn" class="slp-btn slp-btn--primary" type="button">Save notes</button></div>
       </div>
     </section>
 
@@ -7438,7 +7483,12 @@ a.perf-btn[hidden] { display: none; }
           <section class="slp-card">
         <button id="importLibraryBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="upload"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Restore backup</span><span class="slp-row__subtitle">Import a Song List Pro backup</span></span>
+          <span class="slp-row__body"><span class="slp-row__title">Restore backup</span><span class="slp-row__subtitle">Replaces everything on this device</span></span>
+          <i data-lucide="chevron-right" class="slp-row__chevron"></i>
+        </button>
+        <button id="addFromBackupBtn" class="slp-row" type="button">
+          <span class="slp-row__icon-tile"><i data-lucide="list-plus"></i></span>
+          <span class="slp-row__body"><span class="slp-row__title">Add songs from a backup</span><span class="slp-row__subtitle">Bring songs over from another device. Nothing is replaced.</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         <button id="undoRestoreBtn" class="slp-row" type="button">
@@ -7471,6 +7521,20 @@ a.perf-btn[hidden] { display: none; }
         </button>
           </section>
         </div>
+      </div>
+      <div id="backupMergeView" class="settings-page hidden">
+        <header class="slp-header">
+          <button id="backFromBackupMergeBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Back">
+            <svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="slp-header__titles">
+            <h2 class="slp-header__title">Add songs from a backup</h2>
+            <p class="slp-subtitle">Songs and lyrics only</p>
+          </div>
+          <button class="slp-btn slp-btn--icon" type="button" data-close-settings aria-label="Close"><i data-lucide="x"></i></button>
+        </header>
+        <div id="backupMergeBody" class="settings-page__body"></div>
+        <div id="backupMergeFooter" class="slp-btn-row dup-footer" hidden></div>
       </div>
       <div id="aboutSettingsView" class="settings-page hidden">
         <header class="slp-header">
@@ -7930,6 +7994,7 @@ a.perf-btn[hidden] { display: none; }
     </section>
     <input id="slpsongInput" class="hidden" type="file" multiple accept=".slpsong,.json,application/json" />
     <input id="backupFileInput" class="hidden" type="file" accept="application/json,.json" />
+    <input id="backupMergeInput" class="hidden" type="file" accept="application/json,.json" multiple />
     <datalist id="artistSuggestions"></datalist>
     <datalist id="artistHebrewSuggestions"></datalist>
     <datalist id="composerSuggestions"></datalist>
@@ -8002,7 +8067,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "91e138a9 · 97ea534";
+const APP_BUILD = "e23ac4bb · 33bd719";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -8080,7 +8145,7 @@ const els = Object.fromEntries(
     "songArtistInput", "songArtistHebrewInput", "songComposerInput", "songLyricistInput", "songAlbumInput",
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songCapoInput", "songNeedsReviewInput", "songOccasionsInput", "songYoutubeInput", "songInfoSourcesInput", "songReviewNoteInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
-    "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songTitleNoticeCompareBtn", "songTitleHint", "quickKeySheet", "quickKeySong", "quickKeyGrid", "quickKeyClearBtn", "closeQuickKeyBtn", "songTitleHintText", "songTitleHintCompareBtn", "dupSheet", "dupTitle", "dupBody", "dupFooter", "dupBackBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
+    "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songTitleNoticeCompareBtn", "songTitleHint", "songOriginChip", "songMyNotesBtn", "songOverlayNote", "overlayNotesSheet", "overlayNotesSong", "overlayNotesInput", "closeOverlayNotesBtn", "cancelOverlayNotesBtn", "saveOverlayNotesBtn", "quickKeySheet", "quickKeySong", "quickKeyGrid", "quickKeyClearBtn", "closeQuickKeyBtn", "songTitleHintText", "songTitleHintCompareBtn", "dupSheet", "dupTitle", "dupBody", "dupFooter", "dupBackBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
     "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectDeleteBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "importSummary", "importUndoBar", "importUndoText", "importUndoBtn", "undoImportBtn", "fixArtistsBtn", "openPlaySettingsBtn", "openBackupSettingsBtn", "openAboutSettingsBtn", "backFromPlayBtn", "backFromBackupBtn", "backFromAboutBtn", "playSettingsView", "backupSettingsView", "aboutSettingsView", "splitArtistsBtn", "splitArtistsSubtitle", "fixArtistsSubtitle", "undoImportSubtitle", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
@@ -9688,6 +9753,10 @@ Object.assign(HEBREW_UI, { "Merged into the existing song": "אוחד לשיר �
 Object.assign(HEBREW_UI, { "Match my key": "התאמה לסולם שלי", "Use as it was": "להשאיר כמו שהיה", "Moved the new chart to match your key": "הדף החדש הועבר כך שיתאים לסולם שלך", "The new chart looks like yours in another key": "הדף החדש נראה כמו שלך בסולם אחר", "semitones": "חצאי טונים", "chart in another key": "דף בסולם אחר" });
 
 Object.assign(HEBREW_UI, {"event": "אירוע", "orig": "מקורי", "Design": "עיצוב", "Classic": "קלאסי", "Google blue": "כחול גוגל"});
+Object.assign(HEBREW_UI, {"Make my copy": "יצירת עותק שלי", "Make an editable copy?": "ליצור עותק לעריכה?", "You get your own song that you can edit. It says “Edited from Jyrics” and links back to the original, which stays locked. The copy's text cannot be copied out or shared.": "תקבלו שיר משלכם שאפשר לערוך. הוא מסומן ״נערך מתוך Jyrics״ ומקושר למקור, שנשאר נעול. את הטקסט של העותק אי אפשר להעתיק החוצה או לשתף.", "Make copy": "יצירת עותק", "Your copy is ready": "העותק שלך מוכן", "My notes": "ההערות שלי", "Save notes": "שמירת הערות", "Notes saved": "ההערות נשמרו", "Edited from Jyrics": "נערך מתוך Jyrics", "From Jyrics. View-only: make your own copy to edit it.": "מתוך Jyrics. לצפייה בלבד: צרו עותק משלכם כדי לערוך.", "Your own copy of a Jyrics song. Its text cannot be copied out or shared.": "עותק משלכם של שיר מ-Jyrics. את הטקסט אי אפשר להעתיק או לשתף.", "This song is view-only. Make your own copy to edit it.": "השיר הזה לצפייה בלבד. צרו עותק משלכם כדי לערוך.", "Sharing lyrics as text is not available for this song.": "שיתוף מילים כטקסט לא זמין לשיר הזה.", "Your notes sit on top of this song. They are saved with your library and never change the song.": "ההערות שלכם יושבות מעל השיר. הן נשמרות עם הספרייה ולעולם לא משנות את השיר.", "Start slow, second verse up a half step": "להתחיל לאט, בית שני חצי טון למעלה"});
+Object.assign(HEBREW_UI, {"Add songs from a backup": "הוספת שירים מגיבוי", "Bring songs over from another device. Nothing is replaced.": "העברת שירים ממכשיר אחר. שום דבר לא מוחלף.", "Songs and lyrics only": "שירים ומילים בלבד", "Choose the backup files from your other devices. Songs already here are skipped, and nothing is replaced.": "בחרו את קבצי הגיבוי מהמכשירים האחרים. שירים שכבר כאן מדולגים, ושום דבר לא מוחלף.", "Choose backup files": "בחירת קבצי גיבוי", "Choose another file": "בחירת קובץ נוסף", "Already here": "כבר כאן", "Different": "שונה", "Different versions: you decide": "גרסאות שונות: אתם מחליטים", "Versions you don't decide on are skipped.": "גרסאות שלא החלטתם עליהן מדולגות.", "New songs": "שירים חדשים", "All new songs": "כל השירים החדשים", "selected": "נבחרו", "Choose songs": "בחירת שירים", "Hide list": "הסתרת הרשימה", "Events, setlists, folders, pictures and audio files are not brought over. New songs go to Unfiled.": "אירועים, סטים, תיקיות, תמונות וקבצי שמע לא מועברים. שירים חדשים נכנסים ל״ללא תיקייה״.", "Nothing to add": "אין מה להוסיף", "merged": "אוחדו", "Decide": "להחליט", "Merge into mine": "איחוד לשלי", "On this device": "במכשיר הזה", "In the backup": "בגיבוי", "newer in the backup": "חדש יותר בגיבוי", "newer on this device": "חדש יותר במכשיר הזה", "details differ": "הפרטים שונים", "also in another file": "גם בקובץ אחר", "This file is not a readable Song List Pro backup.": "הקובץ הזה אינו גיבוי קריא של Song List Pro.", "This file could not be read.": "לא ניתן היה לקרוא את הקובץ.", "Restore backup": "שחזור גיבוי"});
+
+Object.assign(HEBREW_UI, { "Replaces everything on this device": "מחליף את כל מה שיש במכשיר הזה" });
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -10353,6 +10422,9 @@ function normalizeSong(song) {
     videoLinks,
     practiceFile: normalizePracticeFile(song.practiceFile),
     alternateOfId: song.alternateOfId || null,
+    origin: normalizeSongSource(song.origin),
+    derivedFrom: normalizeSongSource(song.derivedFrom),
+    overlayNotes: String(song.overlayNotes || "").slice(0, 4000),
     keptBoth: [...new Set((Array.isArray(song.keptBoth) ? song.keptBoth : []).map((id) => String(id || "")).filter(Boolean))],
     key: song.key || song.myKey || "",
     timeSignature: String(song.timeSignature || "").trim(),
@@ -10366,6 +10438,19 @@ function normalizeSong(song) {
     updatedAt: song.updatedAt || new Date().toISOString(),
     documentHtml,
     blocks
+  };
+}
+
+// Where a licensed song came from ("origin"), or what a personal copy was made from ("derivedFrom").
+function normalizeSongSource(value) {
+  if (!value || value.type !== "jyrics" || !String(value.id || "").trim()) return null;
+  const url = String(value.url || "").trim();
+  return {
+    type: "jyrics",
+    id: String(value.id).trim(),
+    url: /^https?:\/\/\S+$/i.test(url) ? url : "",
+    fetchedAt: String(value.fetchedAt || ""),
+    ...(value.songId ? { songId: String(value.songId) } : {})
   };
 }
 
@@ -11036,6 +11121,7 @@ function setFolderSearchOpen(open) {
 function render() {
   dropStaleSelectMode();
   applyAppAppearance();
+  syncRestrictedState();
   applyAppLanguage();
   applyLyricPrefs();
   els.app.dataset.libraryMode = workspaceMode === "gigs" || workspaceMode === "tools" ? workspaceMode : libraryMode;
@@ -11659,6 +11745,7 @@ function renderSong() {
   renderDocument(song);
   renderGigReaderNote();
   renderSongNotesUi(song);
+  renderSongOrigin(song);
 }
 
 function renderSongSecondaryMeta(song) {
@@ -13579,6 +13666,7 @@ function deleteFolder(id) {
 function openSongInfo(isNew = false, newSong = null, { focusKey = false } = {}) {
   const sourceSong = isNew ? newSong : currentSong();
   if (!sourceSong) return;
+  if (!isNew && songIsLocked(sourceSong)) { notifyViewOnly(); return; }
   const song = structuredCloneSafe(sourceSong);
   if (!song) return;
   showOverlay(els.songInfoSheet);
@@ -13871,11 +13959,12 @@ function appendFolderChoice(folder, song, child, container = els.songFolderChoic
 // Manual create/rename follows the same one-master-record rule as import: a song
 // with the same title (or alternate title) and the same artist -- or where either
 // side has no artist yet -- is treated as the existing song, not a new one.
-function findExistingSongMatch(title, artist, alternateTitles, excludeId) {
+function findExistingSongMatch(title, artist, alternateTitles, excludeId, draftSong = null) {
   const wanted = [title, ...alternateTitles].map(normalizeComparisonText).filter(Boolean);
   const wantedArtists = splitArtistCredits(artist).map(normalizeComparisonText);
   return state.songs.find((existing) => {
     if (existing.id === excludeId) return false;
+    if (draftSong && songsAreRelated(existing, draftSong)) return false;
     const names = [existing.title, existing.titleEnglish, existing.titleHebrew, ...(existing.alternateTitles || [])].map(normalizeComparisonText).filter(Boolean);
     if (!wanted.some((name) => names.includes(name))) return false;
     const existingArtists = (existing.artists || []).map(normalizeComparisonText);
@@ -13923,7 +14012,7 @@ function saveSongInfo() {
     return;
   }
   const otherNames = normalizeStringArray(els.songAlternateTitlesInput.value).filter((name) => name !== english && name !== hebrew && name !== title);
-  let match = findExistingSongMatch(title, els.songArtistInput.value, [...otherNames, english, hebrew].filter(Boolean), songInfoDraft.originalId);
+  let match = findExistingSongMatch(title, els.songArtistInput.value, [...otherNames, english, hebrew].filter(Boolean), songInfoDraft.originalId, songInfoDraft.song);
   // A pair already marked "keep both" (now or earlier) is not a duplicate any more.
   if (match && (songInfoDraft.keepBoth?.has(match.id) || (match.keptBoth || []).includes(song.id) || (song.keptBoth || []).includes(match.id))) match = null;
   if (match) {
@@ -14223,7 +14312,7 @@ function restoreEditorSelection() {
 
 function syncSongDocument() {
   const song = currentSong();
-  if (!song) return;
+  if (!song || songIsLocked(song)) return;
   applyDocumentDirections(song);
   const selectedFigure = els.songDocument.querySelector("figure.image-selected");
   selectedFigure?.classList.remove("image-selected");
@@ -14284,6 +14373,7 @@ function placeEditDock() {
 }
 
 function setSongEditMode(editing) {
+  if (editing && songIsLocked(currentSong())) { notifyViewOnly(); return; }
   const wasEditing = songEditMode;
   songEditMode = editing;
   // A song with chords opens the editing bar already expanded, so Done is in plain sight.
@@ -14302,6 +14392,7 @@ function setSongEditMode(editing) {
 }
 
 function beginSongEdit(event) {
+  if (songIsLocked(currentSong())) { notifyViewOnly(); return; }
   showRawSongDocument();
   setSongEditMode(true);
   els.songDocument.focus();
@@ -14359,6 +14450,7 @@ function toggleSongDetailsView() {
 let pasteAsTypedUntil = 0;
 
 function pastePlainLyrics(event) {
+  if (songIsLocked(currentSong())) { event.preventDefault(); notifyViewOnly(); return; }
   const text = event.clipboardData?.getData("text/plain");
   if (text === undefined) return;
   event.preventDefault();
@@ -15108,15 +15200,19 @@ function showSongMenu() {
   const song = currentSong();
   if (!song) return;
   // An icon grid: three tiles across, then Delete on its own row below.
-  showActionGrid([
-    { icon: "pencil", label: t("Edit song details"), action: () => openSongInfo(false) },
+  const locked = songIsLocked(song);
+  const tiles = [
+    locked
+      ? { icon: "git-fork", label: t("Make my copy"), action: () => openMakeCopy(song.id) }
+      : { icon: "pencil", label: t("Edit song details"), action: () => openSongInfo(false) },
     { icon: "folder-plus", label: t("Add to folder or event"), action: openSongAddTo },
-    { icon: "music", label: songHasChords(song) ? t("Edit chords") : t("Add chords"), action: openChordEditor },
+    ...(locked ? [] : [{ icon: "music", label: songHasChords(song) ? t("Edit chords") : t("Add chords"), action: openChordEditor }]),
     { icon: "file-music", label: (song.notePictures || []).length ? t("Sheet music") : t("Add sheet music"), action: openSongNotes },
     { icon: "maximize-2", label: t("Performance mode"), action: openPerformanceMode },
-    { icon: "share-2", label: t("Share lyrics"), action: shareCurrentSong },
+    ...(songTextRestricted(song) ? [] : [{ icon: "share-2", label: t("Share lyrics"), action: shareCurrentSong }]),
     { icon: "printer", label: t("Print"), action: () => { closeOverlays(); window.print(); } }
-  ], { icon: "trash-2", label: t("Delete song"), danger: true, action: requestDeleteSong }, els.songMoreBtn);
+  ];
+  showActionGrid(tiles, { icon: "trash-2", label: t("Delete song"), danger: true, action: requestDeleteSong }, els.songMoreBtn);
 }
 
 function showActionGrid(tiles, footer, anchor = null) {
@@ -15193,6 +15289,7 @@ function toggleSongReorder() {
 async function shareCurrentSong() {
   const song = currentSong();
   if (!song) return;
+  if (songTextRestricted(song)) { closeOverlays(); notifyNoCopyOut(); return; }
   const text = songAsText(song);
   closeOverlays();
   if (navigator.share) {
@@ -15543,7 +15640,7 @@ function renderDuplicateSheet() {
   const counter = dupCtx.queue ? ` ${dupCtx.queueIndex + 1} / ${dupCtx.queue.length}` : "";
   els.dupTitle.textContent = t(step === "review" ? "Review merge" : "Same song?") + counter;
   const table = `<div class="dup-table" role="table">
-    <div class="dup-row dup-head" role="row"><span></span><span>${t(dupCtx.source === "pair" ? "Version A" : "In your library")}</span><span>${t(dupCtx.source === "pair" ? "Version B" : "This one")}</span></div>
+    <div class="dup-row dup-head" role="row"><span></span><span>${t(dupCtx.source === "pair" ? "Version A" : dupCtx.source === "backup" ? "On this device" : "In your library")}</span><span>${t(dupCtx.source === "pair" ? "Version B" : dupCtx.source === "backup" ? "In the backup" : "This one")}</span></div>
     ${rows.map((row) => `<div class="dup-row ${row.differs ? "is-diff" : ""}" role="row"><span class="dup-label">${t(row.label)}</span><span dir="auto">${dupCell(row.mine)}</span><span dir="auto">${dupCell(row.theirs)}</span></div>`).join("")}
   </div>`;
   const lineList = diff.chordDiffs.length || diff.onlyNew.length ? `<div class="dup-lines"><h3>${t("Lines that differ")}</h3>
@@ -15565,7 +15662,7 @@ function renderDuplicateSheet() {
     <div class="dup-choices">
       <button class="dup-choice" type="button" data-dup="keep"><strong>${t("Keep both")}</strong><small>${t("It's another version. This pair won't be flagged again.")}</small></button>
       <button class="dup-choice" type="button" data-dup="merge" ${blockedMerge ? "disabled" : ""}><strong>${t("Merge into the one I have")}</strong><small>${t(blockedMerge ? "This song is used in an event, so it can't be merged away." : "Fills empty details. You choose the rest.")}</small></button>
-      ${dupCtx.source === "import" ? "" : `<button class="dup-choice" type="button" data-dup="replace" ${blockedBase ? "disabled" : ""}><strong>${t("Replace the old one")}</strong><small>${t(blockedBase ? "The old song is used in an event, so it can't be replaced." : "The song in your library is removed. Undo is available.")}</small></button>`}
+      ${dupCtx.source === "import" || dupCtx.source === "backup" ? "" : `<button class="dup-choice" type="button" data-dup="replace" ${blockedBase ? "disabled" : ""}><strong>${t("Replace the old one")}</strong><small>${t(blockedBase ? "The old song is used in an event, so it can't be replaced." : "The song in your library is removed. Undo is available.")}</small></button>`}
     </div>`;
     footer = `<button class="slp-btn slp-btn--ghost" type="button" data-dup="cancel">${t(dupCtx.source === "edit" ? "Back to editing" : "Back")}</button>`;
   } else {
@@ -15647,6 +15744,12 @@ function onDuplicateChange(event) {
 function duplicateKeepBoth() {
   if (!dupCtx) return;
   const baseId = dupCtx.baseId;
+  if (dupCtx.source === "backup") {
+    dupCtx.candidate.decision = { type: "add", keepBothWith: baseId };
+    closeDuplicateSheet();
+    renderBackupMerge();
+    return;
+  }
   if (dupCtx.source === "import") {
     const candidate = dupCtx.candidate;
     candidate.duplicateDecision = { type: "create", songId: null };
@@ -15705,6 +15808,13 @@ function duplicateApplyMerge() {
   if (!dupCtx) return;
   const base = state.songs.find((song) => song.id === dupCtx.baseId);
   if (!base) return;
+  if (dupCtx.source === "backup") {
+    // Only remembered here; the merge happens when "Add songs" is confirmed.
+    dupCtx.candidate.decision = { type: "merge", plan: JSON.parse(JSON.stringify(dupCtx.plan)) };
+    closeDuplicateSheet();
+    renderBackupMerge();
+    return;
+  }
   const editedId = dupMergedAwayId();
   if (editedId && dupGigReferences(editedId)) return;
   if (dupCtx.source === "import") {
@@ -15830,7 +15940,7 @@ function scanDuplicates() {
       for (let j = i + 1; j < songs.length; j += 1) {
         const a = songs[i];
         const b = songs[j];
-        if (a.id === b.id) continue;
+        if (a.id === b.id || songsAreRelated(a, b)) continue;
         const key = dupPairKey(a, b);
         if (seen.has(key)) continue;
         seen.add(key);
@@ -15995,7 +16105,7 @@ function updateTitleHint() {
   const title = english && hebrew ? `${english} – ${hebrew}` : (english || hebrew);
   if (title.length < 3) { hideTitleHint(); return; }
   const others = normalizeStringArray(els.songAlternateTitlesInput.value);
-  const match = findExistingSongMatch(title, els.songArtistInput.value, [...others, english, hebrew].filter(Boolean), songInfoDraft.originalId);
+  const match = findExistingSongMatch(title, els.songArtistInput.value, [...others, english, hebrew].filter(Boolean), songInfoDraft.originalId, songInfoDraft.song);
   const song = songInfoDraft.song;
   if (!match || songInfoDraft.keepBoth?.has(match.id) || (match.keptBoth || []).includes(song.id) || (song.keptBoth || []).includes(match.id)) { hideTitleHint(); return; }
   els.songTitleHintText.textContent = `${t("You already have a song like this:")} ${match.title}${match.artist ? `, ${match.artist}` : ""}.`;
@@ -16014,6 +16124,159 @@ function likelyDuplicateIds() {
     dupFlagCache = { signature, ids };
   }
   return dupFlagCache.ids;
+}
+// Licensed songs (Jyrics) and personal copies. See docs/PRODUCT_UX_DIRECTION.md, "Approved Licensed Songs And Personal Copies".
+//
+// A licensed song has an `origin` ({ type: "jyrics", id, url, fetchedAt }): its words and chords are view-only.
+// A personal copy has `derivedFrom` ({ songId, type, id, url, fetchedAt }): fully editable inside the app, but its text
+// cannot be copied out or shared as text. Notes on top of a licensed song live in `overlayNotes`, outside the text.
+// A browser app can only add friction (no selecting or copying the text); the license terms do the real protecting.
+
+function songIsLocked(song) {
+  return Boolean(song?.origin);
+}
+
+function songIsCopy(song) {
+  return Boolean(song?.derivedFrom);
+}
+
+// Text that must not leave the app as text: the licensed song and any copy made from it.
+function songTextRestricted(song) {
+  return songIsLocked(song) || songIsCopy(song);
+}
+
+// A licensed song and its copies (or two copies of the same original) are related, never "duplicates".
+function songsAreRelated(a, b) {
+  if (!a || !b || a.id === b.id) return false;
+  const sourceOf = (song) => (song.origin ? `${song.origin.type}:${song.origin.id}` : song.derivedFrom ? `${song.derivedFrom.type}:${song.derivedFrom.id}` : "");
+  if (a.derivedFrom?.songId === b.id || b.derivedFrom?.songId === a.id) return true;
+  const sa = sourceOf(a);
+  return Boolean(sa) && sa === sourceOf(b);
+}
+
+function notifyViewOnly() {
+  showToast("This song is view-only. Make your own copy to edit it.");
+}
+
+function notifyNoCopyOut() {
+  showToast("Sharing lyrics as text is not available for this song.");
+}
+
+// A licensed song added to the library (used by Discover later, and by tests). Never overwrites an existing one.
+function createLicensedSong({ id, url = "", fetchedAt = "", ...fields }) {
+  const existing = state.songs.find((song) => song.origin?.type === "jyrics" && song.origin.id === String(id));
+  if (existing) return existing;
+  const song = normalizeSong({
+    ...fields,
+    id: makeId(),
+    origin: { type: "jyrics", id: String(id), url, fetchedAt: fetchedAt || new Date().toISOString() },
+    folderIds: fields.folderIds || [],
+    updatedAt: new Date().toISOString()
+  });
+  state.songs.unshift(song);
+  Object.keys(state.songOrder).forEach((key) => state.songOrder[key].unshift(song.id));
+  ensureOrder(state.songOrder, ALL_SONGS, state.songs.map((item) => item.id));
+  persist();
+  return song;
+}
+
+// "Make my copy": an editable song of the singer's own, linked to its original. Notes stay with the original.
+function makeSongCopy(songId) {
+  const master = state.songs.find((song) => song.id === songId);
+  if (!master || !songIsLocked(master)) return null;
+  const copy = normalizeSong({
+    ...JSON.parse(JSON.stringify(master)),
+    id: makeId(),
+    origin: null,
+    derivedFrom: { songId: master.id, type: master.origin.type, id: master.origin.id, url: master.origin.url, fetchedAt: master.origin.fetchedAt },
+    overlayNotes: "",
+    keptBoth: [],
+    importBatchId: "",
+    updatedAt: new Date().toISOString()
+  });
+  state.songs.unshift(copy);
+  Object.keys(state.songOrder).forEach((key) => state.songOrder[key].unshift(copy.id));
+  ensureOrder(state.songOrder, ALL_SONGS, state.songs.map((item) => item.id));
+  persist();
+  return copy;
+}
+
+function syncRestrictedState() {
+  if (els.app) els.app.dataset.songRestricted = String(songTextRestricted(currentSong()));
+}
+
+function initLicensedSongs() {
+  // The copy command, cut and dragging text out are switched off while a restricted song is open.
+  const blockWhenRestricted = (event) => {
+    if (!songTextRestricted(currentSong())) return;
+    const target = event.target;
+    const inSong = target?.closest?.(".song-document, .perf-view, .practice-view, #songDocument") || document.getSelection()?.anchorNode?.parentElement?.closest?.(".song-document, .perf-view, .practice-view");
+    if (!inSong) return;
+    event.preventDefault();
+  };
+  ["copy", "cut", "dragstart"].forEach((name) => document.addEventListener(name, blockWhenRestricted, true));
+  els.songMyNotesBtn.addEventListener("click", openOverlayNotes);
+  els.songOverlayNote.addEventListener("click", openOverlayNotes);
+  els.closeOverlayNotesBtn.addEventListener("click", () => closeOverlays());
+  els.cancelOverlayNotesBtn.addEventListener("click", () => closeOverlays());
+  els.saveOverlayNotesBtn.addEventListener("click", saveOverlayNotes);
+}
+
+// ---------- labels, notes and the Make my copy screen ----------
+function renderSongOrigin(song) {
+  const locked = songIsLocked(song);
+  const copy = songIsCopy(song);
+  els.songOriginChip.hidden = !(locked || copy);
+  if (locked || copy) {
+    els.songOriginChip.querySelector("span").textContent = t(locked ? "Jyrics" : "Edited from Jyrics");
+    els.songOriginChip.querySelector("[data-lucide], svg")?.setAttribute?.("data-lucide", locked ? "lock" : "git-fork");
+    els.songOriginChip.title = t(locked ? "From Jyrics. View-only: make your own copy to edit it." : "Your own copy of a Jyrics song. Its text cannot be copied out or shared.");
+  }
+  els.songMyNotesBtn.hidden = !locked;
+  const notes = locked ? (song.overlayNotes || "").trim() : "";
+  els.songOverlayNote.hidden = !notes;
+  els.songOverlayNote.querySelector("span").textContent = notes;
+  refreshIcons();
+}
+
+function openMakeCopy(songId) {
+  const song = state.songs.find((item) => item.id === songId);
+  if (!song || !songIsLocked(song)) return;
+  openConfirm("Make an editable copy?", "You get your own song that you can edit. It says “Edited from Jyrics” and links back to the original, which stays locked. The copy's text cannot be copied out or shared.", "Make copy", () => {
+    const copy = makeSongCopy(songId);
+    if (!copy) return;
+    closeOverlays();
+    selectedSongId = copy.id;
+    mobileView = "song";
+    render();
+    showToast("Your copy is ready");
+  });
+}
+
+function openOverlayNotes() {
+  const song = currentSong();
+  if (!song || !songIsLocked(song)) return;
+  els.overlayNotesSong.textContent = song.title;
+  els.overlayNotesInput.value = song.overlayNotes || "";
+  showOverlay(els.overlayNotesSheet);
+  els.overlayNotesInput.focus();
+}
+
+function saveOverlayNotes() {
+  const song = currentSong();
+  if (!song || !songIsLocked(song)) return;
+  song.overlayNotes = els.overlayNotesInput.value.trim().slice(0, 4000);
+  persist();
+  closeOverlays();
+  render();
+  showToast("Notes saved");
+}
+
+// The small mark in song rows: a lock on a licensed song, "Edited" on a personal copy.
+function songOriginTag(song) {
+  if (songIsLocked(song)) return `<span class="song-review-chip song-origin-tag" title="Jyrics" aria-label="Jyrics, view-only"><i data-lucide="lock"></i></span>`;
+  if (songIsCopy(song)) return `<span class="song-review-chip song-origin-tag" title="${escapeAttribute(t("Edited from Jyrics"))}">${t("Edited")}</span>`;
+  return "";
 }
 // Chords and transposition.
 //
@@ -17992,6 +18255,7 @@ let chordEditorRecent = [];
 function openChordEditor() {
   const song = currentSong();
   if (!song) return;
+  if (songIsLocked(song)) { notifyViewOnly(); return; }
   // Finish any typing first so the editor starts from what is saved.
   if (songEditMode) hideWritingToolbar();
   const root = document.createElement("div");
@@ -24723,6 +24987,217 @@ function splitCombinedArtists() {
   refreshSplitArtistsRow();
   persistThenToast(`Split the artists on ${songs.length} ${plural(songs.length, "song")}`);
 }
+// Add songs from another device's backup (songs and lyrics only; no events, folders or audio). Nothing is replaced:
+// songs the library already has are skipped, songs that exist on both sides but differ are shown so the person
+// chooses (Compare: keep both, or merge), and new songs are added after one confirmation, with one Undo.
+let backupMerge = null; // { files: [{ name, count, error }], entries: [...], showNew: false }
+
+function backupSongForAdding(song) {
+  const copy = JSON.parse(JSON.stringify(song));
+  // Pictures, charts and audio live outside the song text and are not part of this transfer.
+  ["notePictures", "noteGroups", "notePdfs"].forEach((key) => { copy[key] = []; });
+  copy.notePreview = null;
+  copy.practiceFile = null;
+  copy.folderIds = [];
+  copy.keptBoth = [];
+  copy.importBatchId = "";
+  copy.documentHtml = String(copy.documentHtml || "").replace(/<figure\b[^>]*data-image-id[^>]*>[\s\S]*?<\/figure>/gi, "");
+  return normalizeSong(copy);
+}
+
+function backupSongFingerprint(song) {
+  const norm = (value) => normalizeComparisonText(String(value ?? ""));
+  return [song.title, (song.artists || []).join("|"), song.key, song.language, song.bpm, song.album, song.composer, song.lyricist, (song.styles || []).join("|"), (song.occasions || []).join("|"), dupLyricLines(song).join("\n")].map(norm).join("¦");
+}
+
+// The library song a backup song corresponds to: the same record, else the same title with the same artist.
+function backupMatchFor(song, pool) {
+  const sameId = pool.find((item) => item.id === song.id);
+  if (sameId) return sameId;
+  const names = dupNames(song);
+  const matches = pool.filter((item) => dupNames(item).some((name) => names.includes(name)) && dupSameArtist(item, song));
+  if (!matches.length) return null;
+  const text = textFromDocumentHtml(song.documentHtml);
+  return matches.map((item) => ({ item, score: lyricsSimilarity(text, textFromDocumentHtml(item.documentHtml)) })).sort((a, b) => b.score - a.score)[0].item;
+}
+
+function backupDifferenceNotes(base, other) {
+  const { rows, diff } = compareSongs(base, other);
+  const notes = rows.filter((row) => row.differs && !row.list && DUP_VALUE_FIELDS.some(([key]) => key === row.key) && row.key !== "title" && row.mine && row.theirs).map((row) => `${t(row.label)} ${row.mine} / ${row.theirs}`);
+  if (dupChordShift(base, other)) notes.push(t("chart in another key"));
+  else if (diff.chordDiffs.length) notes.push(t("chords differ"));
+  else if (rows.find((row) => row.key === "chords")?.differs) notes.push(t("one has chords"));
+  if (diff.onlyNew.length || diff.onlyMine.length) notes.push(t("lyrics differ"));
+  const newer = Date.parse(other.updatedAt) - Date.parse(base.updatedAt);
+  if (Number.isFinite(newer) && Math.abs(newer) > 60000) notes.push(t(newer > 0 ? "newer in the backup" : "newer on this device"));
+  return notes.join(" · ") || t("details differ");
+}
+
+// Works out what each backup song is: already here, different, or new.
+function planBackupMerge(files) {
+  const staged = [];
+  const entries = [];
+  files.forEach((file) => {
+    (file.songs || []).forEach((raw) => {
+      const song = backupSongForAdding(raw);
+      const base = backupMatchFor(song, state.songs);
+      if (base) {
+        if (backupSongFingerprint(base) === backupSongFingerprint(song)) { entries.push({ kind: "same", song, base, file: file.name }); return; }
+        entries.push({ kind: "different", song, base, file: file.name, note: backupDifferenceNotes(base, song), decision: null });
+        return;
+      }
+      const twin = staged.find((item) => backupMatchFor(song, [item.song]));
+      if (twin) {
+        if (backupSongFingerprint(twin.song) === backupSongFingerprint(song)) { entries.push({ kind: "same", song, base: twin.song, file: file.name, inOtherFile: true }); return; }
+        const entry = { kind: "new", song, file: file.name, selected: true, alsoInOtherFile: true };
+        entries.push(entry); staged.push(entry);
+        return;
+      }
+      const entry = { kind: "new", song, file: file.name, selected: true };
+      entries.push(entry); staged.push(entry);
+    });
+  });
+  return entries;
+}
+
+function readBackupFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      try {
+        const review = prepareBackupRestore(JSON.parse(reader.result));
+        resolve({ name: file.name, songs: review.restored.songs, count: review.restored.songs.length });
+      } catch (error) {
+        resolve({ name: file.name, songs: [], count: 0, error: t("This file is not a readable Song List Pro backup.") });
+      }
+    });
+    reader.addEventListener("error", () => resolve({ name: file.name, songs: [], count: 0, error: t("This file could not be read.") }));
+    reader.readAsText(file);
+  });
+}
+
+async function startBackupMerge(fileList) {
+  const files = [];
+  for (const file of fileList) files.push(await readBackupFile(file));
+  const previous = backupMerge?.files || [];
+  const all = [...previous, ...files];
+  backupMerge = { files: all, entries: planBackupMerge(all), showNew: false };
+  renderBackupMerge();
+}
+
+function renderBackupMerge() {
+  const body = document.getElementById("backupMergeBody");
+  if (!body) return;
+  if (!backupMerge || !backupMerge.files.length) {
+    body.innerHTML = `<p class="dup-note">${t("Choose the backup files from your other devices. Songs already here are skipped, and nothing is replaced.")}</p>
+      <button class="slp-btn slp-btn--primary" type="button" data-bm="choose">${t("Choose backup files")}</button>`;
+    document.getElementById("backupMergeFooter").hidden = true;
+    return;
+  }
+  const { files, entries } = backupMerge;
+  const news = entries.filter((e) => e.kind === "new");
+  const same = entries.filter((e) => e.kind === "same");
+  const diffs = entries.filter((e) => e.kind === "different");
+  const chosenNew = news.filter((e) => e.selected).length;
+  const decided = diffs.filter((e) => e.decision);
+  const adding = chosenNew + decided.filter((e) => e.decision.type === "add").length;
+  const merging = decided.filter((e) => e.decision.type === "merge").length;
+  const statusChip = (entry) => entry.decision ? `<span class="dup-chip is-likely">${t(entry.decision.type === "merge" ? "Merge into mine" : "Keep both")}</span>` : `<span class="dup-chip">${t("Decide")}</span>`;
+  body.innerHTML = `
+    <section class="slp-card">${files.map((f, i) => `<div class="slp-row slp-row--static bm-file"><span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(f.name)}</span><span class="slp-row__subtitle">${f.error ? escapeHtml(f.error) : `${f.count} ${t(plural(f.count, "song"))}`}</span></span><button class="slp-btn slp-btn--soft" type="button" data-bm-remove="${i}" aria-label="${escapeAttribute(t("Remove"))}"><i data-lucide="x"></i></button></div>`).join("")}
+      <button class="slp-row" type="button" data-bm="choose"><span class="slp-row__icon-tile"><i data-lucide="plus"></i></span><span class="slp-row__body"><span class="slp-row__title">${t("Choose another file")}</span></span></button></section>
+    <div class="bm-sum"><div class="bm-new"><b>${news.length}</b><span>${t("New")}</span></div><div><b>${same.length}</b><span>${t("Already here")}</span></div><div class="bm-diff"><b>${diffs.length}</b><span>${t("Different")}</span></div></div>
+    ${diffs.length ? `<span class="slp-section-label">${t("Different versions: you decide")}</span><section class="slp-card">${diffs.map((e, i) => `<button class="slp-row bm-diff-row" type="button" data-bm-compare="${entries.indexOf(e)}"><span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(e.song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml(e.note)}</span></span>${statusChip(e)}</button>`).join("")}</section><p class="dup-note">${t("Versions you don't decide on are skipped.")}</p>` : ""}
+    ${news.length ? `<span class="slp-section-label">${t("New songs")}</span><section class="slp-card"><label class="slp-row bm-all"><input type="checkbox" data-bm-all ${chosenNew === news.length ? "checked" : ""}><span class="slp-row__body"><span class="slp-row__title">${t("All new songs")} (${news.length})</span><span class="slp-row__subtitle">${chosenNew} ${t("selected")}</span></span><button class="slp-btn slp-btn--soft" type="button" data-bm="toggle-list">${t(backupMerge.showNew ? "Hide list" : "Choose songs")}</button></label>
+      ${backupMerge.showNew ? news.map((e) => `<label class="slp-row bm-song"><input type="checkbox" data-bm-song="${entries.indexOf(e)}" ${e.selected ? "checked" : ""}><span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(e.song.title)}</span><span class="slp-row__subtitle" dir="auto">${escapeHtml([e.song.artist, e.alsoInOtherFile ? t("also in another file") : ""].filter(Boolean).join(" · "))}</span></span></label>`).join("") : ""}</section>` : ""}
+    <p class="dup-note">${t("Events, setlists, folders, pictures and audio files are not brought over. New songs go to Unfiled.")}</p>`;
+  const footer = document.getElementById("backupMergeFooter");
+  footer.hidden = false;
+  const total = adding + merging;
+  footer.innerHTML = `<button class="slp-btn slp-btn--ghost" type="button" data-bm="cancel">${t("Cancel")}</button><button class="slp-btn slp-btn--primary" type="button" data-bm="apply" ${total ? "" : "disabled"}>${total ? `${t("Add songs")} (${adding}${merging ? ` + ${merging} ${t("merged")}` : ""})` : t("Nothing to add")}</button>`;
+  refreshIcons();
+}
+
+function applyBackupMerge() {
+  if (!backupMerge) return;
+  const entries = backupMerge.entries;
+  const batchId = makeId();
+  const addedSongs = [];
+  const mergedBefore = [];
+  const usedIds = new Set(state.songs.map((s) => s.id));
+  const makeAdded = (song, extra = {}) => {
+    const id = usedIds.has(song.id) ? makeId() : song.id;
+    usedIds.add(id);
+    const added = normalizeSong({ ...JSON.parse(JSON.stringify(song)), id, importBatchId: batchId, updatedAt: new Date().toISOString(), ...extra });
+    addedSongs.push(added);
+    return added;
+  };
+  entries.filter((e) => e.kind === "new" && e.selected).forEach((e) => makeAdded(e.song));
+  entries.filter((e) => e.kind === "different" && e.decision).forEach((e) => {
+    if (e.decision.type === "add") {
+      const added = makeAdded(e.song, { keptBoth: [e.base.id] });
+      const base = state.songs.find((s) => s.id === e.base.id);
+      if (base) base.keptBoth = [...new Set([...(base.keptBoth || []), added.id])];
+    } else if (e.decision.type === "merge") {
+      const base = state.songs.find((s) => s.id === e.base.id);
+      if (!base) return;
+      mergedBefore.push(JSON.parse(JSON.stringify(base)));
+      state.songs[state.songs.findIndex((s) => s.id === base.id)] = mergedSong(base, e.song, e.decision.plan).song;
+    }
+  });
+  if (!addedSongs.length && !mergedBefore.length) { showToast("Nothing to add"); return; }
+  state.songs.unshift(...addedSongs);
+  addedSongs.forEach((song) => Object.keys(state.songOrder).forEach((key) => state.songOrder[key].unshift(song.id)));
+  ensureOrder(state.songOrder, ALL_SONGS, state.songs.map((song) => song.id));
+  persist();
+  if (addedSongs.length) { rememberImportBatch(batchId, addedSongs); hideImportUndoBar(); }
+  const addedIds = addedSongs.map((s) => s.id);
+  backupMerge = null;
+  closeOverlays();
+  render();
+  const parts = [];
+  if (addedIds.length) parts.push(`${addedIds.length} ${t(plural(addedIds.length, "song"))} ${t("added")}`);
+  if (mergedBefore.length) parts.push(`${mergedBefore.length} ${t("merged")}`);
+  showUndoToast(parts.join(", "), () => {
+    state.songs = state.songs.filter((s) => !addedIds.includes(s.id));
+    Object.keys(state.songOrder).forEach((key) => { state.songOrder[key] = state.songOrder[key].filter((id) => !addedIds.includes(id)); });
+    mergedBefore.forEach((old) => { const i = state.songs.findIndex((s) => s.id === old.id); if (i >= 0) state.songs[i] = normalizeSong(old); });
+    writeLastImport(null);
+    persist();
+    render();
+    refreshUndoImportRow();
+    showToast("Undone");
+  });
+}
+
+function initBackupMerge() {
+  const input = document.getElementById("backupMergeInput");
+  document.getElementById("addFromBackupBtn").addEventListener("click", () => { backupMerge = null; renderBackupMerge(); showSettingsPage("backupMergeView"); });
+  document.getElementById("backFromBackupMergeBtn").addEventListener("click", () => { backupMerge = null; showSettingsPage("backupSettingsView"); });
+  input.addEventListener("change", () => { const files = [...input.files]; input.value = ""; if (files.length) startBackupMerge(files); });
+  const page = document.getElementById("backupMergeView");
+  page.addEventListener("click", (event) => {
+    const bm = event.target.closest("[data-bm]")?.dataset.bm;
+    if (bm === "choose") { input.click(); return; }
+    if (bm === "cancel") { backupMerge = null; showSettingsPage("backupSettingsView"); return; }
+    if (bm === "apply") { applyBackupMerge(); return; }
+    if (bm === "toggle-list") { event.preventDefault(); backupMerge.showNew = !backupMerge.showNew; renderBackupMerge(); return; }
+    const remove = event.target.closest("[data-bm-remove]");
+    if (remove) { backupMerge.files.splice(Number(remove.dataset.bmRemove), 1); backupMerge.entries = planBackupMerge(backupMerge.files); if (!backupMerge.files.length) backupMerge = null; renderBackupMerge(); return; }
+    const compare = event.target.closest("[data-bm-compare]");
+    if (compare) {
+      const entry = backupMerge.entries[Number(compare.dataset.bmCompare)];
+      openDuplicateCompare(entry.base.id, entry.song, "backup", entry);
+    }
+  });
+  page.addEventListener("change", (event) => {
+    if (!backupMerge) return;
+    const all = event.target.closest("[data-bm-all]");
+    if (all) { backupMerge.entries.filter((e) => e.kind === "new").forEach((e) => { e.selected = all.checked; }); renderBackupMerge(); return; }
+    const one = event.target.closest("[data-bm-song]");
+    if (one) { backupMerge.entries[Number(one.dataset.bmSong)].selected = one.checked; renderBackupMerge(); }
+  });
+}
 // Instrument sounds for the Tools. No sample files: each note is computed on the fly from a
 // small physical model, so the sounds work offline and add no download weight.
 //   piano       additive partials that are slightly out of tune (like real strings), each
@@ -26186,7 +26661,7 @@ function closeOverlays() {
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
   setElementVisible(els.scrim, false);
-  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.slpsongSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigItemSheet, els.gigSetListSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog, els.dupSheet, els.quickKeySheet].forEach((element) => setElementVisible(element, false));
+  [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.slpsongSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigItemSheet, els.gigSetListSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog, els.dupSheet, els.quickKeySheet, els.overlayNotesSheet].forEach((element) => setElementVisible(element, false));
 }
 
 function setElementVisible(element, visible) {
@@ -26391,6 +26866,8 @@ function songRowMeta(song) {
   const parts = [];
   if (key) parts.push(`<button class="slp-badge--key ${songTranspose(song) ? "transposed" : ""}" type="button" data-song-key="${escapeAttribute(key)}" aria-label="Show songs in ${escapeAttribute(key)}${songTranspose(song) ? `, original key ${escapeAttribute(song.key)}` : ""}">${escapeHtml(key)}</button>`);
   if (song.bpm) parts.push(`<span class="song-bpm" dir="ltr">${escapeHtml(String(song.bpm))} bpm</span>`);
+  const origin = songOriginTag(song);
+  if (origin) parts.push(origin);
   if (likelyDuplicateIds().has(song.id)) parts.push(`<span class="song-review-chip song-dup-chip">${t("Maybe duplicate")}</span>`);
   if (song.needsReview) parts.push(`<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>`);
   const flag = songChartFlag(song);
@@ -28221,6 +28698,8 @@ els.addNoteFolderBtn.addEventListener("click", () => openNoteFolderDialog());
 els.songsEmptyAddBtn.addEventListener("click", () => els.folderAddBtn.click());
 initSelectModeUi();
 initDuplicatesUi();
+initLicensedSongs();
+initBackupMerge();
 initQuickAddUi();
 initBoardUi();
   initScreenTier();
