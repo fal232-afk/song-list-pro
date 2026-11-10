@@ -8,7 +8,7 @@
  * keeps the app's code and icons so it can start offline. */
 "use strict";
 
-const VERSION = "b674bee37b2a";
+const VERSION = "19fddea8b321";
 const SHELL_CACHE = `slp-shell-${VERSION}`;
 const RUNTIME_CACHE = "slp-runtime-v1";
 const PRECACHE = [

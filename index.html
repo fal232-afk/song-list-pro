@@ -6216,8 +6216,9 @@ a.perf-btn[hidden] { display: none; }
 .search-clear-input:not(:placeholder-shown) ~ .search-clear { display: inline-flex; }
 
 /* 3. Date and time fields never run past their card (iPhone gives them a minimum width of their own). */
-input[type="date"], input[type="time"] { -webkit-appearance: none; appearance: none; box-sizing: border-box; display: block; width: 100%; max-width: 100%; min-width: 0; }
-input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-date-and-time-value { min-width: 0; text-align: start; }
+input[type="date"], input[type="time"] { -webkit-appearance: none; appearance: none; box-sizing: border-box; display: flex; align-items: center; width: 100%; max-width: 100%; min-width: 0; line-height: 1.2; }
+input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-date-and-time-value { margin: 0; min-width: 0; text-align: start; }
+input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-edit { padding: 0; }
 
 /* 4. A plus at the end of each event list (no need for Edit) and at the end of each song row. */
 :root[data-design="new"] .song-item 
@@ -7412,7 +7413,7 @@ input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-dat
         <label><input id="shareGigContactInput" type="checkbox" /><span><strong>Contact information</strong></span></label>
         <label><input id="shareGigBandInput" type="checkbox" /><span><strong>Band information</strong></span></label>
         <label><input id="shareGigNotesInput" type="checkbox" /><span><strong>General notes</strong></span></label>
-        <label><input id="shareGigListNotesInput" type="checkbox" /><span><strong>Notes on lists</strong><small>The notes under Chuppah, Meal and the other lists</small></span></label>
+        <label><input id="shareGigListNotesInput" type="checkbox" /><span><strong>Notes on lists and songs</strong><small>The notes under Chuppah, Meal and the songs</small></span></label>
         <label><input id="shareGigMoneyInput" type="checkbox" /><span><strong>Price and balance</strong><small>Private by default</small></span></label>
       </div>
       <div class="sheet-footer">
@@ -8237,7 +8238,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "de43382b · a614604";
+const APP_BUILD = "a04355f9 · e37eb0f";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -9943,6 +9944,8 @@ Object.assign(HEBREW_UI, {"Add a note": "הוספת הערה", "Edit note": "ע�
 Object.assign(HEBREW_UI, {"Edit this note": "עריכת ההערה הזאת"});
 
 Object.assign(HEBREW_UI, {"Notes on lists": "הערות על רשימות", "The notes under Chuppah, Meal and the other lists": "ההערות שמתחת לחופה, לסעודה ולשאר הרשימות"});
+
+Object.assign(HEBREW_UI, {"Notes on lists and songs": "הערות על רשימות ושירים", "The notes under Chuppah, Meal and the songs": "ההערות שמתחת לחופה, לסעודה ולשירים"});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -21949,10 +21952,13 @@ function openGigShare(gigId = null) {
 // One song in the shared list: "1. English | עברית / Artist". English and Hebrew are joined by a bar, the title and the
 // artist by a slash, and the key (the event's own key when it has one) follows after a dot. Nothing is written for a
 // missing artist or a missing key.
-function gigShareSongLine(index, song, key = "") {
+function gigShareSongLine(index, song, key = "", item = null, withNotes = false) {
   const parts = songTitleParts(song);
   const title = parts.one || [parts.en, parts.he].filter(Boolean).join(" | ") || song.title;
-  return `${index + 1}. ${title}${song.artist ? ` / ${song.artist}` : ""}${key ? ` · ${key}` : ""}`;
+  const line = `${index + 1}. ${title}${song.artist ? ` / ${song.artist}` : ""}${key ? ` · ${key}` : ""}`;
+  // The note written on this song in the event (and the one about moving into the next song), on its own line under it.
+  const note = withNotes && item ? [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ").replace(/\s*\n\s*/g, " ") : "";
+  return note ? `${line}\n   (${note})` : line;
 }
 
 function buildGigShareText(gigId, options = {}) {
@@ -21981,14 +21987,14 @@ function buildGigShareText(gigId, options = {}) {
       const directSet = state.gigSets.find((set) => set.sectionId === section.id && set.isDirect);
       if (directSet) state.gigSetItems.filter((item) => item.setId === directSet.id).sort((a, b) => a.position - b.position).forEach((item, index) => {
         const song = state.songs.find((candidate) => candidate.id === item.songId);
-        if (song) lines.push(gigShareSongLine(index, song, eventItemKey(item, song)));
+        if (song) lines.push(gigShareSongLine(index, song, eventItemKey(item, song), item, options.listNotes));
       });
       state.gigSets.filter((set) => set.sectionId === section.id && !set.isDirect).sort((a, b) => a.position - b.position).forEach((set) => {
         lines.push(set.name);
         if (options.listNotes && String(set.notes || "").trim()) lines.push(`(${set.notes.trim().replace(/\s*\n\s*/g, " ")})`);
         state.gigSetItems.filter((item) => item.setId === set.id).sort((a, b) => a.position - b.position).forEach((item, index) => {
           const song = state.songs.find((candidate) => candidate.id === item.songId);
-          if (song) lines.push(gigShareSongLine(index, song, eventItemKey(item, song)));
+          if (song) lines.push(gigShareSongLine(index, song, eventItemKey(item, song), item, options.listNotes));
         });
       });
     });
