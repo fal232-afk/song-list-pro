@@ -6397,6 +6397,146 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="new"] #actionMenu.action-menu--grid button.action-footer { border-radius: 0; box-shadow: inset 0 1px 0 var(--color-border); }
 :root[data-design="new"] .slp-menu-panel { box-shadow: none; }
 
+/* ---------- Practice: Listen for key (listening only) ----------
+   The Key chip is an ordinary .practice-chip in the control row. The sheet is a bottom sheet inside the practice view (the
+   app's other sheets sit below it) at about 45% of the height, with no scrim: the player stays visible and playing above it.
+   The minimized bar sits at the bottom edge, above the mini player when that is showing; the lyrics area gives it its room. */
+.practice-key-sheet { top: auto; right: 0; bottom: 0; left: 0; width: min(460px, 100%); height: 45dvh; max-height: 45dvh; margin-inline: auto; z-index: 30; border-radius: 16px 16px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); grid-template-rows: auto minmax(0, 1fr); color: var(--color-text); overflow: hidden; }
+.practice-key-sheet[hidden] { display: none; }
+.practice-key-header { position: relative; align-items: center; gap: var(--space-3); min-height: 64px; padding: var(--space-6) var(--space-4) var(--space-3) var(--space-9); border-bottom: 0; }
+.practice-key-header, .practice-key-bar { touch-action: none; }
+.practice-key-handle { position: absolute; top: 5px; inset-inline: 0; margin-inline: auto; width: 36px; height: 4px; border-radius: var(--radius-pill); background: var(--color-border); }
+.practice-key-grab { flex: 1; min-width: 0; min-height: 44px; display: flex; align-items: center; padding: 0; border: 0; background: transparent; color: inherit; font-family: inherit; text-align: start; cursor: pointer; }
+.practice-key-sheet .sheet-header .practice-key-heading { display: grid; gap: 2px; min-width: 0; color: var(--color-text); font-size: inherit; text-transform: none; letter-spacing: 0; }
+.practice-key-heading b { font-size: var(--text-lg); font-weight: 700; }
+.practice-key-sheet .sheet-header .practice-key-heading span { color: var(--color-text-secondary); font-size: var(--text-sm); text-transform: none; letter-spacing: 0; }
+.practice-key-sheet .sheet-header > .icon-button { min-width: 44px; min-height: 44px; border: 0; background: transparent; color: var(--color-text-secondary); }
+.practice-key-body { align-content: start; justify-items: center; gap: var(--space-5); padding: var(--space-3) var(--space-9) var(--space-9); text-align: center; }
+.practice-key-listen { width: 100%; min-height: 56px; font-size: var(--text-xl); }
+.practice-key-listen:disabled { opacity: 0.6; }
+.practice-key-progress { width: 100%; height: 4px; border-radius: var(--radius-pill); background: var(--color-border); overflow: hidden; }
+.practice-key-progress[hidden], .practice-key-status[hidden], .practice-key-result[hidden], .practice-key-actions[hidden], .practice-key-confirm[hidden], .practice-key-bar[hidden], .practice-key-listen[hidden] { display: none; }
+.practice-key-progress > span { display: block; width: var(--p, 0%); height: 100%; background: var(--accent); }
+.practice-key-status { margin: 0; color: var(--color-text-secondary); font-size: var(--text-md); }
+.practice-key-result { display: grid; justify-items: center; gap: var(--space-2); }
+.practice-key-name { font-size: var(--text-3xl); line-height: 1.2; font-weight: 700; }
+.practice-key-line { color: var(--color-text-secondary); font-size: var(--text-md); }
+.practice-key-line.is-match { color: var(--accent); font-weight: 600; }
+.practice-key-actions, .practice-key-confirm { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-4); }
+.practice-key-confirm span { flex-basis: 100%; font-size: var(--text-md); }
+.practice-key-bar { position: absolute; inset-inline: 0; bottom: 0; z-index: 3; display: flex; align-items: center; min-height: 44px; padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--color-card); color: var(--color-text); border-top: 1px solid var(--color-border); }
+.practice-mini:not([hidden]) ~ .practice-key-bar { bottom: calc(57px + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
+.practice-key-bar__open { flex: 1; min-width: 0; min-height: 44px; display: flex; align-items: center; gap: var(--space-4); padding: 0 var(--space-6); border: 0; background: transparent; color: inherit; font-family: inherit; font-size: var(--text-md); font-weight: 600; text-align: start; cursor: pointer; }
+.practice-key-bar__open span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.practice-key-bar__open svg { width: 18px; height: 18px; flex: none; color: var(--color-text-secondary); }
+.practice-key-bar__close { flex: none; width: 44px; min-height: 44px; display: grid; place-items: center; border: 0; background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.practice-key-bar__close svg { width: 18px; height: 18px; }
+/* Phone portrait, audio file: the loop row has room at its end, so the chip sits there out of the flow and nothing else moves.
+   Phone portrait, YouTube: the controls beside the video are full, so the chip sits on the empty black strip under the video
+   (its top and left are set from the video's own box, see placeKeyChip). Either way no existing element moves. */
+@media (max-width: 520px) and (orientation: portrait) {
+  .practice-view:not([data-source="youtube"]) .practice-controls { position: relative; }
+  .practice-view:not([data-source="youtube"]) .practice-key-chip { position: absolute; right: 0; bottom: 0; }
+  .practice-view[data-source="youtube"] .practice-player { position: relative; }
+  .practice-view[data-source="youtube"] .practice-key-chip { position: absolute; top: 0; left: 0; z-index: 2; }
+}
+.practice-view[data-key-bar] .perf-scroll { margin-bottom: 45px; }
+.practice-view[data-mini="true"][data-key-bar] .perf-scroll { margin-bottom: calc(102px + env(safe-area-inset-bottom, 0px)); }
+@media (orientation: landscape) and (max-height: 520px) {
+  .practice-key-sheet { left: auto; width: 60%; height: 100%; max-height: 100%; margin-inline: 0; border-radius: 0; }
+  .practice-key-bar { left: 0; right: 0; }
+  .practice-view[data-key-bar] .practice-player { margin-bottom: 45px; }
+}
+@media (min-width: 900px) and (min-height: 521px), (min-width: 700px) and (min-height: 521px) and (min-aspect-ratio: 1/1) {
+  .practice-view[data-key-bar] .practice-player { margin-bottom: 45px; }
+}
+
+/* ---------- Part A: event headers, key picker popover, accidentals, RTL alignment, song chip row ---------- */
+
+/* 3. Flat and sharp signs (both designs). No web font is bundled, so the sign falls back to a font with wide spacing; use the system one. */
+.key-acc { font-family: -apple-system, system-ui, sans-serif; margin-inline: -0.06em; }
+
+/* 4. Hebrew interface (both designs): English section titles and note previews start on the right like the rest of the row. */
+:root[dir="rtl"] .gig-toggle-row .slp-row__title,
+:root[dir="rtl"] .note-row__preview { text-align: right; }
+
+/* 5. Song page chip row (both designs): a long key shrinks and ends in an ellipsis before the artist chip gives way. */
+.song-chip-row > #songKey { flex: 0 1 auto; min-width: 0; max-width: 9em; }
+.song-chip-row > #songKey > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.song-chip-row > #songKey > small { min-width: 0; flex-shrink: 3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.song-chip-row > #songArtistChip { min-width: 4em; }
+
+/* 1. Event detail, New only: a section header stands apart from the songs under it (line above, larger title, more room, songs indented). */
+:root[data-design="new"] .gig-toggle-row .slp-row__title { font-size: 17px; font-weight: 700; color: var(--color-text); }
+:root[data-design="new"] .gig-toggle-row .slp-row__subtitle,
+:root[data-design="new"] .gig-toggle-row .gig-order-number { color: var(--color-text-secondary); }
+:root[data-design="new"] .gig-toggle-row { box-shadow: inset 0 1px 0 var(--color-text-secondary); }
+:root[data-design="new"] .gig-section-card > .gig-toggle-row { box-shadow: inset 0 1px 0 var(--color-text-secondary), inset 0 -1px 0 var(--color-border); }
+:root[data-design="new"] .gig-section-card + .gig-section-card { margin-block-start: 12px; }
+:root[data-design="new"] .gig-section-content { padding-inline-start: 8px; }
+
+/* 2. The key picker on the song page, New only: a compact popover under the key chip (a short bottom sheet under 360px wide).
+   Taller hit areas than the drawn buttons come from ::after, so nothing looks different and every tap target stays 44px. */
+:root[data-design="new"] .sheet.quick-key-sheet { top: var(--qk-top, 64px); bottom: auto; inset-inline-end: auto; left: var(--qk-left, 8px); right: auto; width: 300px; height: auto; max-height: calc(100dvh - 32px); grid-template-rows: auto auto; overflow: auto; border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: none; }
+:root[data-design="new"] .quick-key-sheet .sheet-header { min-height: 0; padding: var(--space-5) var(--space-4) var(--space-3) var(--space-8); border-bottom: 0; }
+:root[data-design="new"] #closeQuickKeyBtn { background: transparent; }
+:root[data-design="new"] .quick-key-body { padding: var(--space-3) var(--space-8) var(--space-8); gap: var(--space-5); align-content: start; grid-auto-rows: min-content; }
+:root[data-design="new"] .quick-key-sheet .key-mode-control { height: 36px; }
+:root[data-design="new"] .quick-key-sheet .key-mode-control button { position: relative; min-height: 30px; }
+:root[data-design="new"] .quick-key-sheet .key-mode-control button.selected { background: var(--accent-soft); color: var(--accent); font-weight: var(--font-weight-semibold); box-shadow: none; }
+:root[data-design="new"] #quickKeyGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 40px; align-content: start; gap: 4px; }
+:root[data-design="new"] #quickKeyGrid button { position: relative; height: 40px; min-height: 40px; }
+:root[data-design="new"] .quick-key-sheet .key-mode-control button::after { content: ""; position: absolute; inset-block: -7px; inset-inline: 0; }
+:root[data-design="new"] #quickKeyGrid button::after { content: ""; position: absolute; inset-block: -3px; inset-inline: -3px; }  /* the button has a 1px border, so this is 2px past its edge: 44px */
+:root[data-design="new"] #quickKeyClearBtn { position: relative; justify-self: end; width: auto; min-height: 32px; padding-inline: var(--space-4); background: transparent; border-radius: 0; color: var(--accent); font-size: var(--text-md); font-weight: var(--font-weight-semibold); }
+:root[data-design="new"] #quickKeyClearBtn::after { content: ""; position: absolute; inset-block: -6px; inset-inline: 0; }
+@media (min-width: 360px) {
+  :root[data-design="new"] body:has(#quickKeySheet:not(.hidden)) #scrim { background: transparent; }
+}
+@media (max-width: 359.98px) {
+  :root[data-design="new"] .sheet.quick-key-sheet { top: auto; bottom: 0; left: 0; right: 0; width: 100%; border-width: 1px 0 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+}
+
+/* ---------- Part B: the Board in the New design (chrome only; card sizes, positions and the column widths do not change) ---------- */
+/* The toolbar zoom button exists for New only; Classic keeps the floating one. */
+.board-zoom-tool { display: none; }
+
+/* 1. Columns: no box (the 1px border stays, transparent, so nothing shifts); the title gets a hairline. */
+:root[data-design="new"] .board-col { background: transparent; border-color: transparent; border-radius: 0; }
+:root[data-design="new"] .board-col__head { border-bottom-color: transparent; box-shadow: inset 0 -1px 0 var(--color-border); }
+/* 2. Cards: a quiet tint instead of a bordered white card (the 2px border stays). The open and selected cards keep their accent border. */
+:root[data-design="new"] .board-card { background: var(--color-chip-bg); border-color: transparent; box-shadow: none; border-radius: 6px; }
+:root[data-design="new"] .board-card.is-current,
+:root[data-design="new"] .board-card.is-selected { border-color: var(--accent); }
+/* 3. A little less air between cards. */
+:root[data-design="new"] .board-col__body { gap: 6px; }
+/* 4. Key chips are plain text. */
+:root[data-design="new"] .board-card__key { background: transparent; color: var(--color-text-secondary); font-weight: 600; }
+/* 5. Filter strip: + Filter is a text button, the other chips are rings, the selected chip is the soft accent. */
+:root[data-design="new"] .board-chip--add { border-color: transparent; background: transparent; color: var(--accent); font-weight: 600; }
+:root[data-design="new"] .board-chip:not(.board-chip--add) { background: transparent; border-color: transparent; box-shadow: inset 0 0 0 1px var(--color-border); }
+:root[data-design="new"] .board-chip.is-selected { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+/* 6. Toolbar and the empty reader panel. */
+:root[data-design="new"] #boardNameBtn,
+:root[data-design="new"] #boardColumnsBtn { background: transparent; color: var(--color-text); }
+:root[data-design="new"] .board-panel-empty { border-style: solid; border-color: var(--color-border); }
+/* 7. Zoom: out of the floating round button and into the toolbar, 44px, just before Columns. The name takes the room. */
+:root[data-design="new"] .board-zoom-btn { display: none; }
+:root[data-design="new"] .board-zoom-tool { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; color: var(--color-text); }
+:root[data-design="new"] .board-zoom-tool svg { width: var(--icon-md); height: var(--icon-md); }
+:root[data-design="new"] .board-zoom-tool[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+:root[data-design="new"] .board[data-searching="true"] .board-zoom-tool { display: none; }
+:root[data-design="new"] #boardNameBtn { max-width: 100%; }
+/* Side-by-side layouts give the name a fixed 340px; it hands 52px (button + gap) to the zoom button so Columns stays put. */
+:root[data-design="new"] .app-shell[data-board-side="true"] .board-name-btn { flex-basis: 288px; max-width: 288px; }
+:root[data-design="new"] #boardNameBtn > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Part C: chorus lines keep the 1.2em hang AND the 0.5em gap from the bar (both designs) ----------
+   The bar rules above set padding to 0.5em and win over the hanging-indent padding (1.2em), while text-indent stays -1.2em,
+   so the first line of every chorus line was pulled 0.7em past the bar. Bar gap + hang = 1.7em. Headings are not hanging lines. */
+.song-document > div.sec-bar-right, #perfDoc > div.sec-bar-right { padding-right: 1.7em; }
+.song-document > div.sec-bar-left, #perfDoc > div.sec-bar-left { padding-left: 1.7em; }
+
 }
 
 </style>
@@ -6527,6 +6667,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
             <button type="button" data-songs-view="board"><i data-lucide="columns-3"></i><span>Board</span></button>
           </div>
             <button id="boardNameBtn" class="board-name-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="boardNameLabel">Dancing</span><i data-lucide="chevron-down"></i></button>
+            <button id="boardZoomToolbarBtn" class="slp-btn slp-btn--icon board-zoom-tool" type="button" aria-label="Zoom out to see more columns" aria-pressed="false" title="Zoom out"><i data-lucide="zoom-out"></i></button>
             <button id="boardColumnsBtn" class="board-icon-btn board-columns-btn" type="button" aria-label="Columns"><i data-lucide="columns-4"></i></button>
           </div>
           <div id="boardMenu" class="board-menu hidden" role="listbox" aria-label="Boards"></div>
@@ -8051,6 +8192,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
                 <button id="practicePitchValue" class="practice-speed__value" type="button" aria-label="Pitch. Tap to reset" disabled>0</button>
                 <button id="practicePitchUp" type="button" aria-label="Raise the pitch" disabled>+</button>
               </div>
+              <button id="practiceKeyBtn" class="practice-chip practice-key-chip" type="button" aria-haspopup="dialog" aria-label="Listen for key" title="Listen for key"><i data-lucide="music"></i><span>Key</span></button>
               <div class="practice-loop" role="group" aria-label="Loop between two points">
                 <button id="practiceSetABtn" class="practice-chip" type="button" aria-label="Set point A" disabled><span translate="no">A</span></button>
                 <button id="practiceSetBBtn" class="practice-chip" type="button" aria-label="Set point B" disabled><span translate="no">B</span></button>
@@ -8085,7 +8227,39 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
           <button id="practiceMiniLoop" class="practice-chip" type="button" aria-label="Loop" aria-pressed="false" disabled><i data-lucide="repeat"></i></button>
           <button id="practiceMiniExpand" class="practice-chip practice-chip--icon" type="button" aria-label="Show the player"><i data-lucide="chevron-up"></i></button>
         </div>
+        <div id="practiceKeyBar" class="practice-key-bar" hidden>
+          <button id="practiceKeyBarOpen" class="practice-key-bar__open" type="button" aria-label="Show key listening"><i data-lucide="music"></i><span id="practiceKeyBarText" dir="auto"></span><i data-lucide="chevron-up"></i></button>
+          <button id="practiceKeyBarClose" class="practice-key-bar__close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
+        </div>
       </div>
+      <section id="practiceKeySheet" class="sheet compact-sheet practice-key-sheet hidden" hidden role="dialog" aria-labelledby="practiceKeyTitle">
+        <div id="practiceKeyHeader" class="sheet-header practice-key-header">
+          <button id="practiceKeyCollapseBtn" class="practice-key-grab" type="button" aria-label="Minimize" aria-expanded="true">
+            <span class="practice-key-handle" aria-hidden="true"></span>
+            <span class="practice-key-heading"><b id="practiceKeyTitle"></b><span id="practiceKeySaved" dir="auto"></span></span>
+          </button>
+          <button id="practiceKeyCloseBtn" class="icon-button" type="button" aria-label="Close"><i data-lucide="x"></i></button>
+        </div>
+        <div class="sheet-body practice-key-body">
+          <button id="practiceKeyListenBtn" class="slp-btn slp-btn--primary practice-key-listen" type="button"></button>
+          <div id="practiceKeyProgress" class="practice-key-progress" role="progressbar" aria-valuemin="0" aria-valuemax="10" hidden><span id="practiceKeyProgressFill"></span></div>
+          <p id="practiceKeyStatus" class="practice-key-status" role="status" aria-live="polite" hidden></p>
+          <div id="practiceKeyResult" class="practice-key-result" hidden>
+            <strong id="practiceKeyName" class="practice-key-name"></strong>
+            <span id="practiceKeyConfidence" class="practice-key-line"></span>
+            <span id="practiceKeyCompare" class="practice-key-line"></span>
+          </div>
+          <div id="practiceKeyActions" class="practice-key-actions" hidden>
+            <button id="practiceKeyAgainBtn" class="slp-link-btn" type="button"></button>
+            <button id="practiceKeyUseBtn" class="slp-link-btn slp-link-btn--accent" type="button"></button>
+          </div>
+          <div id="practiceKeyConfirm" class="practice-key-confirm" role="alertdialog" aria-labelledby="practiceKeyConfirmText" hidden>
+            <span id="practiceKeyConfirmText"></span>
+            <button id="practiceKeyConfirmNo" class="slp-link-btn" type="button"></button>
+            <button id="practiceKeyConfirmYes" class="slp-link-btn slp-link-btn--accent" type="button"></button>
+          </div>
+        </div>
+      </section>
     </section>
 
     <section id="filterSheet" class="sheet compact-sheet hidden" hidden role="dialog" aria-modal="true" aria-labelledby="filterTitle">
@@ -8326,7 +8500,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "476b2412 · 6a93e4c";
+const APP_BUILD = "16969467 · 8b9f47b";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -8394,7 +8568,7 @@ const els = Object.fromEntries(
     "artistSection", "artistCount", "artistList", "songsSection", "subfolderSection", "subfolderCount", "subfolderList", "attachedNotesSection", "attachedNoteCount", "attachedNoteList", "songSortSelect", "sortMenuBtn", "sortMenuLabel", "songList", "songEmptyState",
     "editSubfoldersBtn", "newSubfolderBtn",
     "songReader", "backToFolderBtn", "songTitle", "songAppearanceBtn", "songMoreBtn",
-    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceBody", "practiceSlowerBtn", "practiceSpeedValue", "practiceFasterBtn", "practicePitch", "practiceLoopBand", "practiceMini", "practiceMiniPlay", "practiceMiniSlower", "practiceMiniSpeed", "practiceMiniFaster", "practiceMiniLoop", "practiceMiniExpand", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfEventRow", "perfPrevBtn", "perfNextBtn", "perfEventLabel", "perfNotice", "perfNoticeText", "perfNoticeUndo", "pedalConfirmBtn", "titleAlignBtn", "titleAlignSubtitle", "pedalConfirmSubtitle", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerNumbers", "sectionPickerRepeats", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
+    "lyricSheet", "songArtist", "songKey", "songEdited", "songPracticeBtn", "practiceView", "practiceCloseBtn", "practiceTitle", "practicePlayer", "practiceSourceToggle", "practiceFileCard", "practiceFileLabel", "practiceVideo", "practiceMessage", "practiceBackBtn", "practicePlayBtn", "practiceFwdBtn", "practiceSeek", "practiceBody", "practiceSlowerBtn", "practiceSpeedValue", "practiceFasterBtn", "practicePitch", "practiceLoopBand", "practiceMini", "practiceMiniPlay", "practiceMiniSlower", "practiceMiniSpeed", "practiceMiniFaster", "practiceMiniLoop", "practiceMiniExpand", "practiceKeyBtn", "practiceKeySheet", "practiceKeyHeader", "practiceKeyCollapseBtn", "practiceKeyTitle", "practiceKeySaved", "practiceKeyCloseBtn", "practiceKeyListenBtn", "practiceKeyProgress", "practiceKeyProgressFill", "practiceKeyStatus", "practiceKeyResult", "practiceKeyName", "practiceKeyConfidence", "practiceKeyCompare", "practiceKeyActions", "practiceKeyAgainBtn", "practiceKeyUseBtn", "practiceKeyConfirm", "practiceKeyConfirmText", "practiceKeyConfirmNo", "practiceKeyConfirmYes", "practiceKeyBar", "practiceKeyBarOpen", "practiceKeyBarText", "practiceKeyBarClose", "practiceSetABtn", "practiceSetBBtn", "practiceLoopBtn", "practiceClearBtn", "practiceTime", "practiceDuration", "practiceOpenExternal", "practiceScroll", "practiceDoc", "songSecondaryMeta", "songDetailsViewCollapse", "songDetailsViewPanel", "songCategoryBtn", "songLocations", "songLocationsBody", "editSongLocationsBtn", "chordEditor", "chordEditorCancelBtn", "chordEditorDoneBtn", "chordEditorTitle", "chordEditorNote", "chordEditorLines", "chordEditorStatus", "chordUndoBtn", "chordNudgeBackBtn", "chordNudgeForwardBtn", "chordDeleteBtn", "chordBarHint", "chordMoreBtn", "chordBar", "chordCustom", "chordBuilder", "chordTypeForm", "chordTypeInput", "songPerformanceBtn", "performanceView", "perfBar", "perfCloseBtn", "perfKeyDownBtn", "perfKeyUpBtn", "perfKeyPill", "perfScrollBtn", "perfSimplifyBtn", "perfSmallerBtn", "perfLargerBtn", "perfSpeedGroup", "perfSlowerBtn", "perfFasterBtn", "perfSpeedOut", "perfAwake", "perfEventRow", "perfPrevBtn", "perfNextBtn", "perfEventLabel", "perfNotice", "perfNoticeText", "perfNoticeUndo", "pedalConfirmBtn", "titleAlignBtn", "titleAlignSubtitle", "pedalConfirmSubtitle", "perfScroll", "perfTitle", "perfDoc", "songKeyWas", "songTransposeBtn", "insertChordBtn", "showChordsToggle", "sectionLinesToggle", "sectionPicker", "sectionPickerTitle", "sectionPickerChips", "sectionPickerNumbers", "sectionPickerRepeats", "sectionPickerActions", "sectionPickerRename", "sectionRenameInput", "sectionRenameSave", "sectionRenameCancel", "transposePopover", "transposeDefaultKey", "transposeCurrentKey", "transposeSteps", "transposeUpBtn", "transposeDownBtn", "transposeResetBtn", "transposeHint", "italicTextBtn", "strikeTextBtn", "songDocument", "writingToolbar", "makeHeadingBtn",
     "insertDisclosureBtn", "textFormatMenu", "boldTextBtn", "underlineTextBtn", "clearTextFormatBtn", "insertImageBtn", "undoBtn", "redoBtn", "finishWritingBtn",
     "imageToolbar", "imageWidthInput", "imageWidthOutput", "imageAlignLeftBtn", "imageAlignCenterBtn",
     "imageAlignRightBtn", "deleteImageBtn", "finishImageBtn",
@@ -8405,7 +8579,7 @@ const els = Object.fromEntries(
     "songKeyInput", "songKeyPickerBtn", "songKeyDisplay", "keyPicker", "keyNoteGrid", "clearSongKeyBtn",
     "songAlternateKeysInput", "songTimeSignatureInput", "songCapoInput", "songNeedsReviewInput", "songOccasionsInput", "songYoutubeInput", "songInfoSourcesInput", "songReviewNoteInput", "songStyleInput", "songBpmInput", "songLanguageInput", "songStatusInput", "songDirectionInput", "songLinks", "gigTemplateGroup", "gigTemplateHint",
     "songTitleNotice", "songTitleNoticeText", "songTitleNoticeOpenBtn", "songTitleNoticeCompareBtn", "songTitleHint", "keyCurrentChip", "quickKeyCurrent", "shareGigListNotesInput", "gigListNoteSheet", "gigListNoteTitle", "gigListNoteInput", "closeGigListNoteBtn", "cancelGigListNoteBtn", "saveGigListNoteBtn", "songYoutubeFindBtn", "practiceFindBtn", "youtubeLinkBar", "youtubeLinkBarText", "youtubeLinkUseBtn", "youtubeLinkDismissBtn", "songOriginChip", "songMyNotesBtn", "songOverlayNote", "overlayNotesSheet", "overlayNotesSong", "overlayNotesInput", "closeOverlayNotesBtn", "cancelOverlayNotesBtn", "saveOverlayNotesBtn", "quickKeySheet", "quickKeySong", "quickKeyGrid", "quickKeyClearBtn", "closeQuickKeyBtn", "songTitleHintText", "songTitleHintCompareBtn", "dupSheet", "dupTitle", "dupBody", "dupFooter", "dupBackBtn", "songDetailsCollapse", "songDetailsPanel", "songAddFolderBtn", "songAddEventBtn", "songFolderPanel", "songEventPanel", "songEventChoices", "songDeleteZone", "songFolderChoices", "newSongLocationBtn", "quickLocationForm", "quickLocationName", "quickLocationParent", "folderSongPickerSheet", "slpsongSheet", "slpsongTitle", "slpsongBody", "slpsongForm", "slpsongInput", "cancelSlpsongBtn", "slpsongConfirmBtn", "folderSongPickerSearch", "folderSongPickerList", "closeFolderSongPickerBtn", "cancelFolderSongPickerBtn", "addFolderSongsBtn",
-    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectDeleteBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "importSummary", "importUndoBar", "importUndoText", "importUndoBtn", "undoImportBtn", "fixArtistsBtn", "openPlaySettingsBtn", "openBackupSettingsBtn", "openAboutSettingsBtn", "backFromPlayBtn", "backFromBackupBtn", "backFromAboutBtn", "playSettingsView", "backupSettingsView", "aboutSettingsView", "splitArtistsBtn", "splitArtistsSubtitle", "fixArtistsSubtitle", "undoImportSubtitle", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
+    "songLinksInput", "practiceAudioBtn", "practiceAudioRow", "practiceAudioSubtitle", "songPracticeFileName", "songPracticeFileBtn", "songPracticeFileClear", "songPracticeFileInput", "songsEmptyHeader", "songsEmptyAddBtn", "gigDeleteZone", "deleteGigBtn", "addNoteFolderBtn", "lyricFontSelect", "lyricThemeName", "editDockToggle", "boardWorkspace", "boardAddFilterBtn", "boardSearchBtn", "boardSearchRow", "boardSearchInput", "boardSearchClose", "boardResults", "boardUndoBar", "boardUndoText", "boardUndoView", "boardUndoUndo", "boardNameBtn", "boardNameLabel", "boardColumnsBtn", "boardMenu", "boardColumnsScreen", "boardColumnsBody", "boardColumnsDoneBtn", "songsViewToggleList", "songsViewToggleBoard", "boardPanelWrap", "backToSongPill", "backToSongLabel", "dismissBackToSong", "songEventsSheet", "gigItemSheet", "hidePlayedGigBtn", "clearPlayedGigBtn", "gigDetailsShareBtn", "editGigMenuBtn", "gigItemSong", "gigItemKeys", "gigItemKeyHint", "gigItemKeyResetBtn", "gigItemFilterBtn", "gigItemNoteInput", "gigItemTransitionInput", "closeGigItemBtn", "cancelGigItemBtn", "saveGigItemBtn", "gigSetListSheet", "gigSetListTitle", "gigSetListCount", "gigSetListBody", "closeGigSetListBtn", "gigReaderNote", "gigSideListBtn", "gigSideNextTitle", "songEventsSong", "closeSongEventsBtn", "songEventsSearch", "songEventsList", "songArtistChip", "editSongDetailsBtn", "boardNewSheet", "boardNewNameInput", "boardNewCreateBtn", "boardNewCancelBtn", "songListToggleBtn", "songsSideResizer", "gigListToggleBtn", "noteListToggleBtn", "noteEditorPlaceholder", "gigSideDetails", "gigSideResizer", "gigSideNav", "gigSidePrevBtn", "gigSideNextBtn", "gigSideNavLabel", "screenInfoText", "boardResizer", "boardFilterStrip", "boardFilterScroll", "boardColumns", "boardZoomBtn", "boardZoomToolbarBtn", "songNotesToggleBtn", "songNotesView", "songNotesPages", "songNotesEmpty", "notePictureCameraBtn", "notePictureFileBtn", "notePictureCameraInput", "notePictureFileInput", "notePdfBtn", "notePdfInput", "notesViewerPdf", "chartPicker", "chartPickerBody", "chartPickerSave", "chartPickerCancel", "chartPickerHint", "notesViewer", "notesViewerClose", "notesViewerCount", "notesViewerDelete", "notesViewerPages", "boardPickAddBtn", "boardPosBar", "boardPosName", "boardPosCount", "boardPosTicks", "boardPosBubble", "boardFilterSheet", "boardFilterSheetBack", "boardFilterSheetTitle", "boardFilterSheetBody", "boardFilterDoneBtn", "closeBoardFilterBtn", "backToBoardPill", "needsLyricsBannerSongs", "needsLyricsTextSongs", "needsLyricsBannerEvents", "needsLyricsTextEvents", "quickAddSheet", "quickAddTarget", "quickAddInput", "quickAddSuggestions", "quickAddLog", "closeQuickAddBtn", "doneQuickAddBtn", "quickAddGigBtn", "pickerQuickAddBtn", "songAddToHint", "selectTopBar", "selectCancelBtn", "selectCount", "selectAllBtn", "selectActionBar", "selectAddBtn", "selectMoveBtn", "selectRemoveBtn", "selectDeleteBtn", "selectGigSongsBtn", "songAddToSheet", "songAddToTitle", "songAddToChoices", "closeSongAddToBtn", "cancelSongAddToBtn", "saveSongAddToBtn", "chordPasteBar", "importSummary", "importUndoBar", "importUndoText", "importUndoBtn", "undoImportBtn", "fixArtistsBtn", "openPlaySettingsBtn", "openBackupSettingsBtn", "openAboutSettingsBtn", "backFromPlayBtn", "backFromBackupBtn", "backFromAboutBtn", "playSettingsView", "backupSettingsView", "aboutSettingsView", "splitArtistsBtn", "splitArtistsSubtitle", "fixArtistsSubtitle", "undoImportSubtitle", "chordPasteUndoBtn", "saveBanner", "saveBannerText", "saveBannerPrimary", "saveBannerSecondary", "recoveryScreen", "recoveryMessage", "recoveryRestoreBtn", "recoveryExportBtn", "recoveryFreshBtn", "recoveryFreshPanel", "recoveryFreshText", "recoveryFreshConfirmBtn", "recoveryFreshCancelBtn", "undoRestoreBtn", "undoRestoreTitle", "undoRestoreSubtitle", "damagedCopyBtn",
     "cancelQuickLocationBtn", "saveQuickLocationBtn", "deleteSongBtn", "saveSongInfoBtn", "saveSongInfoBottomBtn", "appearancePopover", "decreaseFontBtn", "decreaseLineBtn", "increaseLineBtn", "lineSpacingOutput", "decreaseTrackBtn", "increaseTrackBtn", "letterSpacingOutput",
     "increaseFontBtn", "fontSizeOutput", "decreaseHeadingBtn", "increaseHeadingBtn", "headingSizeOutput",
     "headingBoldToggle", "languageSettingsBtn", "languageSettingsValue", "actionMenu", "settingsSheet", "settingsTitle", "settingsMainView", "appearanceSettingsView", "closeSettingsBtn", "openAppearanceSettingsBtn", "backFromAppearanceBtn", "closeAppearanceBtn", "lyricsSizeOutput", "notesSizeOutput", "cancelAppearanceBtn", "saveAppearanceBtn", "appearancePreview", "bulkImportBtn", "googleDriveBackupBtn", "dropboxBackupBtn",
@@ -10038,6 +10212,8 @@ Object.assign(HEBREW_UI, {"Notes on lists and songs": "הערות על רשימ�
 Object.assign(HEBREW_UI, {"Open on YouTube": "פתיחה ביוטיוב"});
 
 Object.assign(HEBREW_UI, {"Languages": "שפות", "Style & Tempo": "סגנון וקצב", "Performance Lists": "רשימות הופעה", "Events": "אירועים", "as written": "כפי שנכתב"});
+
+Object.assign(HEBREW_UI, {"Listen for key": "זיהוי סולם בהאזנה", "Saved: {key}": "שמור: {key}", "Saved: none": "שמור: אין", "Listen": "האזנה", "Listen again": "האזנה חוזרת", "Listening… {n}s": "מאזין… {n} שנ׳", "Use as key": "הגדרה כסולם", "Set key": "הגדרת סולם", "Set the key to {key}?": "להגדיר את הסולם ל־{key}?", "{note} major": "{note} מז׳ור", "{note} minor": "{note} מינור", "sure": "בטוח", "not sure": "לא בטוח", "(or {key})": "(או {key})", "✓ matches your key": "✓ תואם לסולם שלך", "✓ matches": "✓ תואם", "✓ same notes as your key (relative key)": "✓ אותם צלילים כמו הסולם שלך (סולם מקביל)", "saved {key}": "שמור {key}", "You're 1 semitone higher (saved {key})": "אתם גבוהים בחצי טון (שמור {key})", "You're 1 semitone lower (saved {key})": "אתם נמוכים בחצי טון (שמור {key})", "You're {n} semitones higher (saved {key})": "אתם גבוהים ב־{n} חצאי טון (שמור {key})", "You're {n} semitones lower (saved {key})": "אתם נמוכים ב־{n} חצאי טון (שמור {key})", "Allow the microphone to listen for the key": "אפשרו את המיקרופון כדי לזהות את הסולם", "Not enough sound to tell. Try again closer to the music.": "אין מספיק צליל כדי לדעת. נסו שוב קרוב יותר למוזיקה.", "Minimize": "מזעור", "Show key listening": "הצגת זיהוי הסולם"});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -12001,10 +12177,10 @@ function renderSong() {
   els.songArtistChip.querySelector("span").textContent = song.artist || "";
   const shift = songTranspose(song);
   const currentKey = songCurrentKey(song);
-  els.songKey.querySelector("span").textContent = compactKeyLabel(currentKey) || t("No key");
+  els.songKey.querySelector("span").innerHTML = currentKey ? keyLabelHtml(currentKey) : escapeHtml(t("No key"));
   const eventKey = Boolean(eventReadingItem(song)?.keyOverride);
   els.songKeyWas.hidden = !(shift && song.key);
-  els.songKeyWas.textContent = shift && song.key ? `${eventKey ? "event key · song " : "was "}${compactKeyLabel(song.key)}` : "";
+  els.songKeyWas.innerHTML = shift && song.key ? `${eventKey ? "event key · song " : "was "}${keyLabelHtml(song.key)}` : "";
   els.songKey.classList.toggle("missing", !song.key);
   els.songKey.setAttribute("aria-label", song.key
     ? `Key ${fullKeyLabel(currentKey)}${shift ? `, transposed from ${fullKeyLabel(song.key)}` : ""}. Change key`
@@ -12761,6 +12937,10 @@ function applyBoardZoom() {
   els.boardZoomBtn.setAttribute("aria-label", boardZoomedOut ? "Zoom back in" : "Zoom out to see more columns");
   els.boardZoomBtn.title = boardZoomedOut ? "Zoom in" : "Zoom out";
   els.boardZoomBtn.innerHTML = `<i data-lucide="${boardZoomedOut ? "zoom-in" : "zoom-out"}"></i>`;
+  els.boardZoomToolbarBtn.setAttribute("aria-pressed", String(boardZoomedOut));
+  els.boardZoomToolbarBtn.setAttribute("aria-label", boardZoomedOut ? "Zoom back in" : "Zoom out to see more columns");
+  els.boardZoomToolbarBtn.title = boardZoomedOut ? "Zoom in" : "Zoom out";
+  els.boardZoomToolbarBtn.innerHTML = `<i data-lucide="${boardZoomedOut ? "zoom-in" : "zoom-out"}"></i>`;
   workspace.dataset.searching = String(boardState.searchOpen);
   const width = els.boardColumns.clientWidth || workspace.clientWidth || globalThis.innerWidth || 390;
   const target = Math.max(4, Math.floor(width / 120));
@@ -13450,6 +13630,7 @@ function initBoardUi() {
   };
   ["pointerup", "pointercancel"].forEach((name) => els.boardPanelWrap.addEventListener(name, endGrip));
   els.boardZoomBtn.addEventListener("click", () => setBoardZoom(!boardZoomedOut));
+  els.boardZoomToolbarBtn.addEventListener("click", () => setBoardZoom(!boardZoomedOut));     // the New design's place for the same action
   // Zoomed out, a tap anywhere on a column zooms into it.
   els.boardColumns.addEventListener("click", (event) => {
     if (!boardZoomedOut) return;
@@ -14009,6 +14190,18 @@ function openQuickKey() {
   els.quickKeySong.textContent = song.title;
   renderQuickKey();
   showOverlay(els.quickKeySheet);
+  anchorQuickKey();
+}
+
+// In the New design the picker is a small popover under the key chip (CSS reads these two numbers). Classic ignores them.
+function anchorQuickKey() {
+  const rect = els.songKey.getBoundingClientRect();
+  const width = 300;
+  const margin = 8;
+  const rtl = document.documentElement.dir === "rtl";
+  const left = Math.max(margin, Math.min(rtl ? rect.right - width : rect.left, innerWidth - width - margin));
+  els.quickKeySheet.style.setProperty("--qk-left", `${Math.round(left)}px`);
+  els.quickKeySheet.style.setProperty("--qk-top", `${Math.max(margin, Math.round(rect.bottom + 6))}px`);
 }
 
 function renderQuickKey() {
@@ -14129,6 +14322,16 @@ function compactKeyLabel(value) {
   return text.replace(/\s+Phrygian$/i, " Fre.");
 }
 
+// A key label as HTML for places that build markup: every flat or sharp sign sits in a span, so it can use a font that does not
+// space it out (see .key-acc). compactKeyLabel() stays plain text for toasts, aria-labels and textContent.
+function keyAccHtml(escaped) {
+  return String(escaped).replace(/[♭♯]/g, (sign) => `<span class="key-acc">${sign}</span>`);
+}
+
+function keyLabelHtml(value) {
+  return keyAccHtml(escapeHtml(compactKeyLabel(value)));
+}
+
 function fullKeyLabel(value) {
   if (/\s+Phrygian$/i.test(value)) return `${value} (Freygish)`;
   if (/m$/i.test(value)) return `${value.slice(0, -1)} minor`;
@@ -14136,7 +14339,7 @@ function fullKeyLabel(value) {
 }
 
 function keyNoteLabel(note, mode) {
-  const formattedNote = escapeHtml(note.replaceAll("b", "♭"));
+  const formattedNote = keyAccHtml(escapeHtml(note.replaceAll("b", "♭")));
   if (mode === "minor") return `${formattedNote}<small>m</small>`;
   if (mode === "freygish") return `${formattedNote}<small>${t("Fre.")}</small>`;
   return formattedNote;
@@ -18365,7 +18568,7 @@ function renderSlpsongKeyPicker(open = false, mode = null) {
   const value = slpDraft.draft.key;
   const pickerMode = mode || keyModeFromValue(value);
   const notes = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab"];
-  wrap.innerHTML = `<button id="slpKeyBtn" class="key-picker-trigger" type="button" aria-expanded="${open}"><span>${escapeHtml(compactKeyLabel(value) || "No key")}</span><i data-lucide="chevron-down"></i></button>
+  wrap.innerHTML = `<button id="slpKeyBtn" class="key-picker-trigger" type="button" aria-expanded="${open}"><span>${value ? keyLabelHtml(value) : "No key"}</span><i data-lucide="chevron-down"></i></button>
     <div id="slpKeyPicker" class="key-picker ${open ? "" : "hidden"}">
       <div class="key-mode-control" role="group" aria-label="Key type">${["major", "minor", "freygish"].map((item) => `<button type="button" data-slp-mode="${item}" class="${item === pickerMode ? "selected" : ""}">${item[0].toUpperCase()}${item.slice(1)}</button>`).join("")}</div>
       <div class="key-note-grid" role="group" aria-label="Select key note">${notes.map((note) => { const keyValue = keyValueFor(note, pickerMode); return `<button type="button" data-slp-note="${escapeAttribute(keyValue)}" class="${keyValue === value ? "selected" : ""}" aria-label="${escapeAttribute(fullKeyLabel(keyValue))}">${keyNoteLabel(note, pickerMode)}</button>`; }).join("")}</div>
@@ -19159,7 +19362,7 @@ function renderPerformanceDocument() {
   const shift = songTranspose(song);
   const key = songCurrentKey(song);
   els.perfKeyPill.innerHTML = key
-    ? `${escapeHtml(compactKeyLabel(key))}${shift ? ` <small>was ${escapeHtml(compactKeyLabel(song.key))}</small>` : ""}`
+    ? `${keyLabelHtml(key)}${shift ? ` <small>was ${keyLabelHtml(song.key)}</small>` : ""}`
     : (shift ? escapeHtml(transposeLabel(shift)) : "No key");
   els.perfTitle.dataset.dir = resolvedDocumentDirection(song);
   els.perfKeyPill.title = key ? (shift ? `${key} (was ${song.key})` : key) : "";
@@ -20161,6 +20364,7 @@ function switchPracticeSource(kind) {
 function closePractice() {
   if (!practiceActive) return;
   stopPracticeEngine();
+  closePracticeKey();                       // the microphone and the Key sheet go with the page
   practiceActive = false;
   practiceSongId = null;
   practiceSourceKind = "";
@@ -20334,6 +20538,375 @@ function initYoutubeFind() {
   els.youtubeLinkDismissBtn.addEventListener("click", () => { hideYoutubeLinkBar(); youtubeFindPending = null; });
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && youtubeFindPending) showYoutubeLinkBar(); });
   window.addEventListener?.("pageshow", () => { if (youtubeFindPending) showYoutubeLinkBar(); });
+}
+// ---------- Practice: Listen for key (step 1 of 2: listening only, no chord tab yet) ----------
+// The Key chip in Practice opens a bottom sheet. The phone's microphone is listened to for 10 seconds, the notes are
+// folded into 12 pitch classes, and the result is matched against the 24 major and minor key profiles
+// (Krumhansl-Kessler). Everything happens on the phone: no network, no recording, nothing saved but a key the person confirms.
+
+const KEY_LISTEN_SECONDS = 10;
+const KEY_LISTEN_FRAME_MS = 100;
+const KEY_LISTEN_QUIET_DB = -70;          // a frame whose loudest note is below this is ignored (room noise)
+const KEY_LISTEN_WINDOW_DB = 40;          // only notes within this many dB of the frame's loudest count
+const KEY_LISTEN_SURE_MARGIN = 0.05;      // best minus second best, below this the answer is "not sure"
+const KEY_LISTEN_MIN_FRAMES = 30;         // fewer counted frames than this (of about 100) means the signal stayed quiet
+
+// Krumhansl-Kessler tonal-hierarchy ratings, tonic first (C major / C minor).
+function keyProfiles() {
+  return {
+    major: [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88],
+    minor: [6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17]
+  };
+}
+
+// chroma: 12 numbers, C = 0 ... B = 11 (how much of each note was heard).
+// Returns { tonic (0-11, C = 0), mode ("major" | "minor"), score (correlation, -1..1), runnerUp: { tonic, mode, score } },
+// or null when there is nothing to tell apart (all zero, or all the same).
+function detectKeyFromChroma(chroma) {
+  const heard = Array.from({ length: 12 }, (_, index) => Math.max(0, Number(chroma?.[index]) || 0));
+  const heardMean = heard.reduce((sum, value) => sum + value, 0) / 12;
+  const heardDev = heard.map((value) => value - heardMean);
+  const heardNorm = Math.sqrt(heardDev.reduce((sum, value) => sum + value * value, 0));
+  if (!(heardNorm > 1e-9)) return null;
+  const profiles = keyProfiles();
+  const scores = [];
+  ["major", "minor"].forEach((mode) => {
+    const profile = profiles[mode];
+    const profileMean = profile.reduce((sum, value) => sum + value, 0) / 12;
+    const profileDev = profile.map((value) => value - profileMean);
+    const profileNorm = Math.sqrt(profileDev.reduce((sum, value) => sum + value * value, 0));
+    for (let tonic = 0; tonic < 12; tonic += 1) {
+      let dot = 0;
+      for (let note = 0; note < 12; note += 1) dot += heardDev[note] * profileDev[(note - tonic + 12) % 12];
+      scores.push({ tonic, mode, score: dot / (heardNorm * profileNorm) });
+    }
+  });
+  scores.sort((a, b) => b.score - a.score);
+  const [best, second] = scores;
+  return { tonic: best.tonic, mode: best.mode, score: best.score, runnerUp: { tonic: second.tonic, mode: second.mode, score: second.score } };
+}
+
+// One look at the microphone's spectrum (dB per bin, from an AnalyserNode). The notes between 60 and 2000 Hz are folded
+// into the 12-note chroma (A4 = the Tuner's tuning). Returns false for a frame that was too quiet to count.
+function addSpectrumToChroma(db, sampleRate, a4, chroma) {
+  const binHz = sampleRate / (db.length * 2);
+  const first = Math.max(1, Math.ceil(60 / binHz));
+  const last = Math.min(db.length - 2, Math.floor(2000 / binHz));
+  let peak = -Infinity;
+  for (let bin = first; bin <= last; bin += 1) if (db[bin] > peak) peak = db[bin];
+  if (!(peak > KEY_LISTEN_QUIET_DB)) return false;
+  const floor = peak - KEY_LISTEN_WINDOW_DB;
+  const frame = new Array(12).fill(0);
+  for (let bin = first; bin <= last; bin += 1) {
+    const level = db[bin];
+    if (level <= floor || level < db[bin - 1] || level < db[bin + 1]) continue;       // only the top of each peak
+    const midi = 69 + 12 * Math.log2((bin * binHz) / a4);
+    frame[((Math.round(midi) % 12) + 12) % 12] += (level - floor) / KEY_LISTEN_WINDOW_DB;
+  }
+  const loudest = Math.max(...frame);
+  if (!(loudest > 0)) return false;
+  for (let note = 0; note < 12; note += 1) chroma[note] += frame[note] / loudest;
+  return true;
+}
+
+// ---------- naming and comparing ----------
+
+// "Bb", "F#", "Db"... spelled the way the key is usually written (flats for F, Bb, Eb, Ab major and so on).
+function keyListenNote(tonic, mode) {
+  const sharp = KEY_NOTE_NAMES[tonic];
+  const flat = FLAT_NOTE_NAMES[tonic];
+  if (sharp === flat) return sharp;
+  return keyPrefersFlats(`${sharp}${mode === "minor" ? "m" : ""}`) ? flat : sharp;
+}
+
+// "A minor" as HTML (the note stays left-to-right inside Hebrew).
+function keyListenLabel(tonic, mode) {
+  return t(mode === "minor" ? "{note} minor" : "{note} major", { note: `<bdi dir="ltr">${escapeHtml(keyListenNote(tonic, mode))}</bdi>` });
+}
+
+// The song's saved key as { tonic, mode } (the first key of a compound key), or null for no key.
+function keyListenSaved(song) {
+  const group = keyGroupLabel(songKeyText(song));
+  if (!group) return null;
+  const minor = /m$/.test(group);
+  return { tonic: noteIndexOf(minor ? group.slice(0, -1) : group), mode: minor ? "minor" : "major", text: songKeyText(song) };
+}
+
+// How the heard key compares with the saved one: { kind: "match" | "relative" | "off", steps (negative = lower) }.
+// A minor key and its relative major share the same notes, so they are compared as that major.
+function compareHeardKey(heard, saved) {
+  const major = (key) => (key.tonic + (key.mode === "minor" ? 3 : 0)) % 12;
+  let steps = (major(heard) - major(saved) + 12) % 12;
+  if (steps > 6) steps -= 12;
+  if (steps !== 0) return { kind: "off", steps };
+  return { kind: heard.mode === saved.mode ? "match" : "relative", steps: 0 };
+}
+
+function keyListenCompareText(compare, saved) {
+  if (compare.kind === "match") return t("✓ matches your key");
+  if (compare.kind === "relative") return t("✓ same notes as your key (relative key)");
+  const n = Math.abs(compare.steps);
+  const higher = compare.steps > 0;
+  const key = `<bdi dir="ltr">${escapeHtml(compactKeyLabel(saved.text))}</bdi>`;
+  if (n === 1) return t(higher ? "You're 1 semitone higher (saved {key})" : "You're 1 semitone lower (saved {key})", { key });
+  return t(higher ? "You're {n} semitones higher (saved {key})" : "You're {n} semitones lower (saved {key})", { n, key });
+}
+
+// ---------- the sheet ----------
+
+let keyListen = null;       // null while the sheet is closed; the heard key survives a minimize
+
+function newKeyListen() {
+  return { collapsed: false, phase: "idle", result: null, confirming: false, timer: 0, stream: null, source: null, startedAt: 0, chroma: new Array(12).fill(0), counted: 0, shownSecond: -1, swiped: false };
+}
+
+function practiceKeySong() {
+  return state.songs.find((song) => song.id === practiceSongId) || null;
+}
+
+function openPracticeKey() {
+  if (!practiceActive || !practiceKeySong()) return;
+  if (!keyListen) keyListen = newKeyListen();
+  keyListen.collapsed = false;
+  renderPracticeKey();
+}
+
+function togglePracticeKeyCollapsed(collapsed) {
+  if (!keyListen) return;
+  keyListen.collapsed = collapsed;
+  renderPracticeKey();
+  (collapsed ? els.practiceKeyBarOpen : els.practiceKeyListenBtn.hidden ? els.practiceKeyAgainBtn : els.practiceKeyListenBtn).focus?.({ preventScroll: true });
+}
+
+// Stops the microphone: every track, the timer and the audio graph. Nothing was ever kept.
+function stopKeyMic() {
+  if (!keyListen) return;
+  clearInterval(keyListen.timer);
+  keyListen.timer = 0;
+  try { keyListen.source?.disconnect(); } catch { /* already gone */ }
+  keyListen.source = null;
+  keyListen.stream?.getTracks().forEach((track) => track.stop());
+  keyListen.stream = null;
+}
+
+function closePracticeKey() {
+  stopKeyMic();
+  keyListen = null;
+  renderPracticeKey();
+}
+
+async function startKeyListening() {
+  if (!keyListen || keyListen.phase === "listening" || keyListen.phase === "asking") return;
+  const session = keyListen;
+  session.phase = "asking";
+  session.result = null;
+  session.confirming = false;
+  renderPracticeKey();
+  const mic = await openToolMicrophone();
+  if (keyListen !== session || session.phase !== "asking") {      // closed (or the app left) while the permission prompt was open
+    mic.stream?.getTracks().forEach((track) => track.stop());
+    return;
+  }
+  if (mic.error) {
+    session.phase = mic.error === "denied" ? "denied" : "unsupported";
+    renderPracticeKey();
+    return;
+  }
+  const analyser = mic.context.createAnalyser();
+  analyser.fftSize = 8192;
+  analyser.smoothingTimeConstant = 0.3;
+  session.source = mic.context.createMediaStreamSource(mic.stream);
+  session.source.connect(analyser);
+  session.stream = mic.stream;
+  session.chroma = new Array(12).fill(0);
+  session.counted = 0;
+  session.shownSecond = -1;
+  session.startedAt = Date.now();
+  session.phase = "listening";
+  const spectrum = new Float32Array(analyser.frequencyBinCount);
+  const a4 = Number(toolPrefs.a4) || 440;
+  session.timer = setInterval(() => {
+    if (keyListen !== session) return;
+    analyser.getFloatFrequencyData(spectrum);
+    if (addSpectrumToChroma(spectrum, mic.context.sampleRate, a4, session.chroma)) session.counted += 1;
+    const elapsed = (Date.now() - session.startedAt) / 1000;
+    if (elapsed >= KEY_LISTEN_SECONDS) finishKeyListening(session);
+    else renderKeyListenProgress(elapsed);
+  }, KEY_LISTEN_FRAME_MS);
+  renderPracticeKey();
+}
+
+function finishKeyListening(session) {
+  stopKeyMic();
+  const best = session.counted ? detectKeyFromChroma(session.chroma) : null;
+  if (!best) {
+    session.phase = "quiet";
+    session.result = null;
+  } else {
+    const quiet = session.counted < KEY_LISTEN_MIN_FRAMES;
+    session.phase = "done";
+    session.result = { ...best, sure: !quiet && best.score - best.runnerUp.score >= KEY_LISTEN_SURE_MARGIN };
+  }
+  renderPracticeKey();
+}
+
+function renderKeyListenProgress(elapsed) {
+  const left = Math.max(0, Math.ceil(KEY_LISTEN_SECONDS - elapsed));
+  els.practiceKeyProgressFill.style.setProperty("--p", `${Math.min(100, (elapsed / KEY_LISTEN_SECONDS) * 100).toFixed(1)}%`);
+  els.practiceKeyProgress.setAttribute("aria-valuenow", String(Math.round(elapsed)));
+  if (left !== keyListen.shownSecond) {
+    keyListen.shownSecond = left;
+    els.practiceKeyStatus.textContent = t("Listening… {n}s", { n: left });
+  }
+}
+
+function useHeardKey() {
+  const song = practiceKeySong();
+  const result = keyListen?.result;
+  if (!song || !result) return;
+  // The same value the key picker would save: a grid note plus Major or Minor.
+  const value = keyValueFor(KEY_NOTE_NAMES[result.tonic], result.mode);
+  song.key = value;
+  song.updatedAt = new Date().toISOString();
+  persist();
+  render();
+  keyListen.confirming = false;
+  renderPracticeKey();
+  showToast(`Key set to ${compactKeyLabel(value)}`);
+}
+
+function renderPracticeKey() {
+  const session = keyListen;
+  const open = Boolean(session) && Boolean(practiceActive);
+  const expanded = open && !session.collapsed;
+  const collapsed = open && session.collapsed;
+  setElementVisible(els.practiceKeySheet, expanded);
+  els.practiceKeyBar.hidden = !collapsed;
+  els.practiceView.toggleAttribute("data-key-bar", collapsed);
+  els.practiceKeyBtn.setAttribute("aria-expanded", String(open));
+  if (!open) return;
+
+  const song = practiceKeySong();
+  const saved = song ? keyListenSaved(song) : null;
+  const savedText = song ? songKeyText(song) : "";
+  const result = session.phase === "done" ? session.result : null;
+  const compare = result && saved ? compareHeardKey(result, saved) : null;
+
+  els.practiceKeyTitle.textContent = t("Listen for key");
+  els.practiceKeySaved.textContent = savedText ? t("Saved: {key}", { key: compactKeyLabel(savedText) }) : t("Saved: none");
+  els.practiceKeyCollapseBtn.setAttribute("aria-label", t("Minimize"));
+
+  const listening = session.phase === "listening";
+  const showListen = !result;
+  els.practiceKeyListenBtn.hidden = !showListen;
+  els.practiceKeyListenBtn.disabled = listening || session.phase === "asking";
+  els.practiceKeyListenBtn.textContent = t("Listen");
+  els.practiceKeyProgress.hidden = !listening;
+  if (listening) renderKeyListenProgress((Date.now() - session.startedAt) / 1000);
+
+  const message = { denied: "Allow the microphone to listen for the key", unsupported: "This browser can't use the microphone here", quiet: "Not enough sound to tell. Try again closer to the music." }[session.phase];
+  els.practiceKeyStatus.hidden = !(message || listening);
+  if (message) els.practiceKeyStatus.textContent = t(message);
+
+  els.practiceKeyResult.hidden = !result;
+  if (result) {
+    els.practiceKeyName.innerHTML = keyListenLabel(result.tonic, result.mode);
+    els.practiceKeyConfidence.innerHTML = `${t(result.sure ? "sure" : "not sure")} ${t("(or {key})", { key: keyListenLabel(result.runnerUp.tonic, result.runnerUp.mode) })}`;
+    els.practiceKeyCompare.hidden = !compare;
+    if (compare) els.practiceKeyCompare.innerHTML = keyListenCompareText(compare, saved);
+    els.practiceKeyCompare.classList.toggle("is-match", compare?.kind === "match" || compare?.kind === "relative");
+  }
+
+  const canUse = Boolean(result) && Boolean(song) && !songIsLocked(song);
+  els.practiceKeyActions.hidden = !result || session.confirming;
+  els.practiceKeyAgainBtn.textContent = t("Listen again");
+  els.practiceKeyUseBtn.textContent = t("Use as key");
+  els.practiceKeyUseBtn.hidden = !canUse;
+  els.practiceKeyConfirm.hidden = !(result && session.confirming);
+  if (result && session.confirming) {
+    els.practiceKeyConfirmText.innerHTML = t("Set the key to {key}?", { key: `<bdi dir="ltr">${escapeHtml(compactKeyLabel(keyValueFor(KEY_NOTE_NAMES[result.tonic], result.mode)))}</bdi>` });
+    els.practiceKeyConfirmNo.textContent = t("Cancel");
+    els.practiceKeyConfirmYes.textContent = t("Set key");
+  }
+
+  // The minimized bar: "A minor · ✓ matches", or just "Key ·" before the first listen.
+  let bar = `${t("Key")} ·`;
+  if (result) {
+    bar = `${keyListenLabel(result.tonic, result.mode)}${result.sure ? "" : "?"}`;
+    if (compare) bar += compare.kind === "off" ? ` · ${t("saved {key}", { key: `<bdi dir="ltr">${escapeHtml(compactKeyLabel(saved.text))}</bdi>` })}` : ` · ${t("✓ matches")}`;
+  } else if (listening) bar = `${t("Listening… {n}s", { n: Math.max(0, Math.ceil(KEY_LISTEN_SECONDS - (Date.now() - session.startedAt) / 1000)) })}`;
+  els.practiceKeyBarText.innerHTML = bar;
+  els.practiceKeyBarOpen.setAttribute("aria-label", t("Show key listening"));
+  els.practiceKeyBarClose.setAttribute("aria-label", t("Close"));
+  els.practiceKeyCloseBtn.setAttribute("aria-label", t("Close"));
+  refreshIcons();
+}
+
+// A swipe down on the header or the bar closes; a plain tap on the header minimizes.
+function wireKeySwipeDown(element, onTap) {
+  let start = null;
+  element.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("[data-no-swipe]")) return;
+    start = { x: event.clientX, y: event.clientY };
+    try { element.setPointerCapture(event.pointerId); } catch { /* the swipe still ends on pointerup elsewhere */ }
+  });
+  element.addEventListener("pointercancel", () => { start = null; });
+  element.addEventListener("pointerup", (event) => {
+    if (!start) return;
+    const dy = event.clientY - start.y;
+    const dx = event.clientX - start.x;
+    start = null;
+    if (dy > 40 && Math.abs(dx) < dy) {
+      if (keyListen) keyListen.swiped = true;
+      closePracticeKey();
+    }
+  });
+  element.addEventListener("click", (event) => {
+    if (keyListen?.swiped) { keyListen.swiped = false; return; }
+    if (event.target.closest("[data-no-swipe]")) return;
+    onTap();
+  });
+}
+
+// With a YouTube video on a phone the chip sits on the black strip under the video: its corner is the video's bottom-right
+// corner, whatever the layout (source toggle, loading message, Hebrew) puts the video. Anywhere else CSS places it.
+function placeKeyChip() {
+  const chip = els.practiceKeyBtn;
+  const onVideo = els.practiceView.dataset.source === "youtube" && getComputedStyle(chip).position === "absolute";
+  if (!onVideo) {
+    ["top", "left", "visibility"].forEach((property) => chip.style.removeProperty(property));
+    return;
+  }
+  const player = els.practicePlayer.getBoundingClientRect();
+  const video = els.practiceVideo.getBoundingClientRect();
+  if (!video.width || !video.height) { chip.style.visibility = "hidden"; return; }
+  chip.style.visibility = "";
+  chip.style.top = `${Math.round((video.bottom - player.top - chip.offsetHeight) * 10) / 10}px`;
+  chip.style.left = `${Math.round((video.right - player.left - chip.offsetWidth) * 10) / 10}px`;
+}
+
+function initPracticeKey() {
+  if (globalThis.ResizeObserver) {
+    const observer = new ResizeObserver(placeKeyChip);
+    [els.practiceVideo, els.practicePlayer, els.practiceKeyBtn].forEach((element) => observer.observe(element));
+  }
+  globalThis.addEventListener?.("resize", placeKeyChip);
+  els.practiceKeyBtn.addEventListener("click", openPracticeKey);
+  els.practiceKeyListenBtn.addEventListener("click", startKeyListening);
+  els.practiceKeyAgainBtn.addEventListener("click", startKeyListening);
+  els.practiceKeyCloseBtn.setAttribute("data-no-swipe", "");
+  els.practiceKeyCloseBtn.addEventListener("click", closePracticeKey);
+  els.practiceKeyBarClose.setAttribute("data-no-swipe", "");
+  els.practiceKeyBarClose.addEventListener("click", closePracticeKey);
+  wireKeySwipeDown(els.practiceKeyHeader, () => togglePracticeKeyCollapsed(true));
+  wireKeySwipeDown(els.practiceKeyBar, () => togglePracticeKeyCollapsed(false));
+  els.practiceKeyUseBtn.addEventListener("click", () => { if (keyListen) { keyListen.confirming = true; renderPracticeKey(); els.practiceKeyConfirmYes.focus?.({ preventScroll: true }); } });
+  els.practiceKeyConfirmNo.addEventListener("click", () => { if (keyListen) { keyListen.confirming = false; renderPracticeKey(); els.practiceKeyUseBtn.focus?.({ preventScroll: true }); } });
+  els.practiceKeyConfirmYes.addEventListener("click", useHeardKey);
+  // The microphone never stays on behind the scenes: leaving the page or the app stops it (the heard key stays).
+  const stopAndShow = () => { if (keyListen?.phase === "listening" || keyListen?.phase === "asking") { stopKeyMic(); keyListen.phase = "idle"; renderPracticeKey(); } };
+  globalThis.addEventListener?.("pagehide", stopAndShow);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") stopAndShow(); });
 }
 // "New" or "Classic" look. A device preference (like the title side), so a phone can try the new look
 // while the laptop stays as it is. Classic is the default.
@@ -21545,7 +22118,7 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const ownKey = songDisplayKey(song);
   const eventKey = Boolean(item.keyOverride);
   const keyChip = songKey
-    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? `<span class="ek-classic">${escapeHtml(compactKeyLabel(ownKey))} → </span>` : ""}<span class="ek-main">${escapeHtml(compactKeyLabel(songKey))}</span>${ownKey ? `<span class="ek-label">${t("event")}</span>` : ""}${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${escapeHtml(compactKeyLabel(ownKey))}</span>` : ""}` : escapeHtml(compactKeyLabel(songKey))}</button>`
+    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? `<span class="ek-classic">${keyLabelHtml(ownKey)} → </span>` : ""}<span class="ek-main">${keyLabelHtml(songKey)}</span>${ownKey ? `<span class="ek-label">${t("event")}</span>` : ""}${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${keyLabelHtml(ownKey)}</span>` : ""}` : keyLabelHtml(songKey)}</button>`
     : !gigStructureEditMode && !gigReorderMode && !selectMode.active ? `<button class="slp-badge--key empty quiet" type="button" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(t("Set a key or add a note"))}">–</button>`
     : gigStructureEditMode ? `<button class="slp-badge--key empty" type="button" data-gig-item-edit="${item.id}" aria-label="Add a key or note"><i data-lucide="sticky-note"></i><span class="empty-label">${t("Key")}</span></button>` : "";
   const noteText = [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ");
@@ -22595,7 +23168,7 @@ function renderGigItemKeys() {
     els.gigItemKeys.innerHTML = KEY_NOTE_NAMES.map((root) => {
       const key = `${root}${suffixNew}`;
       const on = Boolean(draft.key) && noteIndexOf(parseKey(draft.key).root) === noteIndexOf(root);
-      return `<button class="gig-key-pill ${on ? "on" : ""}" type="button" dir="ltr" data-gig-key="${escapeAttribute(key)}" aria-pressed="${on}">${escapeHtml(compactKeyLabel(key))}</button>`;
+      return `<button class="gig-key-pill ${on ? "on" : ""}" type="button" dir="ltr" data-gig-key="${escapeAttribute(key)}" aria-pressed="${on}">${keyLabelHtml(key)}</button>`;
     }).join("");
     els.gigItemKeys.querySelectorAll("[data-gig-key]").forEach((button) => button.addEventListener("click", () => {
       gigItemDraft.key = gigItemDraft.key === button.dataset.gigKey ? "" : button.dataset.gigKey;
@@ -22616,7 +23189,7 @@ function renderGigItemKeys() {
     const key = compound ? transposeKey(draft.own, (noteIndexOf(root) - noteIndexOf(ownRoot) + 12) % 12) : `${root}${suffix}`;
     const same = noteIndexOf(parseKey(key).root) === noteIndexOf(parseKey(chosen)?.root || "C") ;
     const isOwn = noteIndexOf(parseKey(key).root) === noteIndexOf(parseKey(draft.own).root);
-    return `<button class="gig-key-pill ${same ? "on" : ""}" type="button" dir="ltr" data-gig-key="${escapeAttribute(key)}" aria-pressed="${same}">${escapeHtml(compactKeyLabel(key))}${isOwn ? '<small>song</small>' : ""}</button>`;
+    return `<button class="gig-key-pill ${same ? "on" : ""}" type="button" dir="ltr" data-gig-key="${escapeAttribute(key)}" aria-pressed="${same}">${keyLabelHtml(key)}${isOwn ? '<small>song</small>' : ""}</button>`;
   }).join("");
   els.gigItemKeys.querySelectorAll("[data-gig-key]").forEach((button) => button.addEventListener("click", () => {
     gigItemDraft.key = button.dataset.gigKey === draft.own ? "" : button.dataset.gigKey;
@@ -22654,7 +23227,7 @@ function openGigSetListSheet() {
     const heading = entry.section.id !== lastSection ? `<div class="gig-setlist-heading" dir="auto">${escapeHtml(entry.section.name)}</div>` : "";
     lastSection = entry.section.id;
     const key = eventItemKey(entry.item, song);
-    return `${heading}<button class="slp-row gig-setlist-row ${entry.item.id === gigReadItemId ? "is-reading" : ""}" type="button" data-gig-jump="${entry.item.id}" data-gig-jump-song="${song.id}"><span class="gig-song-number">${index + 1}</span><span class="slp-row__body gig-setlist-text"><span class="gig-setlist-title">${songTitleMarkup(song)}</span>${song.artist ? `<span class="gig-setlist-artist" dir="auto">${escapeHtml(song.artist)}</span>` : ""}</span>${key ? `<span class="slp-badge--key ${entry.item.keyOverride ? "event-key" : ""}" dir="ltr">${escapeHtml(compactKeyLabel(key))}</span>` : ""}</button>`;
+    return `${heading}<button class="slp-row gig-setlist-row ${entry.item.id === gigReadItemId ? "is-reading" : ""}" type="button" data-gig-jump="${entry.item.id}" data-gig-jump-song="${song.id}"><span class="gig-song-number">${index + 1}</span><span class="slp-row__body gig-setlist-text"><span class="gig-setlist-title">${songTitleMarkup(song)}</span>${song.artist ? `<span class="gig-setlist-artist" dir="auto">${escapeHtml(song.artist)}</span>` : ""}</span>${key ? `<span class="slp-badge--key ${entry.item.keyOverride ? "event-key" : ""}" dir="ltr">${keyLabelHtml(key)}</span>` : ""}</button>`;
   }).join("");
   els.gigSetListBody.querySelectorAll("[data-gig-jump]").forEach((button) => button.addEventListener("click", () => {
     closeOverlays();
@@ -26411,6 +26984,21 @@ function toolAudio() {
   return toolAudioContext;
 }
 
+// The microphone, set up once for everything that listens (the Tuner, Practice's Listen for key): the shared audio
+// context plus a raw stream (no echo cancelling, noise suppression or auto gain, which would flatten the notes).
+// Returns { context, stream } or { error: "unsupported" | "denied" | "nocontext" }. Nothing is recorded or kept.
+async function openToolMicrophone() {
+  if (!navigator.mediaDevices?.getUserMedia) return { error: "unsupported" };
+  const context = toolAudio();
+  if (!context) return { error: "nocontext" };
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    return { context, stream };
+  } catch {
+    return { error: "denied" };
+  }
+}
+
 // Everything plays through one master gain into a limiter, so several voices (drone,
 // piano chords) sum without clipping and the overall level can be set in one place.
 function toolOutput(context) {
@@ -26812,19 +27400,17 @@ const TOOL_VIEWS = {
       ${toolDetails(tuningSetting())}`;
     },
     async start() {
-      if (!navigator.mediaDevices?.getUserMedia) {
+      const mic = await openToolMicrophone();
+      if (mic.error === "unsupported") {
         showToast("This browser can't use the microphone here");
         return false;
       }
-      const context = toolAudio();
-      if (!context) return false;
-      let stream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
-      } catch {
+      if (mic.error === "denied") {
         showToast("Microphone access was blocked");
         return false;
       }
+      if (mic.error) return false;
+      const { context, stream } = mic;
       if (!toolRunning) {
         // The user pressed stop while the permission prompt was open.
         stream.getTracks().forEach((track) => track.stop());
@@ -29653,6 +30239,7 @@ initLicensedSongs();
 initBackupMerge();
 initSearchClearButtons();
 initYoutubeFind();
+initPracticeKey();
 initTidyStyles();
 els.closeGigListNoteBtn.addEventListener("click", () => closeOverlays());
 els.cancelGigListNoteBtn.addEventListener("click", () => closeOverlays());
