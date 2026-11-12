@@ -8,9 +8,11 @@
  * keeps the app's code and icons so it can start offline. */
 "use strict";
 
-const VERSION = "7f9e5a48fd6b";
+const VERSION = "98b614202c8d";
 const SHELL_CACHE = `slp-shell-${VERSION}`;
 const RUNTIME_CACHE = "slp-runtime-v1";
+// The PDF reader (vendor/) is not precached: it is fetched the first time a PDF import needs it and kept for offline use.
+const VENDOR_CACHE = `slp-vendor-${VERSION}`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -35,7 +37,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter((name) => name.startsWith("slp-shell-") && name !== SHELL_CACHE).map((name) => caches.delete(name)));
+    await Promise.all(names.filter((name) => (name.startsWith("slp-shell-") && name !== SHELL_CACHE) || (name.startsWith("slp-vendor-") && name !== VENDOR_CACHE)).map((name) => caches.delete(name)));
     await self.clients.claim();
   })());
 });
@@ -49,6 +51,17 @@ self.addEventListener("fetch", (event) => {
   // a signal. (Everything is one page, so any address inside the app maps to it.)
   if (request.mode === "navigate" && url.origin === self.location.origin) {
     event.respondWith(caches.match("./index.html").then((cached) => cached || fetch(request)));
+    return;
+  }
+
+  if (url.origin === self.location.origin && url.pathname.includes("/vendor/")) {
+    event.respondWith(caches.open(VENDOR_CACHE).then(async (cache) => {
+      const cached = await cache.match(request);
+      if (cached) return cached;
+      const response = await fetch(request);
+      if (response.ok) cache.put(request, response.clone());
+      return response;
+    }));
     return;
   }
 
