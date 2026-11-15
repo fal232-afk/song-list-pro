@@ -7381,6 +7381,117 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] #performanceView .line-disclosure-toggle { color: var(--accT); }
 :root[data-design="soft"] #performanceView .line-disclosure-content { color: var(--mute); }
 
+/* Soft look: Settings scrolls instead of squeezing. With the Review and fix group the page is taller than the sheet, and its flex children
+   (cards with overflow hidden) were shrinking to half height and cutting rows off. */
+:root[data-design="soft"] #settingsMainView > * { flex-shrink: 0; }
+
+/* Soft look, Songs home: Folders and Lists are rows beside All Songs and Artists; each opens its own page in this pane.
+   The attribute data-home-page on #app is "" (home), "folders" or "lists". Unfiled moved to Settings > Review and fix. */
+:root[data-design="soft"] #unfiledBtn { display: none; }
+:root[data-design="soft"] #app[data-home-page=""] #songLibraryContent > section:has(> #rootFolderList),
+:root[data-design="soft"] #app[data-home-page=""] #songLibraryContent > section:has(> #rootListList),
+:root[data-design="soft"] #app[data-home-page=""] #songLibraryContent > .home-page-header { display: none; }
+:root[data-design="soft"] #app[data-home-page="folders"] #songLibraryContent > .slp-header--screen-root,
+:root[data-design="soft"] #app[data-home-page="lists"] #songLibraryContent > .slp-header--screen-root,
+:root[data-design="soft"] #app[data-home-page="folders"] #songLibraryContent > .songs-view-bar,
+:root[data-design="soft"] #app[data-home-page="lists"] #songLibraryContent > .songs-view-bar,
+:root[data-design="soft"] #app[data-home-page="folders"] #songLibraryContent > .backup-reminder,
+:root[data-design="soft"] #app[data-home-page="lists"] #songLibraryContent > .backup-reminder,
+:root[data-design="soft"] #app[data-home-page="folders"] #songLibraryContent > .needs-lyrics-banner,
+:root[data-design="soft"] #app[data-home-page="lists"] #songLibraryContent > .needs-lyrics-banner,
+:root[data-design="soft"] #app[data-home-page="folders"] #songLibraryContent > section:has(> #allSongsBtn),
+:root[data-design="soft"] #app[data-home-page="lists"] #songLibraryContent > section:has(> #allSongsBtn),
+:root[data-design="soft"] #app[data-home-page="folders"] #songLibraryContent > section:has(> #rootListList),
+:root[data-design="soft"] #app[data-home-page="lists"] #songLibraryContent > section:has(> #rootFolderList),
+:root[data-design="soft"] #app[data-home-page="folders"] #songLibraryContent > section:has(> #rootFolderList) > .slp-section-label-row,
+:root[data-design="soft"] #app[data-home-page="lists"] #songLibraryContent > section:has(> #rootListList) > .slp-section-label-row { display: none; }
+:root[data-design="soft"] #songLibraryContent > .home-page-header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); min-height: 48px; }
+:root[data-design="soft"] #songLibraryContent > .home-page-header .slp-header__title { flex: 1; min-width: 0; font: 400 var(--soft-subtitle-size) var(--soft-font-title); margin: 0; }
+:root[data-design="soft"] #songLibraryContent > .home-page-header .slp-header__actions { display: flex; align-items: center; gap: var(--space-2); margin-inline-start: auto; }
+:root[data-design="soft"] #songLibraryContent > .home-page-header .home-page-edit { min-height: 44px; min-width: 44px; padding: 0 var(--space-3); color: var(--accT); font: 600 16px var(--soft-font-ui); background: transparent; border: 0; }
+:root[data-design="soft"] #songLibraryContent > .home-page-header .home-page-back,
+:root[data-design="soft"] #songLibraryContent > .home-page-header .home-page-add { width: 44px; height: 44px; min-width: 44px; }
+
+/* Soft look: on the Folders and Lists pages the open folder, subfolder or list is tonal, as the selected row is on Songs home.
+   (It stays on when the page is shown again at phone width, after Back from the folder.) */
+:root[data-design="soft"] #app[data-home-page] #songLibraryContent .slp-row.is-open { background: var(--panel2); }
+
+/* Soft look, event screen: the header holds back, title, Perform and the more menu; search, Share and Edit sit in the row beside Details.
+   (The originals stay in the page, hidden, and the row's buttons press them. Perform replaces "Start the set" in the info card.) */
+:root[data-design="soft"] #gigDetailView #gigPlanSearchBtn,
+:root[data-design="soft"] #gigDetailView #gigStructureEditBtn,
+:root[data-design="soft"] #gigDetailView #shareGigBtn { display: none; }
+:root[data-design="soft"] #gigDetailView #gigPerformBtn { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; min-width: 44px; padding: 0 var(--space-6); border: 0; border-radius: var(--soft-radius-control); background: var(--acc); color: var(--on); font: 600 16px var(--soft-font-ui); }
+:root[data-design="soft"] #gigDetailView #gigPerformBtn[hidden] { display: none; }
+:root[data-design="soft"] #gigDetailView #gigPerformBtn svg { width: 18px; height: 18px; }
+:root[data-design="soft"] #gigDetailView .gig-details-row { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); }
+:root[data-design="soft"] #gigDetailView .gig-details-row > #gigDetailsCollapse { flex: 1; min-width: 0; width: auto; margin: 0; }
+:root[data-design="soft"] #gigDetailView .gig-details-row > .slp-btn--icon { width: 44px; height: 44px; min-width: 44px; flex: none; }
+:root[data-design="soft"] #gigDetailView .gig-details-row > .gig-details-edit { min-height: 44px; min-width: 44px; padding: 0 var(--space-3); border: 0; background: transparent; color: var(--accT); font: 600 16px var(--soft-font-ui); flex: none; }
+:root[data-design="soft"] #gigDetailView .gig-details-row:has(#gigDetailsCollapse[aria-expanded="true"]) { margin-bottom: 0; }
+/* The open event search: in the narrow laptop pane the scope chip was taking the whole row (flex 1 1 100%) and left the input 26px wide. The chip keeps its size, the input takes the rest. */
+:root[data-design="soft"] #gigPlanSearchWrap .gig-sort-chip,
+:root[data-design="soft"] .app-shell.gig-triple[data-library-mode="gigs"] #gigPlanSearchWrap .gig-sort-chip { flex: 0 1 auto; max-width: 40%; }
+:root[data-design="soft"] #gigPlanSearchWrap .slp-search-input { flex: 1 1 0; min-width: 120px; }
+
+:root[data-design="soft"] #gigDetailView .gig-details-row:has(#gigDetailsCollapse[aria-expanded="true"]) + #gigDetailsPanel { margin-top: var(--space-2); }
+:root[data-design="soft"] #gigDetailView .slp-header__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* Soft look: "Shift for today" in the key picker replaces the transpose chip on the song page. */
+:root[data-design="soft"] #songTransposeBtn { display: none; }
+:root[data-design="soft"] .quick-key-sheet .quick-key-shift { display: grid; gap: var(--space-2); padding-top: var(--space-3); }
+:root[data-design="soft"] .quick-key-sheet .quick-key-shift[hidden] { display: none; }
+:root[data-design="soft"] .quick-key-shift__line { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+:root[data-design="soft"] .quick-key-shift__label { font: 600 15px var(--soft-font-ui); color: var(--fg); }
+:root[data-design="soft"] .quick-key-shift__stepper { display: flex; align-items: center; background: var(--panel2); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .quick-key-shift__stepper button { min-width: 44px; min-height: 44px; border: 0; background: transparent; color: var(--fg); font: 700 16px var(--soft-font-ui); border-radius: var(--soft-radius-control); display: grid; place-items: center; }
+:root[data-design="soft"] .quick-key-shift__stepper button svg { width: 18px; height: 18px; }
+:root[data-design="soft"] .quick-key-shift__value { min-width: 52px; }
+:root[data-design="soft"] .quick-key-shift__hint { margin: 0; color: var(--mute); font: 400 13px/1.35 var(--soft-font-ui); }
+
+/* Soft look, Performance: Back and Next live in a bar at the bottom (Next large, with the next song's title and key). The top bar keeps close, key, scroll. */
+:root[data-design="soft"] #performanceView .perf-bottom-bar { display: flex; align-items: stretch; justify-content: flex-start; gap: 8px; flex: none; padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)); background: var(--bg); }
+:root[data-design="soft"] #performanceView .perf-bottom-bar[hidden] { display: none; }
+:root[data-design="soft"] #performanceView .perf-bottom-bar .perf-event-label { display: none; }
+:root[data-design="soft"] #performanceView .perf-bottom-bar #perfPrevBtn { width: auto; min-width: 84px; height: 64px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; flex: none; font: 700 16px var(--soft-font-ui); }
+:root[data-design="soft"] #performanceView .perf-bottom-bar #perfNextBtn { flex: 1; min-width: 0; width: auto; height: 64px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: start; background: var(--acc); color: var(--on); border: 0; font-family: var(--soft-font-ui); }
+:root[data-design="soft"] #performanceView .perf-bottom-bar #perfNextBtn:disabled { opacity: 0.35; background: var(--panel); color: var(--fg); }
+:root[data-design="soft"] #performanceView .perf-next__text { display: grid; min-width: 0; flex: 1; gap: 2px; }
+:root[data-design="soft"] #performanceView .perf-next__text small { font: 600 12px var(--soft-font-ui); opacity: 0.85; }
+:root[data-design="soft"] #performanceView .perf-next__text strong { font: 700 18px/1.2 var(--soft-font-ui); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-design="soft"] #performanceView .perf-next__key { flex: none; min-width: 44px; min-height: 32px; padding: 0 10px; display: inline-grid; place-items: center; border-radius: var(--soft-radius-key-badge); background: rgba(255, 255, 255, 0.18); font: 800 16px var(--soft-font-ui); direction: ltr; }
+:root[data-design="soft"] #performanceView .perf-bottom-bar #perfNextBtn svg { width: 22px; height: 22px; flex: none; }
+:root[data-design="soft"] #performanceView .perf-bottom-bar #perfPrevBtn svg { width: 20px; height: 20px; }
+
+/* Soft look: a view-only Jyrics song shows a banner above the lyrics with a "Make my copy" button. */
+:root[data-design="soft"] #songJyricsBanner { display: flex; align-items: center; gap: var(--space-4); margin: var(--space-4) 0; padding: var(--space-4) var(--space-5); border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] #songJyricsBanner > svg { flex: none; width: 20px; height: 20px; color: var(--accT); }
+:root[data-design="soft"] #songJyricsBanner .song-jyrics-banner__text { display: grid; gap: 2px; min-width: 0; flex: 1; }
+:root[data-design="soft"] #songJyricsBanner strong { font: 700 15px var(--soft-font-ui); }
+:root[data-design="soft"] #songJyricsBanner small { font: 400 13px/1.3 var(--soft-font-ui); color: var(--mute); }
+:root[data-design="soft"] #songJyricsBanner .song-jyrics-banner__btn { flex: none; min-height: 44px; min-width: 44px; padding: 0 var(--space-5); border: 0; border-radius: var(--soft-radius-control); background: var(--acc); color: var(--on); font: 600 15px var(--soft-font-ui); }
+@media (max-width: 430px) { :root[data-design="soft"] #songJyricsBanner { flex-wrap: wrap; } :root[data-design="soft"] #songJyricsBanner .song-jyrics-banner__btn { width: 100%; } }
+
+/* Soft look, Tools: Starting note and Metronome work on the hub; Pitch Pipe, Piano Notes and Reference Tones are one tool, "Tones", with three tabs. */
+:root[data-design="soft"] .tools-hub-live { display: grid; gap: var(--space-5); margin-bottom: var(--space-6); }
+:root[data-design="soft"] .tools-live { display: grid; gap: var(--space-4); padding: var(--space-6); border: 0; box-shadow: none; background: var(--panel); border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] .tools-live__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+:root[data-design="soft"] .tools-live__title { margin: 0; font: 400 22px var(--soft-font-title); color: var(--fg); }
+:root[data-design="soft"] .tools-live__more { min-height: 44px; min-width: 44px; padding: 0 var(--space-3); border: 0; background: transparent; color: var(--accT); font: 600 15px var(--soft-font-ui); }
+:root[data-design="soft"] .tools-live__readout { display: flex; align-items: baseline; gap: var(--space-3); }
+:root[data-design="soft"] .tools-live__readout strong { font: 400 40px var(--soft-font-title); color: var(--fg); }
+:root[data-design="soft"] .tools-live__readout small { font: 400 14px var(--soft-font-ui); color: var(--mute); }
+:root[data-design="soft"] .tools-live .tool-note-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; direction: ltr; }
+:root[data-design="soft"] .tools-live .tool-note { min-height: 44px; min-width: 44px; }
+:root[data-design="soft"] .tools-live .tool-note.playing { background: var(--acc); color: var(--on); }
+:root[data-design="soft"] .tools-live__tempo { display: flex; align-items: center; gap: var(--space-3); }
+:root[data-design="soft"] .tools-live__tempo .tool-round { width: 48px; height: 48px; flex: none; }
+:root[data-design="soft"] .tools-live__start { flex: 1; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); border: 0; border-radius: var(--soft-radius-control); background: var(--acc); color: var(--on); font: 600 16px var(--soft-font-ui); }
+:root[data-design="soft"] .tools-live__start.running { background: var(--panel2); color: var(--accT); }
+:root[data-design="soft"] .tools-live__start svg { width: 18px; height: 18px; }
+:root[data-design="soft"] .tools-tabs { margin-bottom: var(--space-5); }
+:root[data-design="soft"] .tools-tabs button { min-height: 44px; }
+
 }
 
 </style>
@@ -9341,10 +9452,10 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 //# sourceMappingURL=tesseract.min.js.map
 </script>
     <script>
-/* Song List Pro icons: 162 lucide icons (ISC license, https://lucide.dev), generated by build-icons.cjs. */
+/* Song List Pro icons: 164 lucide icons (ISC license, https://lucide.dev), generated by build-icons.cjs. */
 (function () {
   "use strict";
-  var ICONS = {"album":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["polyline",{"points":"11 3 11 11 14 8 17 11 17 3"}]],"align-center":[["path",{"d":"M21 5H3"}],["path",{"d":"M17 12H7"}],["path",{"d":"M19 19H5"}]],"align-left":[["path",{"d":"M21 5H3"}],["path",{"d":"M15 12H3"}],["path",{"d":"M17 19H3"}]],"align-right":[["path",{"d":"M21 5H3"}],["path",{"d":"M21 12H9"}],["path",{"d":"M21 19H7"}]],"archive":[["rect",{"width":"20","height":"5","x":"2","y":"3","rx":"1"}],["path",{"d":"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"}],["path",{"d":"M10 12h4"}]],"archive-restore":[["rect",{"width":"20","height":"5","x":"2","y":"3","rx":"1"}],["path",{"d":"M4 8v11a2 2 0 0 0 2 2h2"}],["path",{"d":"M20 8v11a2 2 0 0 1-2 2h-2"}],["path",{"d":"m9 15 3-3 3 3"}],["path",{"d":"M12 12v9"}]],"arrow-down-a-z":[["path",{"d":"m3 16 4 4 4-4"}],["path",{"d":"M7 20V4"}],["path",{"d":"M20 8h-5"}],["path",{"d":"M15 10V6.5a2.5 2.5 0 0 1 5 0V10"}],["path",{"d":"M15 14h5l-5 6h5"}]],"arrow-down-up":[["path",{"d":"m3 16 4 4 4-4"}],["path",{"d":"M7 20V4"}],["path",{"d":"m21 8-4-4-4 4"}],["path",{"d":"M17 4v16"}]],"arrow-left":[["path",{"d":"m12 19-7-7 7-7"}],["path",{"d":"M19 12H5"}]],"arrow-up-down":[["path",{"d":"m21 16-4 4-4-4"}],["path",{"d":"M17 20V4"}],["path",{"d":"m3 8 4-4 4 4"}],["path",{"d":"M7 4v16"}]],"audio-lines":[["path",{"d":"M2 10v3"}],["path",{"d":"M6 6v11"}],["path",{"d":"M10 3v18"}],["path",{"d":"M14 8v7"}],["path",{"d":"M18 5v13"}],["path",{"d":"M22 10v3"}]],"badge-check":[["path",{"d":"M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"}],["path",{"d":"m9 12 2 2 4-4"}]],"bold":[["path",{"d":"M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"}]],"bookmark":[["path",{"d":"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"}]],"bookmark-plus":[["path",{"d":"M12 7v6"}],["path",{"d":"M15 10H9"}],["path",{"d":"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"}]],"calendar":[["path",{"d":"M8 2v4"}],["path",{"d":"M16 2v4"}],["rect",{"width":"18","height":"18","x":"3","y":"4","rx":"2"}],["path",{"d":"M3 10h18"}]],"calendar-days":[["path",{"d":"M8 2v4"}],["path",{"d":"M16 2v4"}],["rect",{"width":"18","height":"18","x":"3","y":"4","rx":"2"}],["path",{"d":"M3 10h18"}],["path",{"d":"M8 14h.01"}],["path",{"d":"M12 14h.01"}],["path",{"d":"M16 14h.01"}],["path",{"d":"M8 18h.01"}],["path",{"d":"M12 18h.01"}],["path",{"d":"M16 18h.01"}]],"calendar-plus":[["path",{"d":"M16 19h6"}],["path",{"d":"M16 2v4"}],["path",{"d":"M19 16v6"}],["path",{"d":"M21 12.598V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8.5"}],["path",{"d":"M3 10h18"}],["path",{"d":"M8 2v4"}]],"camera":[["path",{"d":"M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"}],["circle",{"cx":"12","cy":"13","r":"3"}]],"check":[["path",{"d":"M20 6 9 17l-5-5"}]],"check-circle-2":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"m9 12 2 2 4-4"}]],"chevron-down":[["path",{"d":"m6 9 6 6 6-6"}]],"chevron-left":[["path",{"d":"m15 18-6-6 6-6"}]],"chevron-right":[["path",{"d":"m9 18 6-6-6-6"}]],"chevron-up":[["path",{"d":"m18 15-6-6-6 6"}]],"circle-play":[["path",{"d":"M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"}],["circle",{"cx":"12","cy":"12","r":"10"}]],"clipboard-paste":[["path",{"d":"M11 14h10"}],["path",{"d":"M16 4h2a2 2 0 0 1 2 2v1.344"}],["path",{"d":"m17 18 4-4-4-4"}],["path",{"d":"M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113"}],["rect",{"x":"8","y":"2","width":"8","height":"4","rx":"1"}]],"clock-3":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 6v6h4"}]],"cloud-upload":[["path",{"d":"M12 13v8"}],["path",{"d":"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"}],["path",{"d":"m8 17 4-4 4 4"}]],"columns-3":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"columns-4":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M7.5 3v18"}],["path",{"d":"M12 3v18"}],["path",{"d":"M16.5 3v18"}]],"copy":[["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"copy-check":[["path",{"d":"m12 15 2 2 4-4"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"copy-plus":[["line",{"x1":"15","x2":"15","y1":"12","y2":"18"}],["line",{"x1":"12","x2":"18","y1":"15","y2":"15"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"crop":[["path",{"d":"M6 2v14a2 2 0 0 0 2 2h14"}],["path",{"d":"M18 22V8a2 2 0 0 0-2-2H2"}]],"delete":[["path",{"d":"M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"}],["path",{"d":"m12 9 6 6"}],["path",{"d":"m18 9-6 6"}]],"download":[["path",{"d":"M12 15V3"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["path",{"d":"m7 10 5 5 5-5"}]],"edit":[["path",{"d":"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{"d":"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]],"eraser":[["path",{"d":"M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21"}],["path",{"d":"m5.082 11.09 8.828 8.828"}]],"external-link":[["path",{"d":"M15 3h6v6"}],["path",{"d":"M10 14 21 3"}],["path",{"d":"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}]],"eye-off":[["path",{"d":"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}],["path",{"d":"M14.084 14.158a3 3 0 0 1-4.242-4.242"}],["path",{"d":"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}],["path",{"d":"m2 2 20 20"}]],"file":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}]],"file-down":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M12 18v-6"}],["path",{"d":"m9 15 3 3 3-3"}]],"file-music":[["path",{"d":"M11.65 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v10.35"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M8 20v-7l3 1.474"}],["circle",{"cx":"6","cy":"20","r":"2"}]],"file-pen-line":[["path",{"d":"M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"}],["path",{"d":"M14.487 7.858A1 1 0 0 1 14 7V2"}],["path",{"d":"M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"}],["path",{"d":"M8 18h1"}]],"file-plus-2":[["path",{"d":"M11.35 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v5.35"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M14 19h6"}],["path",{"d":"M17 16v6"}]],"file-text":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M10 9H8"}],["path",{"d":"M16 13H8"}],["path",{"d":"M16 17H8"}]],"file-warning":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M12 9v4"}],["path",{"d":"M12 17h.01"}]],"files":[["path",{"d":"M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"}],["path",{"d":"M16.706 2.706A2.4 2.4 0 0 0 15 2v5a1 1 0 0 0 1 1h5a2.4 2.4 0 0 0-.706-1.706z"}],["path",{"d":"M5 7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 1.732-1"}]],"focus":[["circle",{"cx":"12","cy":"12","r":"3"}],["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}]],"folder":[["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folder-input":[["path",{"d":"M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1"}],["path",{"d":"M2 13h10"}],["path",{"d":"m9 16 3-3-3-3"}]],"folder-minus":[["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folder-open":[["path",{"d":"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"}]],"folder-plus":[["path",{"d":"M12 10v6"}],["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folders":[["path",{"d":"M20 5a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2.5a1.5 1.5 0 0 1 1.2.6l.6.8a1.5 1.5 0 0 0 1.2.6z"}],["path",{"d":"M3 8.268a2 2 0 0 0-1 1.738V19a2 2 0 0 0 2 2h11a2 2 0 0 0 1.732-1"}]],"footprints":[["path",{"d":"M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"}],["path",{"d":"M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"}],["path",{"d":"M16 17h4"}],["path",{"d":"M4 13h4"}]],"git-fork":[["circle",{"cx":"12","cy":"18","r":"3"}],["circle",{"cx":"6","cy":"6","r":"3"}],["circle",{"cx":"18","cy":"6","r":"3"}],["path",{"d":"M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"}],["path",{"d":"M12 12v3"}]],"globe":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{"d":"M2 12h20"}]],"grid":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"grip-vertical":[["circle",{"cx":"9","cy":"12","r":"1"}],["circle",{"cx":"9","cy":"5","r":"1"}],["circle",{"cx":"9","cy":"19","r":"1"}],["circle",{"cx":"15","cy":"12","r":"1"}],["circle",{"cx":"15","cy":"5","r":"1"}],["circle",{"cx":"15","cy":"19","r":"1"}]],"group":[["path",{"d":"M3 7V5c0-1.1.9-2 2-2h2"}],["path",{"d":"M17 3h2c1.1 0 2 .9 2 2v2"}],["path",{"d":"M21 17v2c0 1.1-.9 2-2 2h-2"}],["path",{"d":"M7 21H5c-1.1 0-2-.9-2-2v-2"}],["rect",{"width":"7","height":"5","x":"7","y":"7","rx":"1"}],["rect",{"width":"7","height":"5","x":"10","y":"12","rx":"1"}]],"guitar":[["path",{"d":"m11.9 12.1 4.514-4.514"}],["path",{"d":"M20.1 2.3a1 1 0 0 0-1.4 0l-1.114 1.114A2 2 0 0 0 17 4.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 17.828 7h1.344a2 2 0 0 0 1.414-.586L21.7 5.3a1 1 0 0 0 0-1.4z"}],["path",{"d":"m6 16 2 2"}],["path",{"d":"M8.23 9.85A3 3 0 0 1 11 8a5 5 0 0 1 5 5 3 3 0 0 1-1.85 2.77l-.92.38A2 2 0 0 0 12 18a4 4 0 0 1-4 4 6 6 0 0 1-6-6 4 4 0 0 1 4-4 2 2 0 0 0 1.85-1.23z"}]],"hard-drive":[["path",{"d":"M10 16h.01"}],["path",{"d":"M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}],["path",{"d":"M21.946 12.013H2.054"}],["path",{"d":"M6 16h.01"}]],"heading":[["path",{"d":"M6 12h12"}],["path",{"d":"M6 20V4"}],["path",{"d":"M18 20V4"}]],"headphones":[["path",{"d":"M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"}]],"image":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["circle",{"cx":"9","cy":"9","r":"2"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}]],"image-plus":[["path",{"d":"M16 5h6"}],["path",{"d":"M19 2v6"}],["path",{"d":"M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}],["circle",{"cx":"9","cy":"9","r":"2"}]],"images":[["path",{"d":"m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16"}],["path",{"d":"M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2"}],["circle",{"cx":"13","cy":"7","r":"1","fill":"currentColor"}],["rect",{"x":"8","y":"2","width":"14","height":"14","rx":"2"}]],"import":[["path",{"d":"M12 3v12"}],["path",{"d":"m8 11 4 4 4-4"}],["path",{"d":"M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"}]],"inbox":[["polyline",{"points":"22 12 16 12 14 15 10 15 8 12 2 12"}],["path",{"d":"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}]],"info":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 16v-4"}],["path",{"d":"M12 8h.01"}]],"italic":[["line",{"x1":"19","x2":"10","y1":"4","y2":"4"}],["line",{"x1":"14","x2":"5","y1":"20","y2":"20"}],["line",{"x1":"15","x2":"9","y1":"4","y2":"20"}]],"key":[["path",{"d":"m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"}],["path",{"d":"m21 2-9.6 9.6"}],["circle",{"cx":"7.5","cy":"15.5","r":"5.5"}]],"languages":[["path",{"d":"m5 8 6 6"}],["path",{"d":"m4 14 6-6 2-3"}],["path",{"d":"M2 5h12"}],["path",{"d":"M7 2h1"}],["path",{"d":"m22 22-5-10-5 10"}],["path",{"d":"M14 18h6"}]],"layout-template":[["rect",{"width":"18","height":"7","x":"3","y":"3","rx":"1"}],["rect",{"width":"9","height":"7","x":"3","y":"14","rx":"1"}],["rect",{"width":"5","height":"7","x":"16","y":"14","rx":"1"}]],"library":[["path",{"d":"m16 6 4 14"}],["path",{"d":"M12 6v14"}],["path",{"d":"M8 8v12"}],["path",{"d":"M4 4v16"}]],"link":[["path",{"d":"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"}],["path",{"d":"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"}]],"list":[["path",{"d":"M3 5h.01"}],["path",{"d":"M3 12h.01"}],["path",{"d":"M3 19h.01"}],["path",{"d":"M8 5h13"}],["path",{"d":"M8 12h13"}],["path",{"d":"M8 19h13"}]],"list-checks":[["path",{"d":"M13 5h8"}],["path",{"d":"M13 12h8"}],["path",{"d":"M13 19h8"}],["path",{"d":"m3 17 2 2 4-4"}],["path",{"d":"m3 7 2 2 4-4"}]],"list-collapse":[["path",{"d":"M10 5h11"}],["path",{"d":"M10 12h11"}],["path",{"d":"M10 19h11"}],["path",{"d":"m3 10 3-3-3-3"}],["path",{"d":"m3 20 3-3-3-3"}]],"list-filter":[["path",{"d":"M2 5h20"}],["path",{"d":"M6 12h12"}],["path",{"d":"M9 19h6"}]],"list-music":[["path",{"d":"M16 5H3"}],["path",{"d":"M11 12H3"}],["path",{"d":"M11 19H3"}],["path",{"d":"M21 16V5"}],["circle",{"cx":"18","cy":"16","r":"3"}]],"list-plus":[["path",{"d":"M16 5H3"}],["path",{"d":"M11 12H3"}],["path",{"d":"M16 19H3"}],["path",{"d":"M18 9v6"}],["path",{"d":"M21 12h-6"}]],"lock":[["rect",{"width":"18","height":"11","x":"3","y":"11","rx":"2","ry":"2"}],["path",{"d":"M7 11V7a5 5 0 0 1 10 0v4"}]],"mail":[["path",{"d":"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"}],["rect",{"x":"2","y":"4","width":"20","height":"16","rx":"2"}]],"map-pin":[["path",{"d":"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"}],["circle",{"cx":"12","cy":"10","r":"3"}]],"maximize-2":[["path",{"d":"M15 3h6v6"}],["path",{"d":"m21 3-7 7"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M9 21H3v-6"}]],"menu":[["path",{"d":"M4 5h16"}],["path",{"d":"M4 12h16"}],["path",{"d":"M4 19h16"}]],"merge":[["path",{"d":"m8 6 4-4 4 4"}],["path",{"d":"M12 2v10.3a4 4 0 0 1-1.172 2.872L4 22"}],["path",{"d":"m20 22-5-5"}]],"metronome":[["path",{"d":"M12 11.4V9.1"}],["path",{"d":"m12 17 6.59-6.59"}],["path",{"d":"m15.05 5.7-.218-.691a3 3 0 0 0-5.663 0L4.418 19.695A1 1 0 0 0 5.37 21h13.253a1 1 0 0 0 .951-1.31L18.45 16.2"}],["circle",{"cx":"20","cy":"9","r":"2"}]],"mic":[["path",{"d":"M12 19v3"}],["path",{"d":"M19 10v2a7 7 0 0 1-14 0v-2"}],["rect",{"x":"9","y":"2","width":"6","height":"13","rx":"3"}]],"mic-vocal":[["path",{"d":"m11 7.601-5.994 8.19a1 1 0 0 0 .1 1.298l.817.818a1 1 0 0 0 1.314.087L15.09 12"}],["path",{"d":"M16.5 21.174C15.5 20.5 14.372 20 13 20c-2.058 0-3.928 2.356-6 2-2.072-.356-2.775-3.369-1.5-4.5"}],["circle",{"cx":"16","cy":"7","r":"5"}]],"minimize-2":[["path",{"d":"m14 10 7-7"}],["path",{"d":"M20 10h-6V4"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M4 14h6v6"}]],"minus":[["path",{"d":"M5 12h14"}]],"moon-star":[["path",{"d":"M18 5h4"}],["path",{"d":"M20 3v4"}],["path",{"d":"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"}]],"more-horizontal":[["circle",{"cx":"12","cy":"12","r":"1"}],["circle",{"cx":"19","cy":"12","r":"1"}],["circle",{"cx":"5","cy":"12","r":"1"}]],"mouse":[["rect",{"x":"5","y":"2","width":"14","height":"20","rx":"7"}],["path",{"d":"M12 6v4"}]],"move":[["path",{"d":"M12 2v20"}],["path",{"d":"m15 19-3 3-3-3"}],["path",{"d":"m19 9 3 3-3 3"}],["path",{"d":"M2 12h20"}],["path",{"d":"m5 9-3 3 3 3"}],["path",{"d":"m9 5 3-3 3 3"}]],"move-down":[["path",{"d":"M8 18L12 22L16 18"}],["path",{"d":"M12 2V22"}]],"music":[["path",{"d":"M9 18V5l12-2v13"}],["circle",{"cx":"6","cy":"18","r":"3"}],["circle",{"cx":"18","cy":"16","r":"3"}]],"music-2":[["circle",{"cx":"8","cy":"18","r":"4"}],["path",{"d":"M12 18V2l7 4"}]],"notebook-pen":[["path",{"d":"M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"}],["path",{"d":"M2 6h4"}],["path",{"d":"M2 10h4"}],["path",{"d":"M2 14h4"}],["path",{"d":"M2 18h4"}],["path",{"d":"M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"}]],"notebook-tabs":[["path",{"d":"M2 6h4"}],["path",{"d":"M2 10h4"}],["path",{"d":"M2 14h4"}],["path",{"d":"M2 18h4"}],["rect",{"width":"16","height":"20","x":"4","y":"2","rx":"2"}],["path",{"d":"M15 2v20"}],["path",{"d":"M15 7h5"}],["path",{"d":"M15 12h5"}],["path",{"d":"M15 17h5"}]],"option":[["path",{"d":"M3 3h6l6 18h6"}],["path",{"d":"M14 3h7"}]],"panel-left-close":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"m16 15-3-3 3-3"}]],"panel-left-open":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"m14 9 3 3-3 3"}]],"pause":[["rect",{"x":"14","y":"3","width":"5","height":"18","rx":"1"}],["rect",{"x":"5","y":"3","width":"5","height":"18","rx":"1"}]],"pencil":[["path",{"d":"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{"d":"m15 5 4 4"}]],"phone":[["path",{"d":"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"}]],"piano":[["path",{"d":"M18.5 8c-1.4 0-2.6-.8-3.2-2A6.87 6.87 0 0 0 2 9v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8.5C22 9.6 20.4 8 18.5 8"}],["path",{"d":"M2 14h20"}],["path",{"d":"M6 14v4"}],["path",{"d":"M10 14v4"}],["path",{"d":"M14 14v4"}],["path",{"d":"M18 14v4"}]],"pin":[["path",{"d":"M12 17v5"}],["path",{"d":"M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"}]],"play":[["path",{"d":"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]],"plus":[["path",{"d":"M5 12h14"}],["path",{"d":"M12 5v14"}]],"printer":[["path",{"d":"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}],["path",{"d":"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"}],["rect",{"x":"6","y":"14","width":"12","height":"8","rx":"1"}]],"radio":[["path",{"d":"M16.247 7.761a6 6 0 0 1 0 8.478"}],["path",{"d":"M19.075 4.933a10 10 0 0 1 0 14.134"}],["path",{"d":"M4.925 19.067a10 10 0 0 1 0-14.134"}],["path",{"d":"M7.753 16.239a6 6 0 0 1 0-8.478"}],["circle",{"cx":"12","cy":"12","r":"2"}]],"redo-2":[["path",{"d":"m15 14 5-5-5-5"}],["path",{"d":"M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"}]],"repeat":[["path",{"d":"m17 2 4 4-4 4"}],["path",{"d":"M3 11v-1a4 4 0 0 1 4-4h14"}],["path",{"d":"m7 22-4-4 4-4"}],["path",{"d":"M21 13v1a4 4 0 0 1-4 4H3"}]],"replace":[["path",{"d":"M14 4a1 1 0 0 1 1-1"}],["path",{"d":"M15 10a1 1 0 0 1-1-1"}],["path",{"d":"M21 4a1 1 0 0 0-1-1"}],["path",{"d":"M21 9a1 1 0 0 1-1 1"}],["path",{"d":"m3 7 3 3 3-3"}],["path",{"d":"M6 10V5a2 2 0 0 1 2-2h2"}],["rect",{"x":"3","y":"14","width":"7","height":"7","rx":"1"}]],"rose":[["path",{"d":"M17 10h-1a4 4 0 1 1 4-4v.534"}],["path",{"d":"M17 6h1a4 4 0 0 1 1.42 7.74l-2.29.87a6 6 0 0 1-5.339-10.68l2.069-1.31"}],["path",{"d":"M4.5 17c2.8-.5 4.4 0 5.5.8s1.8 2.2 2.3 3.7c-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2"}],["path",{"d":"M9.77 12C4 15 2 22 2 22"}],["circle",{"cx":"17","cy":"8","r":"2"}]],"rotate-ccw":[["path",{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{"d":"M3 3v5h5"}]],"rotate-cw":[["path",{"d":"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}],["path",{"d":"M21 3v5h-5"}]],"save":[["path",{"d":"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{"d":"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{"d":"M7 3v4a1 1 0 0 0 1 1h7"}]],"scan-text":[["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}],["path",{"d":"M7 8h8"}],["path",{"d":"M7 12h10"}],["path",{"d":"M7 16h6"}]],"scroll":[["path",{"d":"M19 17V5a2 2 0 0 0-2-2H4"}],["path",{"d":"M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"}]],"search":[["path",{"d":"m21 21-4.34-4.34"}],["circle",{"cx":"11","cy":"11","r":"8"}]],"search-x":[["path",{"d":"m13.5 8.5-5 5"}],["path",{"d":"m8.5 8.5 5 5"}],["circle",{"cx":"11","cy":"11","r":"8"}],["path",{"d":"m21 21-4.3-4.3"}]],"section":[["path",{"d":"M16 5a4 3 0 0 0-8 0c0 4 8 3 8 7a4 3 0 0 1-8 0"}],["path",{"d":"M8 19a4 3 0 0 0 8 0c0-4-8-3-8-7a4 3 0 0 1 8 0"}]],"settings":[["path",{"d":"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"}],["circle",{"cx":"12","cy":"12","r":"3"}]],"settings-2":[["path",{"d":"M14 17H5"}],["path",{"d":"M19 7h-9"}],["circle",{"cx":"17","cy":"17","r":"3"}],["circle",{"cx":"7","cy":"7","r":"3"}]],"share-2":[["circle",{"cx":"18","cy":"5","r":"3"}],["circle",{"cx":"6","cy":"12","r":"3"}],["circle",{"cx":"18","cy":"19","r":"3"}],["line",{"x1":"8.59","x2":"15.42","y1":"13.51","y2":"17.49"}],["line",{"x1":"15.41","x2":"8.59","y1":"6.51","y2":"10.49"}]],"shield-alert":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"M12 8v4"}],["path",{"d":"M12 16h.01"}]],"shield-check":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"m9 12 2 2 4-4"}]],"sliders-horizontal":[["path",{"d":"M10 5H3"}],["path",{"d":"M12 19H3"}],["path",{"d":"M14 3v4"}],["path",{"d":"M16 17v4"}],["path",{"d":"M21 12h-9"}],["path",{"d":"M21 19h-5"}],["path",{"d":"M21 5h-7"}],["path",{"d":"M8 10v4"}],["path",{"d":"M8 12H3"}]],"split":[["path",{"d":"M16 3h5v5"}],["path",{"d":"M8 3H3v5"}],["path",{"d":"M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"}],["path",{"d":"m15 9 6-6"}]],"square":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}]],"square-pen":[["path",{"d":"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{"d":"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]],"square-play":[["rect",{"x":"3","y":"3","width":"18","height":"18","rx":"2"}],["path",{"d":"M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"}]],"sticky-note":[["path",{"d":"M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"}],["path",{"d":"M15 3v5a1 1 0 0 0 1 1h5"}]],"sun":[["circle",{"cx":"12","cy":"12","r":"4"}],["path",{"d":"M12 2v2"}],["path",{"d":"M12 20v2"}],["path",{"d":"m4.93 4.93 1.41 1.41"}],["path",{"d":"m17.66 17.66 1.41 1.41"}],["path",{"d":"M2 12h2"}],["path",{"d":"M20 12h2"}],["path",{"d":"m6.34 17.66-1.41 1.41"}],["path",{"d":"m19.07 4.93-1.41 1.41"}]],"table":[["path",{"d":"M12 3v18"}],["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}]],"tags":[["path",{"d":"M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"}],["path",{"d":"M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"}],["circle",{"cx":"10.5","cy":"6.5","r":".5","fill":"currentColor"}]],"text":[["path",{"d":"M21 5H3"}],["path",{"d":"M15 12H3"}],["path",{"d":"M17 19H3"}]],"timer":[["line",{"x1":"10","x2":"14","y1":"2","y2":"2"}],["line",{"x1":"12","x2":"15","y1":"14","y2":"11"}],["circle",{"cx":"12","cy":"14","r":"8"}]],"trash-2":[["path",{"d":"M10 11v6"}],["path",{"d":"M14 11v6"}],["path",{"d":"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{"d":"M3 6h18"}],["path",{"d":"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]],"triangle":[["path",{"d":"M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"}]],"underline":[["path",{"d":"M6 4v6a6 6 0 0 0 12 0V4"}],["line",{"x1":"4","x2":"20","y1":"20","y2":"20"}]],"undo":[["path",{"d":"M3 7v6h6"}],["path",{"d":"M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"}]],"undo-2":[["path",{"d":"M9 14 4 9l5-5"}],["path",{"d":"M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"}]],"upload":[["path",{"d":"M12 3v12"}],["path",{"d":"m17 8-5-5-5 5"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}]],"user":[["path",{"d":"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{"cx":"12","cy":"7","r":"4"}]],"users":[["path",{"d":"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["path",{"d":"M16 3.128a4 4 0 0 1 0 7.744"}],["path",{"d":"M22 21v-2a4 4 0 0 0-3-3.87"}],["circle",{"cx":"9","cy":"7","r":"4"}]],"users-round":[["path",{"d":"M18 21a8 8 0 0 0-16 0"}],["circle",{"cx":"10","cy":"8","r":"5"}],["path",{"d":"M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"}]],"video":[["path",{"d":"m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"}],["rect",{"x":"2","y":"6","width":"14","height":"12","rx":"2"}]],"wallet":[["path",{"d":"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"}],["path",{"d":"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"}]],"wand-2":[["path",{"d":"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{"d":"m14 7 3 3"}],["path",{"d":"M5 6v4"}],["path",{"d":"M19 14v4"}],["path",{"d":"M10 2v2"}],["path",{"d":"M7 8H3"}],["path",{"d":"M21 16h-4"}],["path",{"d":"M11 3H9"}]],"wind":[["path",{"d":"M12.8 19.6A2 2 0 1 0 14 16H2"}],["path",{"d":"M17.5 8a2.5 2.5 0 1 1 2 4H2"}],["path",{"d":"M9.8 4.4A2 2 0 1 1 11 8H2"}]],"wrench":[["path",{"d":"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"}]],"x":[["path",{"d":"M18 6 6 18"}],["path",{"d":"m6 6 12 12"}]],"zap":[["path",{"d":"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]],"zoom-in":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"11","x2":"11","y1":"8","y2":"14"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]],"zoom-out":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]]};
+  var ICONS = {"album":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["polyline",{"points":"11 3 11 11 14 8 17 11 17 3"}]],"align-center":[["path",{"d":"M21 5H3"}],["path",{"d":"M17 12H7"}],["path",{"d":"M19 19H5"}]],"align-left":[["path",{"d":"M21 5H3"}],["path",{"d":"M15 12H3"}],["path",{"d":"M17 19H3"}]],"align-right":[["path",{"d":"M21 5H3"}],["path",{"d":"M21 12H9"}],["path",{"d":"M21 19H7"}]],"archive":[["rect",{"width":"20","height":"5","x":"2","y":"3","rx":"1"}],["path",{"d":"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"}],["path",{"d":"M10 12h4"}]],"archive-restore":[["rect",{"width":"20","height":"5","x":"2","y":"3","rx":"1"}],["path",{"d":"M4 8v11a2 2 0 0 0 2 2h2"}],["path",{"d":"M20 8v11a2 2 0 0 1-2 2h-2"}],["path",{"d":"m9 15 3-3 3 3"}],["path",{"d":"M12 12v9"}]],"arrow-down-a-z":[["path",{"d":"m3 16 4 4 4-4"}],["path",{"d":"M7 20V4"}],["path",{"d":"M20 8h-5"}],["path",{"d":"M15 10V6.5a2.5 2.5 0 0 1 5 0V10"}],["path",{"d":"M15 14h5l-5 6h5"}]],"arrow-down-up":[["path",{"d":"m3 16 4 4 4-4"}],["path",{"d":"M7 20V4"}],["path",{"d":"m21 8-4-4-4 4"}],["path",{"d":"M17 4v16"}]],"arrow-left":[["path",{"d":"m12 19-7-7 7-7"}],["path",{"d":"M19 12H5"}]],"arrow-up-down":[["path",{"d":"m21 16-4 4-4-4"}],["path",{"d":"M17 20V4"}],["path",{"d":"m3 8 4-4 4 4"}],["path",{"d":"M7 4v16"}]],"audio-lines":[["path",{"d":"M2 10v3"}],["path",{"d":"M6 6v11"}],["path",{"d":"M10 3v18"}],["path",{"d":"M14 8v7"}],["path",{"d":"M18 5v13"}],["path",{"d":"M22 10v3"}]],"badge-check":[["path",{"d":"M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"}],["path",{"d":"m9 12 2 2 4-4"}]],"bold":[["path",{"d":"M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"}]],"bookmark":[["path",{"d":"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"}]],"bookmark-plus":[["path",{"d":"M12 7v6"}],["path",{"d":"M15 10H9"}],["path",{"d":"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"}]],"calendar":[["path",{"d":"M8 2v4"}],["path",{"d":"M16 2v4"}],["rect",{"width":"18","height":"18","x":"3","y":"4","rx":"2"}],["path",{"d":"M3 10h18"}]],"calendar-days":[["path",{"d":"M8 2v4"}],["path",{"d":"M16 2v4"}],["rect",{"width":"18","height":"18","x":"3","y":"4","rx":"2"}],["path",{"d":"M3 10h18"}],["path",{"d":"M8 14h.01"}],["path",{"d":"M12 14h.01"}],["path",{"d":"M16 14h.01"}],["path",{"d":"M8 18h.01"}],["path",{"d":"M12 18h.01"}],["path",{"d":"M16 18h.01"}]],"calendar-plus":[["path",{"d":"M16 19h6"}],["path",{"d":"M16 2v4"}],["path",{"d":"M19 16v6"}],["path",{"d":"M21 12.598V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8.5"}],["path",{"d":"M3 10h18"}],["path",{"d":"M8 2v4"}]],"camera":[["path",{"d":"M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"}],["circle",{"cx":"12","cy":"13","r":"3"}]],"check":[["path",{"d":"M20 6 9 17l-5-5"}]],"check-circle-2":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"m9 12 2 2 4-4"}]],"chevron-down":[["path",{"d":"m6 9 6 6 6-6"}]],"chevron-left":[["path",{"d":"m15 18-6-6 6-6"}]],"chevron-right":[["path",{"d":"m9 18 6-6-6-6"}]],"chevron-up":[["path",{"d":"m18 15-6-6-6 6"}]],"circle-play":[["path",{"d":"M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"}],["circle",{"cx":"12","cy":"12","r":"10"}]],"clipboard-check":[["rect",{"width":"8","height":"4","x":"8","y":"2","rx":"1","ry":"1"}],["path",{"d":"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"}],["path",{"d":"m9 14 2 2 4-4"}]],"clipboard-paste":[["path",{"d":"M11 14h10"}],["path",{"d":"M16 4h2a2 2 0 0 1 2 2v1.344"}],["path",{"d":"m17 18 4-4-4-4"}],["path",{"d":"M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113"}],["rect",{"x":"8","y":"2","width":"8","height":"4","rx":"1"}]],"clock-3":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 6v6h4"}]],"cloud-upload":[["path",{"d":"M12 13v8"}],["path",{"d":"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"}],["path",{"d":"m8 17 4-4 4 4"}]],"columns-3":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"columns-4":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M7.5 3v18"}],["path",{"d":"M12 3v18"}],["path",{"d":"M16.5 3v18"}]],"copy":[["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"copy-check":[["path",{"d":"m12 15 2 2 4-4"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"copy-plus":[["line",{"x1":"15","x2":"15","y1":"12","y2":"18"}],["line",{"x1":"12","x2":"18","y1":"15","y2":"15"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"crop":[["path",{"d":"M6 2v14a2 2 0 0 0 2 2h14"}],["path",{"d":"M18 22V8a2 2 0 0 0-2-2H2"}]],"delete":[["path",{"d":"M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"}],["path",{"d":"m12 9 6 6"}],["path",{"d":"m18 9-6 6"}]],"download":[["path",{"d":"M12 15V3"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["path",{"d":"m7 10 5 5 5-5"}]],"edit":[["path",{"d":"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{"d":"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]],"eraser":[["path",{"d":"M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21"}],["path",{"d":"m5.082 11.09 8.828 8.828"}]],"external-link":[["path",{"d":"M15 3h6v6"}],["path",{"d":"M10 14 21 3"}],["path",{"d":"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}]],"eye-off":[["path",{"d":"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}],["path",{"d":"M14.084 14.158a3 3 0 0 1-4.242-4.242"}],["path",{"d":"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}],["path",{"d":"m2 2 20 20"}]],"file":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}]],"file-down":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M12 18v-6"}],["path",{"d":"m9 15 3 3 3-3"}]],"file-music":[["path",{"d":"M11.65 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v10.35"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M8 20v-7l3 1.474"}],["circle",{"cx":"6","cy":"20","r":"2"}]],"file-pen-line":[["path",{"d":"M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"}],["path",{"d":"M14.487 7.858A1 1 0 0 1 14 7V2"}],["path",{"d":"M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"}],["path",{"d":"M8 18h1"}]],"file-plus-2":[["path",{"d":"M11.35 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v5.35"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M14 19h6"}],["path",{"d":"M17 16v6"}]],"file-text":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M10 9H8"}],["path",{"d":"M16 13H8"}],["path",{"d":"M16 17H8"}]],"file-warning":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M12 9v4"}],["path",{"d":"M12 17h.01"}]],"files":[["path",{"d":"M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"}],["path",{"d":"M16.706 2.706A2.4 2.4 0 0 0 15 2v5a1 1 0 0 0 1 1h5a2.4 2.4 0 0 0-.706-1.706z"}],["path",{"d":"M5 7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 1.732-1"}]],"focus":[["circle",{"cx":"12","cy":"12","r":"3"}],["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}]],"folder":[["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folder-input":[["path",{"d":"M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1"}],["path",{"d":"M2 13h10"}],["path",{"d":"m9 16 3-3-3-3"}]],"folder-minus":[["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folder-open":[["path",{"d":"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"}]],"folder-plus":[["path",{"d":"M12 10v6"}],["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folders":[["path",{"d":"M20 5a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2.5a1.5 1.5 0 0 1 1.2.6l.6.8a1.5 1.5 0 0 0 1.2.6z"}],["path",{"d":"M3 8.268a2 2 0 0 0-1 1.738V19a2 2 0 0 0 2 2h11a2 2 0 0 0 1.732-1"}]],"footprints":[["path",{"d":"M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"}],["path",{"d":"M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"}],["path",{"d":"M16 17h4"}],["path",{"d":"M4 13h4"}]],"git-fork":[["circle",{"cx":"12","cy":"18","r":"3"}],["circle",{"cx":"6","cy":"6","r":"3"}],["circle",{"cx":"18","cy":"6","r":"3"}],["path",{"d":"M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"}],["path",{"d":"M12 12v3"}]],"globe":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{"d":"M2 12h20"}]],"grid":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"grip-vertical":[["circle",{"cx":"9","cy":"12","r":"1"}],["circle",{"cx":"9","cy":"5","r":"1"}],["circle",{"cx":"9","cy":"19","r":"1"}],["circle",{"cx":"15","cy":"12","r":"1"}],["circle",{"cx":"15","cy":"5","r":"1"}],["circle",{"cx":"15","cy":"19","r":"1"}]],"group":[["path",{"d":"M3 7V5c0-1.1.9-2 2-2h2"}],["path",{"d":"M17 3h2c1.1 0 2 .9 2 2v2"}],["path",{"d":"M21 17v2c0 1.1-.9 2-2 2h-2"}],["path",{"d":"M7 21H5c-1.1 0-2-.9-2-2v-2"}],["rect",{"width":"7","height":"5","x":"7","y":"7","rx":"1"}],["rect",{"width":"7","height":"5","x":"10","y":"12","rx":"1"}]],"guitar":[["path",{"d":"m11.9 12.1 4.514-4.514"}],["path",{"d":"M20.1 2.3a1 1 0 0 0-1.4 0l-1.114 1.114A2 2 0 0 0 17 4.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 17.828 7h1.344a2 2 0 0 0 1.414-.586L21.7 5.3a1 1 0 0 0 0-1.4z"}],["path",{"d":"m6 16 2 2"}],["path",{"d":"M8.23 9.85A3 3 0 0 1 11 8a5 5 0 0 1 5 5 3 3 0 0 1-1.85 2.77l-.92.38A2 2 0 0 0 12 18a4 4 0 0 1-4 4 6 6 0 0 1-6-6 4 4 0 0 1 4-4 2 2 0 0 0 1.85-1.23z"}]],"hard-drive":[["path",{"d":"M10 16h.01"}],["path",{"d":"M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}],["path",{"d":"M21.946 12.013H2.054"}],["path",{"d":"M6 16h.01"}]],"heading":[["path",{"d":"M6 12h12"}],["path",{"d":"M6 20V4"}],["path",{"d":"M18 20V4"}]],"headphones":[["path",{"d":"M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"}]],"image":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["circle",{"cx":"9","cy":"9","r":"2"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}]],"image-plus":[["path",{"d":"M16 5h6"}],["path",{"d":"M19 2v6"}],["path",{"d":"M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}],["circle",{"cx":"9","cy":"9","r":"2"}]],"images":[["path",{"d":"m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16"}],["path",{"d":"M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2"}],["circle",{"cx":"13","cy":"7","r":"1","fill":"currentColor"}],["rect",{"x":"8","y":"2","width":"14","height":"14","rx":"2"}]],"import":[["path",{"d":"M12 3v12"}],["path",{"d":"m8 11 4 4 4-4"}],["path",{"d":"M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"}]],"inbox":[["polyline",{"points":"22 12 16 12 14 15 10 15 8 12 2 12"}],["path",{"d":"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}]],"info":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 16v-4"}],["path",{"d":"M12 8h.01"}]],"italic":[["line",{"x1":"19","x2":"10","y1":"4","y2":"4"}],["line",{"x1":"14","x2":"5","y1":"20","y2":"20"}],["line",{"x1":"15","x2":"9","y1":"4","y2":"20"}]],"key":[["path",{"d":"m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"}],["path",{"d":"m21 2-9.6 9.6"}],["circle",{"cx":"7.5","cy":"15.5","r":"5.5"}]],"key-round":[["path",{"d":"M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"}],["circle",{"cx":"16.5","cy":"7.5","r":".5","fill":"currentColor"}]],"languages":[["path",{"d":"m5 8 6 6"}],["path",{"d":"m4 14 6-6 2-3"}],["path",{"d":"M2 5h12"}],["path",{"d":"M7 2h1"}],["path",{"d":"m22 22-5-10-5 10"}],["path",{"d":"M14 18h6"}]],"layout-template":[["rect",{"width":"18","height":"7","x":"3","y":"3","rx":"1"}],["rect",{"width":"9","height":"7","x":"3","y":"14","rx":"1"}],["rect",{"width":"5","height":"7","x":"16","y":"14","rx":"1"}]],"library":[["path",{"d":"m16 6 4 14"}],["path",{"d":"M12 6v14"}],["path",{"d":"M8 8v12"}],["path",{"d":"M4 4v16"}]],"link":[["path",{"d":"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"}],["path",{"d":"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"}]],"list":[["path",{"d":"M3 5h.01"}],["path",{"d":"M3 12h.01"}],["path",{"d":"M3 19h.01"}],["path",{"d":"M8 5h13"}],["path",{"d":"M8 12h13"}],["path",{"d":"M8 19h13"}]],"list-checks":[["path",{"d":"M13 5h8"}],["path",{"d":"M13 12h8"}],["path",{"d":"M13 19h8"}],["path",{"d":"m3 17 2 2 4-4"}],["path",{"d":"m3 7 2 2 4-4"}]],"list-collapse":[["path",{"d":"M10 5h11"}],["path",{"d":"M10 12h11"}],["path",{"d":"M10 19h11"}],["path",{"d":"m3 10 3-3-3-3"}],["path",{"d":"m3 20 3-3-3-3"}]],"list-filter":[["path",{"d":"M2 5h20"}],["path",{"d":"M6 12h12"}],["path",{"d":"M9 19h6"}]],"list-music":[["path",{"d":"M16 5H3"}],["path",{"d":"M11 12H3"}],["path",{"d":"M11 19H3"}],["path",{"d":"M21 16V5"}],["circle",{"cx":"18","cy":"16","r":"3"}]],"list-plus":[["path",{"d":"M16 5H3"}],["path",{"d":"M11 12H3"}],["path",{"d":"M16 19H3"}],["path",{"d":"M18 9v6"}],["path",{"d":"M21 12h-6"}]],"lock":[["rect",{"width":"18","height":"11","x":"3","y":"11","rx":"2","ry":"2"}],["path",{"d":"M7 11V7a5 5 0 0 1 10 0v4"}]],"mail":[["path",{"d":"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"}],["rect",{"x":"2","y":"4","width":"20","height":"16","rx":"2"}]],"map-pin":[["path",{"d":"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"}],["circle",{"cx":"12","cy":"10","r":"3"}]],"maximize-2":[["path",{"d":"M15 3h6v6"}],["path",{"d":"m21 3-7 7"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M9 21H3v-6"}]],"menu":[["path",{"d":"M4 5h16"}],["path",{"d":"M4 12h16"}],["path",{"d":"M4 19h16"}]],"merge":[["path",{"d":"m8 6 4-4 4 4"}],["path",{"d":"M12 2v10.3a4 4 0 0 1-1.172 2.872L4 22"}],["path",{"d":"m20 22-5-5"}]],"metronome":[["path",{"d":"M12 11.4V9.1"}],["path",{"d":"m12 17 6.59-6.59"}],["path",{"d":"m15.05 5.7-.218-.691a3 3 0 0 0-5.663 0L4.418 19.695A1 1 0 0 0 5.37 21h13.253a1 1 0 0 0 .951-1.31L18.45 16.2"}],["circle",{"cx":"20","cy":"9","r":"2"}]],"mic":[["path",{"d":"M12 19v3"}],["path",{"d":"M19 10v2a7 7 0 0 1-14 0v-2"}],["rect",{"x":"9","y":"2","width":"6","height":"13","rx":"3"}]],"mic-vocal":[["path",{"d":"m11 7.601-5.994 8.19a1 1 0 0 0 .1 1.298l.817.818a1 1 0 0 0 1.314.087L15.09 12"}],["path",{"d":"M16.5 21.174C15.5 20.5 14.372 20 13 20c-2.058 0-3.928 2.356-6 2-2.072-.356-2.775-3.369-1.5-4.5"}],["circle",{"cx":"16","cy":"7","r":"5"}]],"minimize-2":[["path",{"d":"m14 10 7-7"}],["path",{"d":"M20 10h-6V4"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M4 14h6v6"}]],"minus":[["path",{"d":"M5 12h14"}]],"moon-star":[["path",{"d":"M18 5h4"}],["path",{"d":"M20 3v4"}],["path",{"d":"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"}]],"more-horizontal":[["circle",{"cx":"12","cy":"12","r":"1"}],["circle",{"cx":"19","cy":"12","r":"1"}],["circle",{"cx":"5","cy":"12","r":"1"}]],"mouse":[["rect",{"x":"5","y":"2","width":"14","height":"20","rx":"7"}],["path",{"d":"M12 6v4"}]],"move":[["path",{"d":"M12 2v20"}],["path",{"d":"m15 19-3 3-3-3"}],["path",{"d":"m19 9 3 3-3 3"}],["path",{"d":"M2 12h20"}],["path",{"d":"m5 9-3 3 3 3"}],["path",{"d":"m9 5 3-3 3 3"}]],"move-down":[["path",{"d":"M8 18L12 22L16 18"}],["path",{"d":"M12 2V22"}]],"music":[["path",{"d":"M9 18V5l12-2v13"}],["circle",{"cx":"6","cy":"18","r":"3"}],["circle",{"cx":"18","cy":"16","r":"3"}]],"music-2":[["circle",{"cx":"8","cy":"18","r":"4"}],["path",{"d":"M12 18V2l7 4"}]],"notebook-pen":[["path",{"d":"M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"}],["path",{"d":"M2 6h4"}],["path",{"d":"M2 10h4"}],["path",{"d":"M2 14h4"}],["path",{"d":"M2 18h4"}],["path",{"d":"M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"}]],"notebook-tabs":[["path",{"d":"M2 6h4"}],["path",{"d":"M2 10h4"}],["path",{"d":"M2 14h4"}],["path",{"d":"M2 18h4"}],["rect",{"width":"16","height":"20","x":"4","y":"2","rx":"2"}],["path",{"d":"M15 2v20"}],["path",{"d":"M15 7h5"}],["path",{"d":"M15 12h5"}],["path",{"d":"M15 17h5"}]],"option":[["path",{"d":"M3 3h6l6 18h6"}],["path",{"d":"M14 3h7"}]],"panel-left-close":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"m16 15-3-3 3-3"}]],"panel-left-open":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"m14 9 3 3-3 3"}]],"pause":[["rect",{"x":"14","y":"3","width":"5","height":"18","rx":"1"}],["rect",{"x":"5","y":"3","width":"5","height":"18","rx":"1"}]],"pencil":[["path",{"d":"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{"d":"m15 5 4 4"}]],"phone":[["path",{"d":"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"}]],"piano":[["path",{"d":"M18.5 8c-1.4 0-2.6-.8-3.2-2A6.87 6.87 0 0 0 2 9v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8.5C22 9.6 20.4 8 18.5 8"}],["path",{"d":"M2 14h20"}],["path",{"d":"M6 14v4"}],["path",{"d":"M10 14v4"}],["path",{"d":"M14 14v4"}],["path",{"d":"M18 14v4"}]],"pin":[["path",{"d":"M12 17v5"}],["path",{"d":"M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"}]],"play":[["path",{"d":"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]],"plus":[["path",{"d":"M5 12h14"}],["path",{"d":"M12 5v14"}]],"printer":[["path",{"d":"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}],["path",{"d":"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"}],["rect",{"x":"6","y":"14","width":"12","height":"8","rx":"1"}]],"radio":[["path",{"d":"M16.247 7.761a6 6 0 0 1 0 8.478"}],["path",{"d":"M19.075 4.933a10 10 0 0 1 0 14.134"}],["path",{"d":"M4.925 19.067a10 10 0 0 1 0-14.134"}],["path",{"d":"M7.753 16.239a6 6 0 0 1 0-8.478"}],["circle",{"cx":"12","cy":"12","r":"2"}]],"redo-2":[["path",{"d":"m15 14 5-5-5-5"}],["path",{"d":"M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"}]],"repeat":[["path",{"d":"m17 2 4 4-4 4"}],["path",{"d":"M3 11v-1a4 4 0 0 1 4-4h14"}],["path",{"d":"m7 22-4-4 4-4"}],["path",{"d":"M21 13v1a4 4 0 0 1-4 4H3"}]],"replace":[["path",{"d":"M14 4a1 1 0 0 1 1-1"}],["path",{"d":"M15 10a1 1 0 0 1-1-1"}],["path",{"d":"M21 4a1 1 0 0 0-1-1"}],["path",{"d":"M21 9a1 1 0 0 1-1 1"}],["path",{"d":"m3 7 3 3 3-3"}],["path",{"d":"M6 10V5a2 2 0 0 1 2-2h2"}],["rect",{"x":"3","y":"14","width":"7","height":"7","rx":"1"}]],"rose":[["path",{"d":"M17 10h-1a4 4 0 1 1 4-4v.534"}],["path",{"d":"M17 6h1a4 4 0 0 1 1.42 7.74l-2.29.87a6 6 0 0 1-5.339-10.68l2.069-1.31"}],["path",{"d":"M4.5 17c2.8-.5 4.4 0 5.5.8s1.8 2.2 2.3 3.7c-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2"}],["path",{"d":"M9.77 12C4 15 2 22 2 22"}],["circle",{"cx":"17","cy":"8","r":"2"}]],"rotate-ccw":[["path",{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{"d":"M3 3v5h5"}]],"rotate-cw":[["path",{"d":"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}],["path",{"d":"M21 3v5h-5"}]],"save":[["path",{"d":"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{"d":"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{"d":"M7 3v4a1 1 0 0 0 1 1h7"}]],"scan-text":[["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}],["path",{"d":"M7 8h8"}],["path",{"d":"M7 12h10"}],["path",{"d":"M7 16h6"}]],"scroll":[["path",{"d":"M19 17V5a2 2 0 0 0-2-2H4"}],["path",{"d":"M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"}]],"search":[["path",{"d":"m21 21-4.34-4.34"}],["circle",{"cx":"11","cy":"11","r":"8"}]],"search-x":[["path",{"d":"m13.5 8.5-5 5"}],["path",{"d":"m8.5 8.5 5 5"}],["circle",{"cx":"11","cy":"11","r":"8"}],["path",{"d":"m21 21-4.3-4.3"}]],"section":[["path",{"d":"M16 5a4 3 0 0 0-8 0c0 4 8 3 8 7a4 3 0 0 1-8 0"}],["path",{"d":"M8 19a4 3 0 0 0 8 0c0-4-8-3-8-7a4 3 0 0 1 8 0"}]],"settings":[["path",{"d":"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"}],["circle",{"cx":"12","cy":"12","r":"3"}]],"settings-2":[["path",{"d":"M14 17H5"}],["path",{"d":"M19 7h-9"}],["circle",{"cx":"17","cy":"17","r":"3"}],["circle",{"cx":"7","cy":"7","r":"3"}]],"share-2":[["circle",{"cx":"18","cy":"5","r":"3"}],["circle",{"cx":"6","cy":"12","r":"3"}],["circle",{"cx":"18","cy":"19","r":"3"}],["line",{"x1":"8.59","x2":"15.42","y1":"13.51","y2":"17.49"}],["line",{"x1":"15.41","x2":"8.59","y1":"6.51","y2":"10.49"}]],"shield-alert":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"M12 8v4"}],["path",{"d":"M12 16h.01"}]],"shield-check":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"m9 12 2 2 4-4"}]],"sliders-horizontal":[["path",{"d":"M10 5H3"}],["path",{"d":"M12 19H3"}],["path",{"d":"M14 3v4"}],["path",{"d":"M16 17v4"}],["path",{"d":"M21 12h-9"}],["path",{"d":"M21 19h-5"}],["path",{"d":"M21 5h-7"}],["path",{"d":"M8 10v4"}],["path",{"d":"M8 12H3"}]],"split":[["path",{"d":"M16 3h5v5"}],["path",{"d":"M8 3H3v5"}],["path",{"d":"M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"}],["path",{"d":"m15 9 6-6"}]],"square":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}]],"square-pen":[["path",{"d":"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{"d":"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]],"square-play":[["rect",{"x":"3","y":"3","width":"18","height":"18","rx":"2"}],["path",{"d":"M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"}]],"sticky-note":[["path",{"d":"M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"}],["path",{"d":"M15 3v5a1 1 0 0 0 1 1h5"}]],"sun":[["circle",{"cx":"12","cy":"12","r":"4"}],["path",{"d":"M12 2v2"}],["path",{"d":"M12 20v2"}],["path",{"d":"m4.93 4.93 1.41 1.41"}],["path",{"d":"m17.66 17.66 1.41 1.41"}],["path",{"d":"M2 12h2"}],["path",{"d":"M20 12h2"}],["path",{"d":"m6.34 17.66-1.41 1.41"}],["path",{"d":"m19.07 4.93-1.41 1.41"}]],"table":[["path",{"d":"M12 3v18"}],["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}]],"tags":[["path",{"d":"M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"}],["path",{"d":"M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"}],["circle",{"cx":"10.5","cy":"6.5","r":".5","fill":"currentColor"}]],"text":[["path",{"d":"M21 5H3"}],["path",{"d":"M15 12H3"}],["path",{"d":"M17 19H3"}]],"timer":[["line",{"x1":"10","x2":"14","y1":"2","y2":"2"}],["line",{"x1":"12","x2":"15","y1":"14","y2":"11"}],["circle",{"cx":"12","cy":"14","r":"8"}]],"trash-2":[["path",{"d":"M10 11v6"}],["path",{"d":"M14 11v6"}],["path",{"d":"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{"d":"M3 6h18"}],["path",{"d":"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]],"triangle":[["path",{"d":"M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"}]],"underline":[["path",{"d":"M6 4v6a6 6 0 0 0 12 0V4"}],["line",{"x1":"4","x2":"20","y1":"20","y2":"20"}]],"undo":[["path",{"d":"M3 7v6h6"}],["path",{"d":"M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"}]],"undo-2":[["path",{"d":"M9 14 4 9l5-5"}],["path",{"d":"M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"}]],"upload":[["path",{"d":"M12 3v12"}],["path",{"d":"m17 8-5-5-5 5"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}]],"user":[["path",{"d":"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{"cx":"12","cy":"7","r":"4"}]],"users":[["path",{"d":"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["path",{"d":"M16 3.128a4 4 0 0 1 0 7.744"}],["path",{"d":"M22 21v-2a4 4 0 0 0-3-3.87"}],["circle",{"cx":"9","cy":"7","r":"4"}]],"users-round":[["path",{"d":"M18 21a8 8 0 0 0-16 0"}],["circle",{"cx":"10","cy":"8","r":"5"}],["path",{"d":"M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"}]],"video":[["path",{"d":"m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"}],["rect",{"x":"2","y":"6","width":"14","height":"12","rx":"2"}]],"wallet":[["path",{"d":"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"}],["path",{"d":"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"}]],"wand-2":[["path",{"d":"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{"d":"m14 7 3 3"}],["path",{"d":"M5 6v4"}],["path",{"d":"M19 14v4"}],["path",{"d":"M10 2v2"}],["path",{"d":"M7 8H3"}],["path",{"d":"M21 16h-4"}],["path",{"d":"M11 3H9"}]],"wind":[["path",{"d":"M12.8 19.6A2 2 0 1 0 14 16H2"}],["path",{"d":"M17.5 8a2.5 2.5 0 1 1 2 4H2"}],["path",{"d":"M9.8 4.4A2 2 0 1 1 11 8H2"}]],"wrench":[["path",{"d":"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"}]],"x":[["path",{"d":"M18 6 6 18"}],["path",{"d":"m6 6 12 12"}]],"zap":[["path",{"d":"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]],"zoom-in":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"11","x2":"11","y1":"8","y2":"14"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]],"zoom-out":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]]};
   var NS = "http://www.w3.org/2000/svg";
   var DEFAULTS = { xmlns: NS, width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": 2, "stroke-linecap": "round", "stroke-linejoin": "round" };
   function node(spec) {
@@ -9385,10 +9496,15 @@ const ARTISTS = "artists";
 const ARTIST_PREFIX = "artist:";
 // A virtual list of Quick-added songs that still have no lyrics (opened from the banner).
 const NEEDS_LYRICS = "needs-lyrics";
+// Soft look, Settings > Review and fix: virtual lists computed from the songs, never stored.
+const REVIEW_IMPORTS = "review-imports";
+const REVIEW_NO_KEY = "review-no-key";
+const REVIEW_ODD_KEY = "review-odd-key";
+const REVIEW_LISTS = [REVIEW_IMPORTS, REVIEW_NO_KEY, REVIEW_ODD_KEY];
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "3e22b312 · 6b2bdae";
+const APP_BUILD = "a4222450 · c407eaf";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -9527,6 +9643,8 @@ let lastPersistedSnapshot = readStorage(STORAGE_KEY);
 let workspaceMode = "library";
 let libraryMode = "category";
 let currentFolderId = ALL_SONGS;
+// Soft look, Songs home: null = the home rows, "folders" or "lists" = that page in the library pane.
+let softHomePage = null;
 let selectedSongId = null;
 // Select mode (see src/ui/select-mode.js): ids are kept in the order they were chosen.
 let selectMode = { active: false, ids: [], context: null, swallowClickUntil: 0, embedded: false };
@@ -11112,6 +11230,16 @@ Object.assign(HEBREW_UI, {"Song files (.slpsong) are added on their own. Choose 
 Object.assign(HEBREW_UI, {"PASTE THE COPIED PAGE": "הדביקו את הדף שהועתק"});
 
 Object.assign(HEBREW_UI, {"Soft": "רך", "Linen": "פשתן", "Mist": "ערפל", "Sand": "חול", "Slate": "צפחה", "Charcoal": "פחם", "Black": "שחור", "Wine": "יין", "Forest": "יער", "Amber": "ענבר", "Apricot": "משמש", "No color": "ללא צבע"});
+
+Object.assign(HEBREW_UI, {"REVIEW AND FIX": "סקירה ותיקון", "Unfiled songs": "שירים ללא תיקייה", "Possible duplicates": "כפילויות אפשריות", "Imports to review": "ייבוא לסקירה", "Songs without a key": "שירים בלי סולם", "Songs with an unusual key": "שירים עם סולם חריג", "song": "שיר", "pair to review": "זוג לסקירה", "pairs to review": "זוגות לסקירה"});
+
+Object.assign(HEBREW_UI, {"Back to Songs": "חזרה לשירים"});
+
+Object.assign(HEBREW_UI, {"Shift for today": "הזזה להיום", "Shift down": "הזזה למטה", "Shift up": "הזזה למעלה", "Reset shift": "איפוס ההזזה", "No shift": "ללא הזזה", "Playing in": "מנגנים ב", "For this event only. The saved key does not change.": "לאירוע הזה בלבד. הסולם השמור לא משתנה.", "The saved key does not change.": "הסולם השמור לא משתנה."});
+
+Object.assign(HEBREW_UI, {"From the Jyrics library": "מספריית Jyrics", "View-only. Make your own copy to edit it.": "לצפייה בלבד. צרו עותק משלכם כדי לערוך."});
+
+Object.assign(HEBREW_UI, {"Tones": "צלילים", "One note": "צליל בודד", "Drone": "צליל מתמשך", "Keyboard": "מקלדת", "One note, a drone, or a keyboard.": "צליל בודד, צליל מתמשך או מקלדת.", "Start||tools": "התחלה", "Stop||tools": "עצירה"});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -12594,6 +12722,66 @@ function renderLibrary() {
     query,
     scope
   });
+  syncSoftHome();
+}
+
+// Soft look, Songs home. Folders and Lists are single rows (with counts) beside All Songs and Artists; each opens its own page in this pane
+// with a back arrow. The page shows the same Folders / Lists sections as before, so Edit, + and every folder row work unchanged.
+// Everything here is added by JS only in the soft look, so Classic and New keep their page exactly as it was.
+function syncSoftHome() {
+  const content = els.songLibraryContent;
+  if (!isSoftDesign()) {
+    content.querySelectorAll(".home-page-row, .home-page-header").forEach((el) => el.remove());
+    delete els.app.dataset.homePage;
+    softHomePage = null;
+    return;
+  }
+  const card = els.allSongsBtn.parentElement;
+  const pages = [
+    { id: "folders", icon: "folder", title: "Folders", kind: "category", edit: els.editFoldersBtn, add: els.addFolderBtn },
+    { id: "lists", icon: "list-music", title: "Lists", kind: "personal", edit: els.editListsBtn, add: els.addListBtn }
+  ];
+  let header = content.querySelector(".home-page-header");
+  if (!card.querySelector(".home-page-row")) {
+    pages.forEach((page) => {
+      const row = document.createElement("button");
+      row.type = "button";
+      row.className = "slp-row home-page-row";
+      row.dataset.homePage = page.id;
+      row.innerHTML = `<span class="slp-row__icon-tile"><i data-lucide="${page.icon}"></i></span><span class="slp-row__body"><span class="slp-row__title">${t(page.title)}</span></span><span class="slp-row__count"></span><svg class="slp-row__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+      row.addEventListener("click", () => { softHomePage = page.id; render(); });
+      card.append(row);
+    });
+  }
+  if (!header) {
+    header = document.createElement("header");
+    header.className = "slp-header home-page-header";
+    header.innerHTML = `<button class="slp-btn slp-btn--icon home-page-back" type="button" aria-label="${escapeAttribute(t("Back to Songs"))}"><svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><h2 class="slp-header__title home-page-title"></h2><div class="slp-header__actions"><button class="slp-link-btn home-page-edit" type="button"></button><button class="slp-btn slp-btn--icon home-page-add" type="button"><i data-lucide="plus"></i></button></div>`;
+    content.prepend(header);
+    header.querySelector(".home-page-back").addEventListener("click", () => { softHomePage = null; render(); });
+    header.querySelector(".home-page-edit").addEventListener("click", () => pages.find((page) => page.id === softHomePage)?.edit.click());
+    header.querySelector(".home-page-add").addEventListener("click", () => pages.find((page) => page.id === softHomePage)?.add.click());
+  }
+  pages.forEach((page) => {
+    const row = card.querySelector(`.home-page-row[data-home-page="${page.id}"]`);
+    row.querySelector(".slp-row__title").textContent = t(page.title);
+    row.querySelector(".slp-row__count").textContent = childFolders(null).filter((folder) => folder.kind === page.kind).length;
+  });
+  // The folder, subfolder or list that is open in the other pane gets the tonal highlight (the nearest visible one when its row is folded away).
+  const openRows = [els.rootFolderList, els.rootListList].flatMap((list) => [...list.querySelectorAll("[data-folder-id]")]);
+  openRows.forEach((row) => { row.classList.remove("is-open"); row.removeAttribute("aria-current"); });
+  for (let id = currentFolderId, guard = 0; id && guard < 20; id = folderById(id)?.parentId, guard += 1) {
+    const row = openRows.find((item) => item.dataset.folderId === id);
+    if (row) { row.classList.add("is-open"); row.setAttribute("aria-current", "true"); break; }
+  }
+  const page = pages.find((item) => item.id === softHomePage);
+  els.app.dataset.homePage = page ? page.id : "";
+  if (page) {
+    header.querySelector(".home-page-title").textContent = t(page.title);
+    header.querySelector(".home-page-back").setAttribute("aria-label", t("Back to Songs"));
+    header.querySelector(".home-page-edit").textContent = page.edit.textContent;
+    header.querySelector(".home-page-add").setAttribute("aria-label", page.add.getAttribute("aria-label") || "");
+  }
 }
 
 function renderFolderGroup({ kind, listEl, editMode, editBtn, addLabel, addAriaLabel, emptyMessage, query, scope }) {
@@ -12777,10 +12965,13 @@ function renderFolder() {
   const isArtistIndex = currentFolderId === ARTISTS;
   const isArtistView = isArtistIndex || Boolean(artistName);
   syncSongFilterContext(Boolean(artistName));
-  const isSpecial = [ALL_SONGS, UNFILED, ARTISTS, NEEDS_LYRICS].includes(currentFolderId) || Boolean(artistName);
+  const isSpecial = [ALL_SONGS, UNFILED, ARTISTS, NEEDS_LYRICS, ...REVIEW_LISTS].includes(currentFolderId) || Boolean(artistName);
   const title = currentFolderId === ALL_SONGS ? t("All Songs")
     : currentFolderId === UNFILED ? t("Unfiled")
       : currentFolderId === NEEDS_LYRICS ? t("Needs lyrics")
+      : currentFolderId === REVIEW_IMPORTS ? t("Imports to review")
+      : currentFolderId === REVIEW_NO_KEY ? t("Songs without a key")
+      : currentFolderId === REVIEW_ODD_KEY ? t("Songs with an unusual key")
       : isArtistIndex ? t("Artists")
         : artistName || (folder ? folderDisplayName(folder) : "") || t("Folder");
   const subfolders = folder ? childFolders(folder.id) : [];
@@ -15145,6 +15336,39 @@ function renderQuickKey() {
     const value = keyValueFor(note, quickKeyMode);
     return `<button type="button" data-quick-note="${escapeAttribute(note)}" class="${value === song.key ? "selected" : ""}" aria-label="${escapeAttribute(fullKeyLabel(value))}">${keyNoteLabel(note, quickKeyMode)}</button>`;
   }).join("");
+  syncSoftKeyShift();
+}
+
+// Soft look: "Shift for today" in the key picker (minus, how far, plus). It moves the key and the chords for today (or for this event only when the song
+// was opened from an event) and never changes the saved key; tapping a note or a mode above is what changes the saved key.
+// It replaces the separate transpose chip on the song page. Added by JS only in the soft look.
+function syncSoftKeyShift() {
+  const sheet = els.quickKeySheet;
+  let row = sheet.querySelector(".quick-key-shift");
+  const song = currentSong();
+  if (!isSoftDesign() || !song) { row?.remove(); return; }
+  if (!row) {
+    row = document.createElement("div");
+    row.className = "quick-key-shift";
+    row.innerHTML = `<div class="quick-key-shift__line"><span class="quick-key-shift__label"></span><div class="quick-key-shift__stepper" role="group"><button type="button" class="quick-key-shift__down"><i data-lucide="minus"></i></button><button type="button" class="quick-key-shift__value"></button><button type="button" class="quick-key-shift__up"><i data-lucide="plus"></i></button></div></div><p class="quick-key-shift__hint"></p>`;
+    els.quickKeyGrid.after(row);
+    const press = (delta) => () => { changeTranspose(delta); syncSoftKeyShift(); };
+    row.querySelector(".quick-key-shift__down").addEventListener("click", press(-1));
+    row.querySelector(".quick-key-shift__up").addEventListener("click", press(1));
+    row.querySelector(".quick-key-shift__value").addEventListener("click", press(null));
+    refreshIcons();
+  }
+  row.hidden = !(keyHasNote(songKeyText(song)) || songHasChords(song));
+  const steps = songTranspose(song);
+  row.querySelector(".quick-key-shift__label").textContent = t("Shift for today");
+  row.querySelector(".quick-key-shift__down").setAttribute("aria-label", t("Shift down"));
+  row.querySelector(".quick-key-shift__up").setAttribute("aria-label", t("Shift up"));
+  const value = row.querySelector(".quick-key-shift__value");
+  value.textContent = steps === 0 ? "0" : `${steps > 0 ? "+" : "−"}${Math.abs(steps)}`;
+  value.setAttribute("aria-label", steps === 0 ? t("No shift") : t("Reset shift"));
+  const forEvent = Boolean(eventReadingItem(song));
+  const playing = steps && song.key ? ` ${t("Playing in")} ${compactKeyLabel(songCurrentKey(song))}.` : "";
+  row.querySelector(".quick-key-shift__hint").textContent = `${t(forEvent ? "For this event only. The saved key does not change." : "The saved key does not change.")}${playing}`;
 }
 
 function setQuickKey(value) {
@@ -17762,10 +17986,30 @@ function renderSongOrigin(song) {
     els.songOriginChip.querySelector("[data-lucide], svg")?.setAttribute?.("data-lucide", locked ? "lock" : "git-fork");
     els.songOriginChip.title = t(locked ? "From Jyrics. View-only: make your own copy to edit it." : "Your own copy of a Jyrics song. Its text cannot be copied out or shared.");
   }
+  syncSoftJyricsBanner(song, locked);
   els.songMyNotesBtn.hidden = !locked;
   const notes = locked ? (song.overlayNotes || "").trim() : "";
   els.songOverlayNote.hidden = !notes;
   els.songOverlayNote.querySelector("span").textContent = notes;
+  refreshIcons();
+}
+
+// Soft look: a view-only Jyrics song says so in a banner above the lyrics, with a "Make my copy" button (the same confirm and copy as the menu item).
+// Added by JS only in the soft look; the small "Jyrics" chip stays.
+function syncSoftJyricsBanner(song, locked) {
+  let banner = document.getElementById("songJyricsBanner");
+  if (!isSoftDesign() || !locked) { banner?.remove(); return; }
+  if (!banner) {
+    banner = document.createElement("div");
+    banner.id = "songJyricsBanner";
+    banner.className = "song-jyrics-banner";
+    banner.innerHTML = `<i data-lucide="lock"></i><span class="song-jyrics-banner__text"><strong></strong><small></small></span><button type="button" class="song-jyrics-banner__btn"></button>`;
+    els.songOverlayNote.before(banner);
+    banner.querySelector("button").addEventListener("click", () => { const current = currentSong(); if (current) openMakeCopy(current.id); });
+  }
+  banner.querySelector("strong").textContent = t("From the Jyrics library");
+  banner.querySelector("small").textContent = t("View-only. Make your own copy to edit it.");
+  banner.querySelector("button").textContent = t("Make my copy");
   refreshIcons();
 }
 
@@ -20351,11 +20595,48 @@ function perfSongTitle(entry) {
   return state.songs.find((song) => song.id === entry?.item.songId)?.title || "";
 }
 
+// Soft look: Back and Next sit in a bar at the bottom of Performance, Next large with the next song's title and key.
+// The row is moved there by JS only in the soft look (and put back under the top bar for Classic and New), so nothing else about it changes.
+function syncSoftPerfBar() {
+  const view = els.performanceView, row = els.perfEventRow;
+  const soft = isSoftDesign();
+  if (soft && row.parentElement !== view) {
+    view.insertBefore(row, els.perfNotice);
+    els.perfPrevBtn.innerHTML = `<i data-lucide="chevron-left"></i><span></span>`;
+    refreshIcons();
+  } else if (!soft && row.parentElement === view) {
+    els.perfBar.append(row);
+    els.perfPrevBtn.innerHTML = '<i data-lucide="chevron-left"></i>';
+    els.perfNextBtn.innerHTML = '<i data-lucide="chevron-right"></i>';
+    els.perfPrevBtn.setAttribute("aria-label", "Previous song");
+    els.perfNextBtn.setAttribute("aria-label", "Next song");
+    delete els.perfNextBtn.dataset.soft;
+    refreshIcons();
+  }
+  row.classList.toggle("perf-bottom-bar", soft);
+  return soft;
+}
+
 function renderPerformanceEventRow() {
   const position = perfEventPosition();
+  const soft = syncSoftPerfBar();
   els.perfEventRow.hidden = !position;
   if (!position) return;
   const { order, index } = position;
+  if (soft) {
+    const next = order[index + 1];
+    const nextSong = next ? state.songs.find((song) => song.id === next.item.songId) : null;
+    const key = nextSong ? eventItemKey(next.item, nextSong) : "";
+    const title = next ? perfSongTitle(next) : "";
+    els.perfPrevBtn.querySelector("span").textContent = t("Back");
+    els.perfPrevBtn.setAttribute("aria-label", t("Previous song"));
+    els.perfNextBtn.dataset.soft = "1";
+    els.perfNextBtn.innerHTML = next
+      ? `<span class="perf-next__text"><small>${escapeHtml(t("Next"))} · ${index + 1}/${order.length}</small><strong dir="auto">${escapeHtml(title)}</strong></span>${key ? `<span class="perf-next__key">${keyLabelHtml(key)}</span>` : ""}<i data-lucide="chevron-right"></i>`
+      : `<span class="perf-next__text"><small>${index + 1}/${order.length}</small><strong>${escapeHtml(t("Last song"))}</strong></span>`;
+    els.perfNextBtn.setAttribute("aria-label", next ? `${t("Next song")}: ${title}${key ? `, ${compactKeyLabel(key)}` : ""}` : t("Last song"));
+    refreshIcons();
+  }
   els.perfPrevBtn.disabled = index === 0;
   els.perfNextBtn.disabled = index === order.length - 1;
   const next = order[index + 1];
@@ -21989,9 +22270,62 @@ function showSettingsMain(title = t("Settings & Backup")) {
   refreshUndoImportRow();
   refreshFixArtistsRow();
   refreshDuplicatesRow();
+  refreshReviewRows();
   refreshTidyStylesRow();
   refreshSplitArtistsRow();
   els.appVersionText.textContent = APP_BUILD;
+}
+
+// Soft look: Review and fix. The group is built here (not written in index.html) so Classic and New never have it in their page.
+// The counts are worked out each time Settings opens; nothing is stored.
+const REVIEW_ROWS = [
+  ["reviewUnfiledBtn", "inbox", "Unfiled songs"],
+  ["reviewDuplicatesBtn", "copy", "Possible duplicates"],
+  ["reviewImportsBtn", "clipboard-check", "Imports to review"],
+  ["reviewNoKeyBtn", "music", "Songs without a key"],
+  ["reviewOddKeyBtn", "key-round", "Songs with an unusual key"]
+];
+
+function ensureReviewGroup() {
+  if (document.querySelector(".review-fix-group")) return;
+  // The label above the backup card (found by position: its text is translated).
+  const before = document.getElementById("exportLibraryBtn")?.closest(".slp-card")?.previousElementSibling;
+  if (!before) return;
+  const group = document.createElement("div");
+  group.className = "review-fix-group";
+  group.innerHTML = `<span class="slp-section-label">${t("REVIEW AND FIX")}</span><section class="slp-card">${REVIEW_ROWS.map(([id, icon, title]) => `<button id="${id}" class="slp-row" type="button"><span class="slp-row__icon-tile"><i data-lucide="${icon}"></i></span><span class="slp-row__body"><span class="slp-row__title">${t(title)}</span><span id="${id}Count" class="slp-row__subtitle"></span></span><i data-lucide="chevron-right" class="slp-row__chevron"></i></button>`).join("")}</section>`;
+  before.before(group);
+  const go = { reviewUnfiledBtn: () => openReviewList(UNFILED), reviewDuplicatesBtn: () => document.getElementById("openDuplicatesBtn").click(), reviewImportsBtn: () => openReviewList(REVIEW_IMPORTS), reviewNoKeyBtn: () => openReviewList(REVIEW_NO_KEY), reviewOddKeyBtn: () => openReviewList(REVIEW_ODD_KEY) };
+  Object.entries(go).forEach(([id, fn]) => document.getElementById(id).addEventListener("click", fn));
+  refreshIcons();
+}
+
+function refreshReviewRows() {
+  const group = document.querySelector(".review-fix-group");
+  if (!isSoftDesign()) { group?.remove(); return; }
+  ensureReviewGroup();
+  const n = (test) => state.songs.filter(test).length;
+  const set = (id, count, one, many) => { const el = document.getElementById(id + "Count"); if (el) el.textContent = count ? `${count} ${t(count === 1 ? one : many)}` : t("None"); };
+  set("reviewUnfiledBtn", n(songIsUnfiled), "song", "songs");
+  const pairs = duplicateCount();
+  set("reviewDuplicatesBtn", pairs, "pair to review", "pairs to review");
+  set("reviewImportsBtn", n(REVIEW_TESTS[REVIEW_IMPORTS]), "song", "songs");
+  set("reviewNoKeyBtn", n(REVIEW_TESTS[REVIEW_NO_KEY]), "song", "songs");
+  set("reviewOddKeyBtn", n(REVIEW_TESTS[REVIEW_ODD_KEY]), "song", "songs");
+}
+
+function openReviewList(folderId) {
+  workspaceMode = "library";
+  libraryMode = "category";
+  state.gigNavigation.gigId = null;
+  currentFolderId = folderId;
+  selectedSongId = null;
+  mobileView = "folder";
+  songReorderMode = false;
+  subfolderEditMode = false;
+  expandedSongs.clear();
+  closeOverlays();
+  render();
 }
 
 function refreshTitleAlignRow() {
@@ -22784,6 +23118,62 @@ function renderGigs() {
 // Details collapse as plain .slp-details-field rows (same treatment as
 // Note Detail's Date/Folder), so the chips and their reveal-on-tap
 // interaction are retired along with the old always-visible facts strip.
+// Soft look, event screen header: back, title, Perform and the more menu. Search, Share and Edit sit in the row beside Details.
+// Added by JS only in the soft look (and put back when the look changes), so Classic and New keep their header exactly as it was.
+// The row's buttons press the original buttons, so nothing about how search, sharing or editing the set list works has changed.
+function syncSoftEventHeader(gig) {
+  const view = els.gigDetailView;
+  const collapse = els.gigDetailsCollapse;
+  const row = view.querySelector(".gig-details-row");
+  let perform = document.getElementById("gigPerformBtn");
+  if (!isSoftDesign()) {
+    if (typeof row?.before === "function") { row.before(collapse); row.remove(); }
+    perform?.remove();
+    return;
+  }
+  if (!perform) {
+    perform = document.createElement("button");
+    perform.id = "gigPerformBtn";
+    perform.type = "button";
+    perform.className = "slp-btn gig-perform-btn";
+    perform.innerHTML = '<i data-lucide="play"></i><span></span>';
+    els.gigDetailTitle.closest("header").querySelector("details.slp-menu").before(perform);
+    perform.addEventListener("click", () => {
+      const first = gigReadingOrder(state.gigNavigation.gigId)[0];
+      if (first) readGigSong(first.item.songId, first.item.id);
+    });
+  }
+  perform.querySelector("span").textContent = t("Perform");
+  perform.hidden = !gigReadingOrder(gig.id).length;
+  let bar = row;
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = "gig-details-row";
+    collapse.before(bar);
+    bar.append(collapse);
+    const proxies = [
+      ["gig-details-search", () => els.gigPlanSearchBtn, "slp-btn slp-btn--icon", '<i data-lucide="search"></i>'],
+      ["gig-details-share", () => els.shareGigBtn, "slp-btn slp-btn--icon", '<i data-lucide="share-2"></i>'],
+      ["gig-details-edit", () => els.gigStructureEditBtn, "slp-link-btn", ""]
+    ];
+    proxies.forEach(([cls, target, btnClass, html]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `${btnClass} ${cls}`;
+      button.innerHTML = html;
+      button.addEventListener("click", () => target().click());
+      bar.append(button);
+    });
+    refreshIcons();
+  }
+  bar.querySelector(".gig-details-search").setAttribute("aria-label", els.gigPlanSearchBtn.getAttribute("aria-label") || "Search");
+  bar.querySelector(".gig-details-share").setAttribute("aria-label", t("Share event"));
+  const edit = bar.querySelector(".gig-details-edit");
+  edit.textContent = els.gigStructureEditBtn.textContent;
+  edit.setAttribute("aria-pressed", els.gigStructureEditBtn.getAttribute("aria-pressed") || "false");
+  edit.setAttribute("aria-label", els.gigStructureEditBtn.getAttribute("aria-label") || "Edit");
+}
+
 function renderGigDetailsPanel(gig) {
   els.gigDetailsFields.innerHTML = gigInfoMarkup(gig);
   // Closed, the row still tells you when and where.
@@ -22832,6 +23222,7 @@ function renderGigBuilder(gig) {
   els.gigStructureEditBtn.classList.toggle("is-on", gigStructureEditMode);
   els.addGigSectionBtn.classList.toggle("hidden", !gigStructureEditMode);
   renderGigDetailsPanel(gig);
+  syncSoftEventHeader(gig);
   renderGigPlanSearchOptions(gig, sections);
   els.gigBuilderEmpty.classList.toggle("hidden", Boolean(sections.length));
   const sectionMarkup = sections.map((section, sectionIndex) => gigSectionMarkup(section, sectionIndex, sections.length)).filter(Boolean);
@@ -24097,7 +24488,7 @@ function gigRelativeLabel(date) {
 function gigSideDetailsMarkup(gig, preview = false) {
   const first = gigReadingOrder(gig.id)[0];
   const icon = (id, name, label) => `<button id="${id}" class="gig-info-action" type="button" aria-label="${label}" title="${label}"><i data-lucide="${name}"></i></button>`;
-  const start = preview ? `<button id="gigSideOpenBtn" class="gig-info-primary" type="button"><i data-lucide="list-music"></i><span>${t("Open setlist")}</span></button>` : first ? `<button id="gigSideStartBtn" class="gig-info-primary" type="button"><i data-lucide="play"></i><span>${t("Start the set")}</span></button>` : "";
+  const start = preview ? `<button id="gigSideOpenBtn" class="gig-info-primary" type="button"><i data-lucide="list-music"></i><span>${t("Open setlist")}</span></button>` : first && !isSoftDesign() ? `<button id="gigSideStartBtn" class="gig-info-primary" type="button"><i data-lucide="play"></i><span>${t("Start the set")}</span></button>` : "";
   return `<div class="gig-info-card">
       <div class="gig-info-actions">${preview ? "" : icon("gigSideEditBtn", "pencil", "Edit event details")}${icon("gigSideShareBtn", "share-2", "Share event")}</div>
       ${gigInfoMarkup(gig, { title: true })}
@@ -28166,8 +28557,81 @@ function stopAllToolVoices() {
 
 // ---------- hub ----------
 
+// Soft look: Pitch Pipe, Piano Notes and Reference Tones are one tool, "Tones", with the tabs One note, Drone and Keyboard. Each tab is still the same
+// tool underneath (same sound, same settings, same saved preferences); the hub's Starting note and Metronome work right on the hub.
+const TONES_TABS = [["pitch-pipe", "One note"], ["reference", "Drone"], ["piano", "Keyboard"]];
+const SOFT_HUB_HIDDEN = ["pitch-pipe", "metronome", "piano", "reference"];
+let lastTonesTool = "pitch-pipe";
+
+function toolsTabsMarkup(activeId) {
+  return `<div class="slp-segmented tools-tabs" role="tablist" aria-label="${escapeAttribute(t("Tones"))}">${TONES_TABS.map(([id, name]) => `<button type="button" role="tab" data-tones-tab="${id}" aria-selected="${id === activeId}" class="${id === activeId ? "selected" : ""}">${escapeHtml(t(name))}</button>`).join("")}</div>`;
+}
+
+function hubPipeVoice() { return toolVoices.find((voice) => voice.role === "hub-pipe"); }
+
+function softHubMarkup() {
+  const playing = Boolean(hubPipeVoice());
+  const metroOn = Boolean(toolMeter) && !activeToolId;
+  const label = `${toolNoteLabel(TOOL_NOTE_NAMES[toolPrefs.pipeNote])}${toolPrefs.octave}`;
+  return `<section class="slp-card tools-live" aria-label="${escapeAttribute(t("Starting note"))}">
+      <div class="tools-live__head"><h2 class="tools-live__title">${t("Starting note")}</h2><button type="button" class="tools-live__more" data-hub-open="pitch-pipe">${t("More")}</button></div>
+      <div class="tools-live__readout" aria-live="polite"><strong>${label}</strong><small>${pipeFrequency().toFixed(1)} Hz</small></div>
+      <div class="tool-note-grid" role="group" aria-label="${escapeAttribute(t("Starting note"))}">${TOOL_NOTE_NAMES.map((name, index) => `<button type="button" class="tool-note ${index === toolPrefs.pipeNote ? "selected" : ""} ${index === toolPrefs.pipeNote && playing ? "playing" : ""}" data-hub-note="${index}" aria-pressed="${index === toolPrefs.pipeNote && playing}">${toolNoteLabel(name)}</button>`).join("")}</div>
+    </section>
+    <section class="slp-card tools-live" aria-label="${escapeAttribute(t("Metronome"))}">
+      <div class="tools-live__head"><h2 class="tools-live__title">${t("Metronome")}</h2><button type="button" class="tools-live__more" data-hub-open="metronome">${t("More")}</button></div>
+      <div class="tools-live__readout" aria-live="polite"><strong>${toolPrefs.bpm}</strong><small>BPM</small></div>
+      <div class="tools-live__tempo"><button type="button" class="tool-round" data-hub-tempo="-1" aria-label="${escapeAttribute(t("Slower"))}"><i data-lucide="minus"></i></button><button type="button" class="tool-round" data-hub-tempo="1" aria-label="${escapeAttribute(t("Faster"))}"><i data-lucide="plus"></i></button><button type="button" class="tools-live__start ${metroOn ? "running" : ""}" data-hub-metro aria-pressed="${metroOn}"><i data-lucide="${metroOn ? "square" : "play"}"></i><span>${t(metroOn ? "Stop||tools" : "Start||tools")}</span></button></div>
+    </section>`;
+}
+
+function syncSoftToolsHub() {
+  let live = document.getElementById("toolsHubLive");
+  if (!isSoftDesign()) { live?.remove(); return; }
+  if (!live) {
+    live = document.createElement("div");
+    live.id = "toolsHubLive";
+    live.className = "tools-hub-live";
+    els.toolsGrid.before(live);
+    live.addEventListener("click", (event) => {
+      const open = event.target.closest("[data-hub-open]");
+      if (open) { openTool(open.dataset.hubOpen); return; }
+      const note = event.target.closest("[data-hub-note]");
+      if (note) {
+        const index = Number(note.dataset.hubNote);
+        const voice = hubPipeVoice();
+        if (voice && toolPrefs.pipeNote === index) voice.stop();
+        else {
+          toolPrefs.pipeNote = index;
+          saveToolPrefs();
+          if (voice) voice.setFrequency(pipeFrequency());
+          else {
+            const started = startToolTone(pipeFrequency());
+            if (!started) showToast("Sound isn't available on this device");
+            else started.role = "hub-pipe";
+          }
+        }
+        syncSoftToolsHub();
+        return;
+      }
+      const tempo = event.target.closest("[data-hub-tempo]");
+      if (tempo) { setMetronomeTempo(toolPrefs.bpm + Number(tempo.dataset.hubTempo)); syncSoftToolsHub(); return; }
+      if (event.target.closest("[data-hub-metro]")) {
+        if (toolMeter) TOOL_VIEWS.metronome.stop();
+        else TOOL_VIEWS.metronome.start();
+        syncSoftToolsHub();
+      }
+    });
+  }
+  live.innerHTML = softHubMarkup();
+  refreshIcons();
+}
+
 function renderToolsHub() {
-  els.toolsGrid.innerHTML = TOOL_DEFS.map((tool) => `<button class="tool-card" type="button" data-tool="${tool.id}"><span class="slp-row__icon-tile"><i data-lucide="${tool.icon}"></i></span><span class="tool-card__name">${escapeHtml(tool.name)}</span><span class="tool-card__blurb">${escapeHtml(tool.blurb)}</span></button>`).join("");
+  const soft = isSoftDesign();
+  const tonesCard = soft ? `<button class="tool-card" type="button" data-tool="${lastTonesTool}"><span class="slp-row__icon-tile"><i data-lucide="audio-lines"></i></span><span class="tool-card__name">${t("Tones")}</span><span class="tool-card__blurb">${t("One note, a drone, or a keyboard.")}</span></button>` : "";
+  els.toolsGrid.innerHTML = tonesCard + TOOL_DEFS.filter((tool) => !soft || !SOFT_HUB_HIDDEN.includes(tool.id)).map((tool) => `<button class="tool-card" type="button" data-tool="${tool.id}"><span class="slp-row__icon-tile"><i data-lucide="${tool.icon}"></i></span><span class="tool-card__name">${escapeHtml(tool.name)}</span><span class="tool-card__blurb">${escapeHtml(tool.blurb)}</span></button>`).join("");
+  syncSoftToolsHub();
 }
 
 function renderTools() {
@@ -28258,6 +28722,11 @@ function openTool(id) {
   els.toolTitle.textContent = tool.name;
   els.toolTransport.classList.toggle("hidden", !tool.transport);
   els.toolBody.innerHTML = TOOL_VIEWS[id].render();
+  if (isSoftDesign() && TONES_TABS.some(([tab]) => tab === id)) {
+    els.toolTitle.textContent = t("Tones");
+    lastTonesTool = id;
+    els.toolBody.insertAdjacentHTML("afterbegin", toolsTabsMarkup(id));
+  }
   setToolRunning(false);
   els.toolBody.scrollTop = 0;
   render();
@@ -28272,8 +28741,9 @@ function closeTool() {
 }
 
 function stopActiveTool() {
-  if (!activeToolId && !toolRunning && !toolVoices.length) return;
+  if (!activeToolId && !toolRunning && !toolVoices.length && !toolMeter) return;
   TOOL_VIEWS[activeToolId]?.stop?.();
+  if (toolMeter) TOOL_VIEWS.metronome.stop();   // the metronome started from the soft hub has no open tool to stop it
   stopAllToolVoices();
   setToolRunning(false);
 }
@@ -28301,6 +28771,11 @@ function applyToolSetting(key, rawValue) {
 }
 
 function handleToolBodyClick(event) {
+  const tonesTab = event.target.closest("[data-tones-tab]");
+  if (tonesTab) {
+    if (tonesTab.dataset.tonesTab !== activeToolId) openTool(tonesTab.dataset.tonesTab);
+    return;
+  }
   const collapse = event.target.closest("[data-tool-collapse]");
   if (collapse) {
     const opening = collapse.getAttribute("aria-expanded") !== "true";
@@ -29326,6 +29801,7 @@ function songsInCurrentFolder() {
   if (currentFolderId === ARTISTS) return [];
   const artistName = artistNameFromFolderId(currentFolderId);
   if (currentFolderId === NEEDS_LYRICS) return state.songs.filter(songNeedsLyrics);
+  if (REVIEW_LISTS.includes(currentFolderId)) return state.songs.filter(REVIEW_TESTS[currentFolderId]);
   if (artistName) return state.songs.filter((song) => (song.artists || []).some((artist) => normalizedArtist(artist) === normalizedArtist(artistName)));
   return state.songs.filter((song) => song.folderIds.includes(currentFolderId));
 }
@@ -30124,6 +30600,13 @@ function eventKeyFor(song, override) {
   return `${chosen.root}${own.suffix}`;
 }
 
+// Settings > Review and fix. The Board's "Other" key chip uses the same rule for an unusual key (not a grid key), so the two always agree.
+const REVIEW_TESTS = {
+  [REVIEW_IMPORTS]: (song) => song.needsReview === true,
+  [REVIEW_NO_KEY]: (song) => keyIsPlaceholder(song.key),
+  [REVIEW_ODD_KEY]: (song) => !keyIsPlaceholder(song.key) && !keyIsGridKey(song.key)
+};
+
 function songNeedsLyrics(song) {
   return Boolean(song.needsDetails) && !songHasLyricText(song.documentHtml);
 }
@@ -30319,7 +30802,7 @@ function selectCheckMarkup() {
 function folderSelectContext() {
   const folder = folderById(currentFolderId);
   const artistName = artistNameFromFolderId(currentFolderId);
-  const kind = artistName ? "artist" : currentFolderId === ALL_SONGS || currentFolderId === NEEDS_LYRICS ? "all" : currentFolderId === UNFILED ? "unfiled" : "folder";
+  const kind = artistName ? "artist" : currentFolderId === ALL_SONGS || currentFolderId === NEEDS_LYRICS || REVIEW_LISTS.includes(currentFolderId) ? "all" : currentFolderId === UNFILED ? "unfiled" : "folder";
   return {
     key: `folder:${currentFolderId}`,
     kind,
@@ -30681,6 +31164,7 @@ document.addEventListener("click", (event) => {
 });
 els.appSongsNavBtn.addEventListener("click", () => {
   closeOverlays();
+  if (workspaceMode === "library" && libraryMode === "category") softHomePage = null;
   switchLibraryMode("category");
 });
 els.appEventsNavBtn.addEventListener("click", () => {
