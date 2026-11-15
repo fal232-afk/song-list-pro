@@ -8,15 +8,22 @@
  * keeps the app's code and icons so it can start offline. */
 "use strict";
 
-const VERSION = "98b614202c8d";
+const VERSION = "20ab1ffebb3a";
 const SHELL_CACHE = `slp-shell-${VERSION}`;
 const RUNTIME_CACHE = "slp-runtime-v1";
-// The PDF reader (vendor/) is not precached: it is fetched the first time a PDF import needs it and kept for offline use.
+// The PDF reader (vendor/pdf*) is not precached: it is fetched the first time a PDF import needs it and kept for offline use.
+// The soft look's fonts (vendor/fonts/) are precached in the shell cache.
 const VENDOR_CACHE = `slp-vendor-${VERSION}`;
 const PRECACHE = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
+  "./vendor/fonts/assistant-hebrew.woff2",
+  "./vendor/fonts/assistant-latin-ext.woff2",
+  "./vendor/fonts/assistant-latin.woff2",
+  "./vendor/fonts/bellefair-hebrew.woff2",
+  "./vendor/fonts/bellefair-latin-ext.woff2",
+  "./vendor/fonts/bellefair-latin.woff2",
   "./icons/apple-touch-icon.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -56,7 +63,8 @@ self.addEventListener("fetch", (event) => {
 
   if (url.origin === self.location.origin && url.pathname.includes("/vendor/")) {
     event.respondWith(caches.open(VENDOR_CACHE).then(async (cache) => {
-      const cached = await cache.match(request);
+      // Precached files (the soft look's fonts) live in the shell cache; the PDF reader is kept here after its first use.
+      const cached = await cache.match(request) || await caches.match(request, { ignoreSearch: true });
       if (cached) return cached;
       const response = await fetch(request);
       if (response.ok) cache.put(request, response.clone());

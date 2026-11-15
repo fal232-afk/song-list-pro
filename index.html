@@ -6330,6 +6330,8 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 .toast.toast--perf { z-index: 95; bottom: auto; }
 /* A long lyric line that wraps hangs its continuation under the first words, so it does not look like a new line. */
 .song-document > div, #perfDoc > div { padding-inline-start: 1.2em; text-indent: -1.2em; }
+/* text-indent is inherited: without this reset the inline-block chord pairs got the -1.2em indent too and measured about 29px too narrow, so chords and words overlapped. */
+.song-document .cp, #perfDoc .cp { text-indent: 0; }
 /* The performance title lines up with the lyrics in a right-to-left song. */
 #perfTitle[data-dir="rtl"] { --title-text-align: right; text-align: right; }
 /* The key badge in a setlist row keeps its width and its focus ring clear of the title. */
@@ -6556,6 +6558,763 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-color-mode="dark"] .lyric-sheet.theme-default .song-document h2 { color: var(--color-text); }
 :root[data-color-mode="dark"] .lyric-sheet.theme-default .song-document .cp-chord { background: var(--accent-soft); color: var(--accent); }
 :root[data-color-mode="dark"] .lyric-sheet.theme-default .song-document .line-disclosure-content { color: var(--color-text); }
+
+
+/* ============================================================================================================
+   SOFT LOOK (data-design="soft") -- a third look beside Classic and New. Reference: design/soft-2026-11/.
+   Rounded tonal panels on a tinted ground; surfaces differ by tone only (no outlines, no shadows on buttons,
+   chips, cards or sheets). 1px separators INSIDE a panel stay. Titles in Bellefair, everything else in Assistant.
+   Every style rule below is scoped to :root[data-design="soft"]; Classic and New are untouched.
+   The @font-face rules cannot be scoped; they only download when a soft rule uses the family.
+   ============================================================================================================ */
+@font-face { font-family: 'Assistant'; font-style: normal; font-weight: 200 800; font-display: swap; src: url(vendor/fonts/assistant-hebrew.woff2) format('woff2'); unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F; }
+@font-face { font-family: 'Assistant'; font-style: normal; font-weight: 200 800; font-display: swap; src: url(vendor/fonts/assistant-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Assistant'; font-style: normal; font-weight: 200 800; font-display: swap; src: url(vendor/fonts/assistant-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Bellefair'; font-style: normal; font-weight: 400; font-display: swap; src: url(vendor/fonts/bellefair-hebrew.woff2) format('woff2'); unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F; }
+@font-face { font-family: 'Bellefair'; font-style: normal; font-weight: 400; font-display: swap; src: url(vendor/fonts/bellefair-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Bellefair'; font-style: normal; font-weight: 400; font-display: swap; src: url(vendor/fonts/bellefair-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* ---- Tokens: copied from design/soft-2026-11/soft-tokens.css ---- */
+/* Song List Pro — "soft" look tokens. Apply ONLY under :root[data-design="soft"]. */
+
+/* Shape and type */
+:root[data-design="soft"] {
+  --soft-radius-control: 14px;
+  --soft-radius-panel: 22px;
+  --soft-radius-sheet: 26px;
+  --soft-radius-key-badge: 11px;
+  --soft-font-title: "Bellefair", "Times New Roman", serif;   /* screen titles, section names, big readouts */
+  --soft-font-ui: "Assistant", system-ui, sans-serif;          /* everything else, including lyrics */
+  --soft-title-size: 40px;       /* root screens */
+  --soft-subtitle-size: 26px;    /* pushed screens */
+  --soft-row-title: 600 17px var(--soft-font-ui);
+  --soft-chord: 800 18px var(--soft-font-ui);   /* 0.7 x lyric size; 22px in Performance */
+  --soft-tap-min: 44px;
+  /* No borders and no shadows on panels: surfaces differ by tone only. */
+}
+
+/* Backgrounds: bg = page, panel = raised surface, panel2 = selected/divider, fg = text, mute = secondary text */
+:root[data-design="soft"][data-soft-bg="linen"] { /* Linen */
+  --bg: #EFECE5; --panel: #FAF9F5; --panel2: #E0DCD2; --fg: #1E1D1B; --mute: #5F5C57;
+  --accT: var(--accL);   /* accent used as TEXT on this background */
+}
+:root[data-design="soft"][data-soft-bg="white"] { /* White */
+  --bg: #FFFFFF; --panel: #F2F2F0; --panel2: #E3E3E0; --fg: #17181A; --mute: #5B5E63;
+  --accT: var(--accL);   /* accent used as TEXT on this background */
+}
+:root[data-design="soft"][data-soft-bg="mist"] { /* Mist */
+  --bg: #E6EAEF; --panel: #F4F6F8; --panel2: #D3DAE3; --fg: #222A35; --mute: #566072;
+  --accT: var(--accL);   /* accent used as TEXT on this background */
+}
+:root[data-design="soft"][data-soft-bg="sand"] { /* Sand */
+  --bg: #E8DFD0; --panel: #F5EFE4; --panel2: #D8CCB8; --fg: #2A241C; --mute: #62584A;
+  --accT: var(--accL);   /* accent used as TEXT on this background */
+}
+:root[data-design="soft"][data-soft-bg="slate"] { /* Slate (dark) */
+  --bg: #232A36; --panel: #2C3442; --panel2: #3A4455; --fg: #E8EAEE; --mute: #A3ABB8;
+  --accT: var(--accD);   /* accent used as TEXT on this background */
+}
+:root[data-design="soft"][data-soft-bg="charcoal"] { /* Charcoal (dark) */
+  --bg: #1E1D1B; --panel: #2B2A27; --panel2: #3B3935; --fg: #F2F0EA; --mute: #B4B0A7;
+  --accT: var(--accD);   /* accent used as TEXT on this background */
+}
+:root[data-design="soft"][data-soft-bg="black"] { /* Black (dark) */
+  --bg: #000000; --panel: #1C1C1E; --panel2: #2E2E30; --fg: #F5F5F7; --mute: #A1A1A6;
+  --accT: var(--accD);   /* accent used as TEXT on this background */
+}
+
+/* Accents: acc = fill, on = text on the fill, accL = accent text on light backgrounds, accD = on dark backgrounds */
+:root[data-design="soft"][data-soft-accent="wine"] { /* Wine */
+  --acc: #7D3F4A; --on: #FAF9F5; --accL: #7D3F4A; --accD: #E0A5AF;
+}
+:root[data-design="soft"][data-soft-accent="teal"] { /* Teal */
+  --acc: #0F6E64; --on: #FFFFFF; --accL: #0F6E64; --accD: #7FD1C5;
+}
+:root[data-design="soft"][data-soft-accent="blue"] { /* Blue */
+  --acc: #2F5FB3; --on: #FFFFFF; --accL: #2F5FB3; --accD: #9DBBF0;
+}
+:root[data-design="soft"][data-soft-accent="violet"] { /* Violet */
+  --acc: #5E4B9B; --on: #FFFFFF; --accL: #5E4B9B; --accD: #BDB0EA;
+}
+:root[data-design="soft"][data-soft-accent="forest"] { /* Forest */
+  --acc: #3F6B4A; --on: #FFFFFF; --accL: #3F6B4A; --accD: #A5D1AE;
+}
+:root[data-design="soft"][data-soft-accent="amber"] { /* Amber */
+  --acc: #F2B544; --on: #1E1D1B; --accL: #855600; --accD: #F2B544;
+}
+:root[data-design="soft"][data-soft-accent="apricot"] { /* Apricot */
+  --acc: #E9B99A; --on: #2A2420; --accL: #8A4730; --accD: #E9B99A;
+}
+:root[data-design="soft"][data-soft-accent="ink"] { /* No color */
+  --acc: #3A3A3A; --on: #FFFFFF; --accL: #1E1D1B; --accD: #F2F0EA;
+}
+
+/* "No color" accent on dark backgrounds uses a light fill */
+:root[data-design="soft"][data-soft-accent="ink"][data-soft-bg="slate"],
+:root[data-design="soft"][data-soft-accent="ink"][data-soft-bg="charcoal"],
+:root[data-design="soft"][data-soft-accent="ink"][data-soft-bg="black"] { --acc: #E8E8E8; --on: #17181A; }
+
+/* Performance mode is always black, whatever background is chosen; only the key pill takes the accent. */
+:root[data-design="soft"] .performance-view {
+  --bg: #000000; --panel: #1C1C1E; --panel2: #2E2E30; --fg: #F5F5F7; --mute: #A1A1A6; --accT: var(--accD);
+}
+
+/* Default when the look is first chosen: Mist + Wine */
+
+
+/* ---- The app's own semantic tokens, remapped onto the soft ones ---- */
+:root[data-design="soft"] {
+  --color-bg: var(--bg); --color-card: var(--panel); --color-card-2: var(--panel); --color-text: var(--fg);
+  --color-text-secondary: var(--mute); --color-border: var(--panel2); --color-chip-bg: var(--panel2);
+  --shadow-card: none; --shadow: none;
+  --accent: var(--acc); --accent-soft: var(--panel2); --accent-soft-2: var(--panel2);
+  --font-family: var(--soft-font-ui);
+  --radius-sm: var(--soft-radius-key-badge); --radius-md: var(--soft-radius-control); --radius-md-plus: var(--soft-radius-control);
+  --radius-lg: var(--soft-radius-control); --radius-xl: var(--soft-radius-control); --radius-2xl: var(--soft-radius-panel);
+  --space-11: 16px;   /* the screen gutter */
+}
+:root[data-design="soft"][data-soft-bg="slate"], :root[data-design="soft"][data-soft-bg="charcoal"], :root[data-design="soft"][data-soft-bg="black"] { color-scheme: dark; }
+:root[data-design="soft"][data-soft-bg="linen"], :root[data-design="soft"][data-soft-bg="white"], :root[data-design="soft"][data-soft-bg="mist"], :root[data-design="soft"][data-soft-bg="sand"] { color-scheme: light; }
+
+:root[data-design="soft"] body, :root[data-design="soft"] button, :root[data-design="soft"] input, :root[data-design="soft"] select, :root[data-design="soft"] textarea { font-family: var(--soft-font-ui); }
+
+/* ---- Shared pieces, first used by Songs home ---- */
+/* The ground: every screen sits on the page tone; panels are one tone lighter (or deeper in dark). */
+:root[data-design="soft"] .app-shell, :root[data-design="soft"] .pane, :root[data-design="soft"] .slp-screen { background: var(--bg); }
+/* Screen titles: Bellefair, 40px on root screens, 26px on pushed screens. */
+:root[data-design="soft"] .slp-header__title { font-family: var(--soft-font-title); font-weight: 400; font-size: var(--soft-subtitle-size); line-height: 1.1; color: var(--fg); }
+:root[data-design="soft"] .slp-header--screen-root .slp-header__title { font-size: var(--soft-title-size); line-height: 1; }
+:root[data-design="soft"] .slp-header--screen-root { padding-inline: 4px; }
+:root[data-design="soft"] .slp-header__back { color: var(--fg); }
+
+/* Buttons: tonal, no outline, no shadow. Header chrome (search, settings, +) is icons; the one accent control is the +. */
+:root[data-design="soft"] .slp-btn { box-shadow: none; border: 0; border-radius: var(--soft-radius-control); font-weight: 600; }
+:root[data-design="soft"] .slp-btn--icon { background: transparent; color: var(--fg); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .slp-btn--icon[aria-pressed="true"] { background: var(--panel2); color: var(--fg); }
+:root[data-design="soft"] .slp-btn--fab, :root[data-design="soft"] .slp-btn--primary { background: var(--acc); color: var(--on); }
+:root[data-design="soft"] .slp-btn--soft { background: var(--panel); color: var(--fg); }
+:root[data-design="soft"] .slp-btn--ghost { background: transparent; color: var(--mute); }
+:root[data-design="soft"] .slp-link-btn { color: var(--accT); font-weight: 600; }
+:root[data-design="soft"] .slp-link-btn--accent { color: var(--accT); }
+
+/* List / Board: a tonal pill, the selected half is one tone deeper. */
+:root[data-design="soft"] .slp-segmented { background: var(--panel); padding: 3px; gap: 0; border-radius: var(--soft-radius-control); box-shadow: none; border: 0; }
+:root[data-design="soft"] .slp-segmented button { border-radius: var(--soft-radius-key-badge); color: var(--mute); font-size: 15px; font-weight: 600; box-shadow: none; }
+:root[data-design="soft"] .slp-segmented button.selected { background: var(--panel2); color: var(--fg); box-shadow: none; }
+:root[data-design="soft"] #songLibraryContent > .songs-view-bar .slp-segmented { padding: 3px; }
+
+/* Panels and rows: a tonal panel, rows separated by a 1px line in the deeper tone. */
+:root[data-design="soft"] .slp-card { background: var(--panel); border-radius: var(--soft-radius-panel); box-shadow: none; border: 0; }
+:root[data-design="soft"] .slp-row { background: transparent; padding: 0 16px; min-height: 54px; border: 0; border-bottom: 1px solid var(--panel2); color: var(--fg); }
+:root[data-design="soft"] .slp-row:last-child { border-bottom: 0; }
+:root[data-design="soft"] .slp-row.selected { background: transparent; }
+@media (min-width: 901px) { :root[data-design="soft"] .slp-row.selected { background: var(--panel2); } }
+:root[data-design="soft"] .slp-row__icon-tile { width: 28px; height: 28px; background: transparent; color: var(--accT); border-radius: 0; }
+:root[data-design="soft"] .slp-row__title { font: var(--soft-row-title); color: var(--fg); }
+:root[data-design="soft"] .slp-row__subtitle { font-size: 13px; color: var(--mute); }
+:root[data-design="soft"] .slp-row__count { font-size: 15px; font-weight: 400; color: var(--mute); }
+:root[data-design="soft"] .slp-row__chevron { color: var(--mute); }
+:root[data-design="soft"] .slp-row--empty { background: transparent; }
+:root[data-design="soft"] .slp-row--empty .slp-row__empty-action { color: var(--accT); }
+:root[data-design="soft"] .folder-expand-btn { color: var(--mute); }
+
+/* Section names ("Folders", "Lists"): small, bold, secondary tone, sentence case (the source text is capitals). */
+:root[data-design="soft"] .slp-section-label { display: inline-block; font-size: 14px; font-weight: 700; letter-spacing: 0; color: var(--mute); text-transform: lowercase; }
+:root[data-design="soft"] .slp-section-label::first-letter { text-transform: uppercase; }
+
+/* The four tabs: one rounded tonal panel floating inset from the edges (same element, same order, same four buttons). */
+:root[data-design="soft"] .slp-bottom-nav { margin: 0 12px 12px; border: 0; border-radius: var(--soft-radius-panel); background: var(--panel); min-height: 62px; overflow: hidden; }
+:root[data-design="soft"] .slp-bottom-nav button { color: var(--mute); font-size: 13px; font-weight: 500; min-height: 62px; border-radius: 0; }
+:root[data-design="soft"] .slp-bottom-nav button.selected, :root[data-design="soft"] .slp-bottom-nav button[aria-current="page"] { color: var(--accT); font-weight: 700; }
+
+/* ---- Soft look, screen 2: All Songs list, key badges, Board ---- */
+/* Pushed-screen headers: the back button sits in a tonal square; the gaps are tighter so a title and four icons fit. */
+:root[data-design="soft"] .slp-header:not(.slp-header--screen-root) { gap: 6px; }
+:root[data-design="soft"] .slp-header:not(.slp-header--screen-root) > .slp-btn--icon:first-child { background: var(--panel); }
+:root[data-design="soft"] .slp-header:not(.slp-header--screen-root) .slp-header__actions { gap: 2px; }
+
+/* Key badge: a small tonal square, letters stay left-to-right. The hit area is grown to 44px with an invisible ::after. */
+:root[data-design="soft"] .slp-badge--key {
+  position: relative; direction: ltr; unicode-bidi: isolate; min-width: 44px; min-height: 34px; height: 34px; padding: 0 8px; box-sizing: border-box;
+  border-radius: var(--soft-radius-key-badge); background: var(--panel2); color: var(--fg); font-size: 15px; font-weight: 700; letter-spacing: 0; text-decoration: none;
+}
+:root[data-design="soft"] .slp-badge--key::after { content: ""; position: absolute; inset: -5px -2px; }
+:root[data-design="soft"] .song-item .slp-badge--key::after { inset: -5px -2px; }
+
+/* Song row: three fixed columns, [English title + artist] [Hebrew or Yiddish title] [key slot], so every row lines up. The key slot is
+   always reserved (also with no key) and every row is the same height. In a Hebrew app the first two swap: the Hebrew title leads,
+   the English one takes the narrow column. A title or artist that is too long ends in an ellipsis; nothing wraps. The wrappers around
+   the title are laid flat so the pieces can sit in the grid; the row itself is still the tap target. */
+:root[data-design="soft"] {
+  --soft-he-col: clamp(96px, 34%, 220px);
+  --soft-key-slot: 56px;
+}
+:root[data-design="soft"] .song-item .slp-row {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) var(--soft-he-col) var(--soft-key-slot); grid-template-areas: "p s k" "a n k";
+  grid-template-rows: 22px 17px; align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box;
+  height: 64px; min-height: 64px; padding: 0 16px; background: transparent; border: 0; border-bottom: 1px solid var(--panel2);
+}
+:root[data-design="soft"] .song-item:last-child .slp-row { border-bottom: 0; }
+:root[data-design="soft"] .song-item .slp-row__body,
+:root[data-design="soft"] .song-item .song-title-button,
+:root[data-design="soft"] .song-item .slp-row__title,
+:root[data-design="soft"] .song-item .song-title-lines,
+:root[data-design="soft"] .song-item .song-meta { display: contents; }
+:root[data-design="soft"] .song-item .song-title-button::after { content: none; }
+:root[data-design="soft"] .song-item .t-en, :root[data-design="soft"] .song-item .t-one,
+:root[data-design="soft"] .song-item .t-he { display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+:root[data-design="soft"] .song-item .t-en, :root[data-design="soft"] .song-item .t-one { grid-area: p; align-self: end; text-align: left; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"] .song-item .t-he { grid-area: s; align-self: end; text-align: right; font: 600 16px var(--soft-font-ui); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .song-item .t-he { grid-area: p; align-self: end; text-align: right; font: var(--soft-row-title); line-height: 22px; }
+:root[data-design="soft"][dir="rtl"] .song-item .t-en { grid-area: s; align-self: end; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
+:root[data-design="soft"][dir="rtl"] .song-item .t-one { text-align: right; }
+:root[data-design="soft"] .song-item .slp-row__artists { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 17px; font-size: 13px; color: var(--mute); padding: 4px 0 14px; margin: -4px 0 -14px; }
+/* The artists are links in one line ("Ari Hill, Dudi Kalish"). Their tap area is padding (negative margins give the space back), because a clipped pseudo-element would be cut off by the ellipsis. */
+:root[data-design="soft"] .song-item .slp-row__artist-link { display: inline-block; vertical-align: top; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 4px 0 14px; margin: -4px 0 -14px; border: 0; background: none; color: var(--mute); font: inherit; line-height: inherit; text-align: start; }
+:root[data-design="soft"] .song-item .slp-row__artist-link::after { content: none; }
+:root[data-design="soft"] .song-item .slp-row:has(.song-flag-dot) .slp-row__artists { padding-inline-start: 20px; }
+/* The key badge sits in its reserved slot. Nothing else is shown in the row: no as-written key text, no tempo, no pills. */
+:root[data-design="soft"] .song-item .song-meta > :not(.slp-badge--key):not(.song-flag-dot):not(.song-origin-tag) { display: none; }
+:root[data-design="soft"] .song-item .song-meta .slp-badge--key { grid-area: k; justify-self: end; align-self: center; }
+/* The amber dot: a flagged song (needs review, or may be a duplicate). It sits at the start of the artist line; the tap area is grown to 44 wide with an invisible ::after. */
+:root[data-design="soft"] .song-item .song-flag-dot { grid-area: a; justify-self: start; align-self: center; position: relative; width: 16px; height: 17px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+:root[data-design="soft"] .song-item .song-flag-dot::before { content: ""; position: absolute; inset-inline-start: 0; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: #E0A030; }
+:root[data-design="soft"] .song-item .song-flag-dot::after { content: ""; position: absolute; inset: -2px -14px -14px -14px; }
+/* The Jyrics source tag stays: a small muted word at the end of the artist line (the lock becomes the word "Jyrics"; a copy says "Edited"). */
+:root[data-design="soft"] .song-item .song-origin-tag { grid-area: a; justify-self: end; align-self: center; display: inline-flex; align-items: center; padding: 0; background: none; border-radius: 0; color: var(--mute); font-size: 12px; font-weight: 400; line-height: 17px; white-space: nowrap; }
+:root[data-design="soft"] .song-item .song-origin-tag svg { display: none; }
+:root[data-design="soft"] .song-item .song-origin-tag:has(svg)::after { content: "Jyrics"; }
+:root[data-design="soft"] .song-item .slp-row:has(.song-origin-tag) .slp-row__artists { padding-inline-end: 52px; }
+:root[data-design="soft"] .song-item .slp-row__chevron { display: none; }
+:root[data-design="soft"] .song-item .slp-row:has(.select-check, .slp-row__drag-handle) { padding-inline-start: 52px; }
+:root[data-design="soft"] .song-item .slp-row .select-check,
+:root[data-design="soft"] .song-item .slp-row .slp-row__drag-handle { position: absolute; inset-inline-start: 6px; top: 50%; transform: translateY(-50%); margin: 0; }
+:root[data-design="soft"] .song-item.is-selected > .slp-row { background: var(--panel2); }
+/* The same three columns on the event song rows and the Board cards (a closed card; the zoomed-out Board keeps its own compact rows). */
+:root[data-design="soft"] .gig-song-reference {
+  position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr) var(--soft-he-col) var(--soft-key-slot); grid-template-areas: "n p s k" "n a s k" "n m m k";
+  grid-template-rows: 22px 17px auto; align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box;
+  min-height: 64px; padding: 0 16px; background: transparent; border: 0; border-bottom: 1px solid var(--panel2);
+}
+:root[data-design="soft"] .gig-song-reference.selecting { grid-template-columns: minmax(0, 1fr) var(--soft-he-col) var(--soft-key-slot); grid-template-areas: "p s k" "a s k" "m m k"; padding-inline-start: 52px !important; }
+:root[data-design="soft"] .gig-song-reference .gig-song-reference-main,
+:root[data-design="soft"] .gig-song-reference .slp-row__title,
+:root[data-design="soft"] .gig-song-reference .song-title-lines { display: contents; }
+:root[data-design="soft"] .gig-song-reference .gig-song-number, :root[data-design="soft"] .gig-song-reference .gig-played-tick { grid-area: n; justify-self: center; width: auto; color: var(--mute); font-size: 14px; }
+:root[data-design="soft"] .gig-song-reference .t-en, :root[data-design="soft"] .gig-song-reference .t-one,
+:root[data-design="soft"] .gig-song-reference .t-he { display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+:root[data-design="soft"] .gig-song-reference .t-en, :root[data-design="soft"] .gig-song-reference .t-one { grid-area: p; align-self: end; text-align: left; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"] .gig-song-reference .t-he { grid-area: s; align-self: end; text-align: right; font: 600 16px var(--soft-font-ui); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference .t-he { grid-area: p; text-align: right; font: var(--soft-row-title); line-height: 22px; }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference .t-en { grid-area: s; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference .t-one { text-align: right; }
+:root[data-design="soft"] .gig-song-reference .slp-row__subtitle { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; line-height: 17px; color: var(--mute); }
+:root[data-design="soft"] .gig-song-reference .gig-row-note { grid-area: m; min-width: 0; padding-bottom: 8px; }
+:root[data-design="soft"] .gig-song-reference > .slp-badge--key { grid-area: k; justify-self: end; align-self: center; max-width: none; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key .empty-label { display: none; }
+:root[data-design="soft"] .gig-song-reference .select-check { position: absolute; inset-inline-start: 6px; top: 50%; transform: translateY(-50%); margin: 0; }
+:root[data-design="soft"] .gig-song-reference .gig-drag-handle { position: absolute; inset-inline-end: 4px; top: 50%; transform: translateY(-50%); margin: 0; }
+:root[data-design="soft"] .gig-song-reference:has(.gig-drag-handle) { padding-inline-end: 56px; }
+
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__head {
+  display: grid; grid-template-columns: minmax(0, 1fr) var(--soft-he-col) var(--soft-key-slot); grid-template-areas: "p s k" "a n k"; grid-template-rows: 22px 17px;
+  align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box; min-height: 64px; padding: 0 16px; text-align: start;
+}
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__text,
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__text strong,
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .song-title-lines { display: contents; }
+:root[data-design="soft"] .board-card:not(.is-open) .t-en, :root[data-design="soft"] .board-card:not(.is-open) .t-one,
+:root[data-design="soft"] .board-card:not(.is-open) .t-he { display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-en, :root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-one { grid-area: p; align-self: end; text-align: left; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-he { grid-area: s; align-self: end; text-align: right; font: 600 16px var(--soft-font-ui); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-he { grid-area: p; text-align: right; font: var(--soft-row-title); line-height: 22px; }
+:root[data-design="soft"][dir="rtl"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-en { grid-area: s; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
+:root[data-design="soft"][dir="rtl"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-one { text-align: right; }
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__sub { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; line-height: 17px; color: var(--mute); }
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__notes { grid-area: n; justify-self: end; align-self: center; }
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__key { grid-area: k; justify-self: end; align-self: center; }
+:root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__strip { grid-column: 1 / -1; width: 100%; }
+:root[data-design="soft"] .song-item .song-details { padding-inline: 16px; }
+
+/* ---- Soft look, screen 7: Practice, and the Jyrics view-only song ----
+   Practice is not black: it follows the app (a tonal ground, tonal controls), with a dark video panel. The same buttons in the same places, restyled: close, find, the
+   two 5-second skips, Play, the speed steppers, Key, A, B, Loop and Clear keep their own sizes and order, so the lyrics keep the screen. Play is the one accent control.
+   Rules start with #practiceView so they outrank the old light/dark Practice rules in the same layer. */
+:root[data-design="soft"] #practiceView { background: var(--bg); color: var(--fg); font-family: var(--soft-font-ui); --practice-chord: var(--accT); }
+:root[data-design="soft"] #practiceView .perf-bar { background: transparent; border-bottom: 0; padding: 12px 12px 0; gap: 6px; }
+:root[data-design="soft"] #practiceView .perf-bar__row { gap: 6px; }
+:root[data-design="soft"] #practiceView .perf-btn { flex: none; width: 44px; height: 44px; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); box-shadow: none; }
+:root[data-design="soft"] #practiceView .practice-title { color: var(--fg); font-family: var(--soft-font-title); font-size: 20px; font-weight: 400; line-height: 1.1; }
+:root[data-design="soft"] #practiceView .practice-player { background: transparent; gap: 8px; padding: 8px 12px; border-color: var(--panel2); }
+:root[data-design="soft"] #practiceView .practice-video { background: #111214; border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] #practiceView .practice-file-card { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] #practiceView .practice-file-card svg { color: var(--accT); }
+:root[data-design="soft"] #practiceView .practice-message { background: var(--panel2); color: var(--fg); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] #practiceView .practice-btn { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] #practiceView .practice-btn--play { background: var(--acc); color: var(--on); border-radius: 16px; }
+:root[data-design="soft"] #practiceView .practice-speed { background: var(--panel); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] #practiceView .practice-speed button { color: var(--fg); font-family: var(--soft-font-ui); font-weight: 700; }
+:root[data-design="soft"] #practiceView .practice-chip { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); font-family: var(--soft-font-ui); font-size: 14px; font-weight: 600; }
+:root[data-design="soft"] #practiceView .practice-chip svg { color: var(--fg); }
+:root[data-design="soft"] #practiceView .practice-chip[aria-pressed="true"], :root[data-design="soft"] #practiceView .practice-chip.set { background: var(--panel2); color: var(--accT); }
+:root[data-design="soft"] #practiceView .practice-chip[aria-pressed="true"] svg, :root[data-design="soft"] #practiceView .practice-chip.set svg { color: var(--accT); }
+:root[data-design="soft"] #practiceView .practice-clock { color: var(--mute); font-size: 13px; }
+:root[data-design="soft"] #practiceView .practice-seek::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--acc) var(--p, 0%), var(--panel2) var(--p, 0%)); }
+:root[data-design="soft"] #practiceView .practice-seek::-moz-range-track { height: 6px; border-radius: 3px; background: var(--panel2); }
+:root[data-design="soft"] #practiceView .practice-seek::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--acc); }
+:root[data-design="soft"] #practiceView .practice-seek::-webkit-slider-thumb { margin-top: -6px; background: var(--acc); border: 2px solid var(--bg); }
+:root[data-design="soft"] #practiceView .practice-seek::-moz-range-thumb { background: var(--acc); border: 2px solid var(--bg); }
+:root[data-design="soft"] #practiceView .practice-loopband { height: 14px; margin-top: -7px; border-radius: 4px; background: color-mix(in srgb, var(--acc) 35%, transparent); }
+:root[data-design="soft"] #practiceView .practice-loopband.off { background: var(--panel2); }
+:root[data-design="soft"] #practiceView .practice-mini { inset: auto 8px 8px 8px; background: var(--panel); border: 0; border-radius: var(--soft-radius-panel); }
+/* The lyrics: the same plain section labels, chorus panel and accent chords as the song page. */
+:root[data-design="soft"] #practiceView .perf-scroll { padding-inline: 20px; outline: none; }
+:root[data-design="soft"] #practiceView .song-document { color: var(--fg); font-family: var(--soft-font-ui); font-weight: 500; }
+:root[data-design="soft"] #practiceView .song-document h2 { color: var(--mute); }
+:root[data-design="soft"] #practiceView .perf-section { display: block; margin: 0.9em 0 0.2em !important; padding: 0; border-radius: 0; background: none; color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px !important; font-weight: 700; letter-spacing: 0; text-transform: lowercase; line-height: 1.4; }
+:root[data-design="soft"] #practiceView .perf-section::first-letter { text-transform: uppercase; }
+:root[data-design="soft"] #practiceView .perf-section.sec-type-chorus { color: var(--accT); }
+:root[data-design="soft"] #practiceView #practiceDoc > .sec-chorus:last-child, :root[data-design="soft"] #practiceView #practiceDoc > .sec-bar-right:last-child, :root[data-design="soft"] #practiceView #practiceDoc > .sec-bar-left:last-child { border-end-start-radius: var(--soft-radius-panel); border-end-end-radius: var(--soft-radius-panel); padding-bottom: 0.5em; }
+:root[data-design="soft"] #practiceView .cp-chord { background: transparent; color: var(--accT); font-family: var(--soft-font-ui); font-size: 0.7em; font-weight: 800; line-height: 1.25; margin-bottom: 0.08em; }
+:root[data-design="soft"] #practiceView .line-disclosure-toggle { color: var(--accT); }
+:root[data-design="soft"] #practiceView .line-disclosure-content { color: var(--mute); }
+/* The Jyrics view-only song: its "Jyrics" lock chip is a quiet tonal label (it is not a button). */
+:root[data-design="soft"] .slp-chip.song-origin-chip { color: var(--mute); font-weight: 600; }
+:root[data-design="soft"] .slp-chip.song-origin-chip svg { color: var(--mute); }
+/* The key chip never shrinks below its content (the Folders chip gives way first, as in Classic). */
+:root[data-design="soft"] .song-chip-row > #songKey { flex: 0 0 auto; min-width: 44px; }
+/* A view-only Jyrics song has two more chips (Jyrics, My notes), so the row no longer fits a phone: it wraps instead of running off the screen. */
+:root[data-design="soft"] .song-reader > .slp-chip-row.song-chip-row { flex-wrap: wrap; row-gap: 8px; }
+:root[data-design="soft"] .song-chip-row > .song-artist-chip { flex: 0 1 auto; max-width: 100%; }
+
+/* ---- Soft look, screen 8: Search, and Sort and filter ----
+   The search bar: a tonal field and a tonal scope button, no outline; the clear mark is a muted mask, not the browser's blue one. The sort and filter sheet: tonal sort
+   segments, plain muted group names, rows with the thin separator, the Show button the one accent control. Same elements, same order, 44px or more. */
+:root[data-design="soft"] .slp-search-bar { gap: 8px; align-items: center; }
+:root[data-design="soft"] .slp-search-input { min-height: 44px; border: 0; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); font: 400 16px var(--soft-font-ui); box-shadow: none; outline: none; }
+:root[data-design="soft"] .slp-search-input:focus-visible { outline: 2px solid var(--accT); outline-offset: -2px; }
+:root[data-design="soft"] .slp-search-input::placeholder { color: var(--mute); opacity: 1; }
+:root[data-design="soft"] .slp-search-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; margin-inline: 6px; cursor: pointer; background: var(--mute); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / 18px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / 18px no-repeat; }
+:root[data-design="soft"] .slp-scope-dropdown { min-height: 44px; border: 0; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); font-family: var(--soft-font-ui); font-weight: 600; box-shadow: none; }
+:root[data-design="soft"] .slp-scope-dropdown[aria-expanded="true"] { background: var(--panel2); color: var(--fg); }
+:root[data-design="soft"] .slp-scope-popover { background: var(--panel); border: 0; border-radius: var(--soft-radius-panel); }   /* floating menus keep the soft shadow set with the other menus */
+/* Icon buttons are 44px at every width (Classic draws them 30px on a laptop). */
+:root[data-design="soft"] .slp-btn--icon { min-width: 44px; min-height: 44px; }
+:root[data-design="soft"] .slp-scope-popover .slp-picker-item { min-height: 44px; color: var(--fg); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .slp-scope-popover .slp-picker-item:hover, :root[data-design="soft"] .slp-scope-popover .slp-picker-item[aria-selected="true"] { background: var(--panel2); }
+:root[data-design="soft"] #searchEntireLibraryBtn { display: block; min-height: 44px; padding-inline: 20px; font-size: 14px; }
+:root[data-design="soft"] #searchEntireLibraryBtn.hidden { display: none; }
+:root[data-design="soft"] .slp-section-label { color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+:root[data-design="soft"] .filter-group__label { color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+:root[data-design="soft"] .fp-seg { border: 0; background: var(--panel); border-radius: var(--soft-radius-control); padding: 3px; }
+:root[data-design="soft"] .fp-list { border-top: 0; }
+:root[data-design="soft"] .fp-row { border-bottom-color: var(--panel2); color: var(--fg); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .fp-row__value { color: var(--mute); }
+:root[data-design="soft"] .fp-row__value.is-on { color: var(--accT); }
+:root[data-design="soft"] .filter-select-songs { color: var(--fg); font-family: var(--soft-font-ui); }
+
+/* ---- Soft look, screen 9: New song, Import, Import review ----
+   The same forms and the same steps, tonal: fields on the card are one tone darker than the card so they read as fields, the "More details" toggle has no outline, a possible
+   duplicate is a tonal card (not a red ring), the switch has no ring. Field names keep the app's capitals but are small and muted. */
+:root[data-design="soft"] .slp-collapse { box-shadow: none; border: 0; background: var(--panel); border-radius: var(--soft-radius-control); color: var(--fg); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .slp-collapse[aria-expanded="true"] { background: var(--panel2); }
+:root[data-design="soft"] .slp-field-label, :root[data-design="soft"] .import-candidate-field > span:first-child { color: var(--mute); font-family: var(--soft-font-ui); font-size: 12px; font-weight: 700; letter-spacing: 0.02em; }
+:root[data-design="soft"] .import-candidate { background: var(--panel); border: 0; box-shadow: none; border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] .import-candidate.duplicate { background: var(--panel2); box-shadow: none; }
+:root[data-design="soft"] #importSheet .import-candidate .slp-input, :root[data-design="soft"] #importSheet .import-candidate input[type="text"], :root[data-design="soft"] #importSheet .import-candidate textarea, :root[data-design="soft"] #importSheet .import-candidate select { background: var(--panel2); border: 0; border-radius: var(--soft-radius-control); color: var(--fg); font-family: var(--soft-font-ui); box-shadow: none; }
+:root[data-design="soft"] #importSheet .import-candidate textarea { resize: none; }
+:root[data-design="soft"] .import-candidate .slp-switch:not(:checked) { box-shadow: none; background: var(--panel2); }
+
+/* ---- Soft look, screen 10: Events list, Calendar, an event ----
+   The event rows get their separators and breathing room back (each row is the last child of its swipe wrapper, so the song-row rule had dropped the line), the sort control is a
+   tonal select, the calendar loses its grid lines: tonal days, today an accent circle, the picked day a tonal square. Same elements, same order. */
+:root[data-design="soft"] .gig-item > .slp-row { min-height: 64px; padding-block: 10px; justify-content: center; border-bottom: 1px solid var(--panel2); }
+:root[data-design="soft"] .gig-item:last-child > .slp-row { border-bottom: 0; }
+:root[data-design="soft"] .gig-sort-chip { background: transparent; padding: 0; gap: 10px; color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px; font-weight: 600; }
+:root[data-design="soft"] .gig-sort-chip select { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); padding: 0 12px; min-height: 44px; font-family: var(--soft-font-ui); font-size: 15px; font-weight: 600; flex: 1; }
+:root[data-design="soft"] .calendar-toolbar { grid-template-columns: 44px minmax(0, 1fr) auto 44px; font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .calendar-toolbar > strong { font-family: var(--soft-font-title); font-weight: 400; font-size: 22px; color: var(--fg); }
+:root[data-design="soft"] .calendar-weekdays { color: var(--mute); font-family: var(--soft-font-ui); font-size: 12px; font-weight: 600; text-transform: none; }
+:root[data-design="soft"] .gig-calendar-grid { border: 0; gap: 4px 0; margin-inline: 4px; }   /* no gap between the days sideways: in the narrow side pane the days get every pixel */
+:root[data-design="soft"] .slp-btn--fab { min-width: 44px; min-height: 44px; }   /* the round + buttons (new event, notes menu) are 44px at laptop width too */
+/* The event info card in the side pane of a laptop: a tonal card, a Bellefair title, "Start the set" / "Open setlist" the one accent control. */
+:root[data-design="soft"] .gig-info-card { border: 0; box-shadow: none; background: var(--panel); border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] .gig-info-tag, :root[data-design="soft"] .gig-info-row small, :root[data-design="soft"] .gig-info-row svg, :root[data-design="soft"] .gig-side-details__hint { color: var(--mute); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .gig-info-title { font-family: var(--soft-font-title); font-weight: 400; font-size: 24px; color: var(--fg); }
+:root[data-design="soft"] .gig-info-row { font-family: var(--soft-font-ui); color: var(--fg); }
+:root[data-design="soft"] .gig-info-action { color: var(--fg); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .gig-info-primary { border: 0; border-radius: var(--soft-radius-control); background: var(--acc); color: var(--on); font-family: var(--soft-font-ui); font-weight: 700; box-shadow: none; }
+:root[data-design="soft"] .gig-reader-note { background: var(--panel2); color: var(--fg); border-radius: var(--soft-radius-control); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .app-shell .gig-list-pane .slp-row.selected, :root[data-design="soft"] .app-shell .gig-list-view .slp-row.selected { box-shadow: none; background: var(--panel2); }
+:root[data-design="soft"] .gig-calendar-day { border: 0; border-radius: var(--soft-radius-control); background: transparent; color: var(--fg); font-family: var(--soft-font-ui); font-size: 15px; min-height: 52px; place-items: center; align-content: center; padding: 4px; box-shadow: none; }
+:root[data-design="soft"] .gig-calendar-day.outside { background: transparent; color: var(--mute); opacity: 0.6; }
+:root[data-design="soft"] .gig-calendar-day.today > span:first-child { background: var(--acc); color: var(--on); width: 30px; height: 30px; font-weight: 700; }
+:root[data-design="soft"] .gig-calendar-day.selected { box-shadow: none; background: var(--panel2); }
+:root[data-design="soft"] .gig-date-indicators i { background: var(--accT); }
+:root[data-design="soft"] .calendar-date-gigs { border-top: 0; background: var(--panel); border-radius: var(--soft-radius-panel); margin: 8px 12px; overflow: hidden; }
+:root[data-design="soft"] .calendar-date-gigs > div:first-child { border-bottom-color: var(--panel2); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .calendar-date-gigs > div:first-child small, :root[data-design="soft"] .calendar-date-empty { color: var(--mute); font-family: var(--soft-font-ui); }
+
+/* ---- Soft look, screen 11: New event, Add songs, Share ----
+   Hebrew and Yiddish titles use Assistant everywhere in the soft look (the old serif Hebrew stayed in the pickers). The picker's search field is one tonal field, not a ring around
+   a second field. Checkboxes and radio buttons take the accent. The forms and the share sheet were already tonal; the audit found nothing else. */
+:root[data-design="soft"] .t-he { font-family: var(--soft-font-ui); }
+:root[data-design="soft"] input[type="checkbox"], :root[data-design="soft"] input[type="radio"] { accent-color: var(--acc); }
+:root[data-design="soft"] .gig-picker-search { border: 0; box-shadow: none; background: var(--panel); border-radius: var(--soft-radius-control); min-height: 44px; }
+:root[data-design="soft"] #gigSongPickerSheet .gig-picker-search input { min-height: 44px; background: transparent; border: 0; border-radius: 0; box-shadow: none; outline: none; font: 400 16px var(--soft-font-ui); color: var(--fg); }
+:root[data-design="soft"] .gig-picker-search:focus-within { outline: 2px solid var(--accT); outline-offset: -2px; }
+
+/* ---- Soft look, screen 12: Notes and a note ----
+   Already tonal; what was left: the selected note in the two-pane view carried an accent bar (a box-shadow) and the library pane was outlined by a 1px ring. The selected note is
+   a tonal row, the pane has no ring, the pinned mark and the preview follow the soft tokens. */
+:root[data-design="soft"] .library-pane { box-shadow: none; }
+:root[data-design="soft"] #noteList .note-row.is-open, :root[data-design="soft"] #noteList .note-row.selected { box-shadow: none; background: var(--panel2); }
+:root[data-design="soft"] .note-row__pin { color: var(--accT); }
+:root[data-design="soft"] .note-row__preview, :root[data-design="soft"] .note-row__date { color: var(--mute); font-family: var(--soft-font-ui); }
+
+/* ---- Soft look, screen 13: Tools (the hub, Tones, Tuner, Metronome, Chord Lab and the piano) ----
+   Tonal cards without an outline, the big readout (tempo, note, chord) in Bellefair, the start button the one accent control without a shadow or a gradient band behind it, the first beat
+   an accent dot, the picked chord type a tonal chip (no ring). The piano and chord-lab keyboards keep their key outlines and sizes: they are instruments. */
+:root[data-design="soft"] .tool-card { border: 0; box-shadow: none; background: var(--panel); border-radius: var(--soft-radius-panel); color: var(--fg); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .tool-hero__value { font-family: var(--soft-font-title); font-weight: 400; font-size: 88px; color: var(--fg); }
+:root[data-design="soft"] .tool-hero__sub { color: var(--mute); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .tool-transport { background: transparent; }
+:root[data-design="soft"] .tool-transport__btn { background: var(--acc); color: var(--on); box-shadow: none; }
+:root[data-design="soft"] .tool-beat { background: var(--panel2); box-shadow: none; }
+:root[data-design="soft"] .tool-beat.first { background: var(--acc); box-shadow: none; }
+:root[data-design="soft"] .chord-type.selected { box-shadow: none; background: var(--panel2); color: var(--accT); }
+/* Number controls read left to right in a Hebrew app: the tempo row (minus, slider, plus), the beat dots and the steppers. */
+:root[data-design="soft"] .tool-tempo-row, :root[data-design="soft"] .tool-beats, :root[data-design="soft"] .tool-stepper { direction: ltr; }
+
+/* ---- Soft look, screen 14: Settings, Appearance, Same song compare, Backup ----
+   Settings and Backup were already tonal. Leftovers: the colour swatches are 44px wide (they were 40), the live preview has no outline, the duplicate tabs have no shadow; the compare sheet
+   is tonal: no outlined table or choice cards, differences marked with the darker tone (not yellow), a plain footer. */
+:root[data-design="soft"] .slp-swatch { min-width: 44px; }
+:root[data-design="soft"] .slp-swatch-row, :root[data-design="soft"] .slp-swatches { flex-wrap: wrap; }
+:root[data-design="soft"] #appearancePreview { border: 0; box-shadow: none; border-radius: var(--soft-radius-panel); }
+/* Number steppers (lyrics size, notes size) read minus, number, plus from the left in a Hebrew app too. */
+:root[data-design="soft"] .slp-stepper { direction: ltr; }
+:root[data-design="soft"] .dup-sheet { background: var(--bg); color: var(--fg); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .dup-tabs { background: var(--panel); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .dup-tabs button { border-radius: var(--soft-radius-key-badge); color: var(--mute); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .dup-tabs button.on { background: var(--panel2); color: var(--fg); box-shadow: none; }
+:root[data-design="soft"] .dup-table { border: 0; background: var(--panel); border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] .dup-head { background: var(--panel2); }
+:root[data-design="soft"] .dup-row { border-top-color: var(--panel2); }
+:root[data-design="soft"] .dup-label { color: var(--mute); }
+:root[data-design="soft"] .dup-row.is-diff:not(.dup-head) > span:not(.dup-label), :root[data-design="soft"] .dup-line__new { background: var(--panel2); color: var(--fg); font-weight: 600; }
+:root[data-design="soft"] .dup-lines h3, :root[data-design="soft"] .dup-review h3 { color: var(--mute); font-family: var(--soft-font-ui); font-weight: 600; }
+:root[data-design="soft"] .dup-line { border-top-color: var(--panel2); }
+:root[data-design="soft"] .dup-choice { border: 0; background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-panel); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .dup-choice small { color: var(--mute); }
+:root[data-design="soft"] .dup-field { border: 0; background: var(--panel); border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] .dup-footer { border-top: 0; background: transparent; }
+:root[data-design="soft"] .dup-chip { background: var(--panel2); color: var(--mute); }
+:root[data-design="soft"] .dup-chip.is-likely { background: var(--panel2); color: var(--accT); }
+:root[data-design="soft"] .dup-banner { background: var(--panel2); color: var(--fg); border: 0; border-radius: var(--soft-radius-panel); }
+
+/* ---- Soft look, screen 15: the Hebrew review pass ----
+   Key letters, chords, the note grid and number controls stay left to right in a Hebrew app (README rule). Found mirrored in Hebrew: the Tones note grid (C, C#, D, Eb ran right to left) and
+   the piano keyboard (the notes ran downhill from the left). Both are fixed here; the Key picker, Chord Lab, the steppers and the tempo row were already left to right. */
+:root[data-design="soft"] .tool-note-grid, :root[data-design="soft"] .tool-keyboard, :root[data-design="soft"] .tool-degrees { direction: ltr; }
+:root[data-design="soft"] #songKey span, :root[data-design="soft"] #songKey small, :root[data-design="soft"] #songKeyDisplay { direction: ltr; unicode-bidi: isolate; }   /* the key letter, e.g. F#m, is never reordered */
+
+/* The editing tools on the song page (Header, Note, Photo, Place chords, Undo, Redo, Done). Classic keeps a faded pencil that opens into a dark pill (open
+   by itself only when the song has chords); the soft look shows the tools at once in a tonal toolbar, with Done as the one accent control. Same buttons, same order. */
+:root[data-design="soft"] .slp-edit-dock { gap: 2px; padding: 4px; border-radius: var(--soft-radius-panel); background: var(--panel2); box-shadow: none; }
+:root[data-design="soft"] .slp-edit-dock:not(.is-open) > :not(.edit-dock__toggle) { display: inline-flex; }
+:root[data-design="soft"] .slp-edit-dock .edit-dock__toggle { display: none; }
+:root[data-design="soft"] .slp-edit-dock .slp-btn--icon { min-width: 44px; min-height: 44px; border-radius: var(--soft-radius-control); background: transparent; color: var(--fg); font-family: var(--soft-font-ui); font-size: 17px; font-weight: 800; box-shadow: none; }
+:root[data-design="soft"] .slp-edit-dock .edit-dock__done { background: var(--acc); color: var(--on); }
+
+/* A picked page colour is a light paper, also in a dark app (and in a light app the chorus panel was nearly the page's own tone). The page's own tokens (panel, muted text, accent text) are the dark app's, so a chorus panel came out
+   dark under dark text and the section names washed out. On a picked page they are re-set for a light paper: a faint dark panel, a muted ink, the accent for light backgrounds. */
+:root[data-design="soft"] .lyric-sheet:not(.theme-default) { --panel: rgba(0, 0, 0, 0.06); --panel2: rgba(0, 0, 0, 0.1); --mute: #5B6470; --accT: var(--accL); }
+
+/* Board lyrics (an opened card and the reading panel): the chorus is the same tonal panel as on the song page, no grey block and no bar on the edge.
+   The lines are separate blocks, so the first and last line of a chorus carry the rounded corners. The panel sits on --panel, so its chorus is --panel2;
+   a card's lyrics sit on --panel2, so its chorus is --panel. Section names are plain muted labels, the chorus one in the accent text colour, at the size the Board text setting gives the lines. */
+:root[data-design="soft"] .board-panel__body, :root[data-design="soft"] .board-card__lyrics { font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .board-lyric-head { margin-top: 0.7em; font-family: var(--soft-font-ui); font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--mute); }   /* the size follows the Board text-size setting */
+:root[data-design="soft"] .board-lyric-head:first-child { margin-top: 0; }
+:root[data-design="soft"] .board-lyric-head.sec-chorus { color: var(--accT); font-weight: 700; }
+:root[data-design="soft"] .board-panel .sec-chorus, :root[data-design="soft"] .board-panel .sec-bar-right, :root[data-design="soft"] .board-panel .sec-bar-left { background: var(--panel2); border: 0; padding-inline: 14px; }
+:root[data-design="soft"] .board-card__lyrics .sec-chorus, :root[data-design="soft"] .board-card__lyrics .sec-bar-right, :root[data-design="soft"] .board-card__lyrics .sec-bar-left { background: var(--panel); border: 0; padding-inline: 14px; }
+:root[data-design="soft"] .board-lyric-line:not(.sec-chorus) + .sec-chorus, :root[data-design="soft"] .board-lyric-line.sec-chorus:first-child { border-start-start-radius: var(--soft-radius-control); border-start-end-radius: var(--soft-radius-control); padding-top: 8px; }
+:root[data-design="soft"] .board-lyric-line.sec-chorus:has(+ :not(.sec-chorus)), :root[data-design="soft"] .board-lyric-line.sec-chorus:last-child { border-end-start-radius: var(--soft-radius-control); border-end-end-radius: var(--soft-radius-control); padding-bottom: 8px; }
+
+/* Board: tonal chips, a tonal name button, tonal columns with Bellefair names and the same song rows. */
+:root[data-design="soft"] .board-name-btn, :root[data-design="soft"] .board-columns-btn { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); font-size: 15px; font-weight: 600; box-shadow: none; }
+:root[data-design="soft"] .board-name-btn { padding-inline: 14px; }
+:root[data-design="soft"] .board-icon-btn { color: var(--fg); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .board-panel-empty { border: 0; background: var(--panel); color: var(--mute); border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] .board-chip { border: 0; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); font-size: 15px; font-weight: 600; box-shadow: none; }
+:root[data-design="soft"] .board-chip--add { background: var(--panel); color: var(--accT); border: 0; }
+:root[data-design="soft"] .board-chip.is-active { background: var(--panel2); color: var(--accT); border: 0; }
+:root[data-design="soft"] .board-chip.is-selected { background: var(--panel2); color: var(--fg); }
+:root[data-design="soft"] .board-chip--clear { background: transparent; color: var(--mute); }
+:root[data-design="soft"] .board-divider { background: var(--panel2); }
+:root[data-design="soft"] .board-pos__ticks i { background: var(--panel2); }
+:root[data-design="soft"] .board-pos__ticks i.is-current { background: var(--acc); }
+:root[data-design="soft"] .board-pos__label span { color: var(--mute); }
+:root[data-design="soft"] .board-col { border: 0; background: var(--panel); border-radius: var(--soft-radius-panel); overflow: hidden; }
+:root[data-design="soft"] .board-col__head { border-bottom: 0; padding: 0 16px; min-height: 52px; }
+:root[data-design="soft"] .board-col__head strong { font-family: var(--soft-font-title); font-weight: 400; font-size: 22px; color: var(--fg); }
+:root[data-design="soft"] .board-col__count { background: transparent; padding: 0; color: var(--mute); font-size: 13px; font-weight: 600; }
+:root[data-design="soft"] .board-col__body { gap: 0; padding: 0; }
+:root[data-design="soft"] .board-col__empty, :root[data-design="soft"] .board-empty-board { color: var(--mute); }
+:root[data-design="soft"] .board-col--needs { border: 0; box-shadow: inset 0 0 0 0 transparent; }
+:root[data-design="soft"] .board-col--needs .board-col__head { background: var(--panel2); }
+:root[data-design="soft"] .board-card { border: 0; border-bottom: 1px solid var(--panel2); border-radius: 0; background: transparent; box-shadow: none; }
+:root[data-design="soft"] .board-card:last-child { border-bottom: 0; }
+:root[data-design="soft"] .board-card.is-current { background: var(--panel2); border-color: var(--panel2); box-shadow: none; }
+:root[data-design="soft"] .board-card__head { min-height: 58px; padding: 6px 16px; }
+:root[data-design="soft"] .board-card__text strong { font-size: 17px; font-weight: 600; color: var(--fg); }
+:root[data-design="soft"] .board-card__text strong .song-title-lines { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+:root[data-design="soft"] .board-card__text strong .t-he { font-size: 16px; }
+:root[data-design="soft"] .board-card__sub { font-size: 13px; color: var(--mute); }
+:root[data-design="soft"] .board-card__key { min-height: 34px; }
+:root[data-design="soft"] .board-card__lyrics { border: 0; background: var(--panel2); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .board-card__pin { background: var(--panel2); color: var(--fg); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .board-zoom-btn { background: var(--panel); color: var(--accT); box-shadow: none; border: 0; }
+:root[data-design="soft"] .board-pill { background: var(--panel); color: var(--fg); border: 0; box-shadow: none; }
+:root[data-design="soft"] .board-menu { background: var(--panel); border: 0; box-shadow: none; border-radius: var(--soft-radius-panel); }
+:root[data-design="soft"] .board-menu__item { color: var(--fg); }
+:root[data-design="soft"] .board-menu__divider { background: var(--panel2); }
+:root[data-design="soft"] .board-search-row { border: 0; background: var(--panel); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] #songsSection { border-bottom: 0; }
+:root[data-design="soft"] .song-item .t-en, :root[data-design="soft"] .song-item .t-one { text-align: left; }
+:root[data-design="soft"][dir="rtl"] .song-item .t-one,
+:root[data-design="soft"][dir="rtl"] .song-item .slp-row[data-sides="en"] .t-en { text-align: right; }
+:root[data-design="soft"] .board-zoom-btn { background: var(--panel2); }
+
+/* Board chips are 44px tall (Classic draws them 36px). */
+:root[data-design="soft"] .board-chip { min-height: 44px; height: 44px; }
+:root[data-design="soft"] .board-chip--icon { width: 44px; }
+
+/* ---- Soft look, screen 3: Folders and Lists, and the menus and sheets every screen shares ---- */
+:root[data-design="soft"] .content-section { border: 0; }
+:root[data-design="soft"] .slp-section-label__count { color: var(--mute); font-weight: 600; }
+
+/* Menus (the + and ... menus) are one tonal panel; rows are separated by a 1px line in the deeper tone. */
+:root[data-design="soft"] .popover,
+:root[data-design="soft"] .action-menu { border: 0; border-radius: var(--soft-radius-panel); background: var(--panel); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); color: var(--fg); }
+:root[data-design="soft"] .action-menu button { background: transparent; color: var(--fg); border-bottom: 1px solid var(--panel2); font-size: 16px; font-weight: 500; min-height: 50px; }
+:root[data-design="soft"] .action-menu button:last-child { border-bottom: 0; }
+:root[data-design="soft"] .action-menu button:hover { background: var(--panel2); }
+:root[data-design="soft"] .action-menu button.danger { color: var(--danger); }
+
+/* Sheets and dialogs sit on the page tone; the lists inside them are the tonal panels. Titles are Bellefair. */
+:root[data-design="soft"] .sheet,
+:root[data-design="soft"] .modal,
+:root[data-design="soft"] .confirm-dialog { background: var(--bg); color: var(--fg); box-shadow: none; border: 0; }
+:root[data-design="soft"] .modal, :root[data-design="soft"] .confirm-dialog { border-radius: var(--soft-radius-sheet); }
+:root[data-design="soft"] .modal-header, :root[data-design="soft"] .sheet-header { border-bottom: 0; }
+:root[data-design="soft"] .modal-header h2, :root[data-design="soft"] .sheet-header h2 { font-family: var(--soft-font-title); font-weight: 400; font-size: var(--soft-subtitle-size); line-height: 1.1; color: var(--fg); }
+:root[data-design="soft"] .sheet-header span { color: var(--mute); text-transform: none; }
+:root[data-design="soft"] .sheet-header .icon-button { color: var(--fg); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .sheet-footer { border-top: 0; background: transparent; }
+:root[data-design="soft"] .slp-sheet__footer { border-top: 0; background: transparent; }
+/* Floating menus are the one place a soft shadow stays: with no outline and the same tone as the panel under them, nothing else would lift them off the page. */
+:root[data-design="soft"] .board-menu, :root[data-design="soft"] .slp-menu-panel, :root[data-design="soft"] .slp-scope-popover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
+/* A long folder or song name wraps to two lines in a pushed header instead of being cut to "Style..." beside five icons. */
+:root[data-design="soft"] .slp-header:not(.slp-header--screen-root) .slp-header__title { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; text-overflow: clip; }
+:root[data-design="soft"] #subfolderSection:not(.hidden) ~ #songsSection { margin-top: 14px; }
+
+/* ---- Soft look, screen 4: the song page (header, chips, lyrics page, sections) ---- */
+/* Header: Bellefair title, the other-language title as a small line under it; the performance button is the one accent control. */
+:root[data-design="soft"] .song-header .song-title-lines { display: flex; flex-direction: column; gap: 1px; }
+:root[data-design="soft"] .song-header .t-en, :root[data-design="soft"] .song-header .t-one { font-family: var(--soft-font-title); font-weight: 400; font-size: var(--soft-subtitle-size); line-height: 1.1; }
+:root[data-design="soft"] .song-header .t-he { font-family: var(--soft-font-ui); font-weight: 400; font-size: 15px; line-height: 1.2; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .song-header .t-he { order: -1; font-family: var(--soft-font-title); font-size: var(--soft-subtitle-size); line-height: 1.1; }
+:root[data-design="soft"][dir="rtl"] .song-header .t-en { font-family: var(--soft-font-ui); font-size: 15px; line-height: 1.2; }
+:root[data-design="soft"] .song-header .song-title-lines > span:only-child { font-family: var(--soft-font-title); font-size: var(--soft-subtitle-size); line-height: 1.1; }
+.perform-label { display: none; }
+:root[data-design="soft"] #songPerformanceBtn { background: var(--acc); color: var(--on); width: auto; padding-inline: 12px 14px; gap: 7px; }
+/* The Perform button carries its word next to the icon wherever there is room (not on a very narrow phone). */
+:root[data-design="soft"] #songPerformanceBtn .perform-label { display: none; font: 600 15px var(--soft-font-ui); white-space: nowrap; }
+@media (min-width: 430px) { :root[data-design="soft"] #songPerformanceBtn .perform-label { display: inline; } }
+@media (max-width: 429px) { :root[data-design="soft"] #songPerformanceBtn { width: 44px; padding: 0; } }
+/* The song header's buttons are 44px at every width (Classic draws them 30px on a laptop). */
+:root[data-design="soft"] .song-header .slp-btn--icon { min-width: 44px; min-height: 44px; }
+/* A visible back arrow at laptop width when the song was opened from the Board or from an event (it is a phone-width control otherwise).
+   The Board return already labels it "Board" and shows a "Back to Board" pill; the event return has the arrow alone. */
+:root[data-design="soft"] .app-shell.board-return #backToFolderBtn,
+:root[data-design="soft"] .app-shell.song-return-event #backToFolderBtn { display: inline-flex; }
+:root[data-design="soft"][dir="rtl"] #backToFolderBtn .slp-header__back { transform: scaleX(-1); }   /* back points right in a Hebrew app */
+:root[data-design="soft"] #songAppearanceBtn { background: var(--panel); color: var(--fg); }
+:root[data-design="soft"] .appearance-glyph { font-weight: 700; }
+
+/* Chips under the title: tonal, no outline; the artist is a plain accent-coloured link. */
+:root[data-design="soft"] .slp-chip { border: 0; box-shadow: none; background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); font-size: 15px; font-weight: 600; }
+:root[data-design="soft"] .slp-chip[aria-expanded="true"] { background: var(--panel2); }
+:root[data-design="soft"] .slp-chip--link, :root[data-design="soft"] .song-artist-chip { background: transparent; color: var(--accT); font-weight: 700; }
+:root[data-design="soft"] .slp-chip svg { color: var(--fg); }
+
+/* The lyrics page follows the app (Assistant, the page tone) until a page colour is picked. A picked colour stays as picked. */
+:root[data-design="soft"] .lyric-sheet.theme-default { background: transparent; color: var(--fg); }
+:root[data-design="soft"] .lyric-sheet.theme-default .song-document, :root[data-design="soft"] .lyric-sheet.theme-default .song-document h2 { color: var(--fg); }
+:root[data-design="soft"] .lyric-sheet.theme-default.font-system { font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .lyric-sheet.theme-default.font-system .song-document { font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .song-document h2.sec-head { font: 600 13px var(--soft-font-ui); letter-spacing: 0; text-transform: none; color: var(--mute); }
+:root[data-design="soft"] .song-document h2.sec-chorus { color: var(--accT); font-weight: 700; }
+/* A chorus is one tonal panel, no bar on the edge. Lines are separate blocks, so the first and last get the rounded corners. */
+:root[data-design="soft"] .song-document .sec-chorus { background: var(--panel); border: 0; padding-inline: 1.7em 1em; }
+:root[data-design="soft"] .song-document > .sec-bar-right, :root[data-design="soft"] .song-document > .sec-bar-left { border: 0; padding-inline: 1.7em 1em; }
+:root[data-design="soft"] .song-document > div.sec-bar-right, :root[data-design="soft"] .song-document > div.sec-bar-left { background: var(--panel); }
+:root[data-design="soft"] .song-document > :not(.sec-chorus):not(.sec-bar-right):not(.sec-bar-left) + .sec-chorus { border-start-start-radius: var(--soft-radius-panel); border-start-end-radius: var(--soft-radius-panel); padding-top: 0.5em; }
+:root[data-design="soft"] .song-document > .sec-chorus:has(+ :not(.sec-chorus):not(.sec-bar-right):not(.sec-bar-left)),
+:root[data-design="soft"] .song-document > .sec-bar-right:has(+ :not(.sec-bar-right):not(.sec-chorus)),
+:root[data-design="soft"] .song-document > .sec-bar-left:has(+ :not(.sec-bar-left):not(.sec-chorus)) { border-end-start-radius: var(--soft-radius-panel); border-end-end-radius: var(--soft-radius-panel); padding-bottom: 0.5em; }
+
+/* ---- Soft look, screen 4 (continued): the key picker, Add to, the song menu, and the form controls they use ---- */
+/* Form controls: tonal fields and buttons, no outline. */
+:root[data-design="soft"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+:root[data-design="soft"] select, :root[data-design="soft"] textarea { border: 0; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); box-shadow: none; }
+:root[data-design="soft"] input::placeholder, :root[data-design="soft"] textarea::placeholder { color: var(--mute); }
+:root[data-design="soft"] .primary-button { background: var(--acc); color: var(--on); border: 0; border-radius: var(--soft-radius-control); box-shadow: none; font-weight: 600; }
+:root[data-design="soft"] .secondary-button { background: var(--panel); color: var(--fg); border: 0; border-radius: var(--soft-radius-control); box-shadow: none; font-weight: 600; }
+:root[data-design="soft"] .text-button { color: var(--accT); font-weight: 600; }
+:root[data-design="soft"] .danger-button { background: var(--panel); color: var(--danger); border: 0; border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .icon-button { color: var(--fg); border: 0; background: transparent; border-radius: var(--soft-radius-control); }
+
+/* Add to: a tonal list, rows separated by a 1px line, the search field tonal. */
+:root[data-design="soft"] .folder-choice-list { background: var(--panel); border: 0; border-radius: var(--soft-radius-panel); overflow: hidden; }
+:root[data-design="soft"] .choice-search { background: var(--panel2); }
+:root[data-design="soft"] .choice-group { border: 0; }
+:root[data-design="soft"] .choice-group > summary { color: var(--fg); font-weight: 600; }
+:root[data-design="soft"] .choice-group > summary::after, :root[data-design="soft"] .choice-group > summary small { color: var(--mute); }
+:root[data-design="soft"] .folder-choice-heading { color: var(--mute); border-bottom: 1px solid var(--panel2); }
+:root[data-design="soft"] .folder-choice { color: var(--fg); border-bottom: 1px solid var(--panel2); }
+:root[data-design="soft"] .folder-choice:last-child { border-bottom: 0; }
+:root[data-design="soft"] .folder-choice input { accent-color: var(--acc); }
+:root[data-design="soft"] .song-add-to-body p, :root[data-design="soft"] #songAddToHint { color: var(--mute); }
+
+/* The key picker is a popover under the key chip, like the New look (the position numbers are set by the same code). */
+:root[data-design="soft"] .sheet.quick-key-sheet { top: var(--qk-top, 64px); bottom: auto; inset-inline-end: auto; left: var(--qk-left, 8px); right: auto; width: 300px; height: auto; max-height: calc(100dvh - 32px); grid-template-rows: auto auto; overflow: auto; background: var(--panel); border: 0; border-radius: var(--soft-radius-panel); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
+:root[data-design="soft"] .quick-key-sheet .sheet-header { min-height: 0; padding: 10px 8px 6px 16px; }
+:root[data-design="soft"] #closeQuickKeyBtn { background: transparent; }
+:root[data-design="soft"] .quick-key-body { padding: 6px 16px 16px; gap: 10px; align-content: start; grid-auto-rows: min-content; }
+:root[data-design="soft"] .quick-key-sheet .key-mode-control { height: 44px; background: var(--panel2); border: 0; border-radius: var(--soft-radius-control); padding: 3px; gap: 0; box-shadow: none; }
+:root[data-design="soft"] .quick-key-sheet .key-mode-control button { position: relative; min-height: 38px; border: 0; border-radius: var(--soft-radius-key-badge); color: var(--mute); font-size: 15px; font-weight: 600; background: transparent; box-shadow: none; }
+:root[data-design="soft"] .quick-key-sheet .key-mode-control button.selected { background: var(--panel); color: var(--fg); box-shadow: none; }
+:root[data-design="soft"] .quick-key-sheet .key-mode-control button::after { content: ""; position: absolute; inset-block: -3px; inset-inline: 0; }
+:root[data-design="soft"] #quickKeyGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 44px; align-content: start; gap: 6px; }
+:root[data-design="soft"] #quickKeyGrid button { position: relative; height: 44px; min-height: 44px; border: 0; border-radius: var(--soft-radius-control); background: var(--panel2); color: var(--fg); font-size: 16px; font-weight: 600; box-shadow: none; }
+:root[data-design="soft"] #quickKeyGrid button.selected { background: var(--acc); color: var(--on); }
+:root[data-design="soft"] #quickKeyClearBtn { position: relative; justify-self: end; width: auto; min-height: 44px; padding-inline: 12px; background: transparent; border-radius: 0; color: var(--accT); font-size: 15px; font-weight: 600; }
+@media (min-width: 360px) { :root[data-design="soft"] body:has(#quickKeySheet:not(.hidden)) #scrim { background: transparent; } }
+@media (max-width: 359.98px) { :root[data-design="soft"] .sheet.quick-key-sheet { top: auto; bottom: 0; left: 0; right: 0; width: 100%; border-radius: var(--soft-radius-sheet) var(--soft-radius-sheet) 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); } }
+
+/* The song menu: icon tiles in a tonal panel, no underlines. */
+:root[data-design="soft"] .action-menu--grid { padding: 10px; }
+:root[data-design="soft"] .action-menu--grid .action-grid { gap: 8px; }
+:root[data-design="soft"] .action-menu--grid button.action-tile { border: 0; background: var(--panel2); color: var(--fg); border-radius: var(--soft-radius-control); font-size: 13.5px; font-weight: 600; box-shadow: none; }
+:root[data-design="soft"] .action-menu--grid button.action-tile svg { color: var(--accT); }
+:root[data-design="soft"] .action-menu--grid button.action-footer { border: 0; background: var(--panel2); color: var(--danger); font-weight: 600; border-radius: var(--soft-radius-control); }
+
+/* The "More" details under the chips. */
+:root[data-design="soft"] #songSecondaryMeta, :root[data-design="soft"] .song-secondary-meta { background: var(--panel); border: 0; border-radius: var(--soft-radius-panel); box-shadow: none; }
+:root[data-design="soft"] .song-add-to-body .choice-search { background: var(--panel2); }
+:root[data-design="soft"] .song-add-to-body label.folder-choice { border-bottom: 1px solid var(--panel2); }
+:root[data-design="soft"] .song-add-to-body label.folder-choice:last-child { border-bottom: 0; }
+
+/* ---- Soft look, screen 5: chords on the page, the reading (Aa) popover, the chord editor and chord builder ---- */
+/* Chords over the words: plain accent-coloured text, weight 800, 0.7 x the lyric size, on every page colour (Performance sets its own 22px). While the page
+   follows the app the text colour is the accent for that background; a picked page colour is always a light paper (also in a dark app), so it takes the
+   accent for light backgrounds. No chip: no fill, no radius. */
+:root[data-design="soft"] .lyric-sheet .song-document .cp-chord { background: transparent; color: var(--accL); font-family: var(--soft-font-ui); font-size: 0.7em; font-weight: 800; padding: 0 0.2em; border-radius: 0; line-height: 1.25; margin-bottom: 0.08em; }
+:root[data-design="soft"] .lyric-sheet.theme-default .song-document .cp-chord { background: transparent; color: var(--accT); }   /* beats the dark-app tint above it (same layer, more specific) */
+
+/* The reading popover. */
+:root[data-design="soft"] .appearance-popover__title { font-family: var(--soft-font-title); font-weight: 400; font-size: 22px; color: var(--fg); }
+:root[data-design="soft"] .lyr-row { border-bottom: 1px solid var(--panel2); color: var(--fg); }
+:root[data-design="soft"] .lyr-row:last-child { border-bottom: 0; }
+:root[data-design="soft"] .lyr-row__label { color: var(--fg); }
+:root[data-design="soft"] .lyr-stepper button { background: var(--panel2); color: var(--fg); border-radius: var(--soft-radius-key-badge); }
+:root[data-design="soft"] .lyr-bold { background: var(--panel2); color: var(--fg); }
+:root[data-design="soft"] .lyr-bold:has(input:checked) { background: var(--acc); color: var(--on); }
+:root[data-design="soft"] .lyr-switch__track { background: var(--panel2); }
+:root[data-design="soft"] .lyr-switch input:checked + .lyr-switch__track { background: var(--acc); }
+:root[data-design="soft"] .lyr-switch__track::after { background: var(--panel); }
+:root[data-design="soft"] .lyr-switch input:checked + .lyr-switch__track::after { background: var(--on); }
+:root[data-design="soft"] .lyr-chip { border: 0; background: var(--panel2); color: var(--fg); }
+:root[data-design="soft"] .lyr-chip:has(input:checked) { background: var(--acc); color: var(--on); border: 0; }
+:root[data-design="soft"] .lyr-select { background: var(--panel2); color: var(--fg); }
+:root[data-design="soft"] .lyr-dot__fill { border-color: var(--panel2); }
+:root[data-design="soft"] .lyr-dot.selected .lyr-dot__fill { outline-color: var(--fg); }
+
+/* The chord editor: the page tone, tonal tools, the placed chords as tonal chips (the chosen one in the accent). */
+:root[data-design="soft"] .chord-editor { background: var(--bg); color: var(--fg); }
+:root[data-design="soft"] .chord-editor .slp-header { background: transparent; }
+:root[data-design="soft"] .chord-editor .slp-header__eyebrow { color: var(--mute); text-transform: none; letter-spacing: 0; font-size: 13px; }
+:root[data-design="soft"] .chord-editor .slp-link-btn { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); padding-inline: 16px; }
+:root[data-design="soft"] .chord-editor .slp-link-btn--accent { background: var(--acc); color: var(--on); }
+:root[data-design="soft"] .chord-editor__lines { background: var(--bg); color: var(--fg); }
+:root[data-design="soft"] .ce-text { font-family: var(--soft-font-ui); color: var(--fg); }
+:root[data-design="soft"] .ce-chip { background: var(--panel2); color: var(--fg); font-weight: 800; border-radius: var(--soft-radius-key-badge); }
+:root[data-design="soft"] .ce-chip.selected { background: var(--acc); color: var(--on); }
+:root[data-design="soft"] .ce-chip.dragging { box-shadow: none; }
+:root[data-design="soft"] .ce-caret { background: var(--acc); }
+:root[data-design="soft"] .chord-editor__panel { background: var(--panel); border-top: 0; border-radius: var(--soft-radius-sheet) var(--soft-radius-sheet) 0 0; }
+:root[data-design="soft"] .ce-status, :root[data-design="soft"] .ce-bar-hint, :root[data-design="soft"] .ce-row__label { color: var(--mute); }
+:root[data-design="soft"] .ce-tool { background: var(--panel2); color: var(--fg); border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .ce-tool--danger { color: var(--danger); }
+:root[data-design="soft"] .ce-key { background: var(--panel2); color: var(--fg); font-weight: 800; border-radius: var(--soft-radius-control); }
+:root[data-design="soft"] .ce-key.recent { background: var(--panel2); color: var(--accT); }
+:root[data-design="soft"] .ce-key.selected { background: var(--acc); color: var(--on); }
+/* Key letters, chord names, the note grid and number steppers keep their left-to-right order in a Hebrew app. */
+:root[data-design="soft"] .ce-bar, :root[data-design="soft"] .ce-row, :root[data-design="soft"] .ce-builder, :root[data-design="soft"] #quickKeyGrid, :root[data-design="soft"] .lyr-stepper { direction: ltr; }
+:root[data-design="soft"] .ce-row__label { direction: inherit; }
+/* Steppers and the bold toggle: 40px squares whose invisible hit area makes them 44px. */
+:root[data-design="soft"] .lyr-stepper { gap: 4px; }
+:root[data-design="soft"] .lyr-stepper button, :root[data-design="soft"] .lyr-bold { width: 40px; height: 40px; }
+:root[data-design="soft"] .lyr-stepper button::after, :root[data-design="soft"] .lyr-bold::after { inset: -2px; }
+:root[data-design="soft"] .lyr-select { height: 44px; }
+:root[data-design="soft"] .lyr-dots { gap: 2px; }
+:root[data-design="soft"] .lyr-dot { width: 40px; }
+:root[data-design="soft"] .lyr-dot::after { content: ""; position: absolute; inset: 0 -2px; }
+:root[data-design="soft"] .ce-chip::after { inset: -5px -8px; }
+
+/* ---- Soft look, screen 6: Performance ----
+   Always black, whatever background is chosen; only the key pill takes the accent. Same bar, same buttons, same order: the old yellow
+   and navy become tonal buttons on black, the chorus a tonal panel, the section names plain labels, the chords accent text.
+   (The earlier ".performance-view" rule never matched the real element, so the view kept the old palette.) */
+:root[data-design="soft"] #performanceView {
+  --bg: #000000; --panel: #1C1C1E; --panel2: #2E2E30; --fg: #F5F5F7; --mute: #A1A1A6; --accT: var(--accD);
+  background: var(--bg); color: var(--fg); font-family: var(--soft-font-ui);
+}
+:root[data-design="soft"] #performanceView .perf-bar { background: transparent; border-bottom: 0; gap: 6px; padding: 14px 12px 0; }
+:root[data-design="soft"] #performanceView .perf-bar__row, :root[data-design="soft"] #performanceView .perf-key { gap: 6px; }
+:root[data-design="soft"] #performanceView .perf-key { flex: 1; min-width: 0; justify-content: center; direction: ltr; } /* the key steppers keep − then + in a Hebrew app */
+:root[data-design="soft"] #performanceView .perf-key__pill { flex: 1; min-width: 70px; max-width: 160px; }
+:root[data-design="soft"] #performanceView .perf-btn { flex: none; width: 46px; height: 46px; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); }
+:root[data-design="soft"] #performanceView .perf-btn[aria-pressed="true"] { background: var(--panel2); color: var(--accT); }
+:root[data-design="soft"] #performanceView .perf-btn:disabled { opacity: 0.35; }
+:root[data-design="soft"] #performanceView .perf-chip { min-height: 46px; padding: 0 16px; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); font-family: var(--soft-font-ui); font-size: 16px; font-weight: 700; }
+:root[data-design="soft"] #performanceView .perf-chip[aria-pressed="true"] { background: var(--panel2); color: var(--accT); }
+:root[data-design="soft"] #performanceView .perf-key__pill { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 0 12px; border-radius: var(--soft-radius-control); background: var(--acc); color: var(--on); font-family: var(--soft-font-ui); font-size: 22px; font-weight: 700; }
+:root[data-design="soft"] #performanceView .perf-speed, :root[data-design="soft"] #performanceView .perf-awake, :root[data-design="soft"] #performanceView .perf-event-label { color: var(--mute); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] #performanceView .perf-event-label { font-size: 14px; }
+:root[data-design="soft"] #performanceView .perf-notice { background: var(--panel2); color: var(--fg); border-radius: var(--soft-radius-control); box-shadow: none; font-family: var(--soft-font-ui); }
+:root[data-design="soft"] #performanceView .perf-notice .perf-chip { background: var(--panel); color: var(--accT); min-height: 44px; }
+:root[data-design="soft"] #performanceView .perf-scroll { padding-inline: 20px; outline: none; }
+:root[data-design="soft"] #performanceView .perf-title .song-title-lines { color: var(--fg); font-family: var(--soft-font-ui); font-size: 14px; font-weight: 700; }
+:root[data-design="soft"] #performanceView .perf-title .t-artist { color: var(--mute); font-size: 14px; font-weight: 400; }
+:root[data-design="soft"] #performanceView .song-document { color: var(--fg); font-family: var(--soft-font-ui); font-weight: 500; }
+:root[data-design="soft"] #performanceView .song-document h2 { color: var(--mute); }
+/* Section names: plain labels (muted; the chorus in the accent text colour), not pills. */
+:root[data-design="soft"] #performanceView .perf-section { display: block; margin: 0.9em 0 0.2em !important; padding: 0; border-radius: 0; background: none; color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px !important; font-weight: 700; letter-spacing: 0; text-transform: none; line-height: 1.4; }
+:root[data-design="soft"] #performanceView .perf-section.sec-type-chorus { color: var(--accT); }
+/* The app writes the label in capitals; the soft look shows it as "Verse" (first letter capital). */
+:root[data-design="soft"] #performanceView .perf-section { text-transform: lowercase; }
+:root[data-design="soft"] #performanceView .perf-section::first-letter { text-transform: uppercase; }
+/* A chorus panel at the very end is rounded all round, like the ones between lines. */
+:root[data-design="soft"] #performanceView #perfDoc > .sec-chorus:last-child, :root[data-design="soft"] #performanceView #perfDoc > .sec-bar-right:last-child, :root[data-design="soft"] #performanceView #perfDoc > .sec-bar-left:last-child { border-end-start-radius: var(--soft-radius-panel); border-end-end-radius: var(--soft-radius-panel); padding-bottom: 0.5em; }
+/* Chords over the words: accent text, weight 800, 0.7 x the lyric size, no bubble. */
+:root[data-design="soft"] #performanceView .cp-chord { color: var(--accT); font-family: var(--soft-font-ui); font-size: 0.7em; font-weight: 800; line-height: 1.25; margin-bottom: 0.08em; }
+:root[data-design="soft"] #performanceView .line-disclosure-toggle { color: var(--accT); }
+:root[data-design="soft"] #performanceView .line-disclosure-content { color: var(--mute); }
 
 }
 
@@ -7041,7 +7800,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
             <button id="songListToggleBtn" class="slp-btn slp-btn--icon song-list-toggle" type="button" aria-label="Hide the song list" aria-pressed="false"><i data-lucide="panel-left-close"></i></button>
             <h1 id="songTitle" class="slp-header__title" dir="auto">Song</h1>
             <div class="slp-header__actions">
-              <button id="songPerformanceBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Performance mode" title="Performance mode"><i data-lucide="maximize-2"></i></button>
+              <button id="songPerformanceBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Performance mode" title="Performance mode"><i data-lucide="maximize-2"></i><span class="perform-label">Perform</span></button>
               <button id="songAppearanceBtn" class="slp-btn slp-btn--icon" type="button" aria-label="Appearance"><span class="appearance-glyph" aria-hidden="true">Aa</span></button>
               <button id="songMoreBtn" class="slp-btn slp-btn--icon" type="button" aria-label="More"><i data-lucide="more-horizontal"></i></button>
             </div>
@@ -7785,7 +8544,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
         </button>
         <button id="openAppearanceSettingsBtn" class="slp-row" type="button">
           <span class="slp-row__icon-tile"><i data-lucide="moon-star"></i></span>
-          <span class="slp-row__body"><span class="slp-row__title">Appearance</span><span class="slp-row__subtitle">Color, dark mode, and reading text</span></span>
+          <span class="slp-row__body"><span class="slp-row__title">Appearance</span><span id="appearanceRowSubtitle" class="slp-row__subtitle">Color, dark mode, and reading text</span></span>
           <i data-lucide="chevron-right" class="slp-row__chevron"></i>
         </button>
         <button id="openPlaySettingsBtn" class="slp-row" type="button">
@@ -8020,6 +8779,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
                 <div class="slp-segmented slp-segmented--full" role="group" aria-label="Design">
                   <button type="button" data-design-choice="new">New</button>
                   <button type="button" data-design-choice="classic">Classic</button>
+                  <button type="button" data-design-choice="soft">Soft</button>
                 </div>
               </div>
               <div class="slp-setting">
@@ -8030,7 +8790,32 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
                   <button type="button" data-mode-choice="dark">Dark</button>
                 </div>
               </div>
-              <div class="slp-setting">
+              <div class="slp-setting hidden" data-soft-only>
+                <span class="slp-setting__title">Background</span>
+                <div class="slp-swatch-row" role="group" aria-label="Background">
+            <button type="button" class="slp-swatch" data-soft-bg-choice="linen" aria-label="Linen" aria-pressed="false"><span class="slp-swatch__dot" style="background:#EFECE5;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-bg-choice="white" aria-label="White" aria-pressed="false"><span class="slp-swatch__dot" style="background:#FFFFFF;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-bg-choice="mist" aria-label="Mist" aria-pressed="false"><span class="slp-swatch__dot" style="background:#E6EAEF;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-bg-choice="sand" aria-label="Sand" aria-pressed="false"><span class="slp-swatch__dot" style="background:#E8DFD0;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-bg-choice="slate" aria-label="Slate" aria-pressed="false"><span class="slp-swatch__dot" style="background:#232A36;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-bg-choice="charcoal" aria-label="Charcoal" aria-pressed="false"><span class="slp-swatch__dot" style="background:#1E1D1B;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-bg-choice="black" aria-label="Black" aria-pressed="false"><span class="slp-swatch__dot" style="background:#000000;"></span></button>
+                </div>
+              </div>
+              <div class="slp-setting hidden" data-soft-only>
+                <span class="slp-setting__title">Accent color</span>
+                <div class="slp-swatch-row" role="group" aria-label="Accent color">
+            <button type="button" class="slp-swatch" data-soft-accent-choice="wine" aria-label="Wine" aria-pressed="false"><span class="slp-swatch__dot" style="background:#7D3F4A;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-accent-choice="teal" aria-label="Teal" aria-pressed="false"><span class="slp-swatch__dot" style="background:#0F6E64;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-accent-choice="blue" aria-label="Blue" aria-pressed="false"><span class="slp-swatch__dot" style="background:#2F5FB3;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-accent-choice="violet" aria-label="Violet" aria-pressed="false"><span class="slp-swatch__dot" style="background:#5E4B9B;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-accent-choice="forest" aria-label="Forest" aria-pressed="false"><span class="slp-swatch__dot" style="background:#3F6B4A;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-accent-choice="amber" aria-label="Amber" aria-pressed="false"><span class="slp-swatch__dot" style="background:#F2B544;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-accent-choice="apricot" aria-label="Apricot" aria-pressed="false"><span class="slp-swatch__dot" style="background:#E9B99A;"></span></button>
+            <button type="button" class="slp-swatch" data-soft-accent-choice="ink" aria-label="No color" aria-pressed="false"><span class="slp-swatch__dot" style="background:#3A3A3A;"></span></button>
+                </div>
+              </div>
+              <div class="slp-setting" data-classic-accent>
                 <span class="slp-setting__title">Accent color</span>
                 <div class="slp-swatch-row" role="group" aria-label="Accent color">
             <button type="button" class="slp-swatch" data-accent-choice="teal" aria-label="Deep teal"><span class="slp-swatch__dot" style="background:#0f6f6a;"></span><span class="slp-swatch__label">Teal</span></button>
@@ -8538,7 +9323,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "a2409d3d · 15c970a";
+const APP_BUILD = "3e22b312 · 6890598";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -9133,6 +9918,8 @@ Object.assign(HEBREW_UI, {
  "Show songs in this key": "הצגת שירים בסולם הזה",
  "Set list": "סדר שירים",
  "Back to Board": "חזרה ללוח",
+ "Back to event": "חזרה לאירוע",
+ "Perform": "הופעה",
  "Event setlist": "סדר השירים של האירוע",
  "Quick add": "הוספה מהירה",
  "ADD TO": "הוספה אל",
@@ -10258,6 +11045,8 @@ Object.assign(HEBREW_UI, {"Microphone blocked": "המיקרופון חסום", "
 Object.assign(HEBREW_UI, {"Song files (.slpsong) are added on their own. Choose them again by themselves.": "קבצי שיר (slpsong.) נוספים בנפרד. בחרו אותם שוב לבד."});
 
 Object.assign(HEBREW_UI, {"PASTE THE COPIED PAGE": "הדביקו את הדף שהועתק"});
+
+Object.assign(HEBREW_UI, {"Soft": "רך", "Linen": "פשתן", "Mist": "ערפל", "Sand": "חול", "Slate": "צפחה", "Charcoal": "פחם", "Black": "שחור", "Wine": "יין", "Forest": "יער", "Amber": "ענבר", "Apricot": "משמש", "No color": "ללא צבע"});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -11637,6 +12426,17 @@ function render() {
   // On medium screens the song list fills the width until a song is open, then the lyrics sit beside it.
   const songsReading = workspaceMode === "library" && libraryMode !== "notes" && Boolean(currentSong());
   els.app.classList.toggle("songs-reading", songsReading);
+  // Soft look: a song opened from an event shows a back arrow at laptop width too (the arrow is otherwise a phone-width control).
+  els.app.classList.toggle("song-return-event", isSoftDesign() && mobileView === "song" && Boolean(songReturnContext?.gigId));
+  if (isSoftDesign()) {
+    const toEvent = mobileView === "song" && Boolean(songReturnContext?.gigId);
+    const toBoard = mobileView === "song" && Boolean(songReturnContext?.board);
+    els.backToFolderBtn.setAttribute("aria-label", t(toBoard ? "Back to Board" : toEvent ? "Back to event" : "Back to songs"));
+    els.backToFolderBtn.dataset.softLabel = "1";
+  } else if (els.backToFolderBtn.dataset.softLabel) {
+    els.backToFolderBtn.setAttribute("aria-label", t("Back to songs"));
+    delete els.backToFolderBtn.dataset.softLabel;
+  }
   const songsListHidden = songsReading && eventPrefs.songsListHidden;
   els.app.classList.toggle("songs-list-hidden", songsListHidden);
   els.songListToggleBtn.setAttribute("aria-label", songsListHidden ? "Show the song list" : "Hide the song list");
@@ -12733,8 +13533,16 @@ function boardSongKey(song) {
   return songDisplayKey(song);
 }
 
+// Soft look: the "Other" key chip. Every key that is not note + major/minor/freygish ("Benny", "Am - Bbm", "Dm/Ebm").
+const BOARD_OTHER_KEY = "__other__";
+
 function boardMatchesFilters(song) {
-  if (boardState.key && boardSongKey(song) !== boardState.key) return false;
+  if (boardState.key === BOARD_OTHER_KEY) {
+    if (isSoftDesign()) {
+      const key = boardSongKey(song);
+      if (!key || keyIsGridKey(key)) return false;
+    }
+  } else if (boardState.key && boardSongKey(song) !== boardState.key) return false;
   return Object.entries(boardState.filters).every(([field, selected]) => {
     if (!selected.size) return true;
     return boardFieldValues(song, field).some((value) => selected.has(value));
@@ -12965,9 +13773,15 @@ function renderBoardFilterStrip() {
     const key = boardSongKey(song);
     if (key) counts.set(key, (counts.get(key) || 0) + 1);
   });
-  const keys = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([key]) => key);
+  let keys = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([key]) => key);
+  // Soft look: only normalized keys (note + major/minor/freygish) get a chip, most used first; every other value ("Benny", "Am - Bbm", "Dm/Ebm")
+  // goes under one "Other" chip. Nothing is changed in the saved songs.
+  const soft = isSoftDesign();
+  const hasOther = soft && keys.some((key) => !keyIsGridKey(key));
+  if (soft) keys = keys.filter((key) => keyIsGridKey(key));
+  const otherChip = hasOther ? [`<button class="board-chip ${boardState.key === BOARD_OTHER_KEY ? "is-selected" : ""}" type="button" data-board-key="${BOARD_OTHER_KEY}" aria-pressed="${boardState.key === BOARD_OTHER_KEY}">${t("Other")}</button>`] : [];
   const keyChips = [`<button class="board-chip ${boardState.key ? "" : "is-selected"}" type="button" data-board-key="" aria-pressed="${!boardState.key}">${t("All keys")}</button>`]
-    .concat(keys.map((key) => `<button class="board-chip ${boardState.key === key ? "is-selected" : ""}" type="button" dir="ltr" data-board-key="${escapeAttribute(key)}" aria-pressed="${boardState.key === key}">${escapeHtml(key)}</button>`));
+    .concat(keys.map((key) => `<button class="board-chip ${boardState.key === key ? "is-selected" : ""}" type="button" dir="ltr" data-board-key="${escapeAttribute(key)}" aria-pressed="${boardState.key === key}">${escapeHtml(key)}</button>`)).concat(otherChip);
   const searching = boardState.searchOpen;
   els.boardAddFilterBtn.classList.toggle("hidden", searching);
   els.boardSearchBtn.classList.toggle("hidden", searching);
@@ -13080,7 +13894,7 @@ function boardCardMarkup(song, column) {
           ${strip}
         </span>
         ${!open && (song.notePictures || []).length ? `<span class="board-card__notes" aria-label="${song.notePictures.length} sheet music ${song.notePictures.length === 1 ? "picture" : "pictures"}"><i data-lucide="file-music"></i>${song.notePictures.length}</span>` : ""}
-        ${!open && key ? `<span class="slp-badge--key board-card__key" dir="ltr">${escapeHtml(key)}</span>` : ""}
+        ${!open && key ? `<span class="slp-badge--key board-card__key" dir="ltr">${escapeHtml(rowBadgeKey(key))}</span>` : ""}
       </button>
       ${open ? `<button class="board-card__pinbtn" type="button" data-board-pin aria-label="${pinTitle}" title="${pinTitle}"><i data-lucide="pin"></i></button>` : ""}
     </div>
@@ -19079,6 +19893,7 @@ function positionChordEditorChips() {
       line.dom.chordRow.append(chip);
       wireChordChip(line, lineIndex, chipIndex, chip);
     });
+    if (document.documentElement.getAttribute("data-design") === "soft") spaceChordChipsApart(line);
     const caret = line.dom.caret;
     caret.hidden = !(selection && selection.line === lineIndex && selection.chip === undefined);
     if (!caret.hidden) {
@@ -19088,6 +19903,36 @@ function positionChordEditorChips() {
     }
   });
   refreshChordEditorStatus();
+}
+
+// Soft look only: two chords on short neighbouring words would overlap, so the gap before the later chord grows by
+// exactly what is missing (a little space after the letter before it). Classic and New keep the letters as they are.
+function spaceChordChipsApart(line) {
+  const glyphs = [...line.dom.textRow.children];
+  glyphs.forEach((glyph) => { glyph.style.marginInlineEnd = ""; });
+  const chips = [...line.dom.chordRow.children];
+  const order = chips.map((chip, i) => ({ chip, pos: line.chords[Number(chip.dataset.chip)].pos, i })).sort((a, b) => a.pos - b.pos || a.i - b.i);
+  const minGap = 4;
+  let previous = null;
+  order.forEach((item) => {
+    let x = chordBoundaryX(line, item.pos);
+    if (previous) {
+      const distance = line.rtl ? previous.x - x : x - previous.x;
+      const need = previous.width + minGap - distance;
+      const startIndex = line.starts.findIndex((start) => start >= item.pos);
+      const glyphIndex = startIndex < 0 || startIndex >= glyphs.length ? glyphs.length - 2 : startIndex - 1;
+      if (need > 0 && glyphIndex >= 0) {
+        glyphs[glyphIndex].style.marginInlineEnd = `${(parseFloat(glyphs[glyphIndex].style.marginInlineEnd) || 0) + Math.ceil(need)}px`;
+        x = chordBoundaryX(line, item.pos);
+      }
+    }
+    previous = { x, width: item.chip.getBoundingClientRect().width };
+  });
+  order.forEach((item) => {
+    const x = chordBoundaryX(line, item.pos);
+    if (line.rtl) item.chip.style.right = `${line.dom.inner.clientWidth - x}px`;
+    else item.chip.style.left = `${x}px`;
+  });
 }
 
 function nearestChordBoundary(line, clientX) {
@@ -20979,25 +21824,72 @@ function initPracticeKey() {
   globalThis.addEventListener?.("pagehide", stopAndShow);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") stopAndShow(); });
 }
-// "New" or "Classic" look. A device preference (like the title side), so a phone can try the new look
+// "Soft", "New" or "Classic" look. A device preference (like the title side), so a phone can try a look
 // while the laptop stays as it is. Classic is the default.
 const DESIGN_KEY = "slp-design";
+const DESIGNS = ["classic", "new", "soft"];
 function designStyle() {
-  try { return localStorage.getItem(DESIGN_KEY) === "new" ? "new" : "classic"; } catch { return "classic"; }
+  try { const value = localStorage.getItem(DESIGN_KEY); return DESIGNS.includes(value) ? value : "classic"; } catch { return "classic"; }
 }
 
 function setDesignStyle(value) {
-  try { localStorage.setItem(DESIGN_KEY, value === "new" ? "new" : "classic"); } catch {}
+  try { localStorage.setItem(DESIGN_KEY, DESIGNS.includes(value) ? value : "classic"); } catch {}
 }
 
-function applyAppAppearance() {
-  document.documentElement?.setAttribute?.("data-design", designStyle());
-  const mode = state.appearanceMode || "system";
+// The soft look has two background picks (one for light, one for dark) and one accent, all kept on this device only.
+// Mode (Auto, Light, Dark) decides which background is on screen. Nothing here touches the library data.
+const SOFT_BG_LIGHT_KEY = "slp-soft-bg-light";
+const SOFT_BG_DARK_KEY = "slp-soft-bg-dark";
+const SOFT_ACCENT_KEY = "slp-soft-accent";
+const SOFT_LIGHT_BACKGROUNDS = ["linen", "white", "mist", "sand"];
+const SOFT_DARK_BACKGROUNDS = ["slate", "charcoal", "black"];
+const SOFT_ACCENTS = ["wine", "teal", "blue", "violet", "forest", "amber", "apricot", "ink"];
+const SOFT_NAMES = { linen: "Linen", white: "White", mist: "Mist", sand: "Sand", slate: "Slate", charcoal: "Charcoal", black: "Black", wine: "Wine", teal: "Teal", blue: "Blue", violet: "Violet", forest: "Forest", amber: "Amber", apricot: "Apricot", ink: "No color" };
+function softPick(key, allowed, fallback) {
+  try { const value = localStorage.getItem(key); return allowed.includes(value) ? value : fallback; } catch { return fallback; }
+}
+function softBackgroundLight() { return softPick(SOFT_BG_LIGHT_KEY, SOFT_LIGHT_BACKGROUNDS, "mist"); }
+function softBackgroundDark() { return softPick(SOFT_BG_DARK_KEY, SOFT_DARK_BACKGROUNDS, "charcoal"); }
+function softAccent() { return softPick(SOFT_ACCENT_KEY, SOFT_ACCENTS, "wine"); }
+function setSoftChoices({ light, dark, accent }) {
+  try {
+    if (SOFT_LIGHT_BACKGROUNDS.includes(light)) localStorage.setItem(SOFT_BG_LIGHT_KEY, light);
+    if (SOFT_DARK_BACKGROUNDS.includes(dark)) localStorage.setItem(SOFT_BG_DARK_KEY, dark);
+    if (SOFT_ACCENTS.includes(accent)) localStorage.setItem(SOFT_ACCENT_KEY, accent);
+  } catch {}
+}
+function resolvedColorMode(mode = state.appearanceMode || "system") {
   const systemDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
-  const resolved = mode === "system" ? (systemDark ? "dark" : "light") : mode;
-  document.documentElement?.setAttribute?.("data-color-mode", resolved);
-  document.documentElement?.setAttribute?.("data-accent", state.accentTheme || "teal");
+  return mode === "system" ? (systemDark ? "dark" : "light") : mode;
+}
+// The background on screen right now: the dark pick when the app is dark, the light pick when it is light.
+function softBackgroundOnScreen(mode) { return resolvedColorMode(mode) === "dark" ? softBackgroundDark() : softBackgroundLight(); }
+
+function applyAppAppearance() {
+  const root = document.documentElement;
+  const design = designStyle();
+  root?.setAttribute?.("data-design", design);
+  const resolved = resolvedColorMode();
+  root?.setAttribute?.("data-color-mode", resolved);
+  root?.setAttribute?.("data-accent", state.accentTheme || "teal");
+  if (design === "soft") {
+    root?.setAttribute?.("data-soft-bg", softBackgroundOnScreen());
+    root?.setAttribute?.("data-soft-accent", softAccent());
+  } else {
+    root?.removeAttribute?.("data-soft-bg");
+    root?.removeAttribute?.("data-soft-accent");
+  }
   document.querySelector?.('meta[name="theme-color"]')?.setAttribute?.("content", resolved === "dark" ? "#202625" : "#f4f5f3");
+  refreshAppearanceRow();
+}
+
+// Settings > Appearance row: the soft look shows the background on screen and the accent ("Mist · Wine").
+function refreshAppearanceRow() {
+  const sub = document.getElementById("appearanceRowSubtitle");
+  if (!sub) return;
+  sub.textContent = designStyle() === "soft"
+    ? `${t(SOFT_NAMES[softBackgroundOnScreen()])} · ${t(SOFT_NAMES[softAccent()])}`
+    : t("Color, dark mode, and reading text");
 }
 
 function currentAppearanceDraft() {
@@ -21005,6 +21897,9 @@ function currentAppearanceDraft() {
     appearanceMode: state.appearanceMode || "system",
     accentTheme: state.accentTheme || "teal",
     design: designStyle(),
+    softLight: softBackgroundLight(),
+    softDark: softBackgroundDark(),
+    softAccent: softAccent(),
     font: state.lyricPrefs.font,
     lyricSize: state.lyricPrefs.fontSize,
     alignment: state.lyricPrefs.alignment || "auto",
@@ -21019,7 +21914,8 @@ function showSettingsMain(title = t("Settings & Backup")) {
   els.appearanceSettingsView.classList.add("hidden");
   document.querySelectorAll(".settings-page").forEach((page) => page.classList.add("hidden"));
   els.settingsTitle.textContent = title;
-  appearanceDraft = null;
+  discardAppearanceDraft();
+  refreshAppearanceRow();
   refreshBackupStatus();
   refreshSafetyRows();
   refreshPracticeAudioRow();
@@ -21073,12 +21969,45 @@ function openAppearanceSettings() {
   refreshIcons();
 }
 
+// The soft look previews on screen as soon as a swatch (or Mode) is tapped, before Done. Nothing is saved until Done;
+// leaving the page any other way (Cancel, Back, the close button) puts the saved colours back.
+function previewAppearanceDraft() {
+  if (!appearanceDraft) return;
+  if (appearanceDraft.design !== "soft") { applyAppAppearance(); return; }
+  const root = document.documentElement;
+  const mode = resolvedColorMode(appearanceDraft.appearanceMode);
+  root?.setAttribute?.("data-design", "soft");
+  root?.setAttribute?.("data-color-mode", mode);
+  root?.setAttribute?.("data-soft-bg", mode === "dark" ? appearanceDraft.softDark : appearanceDraft.softLight);
+  root?.setAttribute?.("data-soft-accent", appearanceDraft.softAccent);
+}
+
+function discardAppearanceDraft() {
+  if (!appearanceDraft) return;
+  appearanceDraft = null;
+  applyAppAppearance();
+}
+
 function syncAppearanceDraft() {
   if (!appearanceDraft) return;
+  previewAppearanceDraft();
   document.querySelectorAll("[data-mode-choice]").forEach((button) => {
     button.classList.toggle("selected", button.dataset.modeChoice === appearanceDraft.appearanceMode);
   });
   document.querySelectorAll("[data-design-choice]").forEach((button) => button.classList.toggle("selected", button.dataset.designChoice === appearanceDraft.design));
+  const soft = appearanceDraft.design === "soft";
+  document.querySelectorAll("[data-soft-only]").forEach((row) => row.classList.toggle("hidden", !soft));
+  document.querySelectorAll("[data-classic-accent]").forEach((row) => row.classList.toggle("hidden", soft));
+  document.querySelectorAll("[data-soft-bg-choice]").forEach((button) => {
+    const name = button.dataset.softBgChoice;
+    button.classList.toggle("selected", name === appearanceDraft.softLight || name === appearanceDraft.softDark);
+    button.setAttribute("aria-pressed", String(name === (resolvedColorMode(appearanceDraft.appearanceMode) === "dark" ? appearanceDraft.softDark : appearanceDraft.softLight)));
+  });
+  document.querySelectorAll("[data-soft-accent-choice]").forEach((button) => {
+    const on = button.dataset.softAccentChoice === appearanceDraft.softAccent;
+    button.classList.toggle("selected", on);
+    button.setAttribute("aria-pressed", String(on));
+  });
   const fontSelect = document.getElementById("fontSelect");
   if (fontSelect) fontSelect.value = appearanceDraft.font;
   document.querySelectorAll("[data-align-choice]").forEach((button) => button.classList.toggle("selected", button.dataset.alignChoice === appearanceDraft.alignment));
@@ -21097,11 +22026,23 @@ function syncAppearanceDraft() {
   els.appearancePreview.style.textAlign = appearanceDraft.alignment === "auto" ? "start" : appearanceDraft.alignment;
 }
 
+// A tap on a background swatch saves to that swatch's own slot (light or dark). When Mode is Light or Dark and the
+// swatch is the other kind, Mode switches to match so the tap always shows what was tapped. Auto is left alone.
+function chooseSoftBackground(name) {
+  const dark = SOFT_DARK_BACKGROUNDS.includes(name);
+  if (!dark && !SOFT_LIGHT_BACKGROUNDS.includes(name)) return;
+  if (dark) appearanceDraft.softDark = name; else appearanceDraft.softLight = name;
+  const mode = appearanceDraft.appearanceMode;
+  if (mode !== "system") appearanceDraft.appearanceMode = dark ? "dark" : "light";
+  syncAppearanceDraft();
+}
+
 function saveAppearanceSettings() {
   if (!appearanceDraft) return;
   state.appearanceMode = appearanceDraft.appearanceMode;
   state.accentTheme = appearanceDraft.accentTheme;
   setDesignStyle(appearanceDraft.design);
+  setSoftChoices({ light: appearanceDraft.softLight, dark: appearanceDraft.softDark, accent: appearanceDraft.softAccent });
   applyAppAppearance();
   state.lyricPrefs.font = appearanceDraft.font;
   state.lyricPrefs.fontSize = Number(appearanceDraft.lyricSize);
@@ -22190,7 +23131,7 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const ownKey = songDisplayKey(song);
   const eventKey = Boolean(item.keyOverride);
   const keyChip = songKey
-    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? `<span class="ek-classic">${keyLabelHtml(ownKey)} → </span>` : ""}<span class="ek-main">${keyLabelHtml(songKey)}</span>${ownKey ? `<span class="ek-label">${t("event")}</span>` : ""}${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${keyLabelHtml(ownKey)}</span>` : ""}` : keyLabelHtml(songKey)}</button>`
+    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? `<span class="ek-classic">${keyLabelHtml(ownKey)} → </span>` : ""}<span class="ek-main">${keyLabelHtml(rowBadgeKey(songKey))}</span>${ownKey ? `<span class="ek-label">${t("event")}</span>` : ""}${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${keyLabelHtml(ownKey)}</span>` : ""}` : keyLabelHtml(rowBadgeKey(songKey))}</button>`
     : !gigStructureEditMode && !gigReorderMode && !selectMode.active ? `<button class="slp-badge--key empty quiet" type="button" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(t("Set a key or add a note"))}">–</button>`
     : gigStructureEditMode ? `<button class="slp-badge--key empty" type="button" data-gig-item-edit="${item.id}" aria-label="Add a key or note"><i data-lucide="sticky-note"></i><span class="empty-label">${t("Key")}</span></button>` : "";
   const noteText = [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ");
@@ -28233,6 +29174,7 @@ function showOverlay(element) {
 }
 
 function closeOverlays() {
+  discardAppearanceDraft();
   // A form closed without saving does not keep an audio file it added.
   if (songInfoDraft?.audioAdded?.length) releasePracticeAudio(songInfoDraft.audioAdded);
   songInfoDraft = null;
@@ -28481,12 +29423,46 @@ function songRowMeta(song) {
   if (song.bpm) parts.push(`<span class="song-bpm" dir="ltr">${escapeHtml(String(song.bpm))} bpm</span>`);
   const origin = songOriginTag(song);
   if (origin) parts.push(origin);
-  if (likelyDuplicateIds().has(song.id)) parts.push(`<span class="song-review-chip song-dup-chip">${t("Maybe duplicate")}</span>`);
-  if (song.needsReview) parts.push(`<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>`);
+  if (isSoftDesign()) {
+    // Soft look: one small amber dot instead of the "Maybe duplicate" and "Review" pills. Tapping it opens the compare or the review.
+    const maybeDuplicate = likelyDuplicateIds().has(song.id);
+    if (maybeDuplicate || song.needsReview) {
+      const label = [maybeDuplicate ? t("Maybe duplicate") : "", song.needsReview ? t("Needs review") : ""].filter(Boolean).join(". ");
+      parts.push(`<button class="song-flag-dot" type="button" data-song-flag="${escapeAttribute(song.id)}" aria-label="${escapeAttribute(label)}"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}></button>`);
+    }
+  } else {
+    if (likelyDuplicateIds().has(song.id)) parts.push(`<span class="song-review-chip song-dup-chip">${t("Maybe duplicate")}</span>`);
+    if (song.needsReview) parts.push(`<span class="song-review-chip"${song.reviewNote ? ` title="${escapeAttribute(song.reviewNote)}"` : ""}>${t("Review")}</span>`);
+  }
   const flag = songChartFlag(song);
   if (flag) parts.push(flag);
   return `<span class="song-meta">${parts.join("")}</span>`;
 }
+
+// The soft look is a data-design value on <html>; safe where there is no real document (the smoke test).
+function isSoftDesign() { return globalThis.document?.documentElement?.getAttribute?.("data-design") === "soft"; }
+
+// Soft look: a row's key badge shows only the first key of a compound value ("Am - Bbm" shows Am); the whole text stays in the key popover.
+function rowBadgeKey(key) {
+  if (!isSoftDesign()) return key;
+  return keyIsCompound(key) && keyGroupLabel(key) ? keyGroupLabel(key) : key;
+}
+
+// The amber dot on a song row (soft look): the compare for a likely duplicate, otherwise the song's own details, where "Needs review" and its note live.
+function openSongFlag(songId) {
+  const pair = scanDuplicates().find((item) => !item.kept && item.level === "likely" && (item.baseId === songId || item.otherId === songId));
+  if (pair) { dupOpenPair(pair.key); return; }
+  openSong(songId);
+  openSongInfo(false);
+}
+// Capture phase, so the row's own tap (open or expand the song) does not also run.
+globalThis.document?.addEventListener?.("click", (event) => {
+  const dot = event.target.closest?.("[data-song-flag]");
+  if (!dot) return;
+  event.preventDefault();
+  event.stopPropagation();
+  openSongFlag(dot.dataset.songFlag);
+}, true);
 
 function songTitleMarkup(song) {
   const parts = songTitleParts(song);
@@ -30118,6 +31094,8 @@ document.querySelectorAll("[data-size-step]").forEach((button) => button.addEven
   appearanceDraft[key] = clamp(Number(appearanceDraft[key]) + Number(button.dataset.sizeStep), min, max);
   syncAppearanceDraft();
 }));
+document.querySelectorAll("[data-soft-bg-choice]").forEach((button) => button.addEventListener("click", () => chooseSoftBackground(button.dataset.softBgChoice)));
+document.querySelectorAll("[data-soft-accent-choice]").forEach((button) => button.addEventListener("click", () => { appearanceDraft.softAccent = button.dataset.softAccentChoice; syncAppearanceDraft(); }));
 document.querySelectorAll("[data-accent-choice]").forEach((button) => button.addEventListener("click", () => {
   appearanceDraft.accentTheme = button.dataset.accentChoice;
   syncAppearanceDraft();
