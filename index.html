@@ -2605,6 +2605,8 @@ textarea.slp-input { resize: vertical; }
 
 .tool-controls { display: grid; gap: var(--space-8); padding: var(--space-8); }
 .tool-note-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
+/* Notes read left to right (C, C#, D, Eb...) and the piano rises from the left, also in a Hebrew app: they are a note grid and an instrument, not text. */
+.tool-note-grid, .tool-keyboard, .tool-degrees { direction: ltr; }
 .tool-note,
 .tool-degree {
   min-height: 52px;
@@ -6750,7 +6752,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
   --soft-key-slot: 56px;
 }
 :root[data-design="soft"] .song-item .slp-row {
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) var(--soft-he-col) var(--soft-key-slot); grid-template-areas: "p s k" "a n k";
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) fit-content(var(--soft-he-col)) var(--soft-key-slot); grid-template-areas: "p s k" "a a k";
   grid-template-rows: 22px 17px; align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box;
   height: 64px; min-height: 64px; padding: 0 16px; background: transparent; border: 0; border-bottom: 1px solid var(--panel2);
 }
@@ -6768,6 +6770,10 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"][dir="rtl"] .song-item .t-he { grid-area: p; align-self: end; text-align: right; font: var(--soft-row-title); line-height: 22px; }
 :root[data-design="soft"][dir="rtl"] .song-item .t-en { grid-area: s; align-self: end; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
 :root[data-design="soft"][dir="rtl"] .song-item .t-one { text-align: right; }
+/* The title and artist column takes all the room the second-language title and the key slot do not need: the Hebrew column is as wide as its title (up to a third of the row), the artist line also
+   runs under it, and an English title with no Hebrew title takes both columns (in a Hebrew app the same the other way round). Only then does anything end in an ellipsis. */
+:root[data-design="soft"] .song-item .slp-row:not(:has(.t-he)) :is(.t-en, .t-one) { grid-column: 1 / span 2; }
+:root[data-design="soft"][dir="rtl"] .song-item .slp-row:not(:has(.t-en)) :is(.t-he, .t-one) { grid-column: 1 / span 2; }
 :root[data-design="soft"] .song-item .slp-row__artists { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 17px; font-size: 13px; color: var(--mute); padding: 4px 0 14px; margin: -4px 0 -14px; }
 /* The artists are links in one line ("Ari Hill, Dudi Kalish"). Their tap area is padding (negative margins give the space back), because a clipped pseudo-element would be cut off by the ellipsis. */
 :root[data-design="soft"] .song-item .slp-row__artist-link { display: inline-block; vertical-align: top; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 4px 0 14px; margin: -4px 0 -14px; border: 0; background: none; color: var(--mute); font: inherit; line-height: inherit; text-align: start; }
@@ -6792,11 +6798,11 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .song-item.is-selected > .slp-row { background: var(--panel2); }
 /* The same three columns on the event song rows and the Board cards (a closed card; the zoomed-out Board keeps its own compact rows). */
 :root[data-design="soft"] .gig-song-reference {
-  position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr) var(--soft-he-col) var(--soft-key-slot); grid-template-areas: "n p s k" "n a s k" "n m m k";
+  position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr) fit-content(var(--soft-he-col)) var(--soft-key-slot); grid-template-areas: "n p s k" "n a a k" "n m m k";
   grid-template-rows: 22px 17px auto; align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box;
   min-height: 64px; padding: 0 16px; background: transparent; border: 0; border-bottom: 1px solid var(--panel2);
 }
-:root[data-design="soft"] .gig-song-reference.selecting { grid-template-columns: minmax(0, 1fr) var(--soft-he-col) var(--soft-key-slot); grid-template-areas: "p s k" "a s k" "m m k"; padding-inline-start: 52px !important; }
+:root[data-design="soft"] .gig-song-reference.selecting { grid-template-columns: minmax(0, 1fr) fit-content(var(--soft-he-col)) var(--soft-key-slot); grid-template-areas: "p s k" "a a k" "m m k"; padding-inline-start: 52px !important; }
 :root[data-design="soft"] .gig-song-reference .gig-song-reference-main,
 :root[data-design="soft"] .gig-song-reference .slp-row__title,
 :root[data-design="soft"] .gig-song-reference .song-title-lines { display: contents; }
@@ -6809,6 +6815,12 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"][dir="rtl"] .gig-song-reference .t-en { grid-area: s; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
 :root[data-design="soft"][dir="rtl"] .gig-song-reference .t-one { text-align: right; }
 :root[data-design="soft"] .gig-song-reference .slp-row__subtitle { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; line-height: 17px; color: var(--mute); }
+/* The same rules as a song row: the Hebrew title is level with the English title (the artist line is under both), the second-language column is as wide as its title, and an English title with no Hebrew
+   title takes both columns (in a Hebrew app the other way round). */
+:root[data-design="soft"] .gig-song-reference:not(:has(.t-he)) :is(.t-en, .t-one) { grid-column: 2 / span 2; }
+:root[data-design="soft"] .gig-song-reference.selecting:not(:has(.t-he)) :is(.t-en, .t-one) { grid-column: 1 / span 2; }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference:not(:has(.t-en)) :is(.t-he, .t-one) { grid-column: 2 / span 2; }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference.selecting:not(:has(.t-en)) :is(.t-he, .t-one) { grid-column: 1 / span 2; }
 :root[data-design="soft"] .gig-song-reference .gig-row-note { grid-area: m; min-width: 0; padding-bottom: 8px; }
 :root[data-design="soft"] .gig-song-reference > .slp-badge--key { grid-area: k; justify-self: end; align-self: center; max-width: none; }
 :root[data-design="soft"] .gig-song-reference .slp-badge--key .empty-label { display: none; }
@@ -6904,7 +6916,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .slp-scope-popover .slp-picker-item:hover, :root[data-design="soft"] .slp-scope-popover .slp-picker-item[aria-selected="true"] { background: var(--panel2); }
 :root[data-design="soft"] #searchEntireLibraryBtn { display: block; min-height: 44px; padding-inline: 20px; font-size: 14px; }
 :root[data-design="soft"] #searchEntireLibraryBtn.hidden { display: none; }
-:root[data-design="soft"] .slp-section-label { color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+:root[data-design="soft"] .slp-section-label { color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px; font-weight: 600; letter-spacing: 0; }   /* no text-transform here: the sentence-case rule (lowercase + capital first letter) set with screen 3 applies */
 :root[data-design="soft"] .filter-group__label { color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
 :root[data-design="soft"] .fp-seg { border: 0; background: var(--panel); border-radius: var(--soft-radius-control); padding: 3px; }
 :root[data-design="soft"] .fp-list { border-top: 0; }
@@ -6932,8 +6944,19 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .gig-item:last-child > .slp-row { border-bottom: 0; }
 :root[data-design="soft"] .gig-sort-chip { background: transparent; padding: 0; gap: 10px; color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px; font-weight: 600; }
 :root[data-design="soft"] .gig-sort-chip select { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); padding: 0 12px; min-height: 44px; font-family: var(--soft-font-ui); font-size: 15px; font-weight: 600; flex: 1; }
-:root[data-design="soft"] .calendar-toolbar { grid-template-columns: 44px minmax(0, 1fr) auto 44px; font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .calendar-toolbar { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; font-family: var(--soft-font-ui); }
 :root[data-design="soft"] .calendar-toolbar > strong { font-family: var(--soft-font-title); font-weight: 400; font-size: 22px; color: var(--fg); }
+/* The month stays on one line and Today has room of its own: where the calendar is narrow (the side pane of a laptop, about 280px) the toolbar is two rows: previous, month, next on top and Today
+   under them, so the month cannot wrap or run into the button. */
+:root[data-design="soft"] .calendar-toolbar > strong { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+:root[data-design="soft"] .gig-calendar-view { container: gigcal / inline-size; }
+@container gigcal (max-width: 340px) {
+  :root[data-design="soft"] .calendar-toolbar { flex-wrap: wrap; row-gap: 4px; }
+  :root[data-design="soft"] .calendar-toolbar > #previousGigMonthBtn { order: 1; }
+  :root[data-design="soft"] .calendar-toolbar > strong { order: 2; flex: 1 0 auto; font-size: 18px; }   /* its natural width, so Today is the one that wraps */
+  :root[data-design="soft"] .calendar-toolbar > #nextGigMonthBtn { order: 3; }
+  :root[data-design="soft"] .calendar-toolbar > #gigTodayBtn { order: 4; flex: none; margin-inline: auto; }
+}
 :root[data-design="soft"] .calendar-weekdays { color: var(--mute); font-family: var(--soft-font-ui); font-size: 12px; font-weight: 600; text-transform: none; }
 :root[data-design="soft"] .gig-calendar-grid { border: 0; gap: 4px 0; margin-inline: 4px; }   /* no gap between the days sideways: in the narrow side pane the days get every pixel */
 :root[data-design="soft"] .slp-btn--fab { min-width: 44px; min-height: 44px; }   /* the round + buttons (new event, notes menu) are 44px at laptop width too */
@@ -6978,7 +7001,23 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .tool-card { border: 0; box-shadow: none; background: var(--panel); border-radius: var(--soft-radius-panel); color: var(--fg); font-family: var(--soft-font-ui); }
 :root[data-design="soft"] .tool-hero__value { font-family: var(--soft-font-title); font-weight: 400; font-size: 88px; color: var(--fg); }
 :root[data-design="soft"] .tool-hero__sub { color: var(--mute); font-family: var(--soft-font-ui); }
-:root[data-design="soft"] .tool-transport { background: transparent; }
+/* The Play bar has its own band under the scrolling controls instead of floating over them (it overlapped the Settings row wherever a tool was a little taller than the window: Chord Lab up to about
+   900px, Reference Tones at 720px). The tool fills the pane; its body scrolls; the transport stays below it. */
+:root[data-design="soft"] .tools-workspace:has(> .tool-view:not(.hidden)) { height: 100%; }
+:root[data-design="soft"] .tool-view { height: 100%; min-height: 0; }
+:root[data-design="soft"] .tool-view > .tool-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+:root[data-design="soft"] .tool-view > .tool-body > * { flex-shrink: 0; }   /* the cards keep their height (they clip their own overflow): the body scrolls instead */
+:root[data-design="soft"] .tool-transport { position: static; flex: none; background: var(--bg); padding-block: var(--space-4) calc(var(--space-6) + env(safe-area-inset-bottom, 0px)); }
+/* Segmented tabs in the tools (Chord Lab's Basic, 7ths, 9ths, Altered, 11 - 13) never wrap a label: they stay on one line and share the width. */
+:root[data-design="soft"] .tool-view .slp-segmented { overflow-x: auto; scrollbar-width: none; }
+:root[data-design="soft"] .tool-view .slp-segmented button { flex: 1 1 auto; min-width: 0; padding-inline: 8px; white-space: nowrap; }
+:root[data-design="soft"] .tool-view .slp-segmented button[data-value="big"] { direction: ltr; unicode-bidi: isolate; }   /* "11 · 13" is two numbers: it never reads 13 · 11 in a Hebrew app */
+/* On a short window (a laptop with its toolbars) the hero readout and the gaps give some height back, so more of the controls and the keyboard show without scrolling. */
+@media (max-height: 800px) {
+  :root[data-design="soft"] .tool-hero__value { font-size: 64px; }
+  :root[data-design="soft"] .tool-hero { padding-top: var(--space-4); }
+  :root[data-design="soft"] .tool-view > .tool-body { gap: var(--space-5); }
+}
 :root[data-design="soft"] .tool-transport__btn { background: var(--acc); color: var(--on); box-shadow: none; }
 :root[data-design="soft"] .tool-beat { background: var(--panel2); box-shadow: none; }
 :root[data-design="soft"] .tool-beat.first { background: var(--acc); box-shadow: none; }
@@ -7019,6 +7058,18 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .tool-note-grid, :root[data-design="soft"] .tool-keyboard, :root[data-design="soft"] .tool-degrees { direction: ltr; }
 :root[data-design="soft"] #songKey span, :root[data-design="soft"] #songKey small, :root[data-design="soft"] #songKeyDisplay { direction: ltr; unicode-bidi: isolate; }   /* the key letter, e.g. F#m, is never reordered */
 
+/* The collapsible "Details" block inside a note or a song (the attached note) and links in the text, in soft tokens: a tonal block with no accent bar, a tonal toggle, tonal actions, links in the accent
+   text colour with a thin underline (they were the old blue-green). The toggle is a small inline control: its tap area is grown to 44px with an invisible ::after. */
+:root[data-design="soft"] .line-disclosure .line-disclosure-panel { border-inline-start: 0; border-radius: var(--soft-radius-control); background: var(--panel2); }
+:root[data-design="soft"] .line-disclosure .line-disclosure-content { color: var(--fg); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .line-disclosure .line-disclosure-content:empty::before { color: var(--mute); }
+:root[data-design="soft"] .line-disclosure .line-disclosure-toggle { position: relative; background: var(--panel2); color: var(--fg); border-radius: 8px; }
+:root[data-design="soft"] .line-disclosure .line-disclosure-toggle::after { content: ""; position: absolute; inset: -12px; }
+:root[data-design="soft"] .line-disclosure .line-disclosure-actions button { min-height: 44px; min-width: 44px; padding-inline: 14px; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--accT); font-family: var(--soft-font-ui); font-size: 0.8rem; font-weight: 700; }
+:root[data-design="soft"] .line-disclosure .line-disclosure-actions .line-disclosure-remove { color: var(--mute); }
+:root[data-design="soft"] .slp-lyrics-body a, :root[data-design="soft"] .song-document a { color: var(--accT); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+:root[data-design="soft"] .slp-lyrics-body a:visited, :root[data-design="soft"] .song-document a:visited { color: var(--accT); }
+
 /* The editing tools on the song page (Header, Note, Photo, Place chords, Undo, Redo, Done). Classic keeps a faded pencil that opens into a dark pill (open
    by itself only when the song has chords); the soft look shows the tools at once in a tonal toolbar, with Done as the one accent control. Same buttons, same order. */
 :root[data-design="soft"] .slp-edit-dock { gap: 2px; padding: 4px; border-radius: var(--soft-radius-panel); background: var(--panel2); box-shadow: none; }
@@ -7027,9 +7078,14 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .slp-edit-dock .slp-btn--icon { min-width: 44px; min-height: 44px; border-radius: var(--soft-radius-control); background: transparent; color: var(--fg); font-family: var(--soft-font-ui); font-size: 17px; font-weight: 800; box-shadow: none; }
 :root[data-design="soft"] .slp-edit-dock .edit-dock__done { background: var(--acc); color: var(--on); }
 
-/* A picked page colour is a light paper, also in a dark app (and in a light app the chorus panel was nearly the page's own tone). The page's own tokens (panel, muted text, accent text) are the dark app's, so a chorus panel came out
-   dark under dark text and the section names washed out. On a picked page they are re-set for a light paper: a faint dark panel, a muted ink, the accent for light backgrounds. */
-:root[data-design="soft"] .lyric-sheet:not(.theme-default) { --panel: rgba(0, 0, 0, 0.06); --panel2: rgba(0, 0, 0, 0.1); --mute: #5B6470; --accT: var(--accL); }
+/* A picked page colour is a light paper, and it applies in a LIGHT app only (in a dark app the lyrics page is dark whatever colour was picked: see the rules
+   after the chord rules). On the paper the page's own tokens are re-set: a faint dark panel, a muted ink, the accent for light backgrounds (on blue, green and gray
+   the chorus panel was almost the page's own tone). */
+:root[data-design="soft"][data-color-mode="light"] .lyric-sheet:not(.theme-default) { --panel: rgba(0, 0, 0, 0.06); --panel2: rgba(0, 0, 0, 0.1); --mute: #5B6470; --accT: var(--accL); }
+
+/* The floating zoom button stays clear of the reading panel: on a laptop the panel sits at the right of the columns (the left in a Hebrew app), so the button moves left by the panel's width and gap
+   (the panel's width is the user's: --board-reader-w, at most 44% of the Board). */
+:root[data-design="soft"]:not([dir="rtl"]) .app-shell[data-board-side="true"] .board.has-reader .board-zoom-btn { right: calc(min(var(--board-reader-w, 340px), 44%) + var(--space-6) + 16px + 12px); }
 
 /* Board lyrics (an opened card and the reading panel): the chorus is the same tonal panel as on the song page, no grey block and no bar on the edge.
    The lines are separate blocks, so the first and last line of a chorus carry the rounded corners. The panel sits on --panel, so its chorus is --panel2;
@@ -7225,6 +7281,15 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
    accent for light backgrounds. No chip: no fill, no radius. */
 :root[data-design="soft"] .lyric-sheet .song-document .cp-chord { background: transparent; color: var(--accL); font-family: var(--soft-font-ui); font-size: 0.7em; font-weight: 800; padding: 0 0.2em; border-radius: 0; line-height: 1.25; margin-bottom: 0.08em; }
 :root[data-design="soft"] .lyric-sheet.theme-default .song-document .cp-chord { background: transparent; color: var(--accT); }   /* beats the dark-app tint above it (same layer, more specific) */
+/* A dark app has a dark lyrics page, whatever page colour was picked (a picked colour applies in light mode only): the page follows the app, the text is light, the chorus is the tonal panel
+   (a little lighter than the page), the chords are the accent text colour for dark backgrounds. Performance stays black (its own rules). */
+:root[data-design="soft"][data-color-mode="dark"] .lyric-sheet { background: transparent; color: var(--fg); }
+:root[data-design="soft"][data-color-mode="dark"] .lyric-sheet .song-document, :root[data-design="soft"][data-color-mode="dark"] .lyric-sheet .song-document h2 { color: var(--fg); }
+:root[data-design="soft"][data-color-mode="dark"] .lyric-sheet.font-system, :root[data-design="soft"][data-color-mode="dark"] .lyric-sheet.font-system .song-document { font-family: var(--soft-font-ui); }
+:root[data-design="soft"][data-color-mode="dark"] .lyric-sheet .song-document h2.sec-head { color: var(--mute); }
+:root[data-design="soft"][data-color-mode="dark"] .lyric-sheet .song-document h2.sec-chorus { color: var(--accT); }
+:root[data-design="soft"][data-color-mode="dark"] .lyric-sheet .song-document .line-disclosure-content { color: var(--fg); }
+:root[data-design="soft"][data-color-mode="dark"] .lyric-sheet .song-document .cp-chord { background: transparent; color: var(--accT); }
 
 /* The reading popover. */
 :root[data-design="soft"] .appearance-popover__title { font-family: var(--soft-font-title); font-weight: 400; font-size: 22px; color: var(--fg); }
@@ -9323,7 +9388,7 @@ const NEEDS_LYRICS = "needs-lyrics";
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "3e22b312 · 6890598";
+const APP_BUILD = "3e22b312 · 6b2bdae";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
