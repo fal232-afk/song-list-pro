@@ -2709,7 +2709,7 @@ textarea.slp-input { resize: vertical; }
   transition: left 0.08s linear;
 }
 .tool-meter__needle.in-tune { background: var(--accent); }
-.tool-meter__scale { display: flex; justify-content: space-between; color: var(--color-text-secondary); font-size: var(--text-sm); }
+.tool-meter__scale { direction: ltr; display: flex; justify-content: space-between; color: var(--color-text-secondary); font-size: var(--text-sm); }
 
 .tool-transport {
   position: sticky;
@@ -6770,6 +6770,8 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"][dir="rtl"] .song-item .t-he { grid-area: p; align-self: end; text-align: right; font: var(--soft-row-title); line-height: 22px; }
 :root[data-design="soft"][dir="rtl"] .song-item .t-en { grid-area: s; align-self: end; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
 :root[data-design="soft"][dir="rtl"] .song-item .t-one { text-align: right; }
+/* A song with no Hebrew title, in a Hebrew screen: its English title is the main line (same size, weight and colour as a Hebrew title), not the small grey second line it is when a Hebrew title sits beside it. Songs list, the Review lists and the event rows (below) and the Board (further down). */
+:root[data-design="soft"][dir="rtl"] .song-item .slp-row:not(:has(.t-he)) .t-en { grid-area: p; grid-column: 1 / span 2; align-self: end; text-align: right; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
 /* The title and artist column takes all the room the second-language title and the key slot do not need: the Hebrew column is as wide as its title (up to a third of the row), the artist line also
    runs under it, and an English title with no Hebrew title takes both columns (in a Hebrew app the same the other way round). Only then does anything end in an ellipsis. */
 :root[data-design="soft"] .song-item .slp-row:not(:has(.t-he)) :is(.t-en, .t-one) { grid-column: 1 / span 2; }
@@ -6779,6 +6781,8 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .song-item .slp-row__artist-link { display: inline-block; vertical-align: top; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 4px 0 14px; margin: -4px 0 -14px; border: 0; background: none; color: var(--mute); font: inherit; line-height: inherit; text-align: start; }
 :root[data-design="soft"] .song-item .slp-row__artist-link::after { content: none; }
 :root[data-design="soft"] .song-item .slp-row:has(.song-flag-dot) .slp-row__artists { padding-inline-start: 20px; }
+/* Artists run in the order they are listed, left to right when the first is written in Latin letters ("Ari Hill, Dudi Kalish"); in a Hebrew screen they stay against the right edge. The page gives the direction (dir on the span), so the comma follows the name it belongs to. */
+:root[data-design="soft"][dir="rtl"] .song-item .slp-row__artists[dir="ltr"] { text-align: right; }
 /* The key badge sits in its reserved slot. Nothing else is shown in the row: no as-written key text, no tempo, no pills. */
 :root[data-design="soft"] .song-item .song-meta > :not(.slp-badge--key):not(.song-flag-dot):not(.song-origin-tag) { display: none; }
 :root[data-design="soft"] .song-item .song-meta .slp-badge--key { grid-area: k; justify-self: end; align-self: center; }
@@ -6814,6 +6818,8 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"][dir="rtl"] .gig-song-reference .t-he { grid-area: p; text-align: right; font: var(--soft-row-title); line-height: 22px; }
 :root[data-design="soft"][dir="rtl"] .gig-song-reference .t-en { grid-area: s; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
 :root[data-design="soft"][dir="rtl"] .gig-song-reference .t-one { text-align: right; }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference:not(:has(.t-he)) .t-en { grid-area: p; grid-column: 2 / span 2; text-align: right; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference.selecting:not(:has(.t-he)) .t-en { grid-column: 1 / span 2; }
 :root[data-design="soft"] .gig-song-reference .slp-row__subtitle { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; line-height: 17px; color: var(--mute); }
 /* The same rules as a song row: the Hebrew title is level with the English title (the artist line is under both), the second-language column is as wide as its title, and an English title with no Hebrew
    title takes both columns (in a Hebrew app the other way round). */
@@ -6824,6 +6830,13 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .gig-song-reference .gig-row-note { grid-area: m; min-width: 0; padding-bottom: 8px; }
 :root[data-design="soft"] .gig-song-reference > .slp-badge--key { grid-area: k; justify-self: end; align-self: center; max-width: none; }
 :root[data-design="soft"] .gig-song-reference .slp-badge--key .empty-label { display: none; }
+/* A key shifted for this event: "Dm → Em" on one line inside the key slot: the original key small and muted, then the arrow, then the event key at full size. Always left to right, in both languages. */
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key { display: inline-flex; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 2px; padding: 0 5px; white-space: nowrap; direction: ltr; unicode-bidi: isolate; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-classic { display: inline-flex; align-items: center; flex: 0 1 auto; min-width: 0; max-width: 34px; overflow: hidden; text-overflow: ellipsis; font-size: 10px; line-height: 14px; font-weight: 600; color: var(--mute); white-space: nowrap; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-classic { max-width: none; overflow: visible; gap: 2px; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-from { flex: 0 1 auto; min-width: 0; max-width: 26px; overflow: hidden; text-overflow: ellipsis; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-arrow { flex: none; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-main { flex: none; white-space: nowrap; line-height: 20px; }
 :root[data-design="soft"] .gig-song-reference .select-check { position: absolute; inset-inline-start: 6px; top: 50%; transform: translateY(-50%); margin: 0; }
 :root[data-design="soft"] .gig-song-reference .gig-drag-handle { position: absolute; inset-inline-end: 4px; top: 50%; transform: translateY(-50%); margin: 0; }
 :root[data-design="soft"] .gig-song-reference:has(.gig-drag-handle) { padding-inline-end: 56px; }
@@ -6842,6 +6855,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"][dir="rtl"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-he { grid-area: p; text-align: right; font: var(--soft-row-title); line-height: 22px; }
 :root[data-design="soft"][dir="rtl"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-en { grid-area: s; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
 :root[data-design="soft"][dir="rtl"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .t-one { text-align: right; }
+:root[data-design="soft"][dir="rtl"] .board:not([data-zoom="out"]) .board-card:not(.is-open):not(:has(.t-he)) .t-en { grid-area: p; text-align: right; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
 :root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__sub { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; line-height: 17px; color: var(--mute); }
 :root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__notes { grid-area: n; justify-self: end; align-self: center; }
 :root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__key { grid-area: k; justify-self: end; align-self: center; }
@@ -7133,6 +7147,8 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .board-card__lyrics { border: 0; background: var(--panel2); border-radius: var(--soft-radius-control); }
 :root[data-design="soft"] .board-card__pin { background: var(--panel2); color: var(--fg); border-radius: var(--soft-radius-control); }
 :root[data-design="soft"] .board-zoom-btn { background: var(--panel); color: var(--accT); box-shadow: none; border: 0; }
+/* The floating zoom button (48px, 64px above the bottom) hid the last row of whichever column was under it. While it is shown, every column keeps room under its last row, so the row scrolls up clear of the button. */
+:root[data-design="soft"] .board:not([data-searching="true"]) .board-col__body { padding-bottom: 120px; }
 :root[data-design="soft"] .board-pill { background: var(--panel); color: var(--fg); border: 0; box-shadow: none; }
 :root[data-design="soft"] .board-menu { background: var(--panel); border: 0; box-shadow: none; border-radius: var(--soft-radius-panel); }
 :root[data-design="soft"] .board-menu__item { color: var(--fg); }
@@ -7173,8 +7189,11 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .slp-sheet__footer { border-top: 0; background: transparent; }
 /* Floating menus are the one place a soft shadow stays: with no outline and the same tone as the panel under them, nothing else would lift them off the page. */
 :root[data-design="soft"] .board-menu, :root[data-design="soft"] .slp-menu-panel, :root[data-design="soft"] .slp-scope-popover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
+/* The "..." menu panel hangs from the button's outer edge. In Hebrew the buttons sit at the left of the header, so the panel (200px, anchored with right: 0) ran 156px off the left of the screen. Mirror it: anchored to the left edge, growing to the right, and never wider than the screen. */
+:root[data-design="soft"] .slp-menu-panel { max-width: calc(100vw - 2 * var(--space-4)); }
+:root[data-design="soft"][dir="rtl"] .slp-menu-panel { right: auto; left: 0; }
 /* A long folder or song name wraps to two lines in a pushed header instead of being cut to "Style..." beside five icons. */
-:root[data-design="soft"] .slp-header:not(.slp-header--screen-root) .slp-header__title { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; text-overflow: clip; }
+:root[data-design="soft"] .slp-header:not(.slp-header--screen-root) .slp-header__title { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; overflow-wrap: anywhere; text-overflow: clip; }   /* three lines: "Songs without a key" was cut to "Songs without a..." beside four header buttons at phone width */
 :root[data-design="soft"] #subfolderSection:not(.hidden) ~ #songsSection { margin-top: 14px; }
 
 /* ---- Soft look, screen 4: the song page (header, chips, lyrics page, sections) ---- */
@@ -7221,7 +7240,11 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .song-document > :not(.sec-chorus):not(.sec-bar-right):not(.sec-bar-left) + .sec-chorus { border-start-start-radius: var(--soft-radius-panel); border-start-end-radius: var(--soft-radius-panel); padding-top: 0.5em; }
 :root[data-design="soft"] .song-document > .sec-chorus:has(+ :not(.sec-chorus):not(.sec-bar-right):not(.sec-bar-left)),
 :root[data-design="soft"] .song-document > .sec-bar-right:has(+ :not(.sec-bar-right):not(.sec-chorus)),
-:root[data-design="soft"] .song-document > .sec-bar-left:has(+ :not(.sec-bar-left):not(.sec-chorus)) { border-end-start-radius: var(--soft-radius-panel); border-end-end-radius: var(--soft-radius-panel); padding-bottom: 0.5em; }
+:root[data-design="soft"] .song-document > .sec-bar-left:has(+ :not(.sec-bar-left):not(.sec-chorus)),
+/* A chorus (or bar) that is the last block of the song: Practice and Performance already closed their panel, the lyrics page did not, so the panel ended flat against its last line. */
+:root[data-design="soft"] .song-document > .sec-chorus:last-child,
+:root[data-design="soft"] .song-document > .sec-bar-right:last-child,
+:root[data-design="soft"] .song-document > .sec-bar-left:last-child { border-end-start-radius: var(--soft-radius-panel); border-end-end-radius: var(--soft-radius-panel); padding-bottom: 0.5em; }
 
 /* ---- Soft look, screen 4 (continued): the key picker, Add to, the song menu, and the form controls they use ---- */
 /* Form controls: tonal fields and buttons, no outline. */
@@ -7481,6 +7504,10 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .tools-live__readout { display: flex; align-items: baseline; gap: var(--space-3); }
 :root[data-design="soft"] .tools-live__readout strong { font: 400 40px var(--soft-font-title); color: var(--fg); }
 :root[data-design="soft"] .tools-live__readout small { font: 400 14px var(--soft-font-ui); color: var(--mute); }
+/* Note, frequency and tempo read as one left-to-right unit ("C4  261.6 Hz", "96 BPM") in a Hebrew screen too, kept against the right edge; the number and its unit were swapped ("Hz 261.6"). */
+:root[data-design="soft"][dir="rtl"] .tools-live__readout { direction: ltr; justify-content: flex-end; }
+/* The big value and its unit under it in a tool ("261.6 Hz", "96 BPM · 4/4") read left to right in a Hebrew screen as well. */
+:root[data-design="soft"][dir="rtl"] .tool-hero__sub { direction: ltr; unicode-bidi: isolate; }
 :root[data-design="soft"] .tools-live .tool-note-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; direction: ltr; }
 :root[data-design="soft"] .tools-live .tool-note { min-height: 44px; min-width: 44px; }
 :root[data-design="soft"] .tools-live .tool-note.playing { background: var(--acc); color: var(--on); }
@@ -9504,7 +9531,7 @@ const REVIEW_LISTS = [REVIEW_IMPORTS, REVIEW_NO_KEY, REVIEW_ODD_KEY];
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "a4222450 · c407eaf";
+const APP_BUILD = "a8e0d726 · 8873500";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -9900,6 +9927,7 @@ function setAppLanguage(choice) {
   persist();
   applyAppLanguage();
   render();
+  if (typeof refreshSettingsLanguage === "function") refreshSettingsLanguage();
 }
 
 function showLanguageMenu() {
@@ -11240,6 +11268,14 @@ Object.assign(HEBREW_UI, {"Shift for today": "הזזה להיום", "Shift down"
 Object.assign(HEBREW_UI, {"From the Jyrics library": "מספריית Jyrics", "View-only. Make your own copy to edit it.": "לצפייה בלבד. צרו עותק משלכם כדי לערוך."});
 
 Object.assign(HEBREW_UI, {"Tones": "צלילים", "One note": "צליל בודד", "Drone": "צליל מתמשך", "Keyboard": "מקלדת", "One note, a drone, or a keyboard.": "צליל בודד, צליל מתמשך או מקלדת.", "Start||tools": "התחלה", "Stop||tools": "עצירה"});
+
+Object.assign(HEBREW_UI, {"played": "בוצעו", "played||one": "בוצע"});
+
+Object.assign(HEBREW_UI, {"Sine": "סינוס", "Bright": "בהיר", "Press and hold a key": "לחצו והחזיקו מקש", "Drone: {root} + {fifth}": "צליל מתמשך: {root} + {fifth}", "{note} major": "{note} מז׳ור", "{note} minor": "{note} מינור", "{instrument} sound · octave {octave} · {tuning}": "צליל {instrument} · אוקטבה {octave} · {tuning}", "{instrument} sound · from octave {octave} · {tuning}": "צליל {instrument} · מאוקטבה {octave} · {tuning}", "{beats} beats per bar · accent on": "{beats} פעמים בתיבה · הדגשה פועלת", "{beats} beats per bar · accent off": "{beats} פעמים בתיבה · הדגשה כבויה", "Tuned to {tuning}": "מכוון ל־{tuning}"});
+
+Object.assign(HEBREW_UI, {"Lower {label}": "הורדת {label}", "Raise {label}": "העלאת {label}", "octave": "אוקטבה", "lowest octave": "אוקטבה נמוכה ביותר", "beats per bar": "פעמים בתיבה"});
+
+Object.assign(HEBREW_UI, {"On": "פועלת", "Off": "כבויה", "♭ flat": "♭ נמוך", "sharp ♯": "גבוה ♯"});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -13226,7 +13262,7 @@ function renderSongList(sourceSongs, isArtistView = false) {
         ${songReorderMode ? `<button class="slp-row__drag-handle song-grip" type="button" aria-label="Move ${escapeAttribute(song.title)}"><i data-lucide="grip-vertical"></i></button>` : ""}
         <div class="slp-row__body">
           <button class="song-title-button" type="button"><span class="slp-row__title">${songTitleMarkup(song)}</span></button>
-          ${(song.artists || []).length ? `<span class="slp-row__artists">${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
+          ${(song.artists || []).length ? `<span class="slp-row__artists"${isSoftDesign() ? ` dir="${/[\u0590-\u05FF]/.test(song.artists[0]) ? "rtl" : "ltr"}"` : ""}>${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
         </div>
         ${songRowMeta(song)}
       </div>
@@ -21432,8 +21468,9 @@ function practiceFileProblem(file) {
 
 function formatFileSize(bytes) {
   const size = Number(bytes) || 0;
-  if (size >= 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} MB`;
-  return `${Math.max(1, Math.round(size / 1024))} KB`;
+  const he = appLanguage === "he" && isSoftDesign();   // the soft look writes the units in Hebrew; Classic and New keep MB / KB
+  if (size >= 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} ${he ? "מ״ב" : "MB"}`;
+  return `${Math.max(1, Math.round(size / 1024))} ${he ? "ק״ב" : "KB"}`;
 }
 
 // Deletes audio files nothing refers to any more, for ids given (never anything else).
@@ -22259,7 +22296,9 @@ function showSettingsMain(title = t("Settings & Backup")) {
   els.settingsMainView.classList.remove("hidden");
   els.appearanceSettingsView.classList.add("hidden");
   document.querySelectorAll(".settings-page").forEach((page) => page.classList.add("hidden"));
-  els.settingsTitle.textContent = title;
+  // Two buttons hand this function their click event as the "title" (events.js: Back and Cancel in Appearance). A title that is not text is
+  // ignored, so the heading is always the translated "Settings & Backup", in every look.
+  els.settingsTitle.textContent = typeof title !== "string" ? t("Settings & Backup") : title;
   discardAppearanceDraft();
   refreshAppearanceRow();
   refreshBackupStatus();
@@ -22304,6 +22343,10 @@ function refreshReviewRows() {
   const group = document.querySelector(".review-fix-group");
   if (!isSoftDesign()) { group?.remove(); return; }
   ensureReviewGroup();
+  // The group is built once, so its words are set again every time: otherwise they stay in the language Settings was first opened in.
+  const label = document.querySelector(".review-fix-group > .slp-section-label");
+  if (label) label.textContent = t("REVIEW AND FIX");
+  REVIEW_ROWS.forEach(([id, , title]) => { const el = document.querySelector(`#${id} .slp-row__title`); if (el) el.textContent = t(title); });
   const n = (test) => state.songs.filter(test).length;
   const set = (id, count, one, many) => { const el = document.getElementById(id + "Count"); if (el) el.textContent = count ? `${count} ${t(count === 1 ? one : many)}` : t("None"); };
   set("reviewUnfiledBtn", n(songIsUnfiled), "song", "songs");
@@ -22312,6 +22355,25 @@ function refreshReviewRows() {
   set("reviewImportsBtn", n(REVIEW_TESTS[REVIEW_IMPORTS]), "song", "songs");
   set("reviewNoKeyBtn", n(REVIEW_TESTS[REVIEW_NO_KEY]), "song", "songs");
   set("reviewOddKeyBtn", n(REVIEW_TESTS[REVIEW_ODD_KEY]), "song", "songs");
+}
+
+// Soft look: the language is changed from inside Settings, so the sheet that is open must change its own words at once (its counts, the backup
+// line, the audio line and the Review and fix group were left in the old language until Settings was closed and opened again).
+function refreshSettingsLanguage() {
+  if (!isSoftDesign() || !els.settingsSheet || els.settingsSheet.hidden || els.settingsMainView.classList.contains("hidden")) return;
+  els.settingsTitle.textContent = t("Settings & Backup");
+  refreshAppearanceRow();
+  refreshBackupStatus();
+  refreshSafetyRows();
+  refreshPracticeAudioRow();
+  refreshPedalRow();
+  refreshTitleAlignRow();
+  refreshUndoImportRow();
+  refreshFixArtistsRow();
+  refreshDuplicatesRow();
+  refreshReviewRows();
+  refreshTidyStylesRow();
+  refreshSplitArtistsRow();
 }
 
 function openReviewList(folderId) {
@@ -23121,6 +23183,16 @@ function renderGigs() {
 // Soft look, event screen header: back, title, Perform and the more menu. Search, Share and Edit sit in the row beside Details.
 // Added by JS only in the soft look (and put back when the look changes), so Classic and New keep their header exactly as it was.
 // The row's buttons press the original buttons, so nothing about how search, sharing or editing the set list works has changed.
+// Perform (soft look event header): open Performance at the first song not yet played, or the first song when all are played.
+// It goes through the same route a tapped song row takes, so it also works on a phone, where the lyrics are a page of their own.
+function performGigEvent() {
+  const order = gigReadingOrder(state.gigNavigation.gigId);
+  const target = order.find((entry) => entry.item.performanceStatus !== "played") || order[0];
+  if (!target) return;
+  openSongFromGig(target.item.songId, target.item.id);
+  if (currentSong()?.id === target.item.songId) openPerformanceMode();
+}
+
 function syncSoftEventHeader(gig) {
   const view = els.gigDetailView;
   const collapse = els.gigDetailsCollapse;
@@ -23138,10 +23210,7 @@ function syncSoftEventHeader(gig) {
     perform.className = "slp-btn gig-perform-btn";
     perform.innerHTML = '<i data-lucide="play"></i><span></span>';
     els.gigDetailTitle.closest("header").querySelector("details.slp-menu").before(perform);
-    perform.addEventListener("click", () => {
-      const first = gigReadingOrder(state.gigNavigation.gigId)[0];
-      if (first) readGigSong(first.item.songId, first.item.id);
-    });
+    perform.addEventListener("click", performGigEvent);
   }
   perform.querySelector("span").textContent = t("Perform");
   perform.hidden = !gigReadingOrder(gig.id).length;
@@ -23507,7 +23576,7 @@ function gigSectionMarkup(section, sectionIndex, sectionCount) {
       <span class="gig-order-number">${sectionIndex + 1}</span>
       <span class="slp-row__body">
         <span class="slp-row__title" dir="auto">${escapeHtml(section.name)}</span>
-        <span class="slp-row__subtitle">${sets.length ? `${sets.length} ${plural(sets.length, "list")} · ` : ""}${songCount} ${plural(songCount, "song")}${sectionPlayed ? ` · ${sectionPlayed} played` : ""}</span>
+        <span class="slp-row__subtitle">${sets.length ? `${sets.length} ${plural(sets.length, "list")} · ` : ""}${songCount} ${plural(songCount, "song")}${sectionPlayed ? ` · ${sectionPlayed} ${t(sectionPlayed === 1 ? "played||one" : "played")}` : ""}</span>
       </span>
       ${directSet && directItems.length > 1 ? gigListSortControl(directSet.id, section.name) : ""}${gigQuickAddMarkup(`data-add-gig-section-songs="${section.id}"`, section.name)}${addSongsBtn}${dragHandle}${manageActions}
     </div>
@@ -23587,7 +23656,7 @@ function gigSongReferenceMarkup(item, index, itemCount, isDirect = false) {
   const ownKey = songDisplayKey(song);
   const eventKey = Boolean(item.keyOverride);
   const keyChip = songKey
-    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? `<span class="ek-classic">${keyLabelHtml(ownKey)} → </span>` : ""}<span class="ek-main">${keyLabelHtml(rowBadgeKey(songKey))}</span>${ownKey ? `<span class="ek-label">${t("event")}</span>` : ""}${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${keyLabelHtml(ownKey)}</span>` : ""}` : keyLabelHtml(rowBadgeKey(songKey))}</button>`
+    ? `<button class="slp-badge--key ${eventKey ? "event-key" : ""}" type="button" dir="ltr" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(eventKey ? `Key for this event ${compactKeyLabel(songKey)}, song key ${compactKeyLabel(ownKey)}` : `Key ${compactKeyLabel(songKey)}`)}. Change key or add a note">${eventKey ? `${ownKey ? (isSoftDesign() ? `<span class="ek-classic"><span class="ek-from">${keyLabelHtml(rowBadgeKey(ownKey))}</span><span class="ek-arrow" aria-hidden="true">→</span></span>` : `<span class="ek-classic">${keyLabelHtml(ownKey)} → </span>`) : ""}<span class="ek-main">${keyLabelHtml(rowBadgeKey(songKey))}</span>${ownKey ? `<span class="ek-label">${t("event")}</span>` : ""}${ownKey && ownKey !== songKey ? `<span class="ek-orig">${t("orig")} ${keyLabelHtml(ownKey)}</span>` : ""}` : keyLabelHtml(rowBadgeKey(songKey))}</button>`
     : !gigStructureEditMode && !gigReorderMode && !selectMode.active ? `<button class="slp-badge--key empty quiet" type="button" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(t("Set a key or add a note"))}">–</button>`
     : gigStructureEditMode ? `<button class="slp-badge--key empty" type="button" data-gig-item-edit="${item.id}" aria-label="Add a key or note"><i data-lucide="sticky-note"></i><span class="empty-label">${t("Key")}</span></button>` : "";
   const noteText = [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ");
@@ -23667,10 +23736,13 @@ function gigRowMarkup(gig) {
   // chronologically, "what's next," not by venue/name -- date is the
   // primary line; name (or event type) and venue are secondary.
   const identity = gigAutoTitle(gig);
-  const subtitle = [identity, gig.venue].filter(Boolean).join(" · ") || t("Event details not added");
+  // Soft look: the card under the calendar already has the date in its header, so the event's name is the large line and the venue the small one.
+  const soft = isSoftDesign();
+  const headline = soft ? (identity || gig.eventType || t("Event")) : formatGigDate(gig.date);
+  const subtitle = soft ? (gig.venue || "") : ([identity, gig.venue].filter(Boolean).join(" · ") || t("Event details not added"));
   return `<button class="slp-row ${(state.gigNavigation.gigId || (gigPreviewActive() ? (gigPreviewId || defaultGigId()) : null)) === gig.id ? "selected" : ""}" type="button" data-gig-id="${gig.id}" style="flex-direction:column; align-items:flex-start; gap:2px;">
-    <span class="slp-row__title" dir="auto">${escapeHtml(formatGigDate(gig.date))}</span>
-    <span class="slp-row__subtitle" dir="auto">${escapeHtml(subtitle)}</span>
+    <span class="slp-row__title" dir="auto">${escapeHtml(headline)}</span>
+    ${subtitle ? `<span class="slp-row__subtitle" dir="auto">${escapeHtml(subtitle)}</span>` : ""}
   </button>`;
 }
 
@@ -23687,7 +23759,9 @@ function renderGigCalendar(gigs) {
     return map;
   }, {});
   const today = todayDateString();
-  els.gigCalendarGrid.innerHTML = Array.from({ length: 42 }, (_, index) => {
+  // Soft look: weeks that belong wholly to the next month are not drawn (November 2026 ended with a row of 6 to 12 December). Classic and New keep six rows.
+  const weeks = isSoftDesign() ? Math.ceil((cursor.getDay() + new Date(year, month + 1, 0).getDate()) / 7) : 6;
+  els.gigCalendarGrid.innerHTML = Array.from({ length: weeks * 7 }, (_, index) => {
     const date = new Date(firstCell.getFullYear(), firstCell.getMonth(), firstCell.getDate() + index);
     const value = localDateString(date);
     const count = gigsByDate[value]?.length || 0;
@@ -24577,7 +24651,7 @@ function applySongsLeftWidth() {
 }
 
 function syncGigNavLabels(order, index) {
-  els.gigSideNavLabel.textContent = `${index + 1} of ${order.length} · Set list`;
+  els.gigSideNavLabel.textContent = t(`${index + 1} of ${order.length} · Set list`);   // the Hebrew pattern in i18n-he-patterns.js puts the number first: "1 מתוך 6 · סדר שירים"
   const next = order[index + 1];
   const nextSong = next && state.songs.find((song) => song.id === next.item.songId);
   els.gigSideNextTitle.textContent = nextSong ? t(`Next: ${nextSong.title}`) : t("Last song");
@@ -28657,7 +28731,7 @@ function toolSegmented(setting, options, current) {
 }
 
 function toolStepper(setting, value, label, min, max) {
-  return `<div class="tool-stepper" data-tool-stepper="${setting}" data-min="${min}" data-max="${max}"><button type="button" data-step="-1" aria-label="Lower ${escapeAttribute(label)}"><i data-lucide="minus"></i></button><output aria-label="${escapeAttribute(label)}">${value}</output><button type="button" data-step="1" aria-label="Raise ${escapeAttribute(label)}"><i data-lucide="plus"></i></button></div>`;
+  return `<div class="tool-stepper" data-tool-stepper="${setting}" data-min="${min}" data-max="${max}"><button type="button" data-step="-1" aria-label="${escapeAttribute(t("Lower {label}", { label: t(label) }))}"><i data-lucide="minus"></i></button><output aria-label="${escapeAttribute(t(label))}">${value}</output><button type="button" data-step="1" aria-label="${escapeAttribute(t("Raise {label}", { label: t(label) }))}"><i data-lucide="plus"></i></button></div>`;
 }
 
 // The set-and-forget options drawer. Labeled "Settings" with a one-line summary of the
@@ -28667,15 +28741,21 @@ function toolDetails(bodyHtml) {
   return `<div class="slp-collapse tool-settings" role="button" tabindex="0" aria-expanded="false" data-tool-collapse><span class="tool-settings__label"><i data-lucide="sliders-horizontal"></i>${t("Settings")}</span><span class="tool-settings__summary" data-tool-summary>${escapeHtml(toolSettingsSummary())}</span><svg class="slp-collapse__chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="slp-collapse__panel tool-details" hidden>${bodyHtml}</div>`;
 }
 
+// Note letters, frequencies and numbers read left to right inside a Hebrew sentence: the isolate marks keep "C + G" and "A440" in order.
+function toolLtr(text) {
+  return appLanguage === "he" ? `\u2066${text}\u2069` : text;
+}
+
 function toolSettingsSummary() {
-  const wave = (TOOL_WAVES.find(([value]) => value === toolPrefs.wave) || TOOL_WAVES[1])[1];
-  const tuning = `A${toolPrefs.a4}`;
+  const wave = t((TOOL_WAVES.find(([value]) => value === toolPrefs.wave) || TOOL_WAVES[1])[1]);
+  const instrument = t((INSTRUMENTS.find(([id]) => id === toolPrefs.instrument) || INSTRUMENTS[0])[1]);
+  const tuning = toolLtr(`A${toolPrefs.a4}`);
   switch (activeToolId) {
-    case "metronome": return `${toolPrefs.beats} beats per bar · accent ${String(toolPrefs.accent) === "true" ? "on" : "off"}`;
-    case "piano": return `${(INSTRUMENTS.find(([id]) => id === toolPrefs.instrument) || INSTRUMENTS[0])[1]} sound · from octave ${toolPrefs.pianoOctave} · ${tuning}`;
-    case "chord-lab": return `${(INSTRUMENTS.find(([id]) => id === toolPrefs.instrument) || INSTRUMENTS[0])[1]} sound · octave ${toolPrefs.octave} · ${tuning}`;
-    case "tuner": return `Tuned to ${tuning}`;
-    default: return `${wave} sound · octave ${toolPrefs.octave} · ${tuning}`;
+    case "metronome": return t(String(toolPrefs.accent) === "true" ? "{beats} beats per bar · accent on" : "{beats} beats per bar · accent off", { beats: toolPrefs.beats });
+    case "piano": return t("{instrument} sound · from octave {octave} · {tuning}", { instrument, octave: toolPrefs.pianoOctave, tuning });
+    case "chord-lab": return t("{instrument} sound · octave {octave} · {tuning}", { instrument, octave: toolPrefs.octave, tuning });
+    case "tuner": return t("Tuned to {tuning}", { tuning });
+    default: return t("{instrument} sound · octave {octave} · {tuning}", { instrument: wave, octave: toolPrefs.octave, tuning });
   }
 }
 
@@ -28700,7 +28780,7 @@ function tuningSetting() {
 }
 
 function waveSetting() {
-  return `<div class="tool-field"><span class="slp-section-label">${t("Sound")}</span>${toolSegmented("wave", TOOL_WAVES, toolPrefs.wave)}</div>`;
+  return `<div class="tool-field"><span class="slp-section-label">${t("Sound")}</span>${toolSegmented("wave", TOOL_WAVES.map(([value, name]) => [value, t(name)]), toolPrefs.wave)}</div>`;
 }
 
 function instrumentSetting() {
@@ -28862,7 +28942,7 @@ const TOOL_VIEWS = {
         </div>
         <button type="button" class="slp-btn slp-btn--soft tool-tap" data-tap-tempo>${t("Tap tempo")}</button>
       </section>
-      ${toolDetails(`<div class="tool-field"><span class="slp-section-label">${t("Beats per bar")}</span>${toolStepper("beats", toolPrefs.beats, "beats per bar", 2, 12)}</div><div class="tool-field"><span class="slp-section-label">${t("Accent first beat")}</span>${toolSegmented("accent", [["true", "On"], ["false", "Off"]], String(toolPrefs.accent))}</div>`)}`;
+      ${toolDetails(`<div class="tool-field"><span class="slp-section-label">${t("Beats per bar")}</span>${toolStepper("beats", toolPrefs.beats, "beats per bar", 2, 12)}</div><div class="tool-field"><span class="slp-section-label">${t("Accent first beat")}</span>${toolSegmented("accent", [["true", t("On")], ["false", t("Off")]], String(toolPrefs.accent))}</div>`)}`;
     },
     start() {
       const context = toolAudio();
@@ -28907,7 +28987,7 @@ const TOOL_VIEWS = {
   // ---------- Piano Notes ----------
   piano: {
     render() {
-      return `${toolHero("—", "Press and hold a key")}
+      return `${toolHero("—", t("Press and hold a key"))}
       <section class="slp-card tool-controls"><div id="toolKeyboard" class="tool-keyboard" role="group" aria-label="Piano keyboard" style="--white-count:8">${pianoKeysHtml(8)}</div></section>
       ${toolDetails(`${instrumentSetting()}<div class="tool-field"><span class="slp-section-label">${t("Lowest octave")}</span>${toolStepper("pianoOctave", toolPrefs.pianoOctave, "lowest octave", 1, 5)}</div>${tuningSetting()}`)}`;
     },
@@ -28928,7 +29008,7 @@ const TOOL_VIEWS = {
       return `${toolHero(referenceLabel(), referenceSub())}
       <section class="slp-card tool-controls">
         <div class="tool-note-grid" role="group" aria-label="Key">${TOOL_NOTE_NAMES.map((name, index) => `<button type="button" class="tool-note ${index === toolPrefs.refKey ? "selected" : ""}" data-key="${index}">${toolNoteLabel(name)}</button>`).join("")}</div>
-        ${toolSegmented("refMode", [["major", "Major"], ["minor", "Minor"]], toolPrefs.refMode)}
+        ${toolSegmented("refMode", [["major", t("Major")], ["minor", t("Minor")]], toolPrefs.refMode)}
         <div class="tool-degrees" role="group" aria-label="Scale notes">${referenceDegrees()}</div>
       </section>
       ${toolDetails(`${waveSetting()}<div class="tool-field"><span class="slp-section-label">${t("Octave")}</span>${toolStepper("octave", toolPrefs.octave, "octave", 2, 6)}</div>${tuningSetting()}`)}`;
@@ -28975,7 +29055,7 @@ const TOOL_VIEWS = {
       return `${toolHero("—", "Tap play, then sing or play a note")}
       <section class="slp-card tool-controls">
         <div class="tool-meter" role="img" aria-label="Pitch accuracy meter"><span class="tool-meter__zone"></span><span id="toolMeterNeedle" class="tool-meter__needle"></span></div>
-        <div class="tool-meter__scale"><span>♭ flat</span><span>${t("in tune")}</span><span>sharp ♯</span></div>
+        <div class="tool-meter__scale"><span>${t("♭ flat")}</span><span>${t("in tune")}</span><span>${t("sharp ♯")}</span></div>
       </section>
       <p id="toolMicNote" class="tool-mic-note" role="status" hidden></p>
       ${toolDetails(tuningSetting())}`;
@@ -29115,12 +29195,12 @@ function tapTempo() {
 // ---------- Reference Tones details ----------
 
 function referenceLabel() {
-  return `${toolNoteLabel(TOOL_NOTE_NAMES[toolPrefs.refKey])} ${toolPrefs.refMode}`;
+  return t(`{note} ${toolPrefs.refMode}`, { note: toolLtr(toolNoteLabel(TOOL_NOTE_NAMES[toolPrefs.refKey])) });
 }
 
 function referenceSub() {
   const fifth = TOOL_NOTE_NAMES[(toolPrefs.refKey + 7) % 12];
-  return `Drone: ${toolNoteLabel(TOOL_NOTE_NAMES[toolPrefs.refKey])} + ${toolNoteLabel(fifth)}`;
+  return t("Drone: {root} + {fifth}", { root: toolLtr(toolNoteLabel(TOOL_NOTE_NAMES[toolPrefs.refKey])), fifth: toolLtr(toolNoteLabel(fifth)) });
 }
 
 function referenceDegrees() {
