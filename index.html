@@ -7636,6 +7636,28 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 .gig-cue-reference .gig-cue-edit svg { display: block; width: 18px; height: 18px; }
 :root[data-design="soft"] .gig-cue-reference .gig-cue-edit { color: var(--mute); background: transparent; border: 0; }
 
+/* Set list sheet: the list scrolls inside the sheet (to the last song), nothing behind it scrolls, and on a wide screen it is a panel in the lyrics column above the Back/Next bar. */
+.sheet.gig-setlist-sheet:not(.hidden) { display: flex; flex-direction: column; }
+.sheet.gig-setlist-sheet .sheet-header { flex: none; touch-action: none; }
+.sheet.gig-setlist-sheet .gig-setlist-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); }
+.sheet.gig-setlist-sheet { transition: transform 180ms ease; }
+.sheet.gig-setlist-sheet.is-anchored { left: var(--sl-left); right: auto; width: var(--sl-width); margin-inline: 0; bottom: var(--sl-bottom); max-height: var(--sl-max); padding-bottom: 0; }
+html.sheet-scroll-lock, html.sheet-scroll-lock body { overscroll-behavior: none; }
+html.sheet-scroll-lock .scrim, html.sheet-scroll-lock #songPane, html.sheet-scroll-lock #gigDetailView, html.sheet-scroll-lock #libraryPane, html.sheet-scroll-lock .app-shell { touch-action: none; overscroll-behavior: none; }
+
+/* Any sheet or panel covers the editing bar (it sat above them), and in the soft look the bar's tools and Done keep a normal inset from both ends of the bar. */
+html:has(.scrim:not(.hidden)) .slp-edit-dock, body.gig-cue-open .slp-edit-dock { z-index: 10; }
+:root[data-design="soft"] .slp-edit-dock { padding-inline: 12px; }
+@media (max-width: 360px) { :root[data-design="soft"] .slp-edit-dock { padding-inline: 4px; } }
+/* A side panel is clearly in front: the page behind is dimmed in the dark look too, and the panel has a hairline edge, so nothing behind reads as part of it. */
+:root[data-design="soft"] .scrim { background: rgba(0, 0, 0, 0.5); }
+:root[data-design="soft"] .sheet { border-inline-start: 1px solid color-mix(in srgb, var(--fg) 14%, transparent); }
+:root[data-design="soft"] .review-list-clear { margin: 56px 24px; text-align: center; color: var(--mute); font: 400 16px var(--soft-font-ui); }
+
+/* Performance on a wide screen (soft look): a centred reading column with a sensible maximum width (it grows with the type size, within limits); every line is aligned to its own direction inside it,
+   and the chorus panel is as wide as the column, not the screen. On a phone the column is the whole width, as before. */
+:root[data-design="soft"] #performanceView #perfDoc { max-width: clamp(560px, 24em, 1100px); margin-inline: auto; }
+
 }
 
 </style>
@@ -9649,7 +9671,7 @@ const REVIEW_LISTS = [REVIEW_IMPORTS, REVIEW_NO_KEY, REVIEW_ODD_KEY, REVIEW_TITL
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "876d90ba · e9de5fd";
+const APP_BUILD = "f8e31d3e · 7a7e6f6";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -11462,6 +11484,19 @@ Object.assign(HEBREW_UI, {
   "Title-only songs not in any event": "שירים עם כותרת בלבד שאינם באף אירוע",
   "Changed {date}": "שונה ב־{date}"
 });
+
+// Settings: Review and fix as one row with its own page; the empty songs list.
+Object.assign(HEBREW_UI, {
+  "Review and fix": "סקירה ותיקון",
+  "1 thing to look at": "דבר אחד לבדיקה",
+  "{n} things to look at": "{n} דברים לבדיקה",
+  "All clear": "הכול תקין",
+  "All clear. Nothing needs a look right now.": "הכול תקין. אין מה לבדוק כרגע.",
+  "Show all": "הצגת הכול",
+  "Hide empty": "הסתרת הריקים",
+  "Empty songs not in any event": "שירים ריקים שלא באירוע",
+  "Nothing to clean up": "אין מה לנקות"
+});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -13206,7 +13241,7 @@ function renderFolder() {
       : currentFolderId === REVIEW_IMPORTS ? t("Imports to review")
       : currentFolderId === REVIEW_NO_KEY ? t("Songs without a key")
       : currentFolderId === REVIEW_ODD_KEY ? t("Songs with an unusual key")
-      : currentFolderId === REVIEW_TITLE_ONLY ? t("Title-only songs not in any event")
+      : currentFolderId === REVIEW_TITLE_ONLY ? t("Empty songs not in any event")
       : isArtistIndex ? t("Artists")
         : artistName || (folder ? folderDisplayName(folder) : "") || t("Folder");
   const subfolders = folder ? childFolders(folder.id) : [];
@@ -13220,7 +13255,7 @@ function renderFolder() {
   // credits a new song to this artist) -- no search, no sort. The Artists
   // index keeps its own prior behavior (add hidden, sort hidden, search
   // untouched; no mock exists for it).
-  els.folderAddBtn.classList.toggle("hidden", isArtistIndex);
+  els.folderAddBtn.classList.toggle("hidden", isArtistIndex || (currentFolderId === REVIEW_TITLE_ONLY && !songs.length));   // an empty review list has nothing to add to
   els.folderSearchBtn.classList.toggle("hidden", Boolean(artistName));
   if (artistName) setFolderSearchOpen(false);
   // Edit-mode audit follow-up: a persistent, one-tap header icon --
@@ -13413,10 +13448,12 @@ function renderSongList(sourceSongs, isArtistView = false) {
   // what emptied it, a short one-line note says so instead.
   const filtering = Boolean(query) || activeFilterCount() > 0;
   const emptyList = !songs.length;
-  els.songsEmptyHeader.classList.toggle("hidden", !emptyList || filtering);
-  els.songList.classList.toggle("hidden", emptyList && !filtering);
+  const reviewClear = currentFolderId === REVIEW_TITLE_ONLY && emptyList && !filtering;   // nothing to clean up: a plain message, no "Songs 0" group and no "+"
+  els.songsEmptyHeader.classList.toggle("hidden", !emptyList || filtering || reviewClear);
+  els.songList.classList.toggle("hidden", emptyList && !filtering && !reviewClear);
   if (emptyList) {
-    if (filtering) els.songList.innerHTML = `${emptyMarkup("search-x", "No songs match")}${activeFilterCount() ? `<button type="button" class="active-filter-clear active-filter-clear--block" data-active-clear="1">${t("Clear filters")}</button>` : ""}`;
+    if (reviewClear) els.songList.innerHTML = `<p class="review-list-clear">${escapeHtml(t("Nothing to clean up"))}</p>`;
+    else if (filtering) els.songList.innerHTML = `${emptyMarkup("search-x", "No songs match")}${activeFilterCount() ? `<button type="button" class="active-filter-clear active-filter-clear--block" data-active-clear="1">${t("Clear filters")}</button>` : ""}`;
     return;
   }
 
@@ -22592,7 +22629,8 @@ function showSettingsMain(title = t("Settings & Backup")) {
   els.appVersionText.textContent = APP_BUILD;
 }
 
-// Soft look: Review and fix. The group is built here (not written in index.html) so Classic and New never have it in their page.
+// Soft look: Review and fix. One row in Settings ("Review and fix", "4 things to look at" or "All clear") opens its own page with the rows. The group and the page are built here
+// (not written in index.html) so Classic and New never have them in their page. Rows with nothing to review are hidden on the page, with a small "Show all" for the rest.
 // The counts are worked out each time Settings opens; nothing is stored.
 const REVIEW_ROWS = [
   ["reviewUnfiledBtn", "inbox", "Unfiled songs"],
@@ -22600,40 +22638,82 @@ const REVIEW_ROWS = [
   ["reviewImportsBtn", "clipboard-check", "Imports to review"],
   ["reviewNoKeyBtn", "music", "Songs without a key"],
   ["reviewOddKeyBtn", "key-round", "Songs with an unusual key"],
-  ["reviewTitleOnlyBtn", "file-text", "Title-only songs not in any event"]
+  ["reviewTitleOnlyBtn", "file-text", "Empty songs not in any event"]
 ];
+let reviewShowAll = false;
+
+function reviewCounts() {
+  const n = (test) => state.songs.filter(test).length;
+  return {
+    reviewUnfiledBtn: n(songIsUnfiled), reviewDuplicatesBtn: duplicateCount(), reviewImportsBtn: n(REVIEW_TESTS[REVIEW_IMPORTS]), reviewNoKeyBtn: n(REVIEW_TESTS[REVIEW_NO_KEY]),
+    reviewOddKeyBtn: n(REVIEW_TESTS[REVIEW_ODD_KEY]), reviewTitleOnlyBtn: titleOnlyUnusedSongs().length
+  };
+}
+
+function reviewGo(id) {
+  const go = { reviewUnfiledBtn: () => openReviewList(UNFILED), reviewDuplicatesBtn: () => document.getElementById("openDuplicatesBtn").click(), reviewImportsBtn: () => openReviewList(REVIEW_IMPORTS), reviewNoKeyBtn: () => openReviewList(REVIEW_NO_KEY), reviewOddKeyBtn: () => openReviewList(REVIEW_ODD_KEY), reviewTitleOnlyBtn: () => openReviewList(REVIEW_TITLE_ONLY) };
+  go[id]?.();
+}
 
 function ensureReviewGroup() {
   if (document.querySelector(".review-fix-group")) return;
-  // The label above the backup card (found by position: its text is translated).
+  // The card above the backup card (found by position: its label is translated).
   const before = document.getElementById("exportLibraryBtn")?.closest(".slp-card")?.previousElementSibling;
   if (!before) return;
   const group = document.createElement("div");
   group.className = "review-fix-group";
-  group.innerHTML = `<span class="slp-section-label">${t("REVIEW AND FIX")}</span><section class="slp-card">${REVIEW_ROWS.map(([id, icon, title]) => `<button id="${id}" class="slp-row" type="button"><span class="slp-row__icon-tile"><i data-lucide="${icon}"></i></span><span class="slp-row__body"><span class="slp-row__title">${t(title)}</span><span id="${id}Count" class="slp-row__subtitle"></span></span><i data-lucide="chevron-right" class="slp-row__chevron"></i></button>`).join("")}</section>`;
+  group.innerHTML = `<section class="slp-card"><button id="reviewFixBtn" class="slp-row" type="button"><span class="slp-row__icon-tile"><i data-lucide="clipboard-check"></i></span><span class="slp-row__body"><span class="slp-row__title"></span><span id="reviewFixBtnCount" class="slp-row__subtitle"></span></span><i data-lucide="chevron-right" class="slp-row__chevron"></i></button></section>`;
   before.before(group);
-  const go = { reviewUnfiledBtn: () => openReviewList(UNFILED), reviewDuplicatesBtn: () => document.getElementById("openDuplicatesBtn").click(), reviewImportsBtn: () => openReviewList(REVIEW_IMPORTS), reviewNoKeyBtn: () => openReviewList(REVIEW_NO_KEY), reviewOddKeyBtn: () => openReviewList(REVIEW_ODD_KEY), reviewTitleOnlyBtn: () => openReviewList(REVIEW_TITLE_ONLY) };
-  Object.entries(go).forEach(([id, fn]) => document.getElementById(id).addEventListener("click", fn));
+  document.getElementById("reviewFixBtn").addEventListener("click", () => { reviewShowAll = false; renderReviewFixPage(); showSettingsPage("reviewFixView"); });
+  if (!document.getElementById("reviewFixView")) {
+    const page = document.createElement("div");
+    page.id = "reviewFixView";
+    page.className = "settings-page hidden";
+    page.innerHTML = `<header class="slp-header"><button id="backFromReviewFixBtn" class="slp-btn slp-btn--icon" type="button"><svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="slp-header__titles"><h2 class="slp-header__title"></h2><p class="slp-subtitle"></p></div></header><div id="reviewFixBody" class="settings-page__body"></div>`;
+    (document.getElementById("duplicatesSettingsView") || els.settingsMainView).after(page);
+    document.getElementById("backFromReviewFixBtn").addEventListener("click", () => showSettingsMain());
+    document.getElementById("reviewFixBody").addEventListener("click", (event) => {
+      if (event.target.closest("[data-review-toggle]")) { reviewShowAll = !reviewShowAll; renderReviewFixPage(); return; }
+      const row = event.target.closest("[data-review-go]");
+      if (row) reviewGo(row.dataset.reviewGo);
+    });
+  }
+  refreshIcons();
+}
+
+function reviewThingsText(things) {
+  return things ? (things === 1 ? t("1 thing to look at") : t("{n} things to look at", { n: things })) : t("All clear");
+}
+
+function renderReviewFixPage() {
+  const page = document.getElementById("reviewFixView");
+  if (!page) return;
+  const counts = reviewCounts();
+  const things = REVIEW_ROWS.filter(([id]) => counts[id] > 0).length;
+  page.querySelector(".slp-header__back")?.closest("button")?.setAttribute("aria-label", t("Back to settings"));
+  page.querySelector(".slp-header__title").textContent = t("Review and fix");
+  page.querySelector(".slp-subtitle").textContent = reviewThingsText(things);
+  const shown = REVIEW_ROWS.filter(([id]) => reviewShowAll || counts[id] > 0);
+  const hidden = REVIEW_ROWS.length - shown.length;
+  const unit = (id, count) => id === "reviewDuplicatesBtn" ? t(count === 1 ? "pair to review" : "pairs to review") : t(count === 1 ? "song" : "songs");
+  document.getElementById("reviewFixBody").innerHTML = `${shown.length
+    ? `<section class="slp-card">${shown.map(([id, icon, title]) => `<button id="${id}" class="slp-row" type="button" data-review-go="${id}"><span class="slp-row__icon-tile"><i data-lucide="${icon}"></i></span><span class="slp-row__body"><span class="slp-row__title">${escapeHtml(t(title))}</span><span id="${id}Count" class="slp-row__subtitle">${counts[id] ? `${counts[id]} ${escapeHtml(unit(id, counts[id]))}` : escapeHtml(t("None"))}</span></span><i data-lucide="chevron-right" class="slp-row__chevron"></i></button>`).join("")}</section>`
+    : `<p class="review-fix-clear">${escapeHtml(t("All clear. Nothing needs a look right now."))}</p>`}${hidden || reviewShowAll ? `<button type="button" class="slp-link-btn review-fix-toggle" data-review-toggle="1">${escapeHtml(reviewShowAll ? t("Hide empty") : t("Show all"))}</button>` : ""}`;
   refreshIcons();
 }
 
 function refreshReviewRows() {
   const group = document.querySelector(".review-fix-group");
-  if (!isSoftDesign()) { group?.remove(); return; }
+  if (!isSoftDesign()) { group?.remove(); document.getElementById("reviewFixView")?.remove(); return; }
   ensureReviewGroup();
   // The group is built once, so its words are set again every time: otherwise they stay in the language Settings was first opened in.
-  const label = document.querySelector(".review-fix-group > .slp-section-label");
-  if (label) label.textContent = t("REVIEW AND FIX");
-  REVIEW_ROWS.forEach(([id, , title]) => { const el = document.querySelector(`#${id} .slp-row__title`); if (el) el.textContent = t(title); });
-  const n = (test) => state.songs.filter(test).length;
-  const set = (id, count, one, many) => { const el = document.getElementById(id + "Count"); if (el) el.textContent = count ? `${count} ${t(count === 1 ? one : many)}` : t("None"); };
-  set("reviewUnfiledBtn", n(songIsUnfiled), "song", "songs");
-  const pairs = duplicateCount();
-  set("reviewDuplicatesBtn", pairs, "pair to review", "pairs to review");
-  set("reviewImportsBtn", n(REVIEW_TESTS[REVIEW_IMPORTS]), "song", "songs");
-  set("reviewNoKeyBtn", n(REVIEW_TESTS[REVIEW_NO_KEY]), "song", "songs");
-  set("reviewOddKeyBtn", n(REVIEW_TESTS[REVIEW_ODD_KEY]), "song", "songs");
-  set("reviewTitleOnlyBtn", titleOnlyUnusedSongs().length, "song", "songs");
+  const counts = reviewCounts();
+  const things = REVIEW_ROWS.filter(([id]) => counts[id] > 0).length;
+  const title = document.querySelector("#reviewFixBtn .slp-row__title");
+  if (title) title.textContent = t("Review and fix");
+  const sub = document.getElementById("reviewFixBtnCount");
+  if (sub) sub.textContent = reviewThingsText(things);
+  renderReviewFixPage();
 }
 
 // Soft look: the language is changed from inside Settings, so the sheet that is open must change its own words at once (its counts, the backup
@@ -25159,7 +25239,69 @@ function openGigSetListSheet() {
     else { hideGigCueCard(); readGigSong(button.dataset.gigJumpSong, button.dataset.gigJump); }
   }));
   showOverlay(els.gigSetListSheet);
+  els.gigSetListBody.dataset.sheetScroll = "1";
+  setSheetScrollLock(true);
+  placeGigSetListSheet();
   els.gigSetListBody.querySelector(".is-reading")?.scrollIntoView?.({ block: "center" });
+}
+
+// While a sheet with its own scrolling list is open, nothing behind it scrolls: a drag that does not start inside the list is cancelled, and the panes behind ignore touch scrolling (CSS).
+let sheetTouchGuard = null;
+function setSheetScrollLock(on) {
+  document.documentElement?.classList?.toggle?.("sheet-scroll-lock", on);
+  if (on && !sheetTouchGuard && typeof document.addEventListener === "function") {
+    sheetTouchGuard = (event) => { if (!event.target.closest?.("[data-sheet-scroll]")) event.preventDefault(); };
+    document.addEventListener("touchmove", sheetTouchGuard, { passive: false });
+  } else if (!on && sheetTouchGuard) {
+    document.removeEventListener("touchmove", sheetTouchGuard);
+    sheetTouchGuard = null;
+  }
+}
+
+// On a wide screen the Set list is a panel in the lyrics column, sitting on the bar with Back and Next, with its own scroll; it does not float over the middle of the panes or cover the bottom menu.
+// On a phone it is the bottom sheet. Placed every time it opens and when the window changes.
+function placeGigSetListSheet() {
+  const sheet = els.gigSetListSheet;
+  if (!elementIsVisible(sheet)) return;
+  const pane = document.getElementById("songPane")?.getBoundingClientRect();
+  const nav = els.gigSideNav?.getBoundingClientRect();
+  const anchored = gigSplitActive() && Boolean(pane?.width) && Boolean(nav?.height);
+  sheet.classList.toggle("is-anchored", anchored);
+  ["--sl-left", "--sl-width", "--sl-bottom", "--sl-max"].forEach((name) => sheet.style.removeProperty(name));
+  if (!anchored) return;
+  sheet.style.setProperty("--sl-left", `${Math.round(pane.left)}px`);
+  sheet.style.setProperty("--sl-width", `${Math.round(pane.width)}px`);
+  sheet.style.setProperty("--sl-bottom", `${Math.round(window.innerHeight - nav.top)}px`);
+  sheet.style.setProperty("--sl-max", `${Math.max(180, Math.min(560, Math.round(nav.top - 24)))}px`);
+}
+
+// Swipe down on the sheet's header closes it (the X and a tap outside close it too).
+function initGigSetListSwipe() {
+  const head = els.gigSetListSheet.querySelector(".sheet-header");
+  if (!head) return;
+  let startY = null, pointer = null, dy = 0;
+  head.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("button") || (event.pointerType === "mouse" && event.button !== 0)) return;
+    startY = event.clientY; pointer = event.pointerId; dy = 0;
+    head.setPointerCapture?.(event.pointerId);
+    els.gigSetListSheet.style.transition = "none";
+  });
+  head.addEventListener("pointermove", (event) => {
+    if (startY === null || event.pointerId !== pointer) return;
+    dy = Math.max(0, event.clientY - startY);
+    els.gigSetListSheet.style.transform = dy ? `translateY(${dy}px)` : "";
+  });
+  const end = (event) => {
+    if (startY === null || event.pointerId !== pointer) return;
+    const far = dy > 80;
+    startY = null; pointer = null;
+    els.gigSetListSheet.style.transition = "";
+    els.gigSetListSheet.style.transform = "";
+    if (far && event.type !== "pointercancel") closeOverlays();
+  };
+  head.addEventListener("pointerup", end);
+  head.addEventListener("pointercancel", end);
+  if (typeof window.addEventListener === "function") window.addEventListener("resize", placeGigSetListSheet);
 }
 
 function initGigSideUi() {
@@ -25178,6 +25320,7 @@ function initGigSideUi() {
     if (key) setGigKeyFilter(key);
   });
   els.closeGigSetListBtn.addEventListener("click", closeOverlays);
+  initGigSetListSwipe();
   els.gigSideListBtn.addEventListener("click", openGigSetListSheet);
   const toggleNote = () => { const open = els.gigReaderNote.classList.toggle("is-open"); els.gigReaderNote.setAttribute("aria-expanded", String(open)); };
   els.gigReaderNote.addEventListener("click", (event) => {
@@ -31355,6 +31498,7 @@ function closeOverlays() {
   songInfoDraft = null;
   els.app?.classList.remove("context-overlay-open");
   els.app?.classList.remove("context-editor-open");
+  if (typeof setSheetScrollLock === "function") setSheetScrollLock(false);
   setElementVisible(els.scrim, false);
   setElementVisible(document.getElementById("pasteSetlistSheet"), false);
   [els.folderDialog, els.songInfoSheet, els.folderSongPickerSheet, els.slpsongSheet, els.songAddToSheet, els.quickAddSheet, els.boardFilterSheet, els.boardColumnsScreen, els.boardNewSheet, els.songEventsSheet, els.gigItemSheet, els.gigSetListSheet, els.gigFormSheet, els.gigSongPickerSheet, els.gigStructureSheet, els.gigShareSheet, els.gigTemplateSheet, els.noteFolderDialog, els.appearancePopover, els.transposePopover, els.actionMenu, els.settingsSheet, els.filterSheet, els.importSheet, els.confirmDialog, els.dupSheet, els.quickKeySheet, els.overlayNotesSheet, els.gigListNoteSheet].forEach((element) => setElementVisible(element, false));
