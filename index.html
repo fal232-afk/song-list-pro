@@ -6595,16 +6595,16 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 /* ============================================================================================================
    SOFT LOOK (data-design="soft") -- a third look beside Classic and New. Reference: design/soft-2026-11/.
    Rounded tonal panels on a tinted ground; surfaces differ by tone only (no outlines, no shadows on buttons,
-   chips, cards or sheets). 1px separators INSIDE a panel stay. Titles in Bellefair, everything else in Assistant.
+   chips, cards or sheets). 1px separators INSIDE a panel stay. Titles in Playpen Sans Hebrew (600), everything else in Assistant.
    Every style rule below is scoped to :root[data-design="soft"]; Classic and New are untouched.
    The @font-face rules cannot be scoped; they only download when a soft rule uses the family.
    ============================================================================================================ */
 @font-face { font-family: 'Assistant'; font-style: normal; font-weight: 200 800; font-display: swap; src: url(vendor/fonts/assistant-hebrew.woff2) format('woff2'); unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F; }
 @font-face { font-family: 'Assistant'; font-style: normal; font-weight: 200 800; font-display: swap; src: url(vendor/fonts/assistant-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 @font-face { font-family: 'Assistant'; font-style: normal; font-weight: 200 800; font-display: swap; src: url(vendor/fonts/assistant-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: 'Bellefair'; font-style: normal; font-weight: 400; font-display: swap; src: url(vendor/fonts/bellefair-hebrew.woff2) format('woff2'); unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F; }
-@font-face { font-family: 'Bellefair'; font-style: normal; font-weight: 400; font-display: swap; src: url(vendor/fonts/bellefair-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-@font-face { font-family: 'Bellefair'; font-style: normal; font-weight: 400; font-display: swap; src: url(vendor/fonts/bellefair-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Playpen Sans Hebrew'; font-style: normal; font-weight: 600; font-display: swap; src: url(vendor/fonts/playpen-hebrew.woff2) format('woff2'); unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F; }
+@font-face { font-family: 'Playpen Sans Hebrew'; font-style: normal; font-weight: 600; font-display: swap; src: url(vendor/fonts/playpen-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Playpen Sans Hebrew'; font-style: normal; font-weight: 600; font-display: swap; src: url(vendor/fonts/playpen-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 /* ---- Tokens: copied from design/soft-2026-11/soft-tokens.css ---- */
 /* Song List Pro — "soft" look tokens. Apply ONLY under :root[data-design="soft"]. */
@@ -6615,11 +6615,15 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
   --soft-radius-panel: 22px;
   --soft-radius-sheet: 26px;
   --soft-radius-key-badge: 11px;
-  --soft-font-title: "Bellefair", "Times New Roman", serif;   /* screen titles, section names, big readouts */
+  --soft-font-title: "Playpen Sans Hebrew", "Assistant", system-ui, sans-serif;   /* screen titles, section names, big readouts (weight 600) */
   --soft-font-ui: "Assistant", system-ui, sans-serif;          /* everything else, including lyrics */
-  --soft-title-size: 40px;       /* root screens */
-  --soft-subtitle-size: 26px;    /* pushed screens */
+  --soft-title-size: 32px;       /* root screens (a wider face than the old one: 40px before) */
+  --soft-subtitle-size: 21px;    /* pushed screens (26px before) */
+  --soft-font-readout: "Assistant", system-ui, sans-serif;   /* the big readouts in Tools (tempo, starting note, tuner note): Assistant bold. These two lines are the only place to change it (the title face is var(--soft-font-title)) */
+  --soft-readout-weight: 700;
+  --soft-title-lh: 1.55;         /* the face is taller than the old one (its line box is 1.53 em), so titles get a line height that holds it: nothing is clipped */
   --soft-row-title: 600 17px var(--soft-font-ui);
+  --soft-song-title: 600 16px var(--soft-font-ui);   /* the title on song rows and event rows */
   --soft-chord: 800 18px var(--soft-font-ui);   /* 0.7 x lyric size; 22px in Performance */
   --soft-tap-min: 44px;
   /* No borders and no shadows on panels: surfaces differ by tone only. */
@@ -6713,9 +6717,9 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 /* ---- Shared pieces, first used by Songs home ---- */
 /* The ground: every screen sits on the page tone; panels are one tone lighter (or deeper in dark). */
 :root[data-design="soft"] .app-shell, :root[data-design="soft"] .pane, :root[data-design="soft"] .slp-screen { background: var(--bg); }
-/* Screen titles: Bellefair, 40px on root screens, 26px on pushed screens. */
-:root[data-design="soft"] .slp-header__title { font-family: var(--soft-font-title); font-weight: 400; font-size: var(--soft-subtitle-size); line-height: 1.1; color: var(--fg); }
-:root[data-design="soft"] .slp-header--screen-root .slp-header__title { font-size: var(--soft-title-size); line-height: 1; }
+/* Screen titles: Playpen Sans Hebrew 600, 32px on root screens, 21px on pushed screens. */
+:root[data-design="soft"] .slp-header__title { font-family: var(--soft-font-title); font-weight: 600; font-size: var(--soft-subtitle-size); line-height: var(--soft-title-lh); color: var(--fg); }
+:root[data-design="soft"] .slp-header--screen-root .slp-header__title { font-size: var(--soft-title-size); line-height: var(--soft-title-lh); }
 :root[data-design="soft"] .slp-header--screen-root { padding-inline: 4px; }
 :root[data-design="soft"] .slp-header__back { color: var(--fg); }
 
@@ -6779,12 +6783,13 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
    the title are laid flat so the pieces can sit in the grid; the row itself is still the tap target. */
 :root[data-design="soft"] {
   --soft-he-col: clamp(96px, 34%, 220px);
-  --soft-key-slot: 56px;
+  --soft-key-slot: 36px;
+  --soft-board-key-slot: 56px;   /* the Board cards keep their own key column */
 }
 :root[data-design="soft"] .song-item .slp-row {
   position: relative; display: grid; grid-template-columns: minmax(0, 1fr) fit-content(var(--soft-he-col)) var(--soft-key-slot); grid-template-areas: "p s k" "a a k";
-  grid-template-rows: 22px 17px; align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box;
-  height: 64px; min-height: 64px; padding: 0 16px; background: transparent; border: 0; border-bottom: 1px solid var(--panel2);
+  grid-template-rows: 20px 16px; align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box;
+  height: 52px; min-height: 52px; padding: 0 16px; background: transparent; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
 }
 :root[data-design="soft"] .song-item:last-child .slp-row { border-bottom: 0; }
 :root[data-design="soft"] .song-item .slp-row__body,
@@ -6795,31 +6800,34 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .song-item .song-title-button::after { content: none; }
 :root[data-design="soft"] .song-item .t-en, :root[data-design="soft"] .song-item .t-one,
 :root[data-design="soft"] .song-item .t-he { display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-:root[data-design="soft"] .song-item .t-en, :root[data-design="soft"] .song-item .t-one { grid-area: p; align-self: end; text-align: left; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
-:root[data-design="soft"] .song-item .t-he { grid-area: s; align-self: end; text-align: right; font: 600 16px var(--soft-font-ui); line-height: 22px; color: var(--fg); }
-:root[data-design="soft"][dir="rtl"] .song-item .t-he { grid-area: p; align-self: end; text-align: right; font: var(--soft-row-title); line-height: 22px; }
-:root[data-design="soft"][dir="rtl"] .song-item .t-en { grid-area: s; align-self: end; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
+:root[data-design="soft"] .song-item .t-en, :root[data-design="soft"] .song-item .t-one { grid-area: p; align-self: end; text-align: left; font: var(--soft-song-title); line-height: 20px; color: var(--fg); }
+:root[data-design="soft"] .song-item .t-he { grid-area: s; align-self: end; text-align: right; font: 600 16px var(--soft-font-ui); line-height: 20px; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .song-item .t-he { grid-area: p; align-self: end; text-align: right; font: var(--soft-song-title); line-height: 20px; }
+:root[data-design="soft"][dir="rtl"] .song-item .t-en { grid-area: s; align-self: end; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 20px; color: var(--mute); }
 :root[data-design="soft"][dir="rtl"] .song-item .t-one { text-align: right; }
 /* A song with no Hebrew title, in a Hebrew screen: its English title is the main line (same size, weight and colour as a Hebrew title), not the small grey second line it is when a Hebrew title sits beside it. Songs list, the Review lists and the event rows (below) and the Board (further down). */
-:root[data-design="soft"][dir="rtl"] .song-item .slp-row:not(:has(.t-he)) .t-en { grid-area: p; grid-column: 1 / span 2; align-self: end; text-align: right; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .song-item .slp-row:not(:has(.t-he)) .t-en { grid-area: p; grid-column: 1 / span 2; align-self: end; text-align: right; font: var(--soft-song-title); line-height: 20px; color: var(--fg); }
 /* The title and artist column takes all the room the second-language title and the key slot do not need: the Hebrew column is as wide as its title (up to a third of the row), the artist line also
    runs under it, and an English title with no Hebrew title takes both columns (in a Hebrew app the same the other way round). Only then does anything end in an ellipsis. */
 :root[data-design="soft"] .song-item .slp-row:not(:has(.t-he)) :is(.t-en, .t-one) { grid-column: 1 / span 2; }
 :root[data-design="soft"][dir="rtl"] .song-item .slp-row:not(:has(.t-en)) :is(.t-he, .t-one) { grid-column: 1 / span 2; }
-:root[data-design="soft"] .song-item .slp-row__artists { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 17px; font-size: 13px; color: var(--mute); padding: 4px 0 14px; margin: -4px 0 -14px; }
+:root[data-design="soft"] .song-item .slp-row__artists { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 16px; font-size: 13px; color: var(--mute); padding: 4px 0 14px; margin: -4px 0 -14px; }
 /* The artists are links in one line ("Ari Hill, Dudi Kalish"). Their tap area is padding (negative margins give the space back), because a clipped pseudo-element would be cut off by the ellipsis. */
 :root[data-design="soft"] .song-item .slp-row__artist-link { display: inline-block; vertical-align: top; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 4px 0 14px; margin: -4px 0 -14px; border: 0; background: none; color: var(--mute); font: inherit; line-height: inherit; text-align: start; }
 :root[data-design="soft"] .song-item .slp-row__artist-link::after { content: none; }
-:root[data-design="soft"] .song-item .slp-row:has(.song-flag-dot) .slp-row__artists { padding-inline-start: 20px; }
+:root[data-design="soft"] .song-item .slp-row:has(.song-flag-dot) :is(.t-en, .t-one, .t-he, .slp-row__artists) { padding-inline-start: 16px; }
 /* Artists run in the order they are listed, left to right when the first is written in Latin letters ("Ari Hill, Dudi Kalish"); in a Hebrew screen they stay against the right edge. The page gives the direction (dir on the span), so the comma follows the name it belongs to. */
 :root[data-design="soft"][dir="rtl"] .song-item .slp-row__artists[dir="ltr"] { text-align: right; }
 /* The key badge sits in its reserved slot. Nothing else is shown in the row: no as-written key text, no tempo, no pills. */
 :root[data-design="soft"] .song-item .song-meta > :not(.slp-badge--key):not(.song-flag-dot):not(.song-origin-tag) { display: none; }
 :root[data-design="soft"] .song-item .song-meta .slp-badge--key { grid-area: k; justify-self: end; align-self: center; }
+/* The key tag: small (30 x 22, 12.5px bold, radius 7) in its fixed 36px slot at the end of the row, left to right in both languages. Its tap area is grown to 44px with an invisible ::after. */
+:root[data-design="soft"] .song-item .slp-badge--key { min-width: 30px; max-width: var(--soft-key-slot); width: 30px; height: 22px; min-height: 22px; padding: 0 2px; font-size: 12.5px; font-weight: 700; border-radius: 7px; line-height: 22px; white-space: nowrap; overflow: visible; }
+:root[data-design="soft"] .song-item .slp-badge--key::after { inset: -11px -7px; }
 /* The amber dot: a flagged song (needs review, or may be a duplicate). It sits at the start of the artist line; the tap area is grown to 44 wide with an invisible ::after. */
-:root[data-design="soft"] .song-item .song-flag-dot { grid-area: a; justify-self: start; align-self: center; position: relative; width: 16px; height: 17px; padding: 0; border: 0; background: transparent; cursor: pointer; }
-:root[data-design="soft"] .song-item .song-flag-dot::before { content: ""; position: absolute; inset-inline-start: 0; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: #E0A030; }
-:root[data-design="soft"] .song-item .song-flag-dot::after { content: ""; position: absolute; inset: -2px -14px -14px -14px; }
+:root[data-design="soft"] .song-item .song-flag-dot { position: absolute; inset-inline-start: 8px; top: 6px; width: 24px; height: 28px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+:root[data-design="soft"] .song-item .song-flag-dot::before { content: ""; position: absolute; inset-inline-start: 8px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: #E0A030; }
+:root[data-design="soft"] .song-item .song-flag-dot::after { content: ""; position: absolute; inset: -8px -10px -8px -10px; }
 /* The Jyrics source tag stays: a small muted word at the end of the artist line (the lock becomes the word "Jyrics"; a copy says "Edited"). */
 :root[data-design="soft"] .song-item .song-origin-tag { grid-area: a; justify-self: end; align-self: center; display: inline-flex; align-items: center; padding: 0; background: none; border-radius: 0; color: var(--mute); font-size: 12px; font-weight: 400; line-height: 17px; white-space: nowrap; }
 :root[data-design="soft"] .song-item .song-origin-tag svg { display: none; }
@@ -6830,49 +6838,58 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .song-item .slp-row .select-check,
 :root[data-design="soft"] .song-item .slp-row .slp-row__drag-handle { position: absolute; inset-inline-start: 6px; top: 50%; transform: translateY(-50%); margin: 0; }
 :root[data-design="soft"] .song-item.is-selected > .slp-row { background: var(--panel2); }
+/* The song list runs edge to edge on a phone: no rounded container, no side margin around it (the rows keep their own 16px inner padding and a hairline between them). */
+:root[data-design="soft"] #songList, :root[data-design="soft"] #librarySearchSongList { background: transparent; border-radius: 0; margin-inline: -16px; }
 /* The same three columns on the event song rows and the Board cards (a closed card; the zoomed-out Board keeps its own compact rows). */
 :root[data-design="soft"] .gig-song-reference {
-  position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr) fit-content(var(--soft-he-col)) var(--soft-key-slot); grid-template-areas: "n p s k" "n a a k" "n m m k";
-  grid-template-rows: 22px 17px auto; align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box;
-  min-height: 64px; padding: 0 16px; background: transparent; border: 0; border-bottom: 1px solid var(--panel2);
+  position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr) fit-content(var(--soft-he-col)) minmax(var(--soft-key-slot), max-content); grid-template-areas: "n p s k" "n a a k" "n m m k";
+  grid-template-rows: 20px 16px auto; align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box;
+  min-height: 52px; padding: 0 16px; background: transparent; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
 }
-:root[data-design="soft"] .gig-song-reference.selecting { grid-template-columns: minmax(0, 1fr) fit-content(var(--soft-he-col)) var(--soft-key-slot); grid-template-areas: "p s k" "a a k" "m m k"; padding-inline-start: 52px !important; }
+:root[data-design="soft"] .gig-song-reference.selecting { grid-template-columns: minmax(0, 1fr) fit-content(var(--soft-he-col)) minmax(var(--soft-key-slot), max-content); grid-template-areas: "p s k" "a a k" "m m k"; padding-inline-start: 52px !important; }
 :root[data-design="soft"] .gig-song-reference .gig-song-reference-main,
 :root[data-design="soft"] .gig-song-reference .slp-row__title,
 :root[data-design="soft"] .gig-song-reference .song-title-lines { display: contents; }
 :root[data-design="soft"] .gig-song-reference .gig-song-number, :root[data-design="soft"] .gig-song-reference .gig-played-tick { grid-area: n; justify-self: center; width: auto; color: var(--mute); font-size: 14px; }
 :root[data-design="soft"] .gig-song-reference .t-en, :root[data-design="soft"] .gig-song-reference .t-one,
 :root[data-design="soft"] .gig-song-reference .t-he { display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-:root[data-design="soft"] .gig-song-reference .t-en, :root[data-design="soft"] .gig-song-reference .t-one { grid-area: p; align-self: end; text-align: left; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
-:root[data-design="soft"] .gig-song-reference .t-he { grid-area: s; align-self: end; text-align: right; font: 600 16px var(--soft-font-ui); line-height: 22px; color: var(--fg); }
-:root[data-design="soft"][dir="rtl"] .gig-song-reference .t-he { grid-area: p; text-align: right; font: var(--soft-row-title); line-height: 22px; }
-:root[data-design="soft"][dir="rtl"] .gig-song-reference .t-en { grid-area: s; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 22px; color: var(--mute); }
+:root[data-design="soft"] .gig-song-reference .t-en, :root[data-design="soft"] .gig-song-reference .t-one { grid-area: p; align-self: end; text-align: left; font: var(--soft-song-title); line-height: 20px; color: var(--fg); }
+:root[data-design="soft"] .gig-song-reference .t-he { grid-area: s; align-self: end; text-align: right; font: 600 16px var(--soft-font-ui); line-height: 20px; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference .t-he { grid-area: p; text-align: right; font: var(--soft-song-title); line-height: 20px; }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference .t-en { grid-area: s; text-align: right; font: 400 14px var(--soft-font-ui); line-height: 20px; color: var(--mute); }
 :root[data-design="soft"][dir="rtl"] .gig-song-reference .t-one { text-align: right; }
-:root[data-design="soft"][dir="rtl"] .gig-song-reference:not(:has(.t-he)) .t-en { grid-area: p; grid-column: 2 / span 2; text-align: right; font: var(--soft-row-title); line-height: 22px; color: var(--fg); }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference:not(:has(.t-he)) .t-en { grid-area: p; grid-column: 2 / span 2; text-align: right; font: var(--soft-song-title); line-height: 20px; color: var(--fg); }
 :root[data-design="soft"][dir="rtl"] .gig-song-reference.selecting:not(:has(.t-he)) .t-en { grid-column: 1 / span 2; }
-:root[data-design="soft"] .gig-song-reference .slp-row__subtitle { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; line-height: 17px; color: var(--mute); }
+:root[data-design="soft"] .gig-song-reference .slp-row__subtitle { grid-area: a; display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; line-height: 16px; color: var(--mute); }
 /* The same rules as a song row: the Hebrew title is level with the English title (the artist line is under both), the second-language column is as wide as its title, and an English title with no Hebrew
    title takes both columns (in a Hebrew app the other way round). */
 :root[data-design="soft"] .gig-song-reference:not(:has(.t-he)) :is(.t-en, .t-one) { grid-column: 2 / span 2; }
 :root[data-design="soft"] .gig-song-reference.selecting:not(:has(.t-he)) :is(.t-en, .t-one) { grid-column: 1 / span 2; }
 :root[data-design="soft"][dir="rtl"] .gig-song-reference:not(:has(.t-en)) :is(.t-he, .t-one) { grid-column: 2 / span 2; }
 :root[data-design="soft"][dir="rtl"] .gig-song-reference.selecting:not(:has(.t-en)) :is(.t-he, .t-one) { grid-column: 1 / span 2; }
-:root[data-design="soft"] .gig-song-reference .gig-row-note { grid-area: m; min-width: 0; padding-bottom: 8px; }
+:root[data-design="soft"] .gig-song-reference .gig-row-note { grid-area: m; min-width: 0; padding-bottom: 0; }
+/* An event note adds a third line: the row is 64px then, 52px without it. */
+:root[data-design="soft"] .gig-song-reference:has(.gig-row-note) { min-height: 64px; }
 :root[data-design="soft"] .gig-song-reference > .slp-badge--key { grid-area: k; justify-self: end; align-self: center; max-width: none; }
+/* The same key tag as a song row: 30 x 22, 12.5px bold, radius 7, with a 44px tap area. */
+:root[data-design="soft"] .gig-song-reference > .slp-badge--key:not(.event-key) { min-width: 30px; width: 30px; height: 22px; min-height: 22px; padding: 0 2px; font-size: 12.5px; font-weight: 700; border-radius: 7px; line-height: 22px; white-space: nowrap; }
+:root[data-design="soft"] .gig-song-reference > .slp-badge--key::after { inset: -11px -7px; }
 :root[data-design="soft"] .gig-song-reference .slp-badge--key .empty-label { display: none; }
 /* A key shifted for this event: "Dm → Em" on one line inside the key slot: the original key small and muted, then the arrow, then the event key at full size. Always left to right, in both languages. */
-:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key { display: inline-flex; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 2px; padding: 0 5px; white-space: nowrap; direction: ltr; unicode-bidi: isolate; }
-:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-classic { display: inline-flex; align-items: center; flex: 0 1 auto; min-width: 0; max-width: 34px; overflow: hidden; text-overflow: ellipsis; font-size: 10px; line-height: 14px; font-weight: 600; color: var(--mute); white-space: nowrap; }
-:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-classic { max-width: none; overflow: visible; gap: 2px; }
-:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-from { flex: 0 1 auto; min-width: 0; max-width: 26px; overflow: hidden; text-overflow: ellipsis; }
+/* A key shifted for this event: "Dm → Em" on one line: the original key small and muted, an arrow, then the new key in an amber-tinted tag. Always left to right, in both languages. It may take width from the
+   Hebrew title (that ends in an ellipsis), but never adds height. */
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key { display: inline-flex; flex-wrap: nowrap; align-items: center; justify-content: flex-end; gap: 3px; width: auto; min-width: 0; height: 22px; min-height: 22px; padding: 0; background: transparent; white-space: nowrap; direction: ltr; unicode-bidi: isolate; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-classic { display: inline-flex; align-items: center; flex: none; gap: 2px; font-size: 11px; line-height: 14px; font-weight: 600; color: var(--mute); white-space: nowrap; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-from { flex: none; }
 :root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-arrow { flex: none; }
-:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-main { flex: none; white-space: nowrap; line-height: 20px; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-main { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 22px; padding: 0 4px; border-radius: 7px; background: color-mix(in srgb, #E0A030 28%, transparent); color: var(--fg); font-size: 12.5px; font-weight: 700; line-height: 22px; white-space: nowrap; }
+:root[data-design="soft"] .gig-song-reference .slp-badge--key.event-key .ek-label { display: none; }
 :root[data-design="soft"] .gig-song-reference .select-check { position: absolute; inset-inline-start: 6px; top: 50%; transform: translateY(-50%); margin: 0; }
 :root[data-design="soft"] .gig-song-reference .gig-drag-handle { position: absolute; inset-inline-end: 4px; top: 50%; transform: translateY(-50%); margin: 0; }
 :root[data-design="soft"] .gig-song-reference:has(.gig-drag-handle) { padding-inline-end: 56px; }
 
 :root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__head {
-  display: grid; grid-template-columns: minmax(0, 1fr) var(--soft-he-col) var(--soft-key-slot); grid-template-areas: "p s k" "a n k"; grid-template-rows: 22px 17px;
+  display: grid; grid-template-columns: minmax(0, 1fr) var(--soft-he-col) var(--soft-board-key-slot); grid-template-areas: "p s k" "a n k"; grid-template-rows: 22px 17px;
   align-items: center; align-content: center; column-gap: 10px; row-gap: 0; box-sizing: border-box; min-height: 64px; padding: 0 16px; text-align: start;
 }
 :root[data-design="soft"] .board:not([data-zoom="out"]) .board-card:not(.is-open) .board-card__text,
@@ -6900,7 +6917,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] #practiceView .perf-bar { background: transparent; border-bottom: 0; padding: 12px 12px 0; gap: 6px; }
 :root[data-design="soft"] #practiceView .perf-bar__row { gap: 6px; }
 :root[data-design="soft"] #practiceView .perf-btn { flex: none; width: 44px; height: 44px; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); box-shadow: none; }
-:root[data-design="soft"] #practiceView .practice-title { color: var(--fg); font-family: var(--soft-font-title); font-size: 20px; font-weight: 400; line-height: 1.1; }
+:root[data-design="soft"] #practiceView .practice-title { color: var(--fg); font-family: var(--soft-font-title); font-size: 16px; font-weight: 600; line-height: var(--soft-title-lh); }
 :root[data-design="soft"] #practiceView .practice-player { background: transparent; gap: 8px; padding: 8px 12px; border-color: var(--panel2); }
 :root[data-design="soft"] #practiceView .practice-video { background: #111214; border-radius: var(--soft-radius-panel); }
 :root[data-design="soft"] #practiceView .practice-file-card { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-panel); }
@@ -6989,7 +7006,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .gig-sort-chip { background: transparent; padding: 0; gap: 10px; color: var(--mute); font-family: var(--soft-font-ui); font-size: 13px; font-weight: 600; }
 :root[data-design="soft"] .gig-sort-chip select { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); padding: 0 12px; min-height: 44px; font-family: var(--soft-font-ui); font-size: 15px; font-weight: 600; flex: 1; }
 :root[data-design="soft"] .calendar-toolbar { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; font-family: var(--soft-font-ui); }
-:root[data-design="soft"] .calendar-toolbar > strong { font-family: var(--soft-font-title); font-weight: 400; font-size: 22px; color: var(--fg); }
+:root[data-design="soft"] .calendar-toolbar > strong { font-family: var(--soft-font-title); font-weight: 600; font-size: 18px; color: var(--fg); }
 /* The month stays on one line and Today has room of its own: where the calendar is narrow (the side pane of a laptop, about 280px) the toolbar is two rows: previous, month, next on top and Today
    under them, so the month cannot wrap or run into the button. */
 :root[data-design="soft"] .calendar-toolbar > strong { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
@@ -7004,10 +7021,10 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .calendar-weekdays { color: var(--mute); font-family: var(--soft-font-ui); font-size: 12px; font-weight: 600; text-transform: none; }
 :root[data-design="soft"] .gig-calendar-grid { border: 0; gap: 4px 0; margin-inline: 4px; }   /* no gap between the days sideways: in the narrow side pane the days get every pixel */
 :root[data-design="soft"] .slp-btn--fab { min-width: 44px; min-height: 44px; }   /* the round + buttons (new event, notes menu) are 44px at laptop width too */
-/* The event info card in the side pane of a laptop: a tonal card, a Bellefair title, "Start the set" / "Open setlist" the one accent control. */
+/* The event info card in the side pane of a laptop: a tonal card, a Playpen Sans Hebrew title, "Start the set" / "Open setlist" the one accent control. */
 :root[data-design="soft"] .gig-info-card { border: 0; box-shadow: none; background: var(--panel); border-radius: var(--soft-radius-panel); }
 :root[data-design="soft"] .gig-info-tag, :root[data-design="soft"] .gig-info-row small, :root[data-design="soft"] .gig-info-row svg, :root[data-design="soft"] .gig-side-details__hint { color: var(--mute); font-family: var(--soft-font-ui); }
-:root[data-design="soft"] .gig-info-title { font-family: var(--soft-font-title); font-weight: 400; font-size: 24px; color: var(--fg); }
+:root[data-design="soft"] .gig-info-title { font-family: var(--soft-font-title); font-weight: 600; font-size: 19px; color: var(--fg); }
 :root[data-design="soft"] .gig-info-row { font-family: var(--soft-font-ui); color: var(--fg); }
 :root[data-design="soft"] .gig-info-action { color: var(--fg); border-radius: var(--soft-radius-control); }
 :root[data-design="soft"] .gig-info-primary { border: 0; border-radius: var(--soft-radius-control); background: var(--acc); color: var(--on); font-family: var(--soft-font-ui); font-weight: 700; box-shadow: none; }
@@ -7040,10 +7057,10 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .note-row__preview, :root[data-design="soft"] .note-row__date { color: var(--mute); font-family: var(--soft-font-ui); }
 
 /* ---- Soft look, screen 13: Tools (the hub, Tones, Tuner, Metronome, Chord Lab and the piano) ----
-   Tonal cards without an outline, the big readout (tempo, note, chord) in Bellefair, the start button the one accent control without a shadow or a gradient band behind it, the first beat
+   Tonal cards without an outline, the big readout (tempo, note, chord) in Playpen Sans Hebrew, the start button the one accent control without a shadow or a gradient band behind it, the first beat
    an accent dot, the picked chord type a tonal chip (no ring). The piano and chord-lab keyboards keep their key outlines and sizes: they are instruments. */
 :root[data-design="soft"] .tool-card { border: 0; box-shadow: none; background: var(--panel); border-radius: var(--soft-radius-panel); color: var(--fg); font-family: var(--soft-font-ui); }
-:root[data-design="soft"] .tool-hero__value { font-family: var(--soft-font-title); font-weight: 400; font-size: 88px; color: var(--fg); }
+:root[data-design="soft"] .tool-hero__value { font-family: var(--soft-font-readout); font-weight: var(--soft-readout-weight); font-size: 70px; color: var(--fg); }
 :root[data-design="soft"] .tool-hero__sub { color: var(--mute); font-family: var(--soft-font-ui); }
 /* The Play bar has its own band under the scrolling controls instead of floating over them (it overlapped the Settings row wherever a tool was a little taller than the window: Chord Lab up to about
    900px, Reference Tones at 720px). The tool fills the pane; its body scrolls; the transport stays below it. */
@@ -7164,7 +7181,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .board-lyric-line:not(.sec-chorus) + .sec-chorus, :root[data-design="soft"] .board-lyric-line.sec-chorus:first-child { border-start-start-radius: var(--soft-radius-control); border-start-end-radius: var(--soft-radius-control); padding-top: 8px; }
 :root[data-design="soft"] .board-lyric-line.sec-chorus:has(+ :not(.sec-chorus)), :root[data-design="soft"] .board-lyric-line.sec-chorus:last-child { border-end-start-radius: var(--soft-radius-control); border-end-end-radius: var(--soft-radius-control); padding-bottom: 8px; }
 
-/* Board: tonal chips, a tonal name button, tonal columns with Bellefair names and the same song rows. */
+/* Board: tonal chips, a tonal name button, tonal columns with Playpen Sans Hebrew names and the same song rows. */
 :root[data-design="soft"] .board-name-btn, :root[data-design="soft"] .board-columns-btn { background: var(--panel); color: var(--fg); border-radius: var(--soft-radius-control); font-size: 15px; font-weight: 600; box-shadow: none; }
 :root[data-design="soft"] .board-name-btn { padding-inline: 14px; }
 :root[data-design="soft"] .board-icon-btn { color: var(--fg); border-radius: var(--soft-radius-control); }
@@ -7180,7 +7197,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .board-pos__label span { color: var(--mute); }
 :root[data-design="soft"] .board-col { border: 0; background: var(--panel); border-radius: var(--soft-radius-panel); overflow: hidden; }
 :root[data-design="soft"] .board-col__head { border-bottom: 0; padding: 0 16px; min-height: 52px; }
-:root[data-design="soft"] .board-col__head strong { font-family: var(--soft-font-title); font-weight: 400; font-size: 22px; color: var(--fg); }
+:root[data-design="soft"] .board-col__head strong { font-family: var(--soft-font-title); font-weight: 600; font-size: 18px; color: var(--fg); }
 :root[data-design="soft"] .board-col__count { background: transparent; padding: 0; color: var(--mute); font-size: 13px; font-weight: 600; }
 :root[data-design="soft"] .board-col__body { gap: 0; padding: 0; }
 :root[data-design="soft"] .board-col__empty, :root[data-design="soft"] .board-empty-board { color: var(--mute); }
@@ -7227,13 +7244,13 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .action-menu button:hover { background: var(--panel2); }
 :root[data-design="soft"] .action-menu button.danger { color: var(--danger); }
 
-/* Sheets and dialogs sit on the page tone; the lists inside them are the tonal panels. Titles are Bellefair. */
+/* Sheets and dialogs sit on the page tone; the lists inside them are the tonal panels. Titles are Playpen Sans Hebrew. */
 :root[data-design="soft"] .sheet,
 :root[data-design="soft"] .modal,
 :root[data-design="soft"] .confirm-dialog { background: var(--bg); color: var(--fg); box-shadow: none; border: 0; }
 :root[data-design="soft"] .modal, :root[data-design="soft"] .confirm-dialog { border-radius: var(--soft-radius-sheet); }
 :root[data-design="soft"] .modal-header, :root[data-design="soft"] .sheet-header { border-bottom: 0; }
-:root[data-design="soft"] .modal-header h2, :root[data-design="soft"] .sheet-header h2 { font-family: var(--soft-font-title); font-weight: 400; font-size: var(--soft-subtitle-size); line-height: 1.1; color: var(--fg); }
+:root[data-design="soft"] .modal-header h2, :root[data-design="soft"] .sheet-header h2 { font-family: var(--soft-font-title); font-weight: 600; font-size: var(--soft-subtitle-size); line-height: var(--soft-title-lh); color: var(--fg); }
 :root[data-design="soft"] .sheet-header span { color: var(--mute); text-transform: none; }
 :root[data-design="soft"] .sheet-header .icon-button { color: var(--fg); border-radius: var(--soft-radius-control); }
 :root[data-design="soft"] .sheet-footer { border-top: 0; background: transparent; }
@@ -7248,13 +7265,13 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] #subfolderSection:not(.hidden) ~ #songsSection { margin-top: 14px; }
 
 /* ---- Soft look, screen 4: the song page (header, chips, lyrics page, sections) ---- */
-/* Header: Bellefair title, the other-language title as a small line under it; the performance button is the one accent control. */
+/* Header: Playpen Sans Hebrew title, the other-language title as a small line under it; the performance button is the one accent control. */
 :root[data-design="soft"] .song-header .song-title-lines { display: flex; flex-direction: column; gap: 1px; }
-:root[data-design="soft"] .song-header .t-en, :root[data-design="soft"] .song-header .t-one { font-family: var(--soft-font-title); font-weight: 400; font-size: var(--soft-subtitle-size); line-height: 1.1; }
+:root[data-design="soft"] .song-header .t-en, :root[data-design="soft"] .song-header .t-one { font-family: var(--soft-font-title); font-weight: 600; font-size: var(--soft-subtitle-size); line-height: var(--soft-title-lh); }
 :root[data-design="soft"] .song-header .t-he { font-family: var(--soft-font-ui); font-weight: 400; font-size: 15px; line-height: 1.2; color: var(--fg); }
-:root[data-design="soft"][dir="rtl"] .song-header .t-he { order: -1; font-family: var(--soft-font-title); font-size: var(--soft-subtitle-size); line-height: 1.1; }
+:root[data-design="soft"][dir="rtl"] .song-header .t-he { order: -1; font-family: var(--soft-font-title); font-weight: 600; font-size: var(--soft-subtitle-size); line-height: var(--soft-title-lh); }
 :root[data-design="soft"][dir="rtl"] .song-header .t-en { font-family: var(--soft-font-ui); font-size: 15px; line-height: 1.2; }
-:root[data-design="soft"] .song-header .song-title-lines > span:only-child { font-family: var(--soft-font-title); font-size: var(--soft-subtitle-size); line-height: 1.1; }
+:root[data-design="soft"] .song-header .song-title-lines > span:only-child { font-family: var(--soft-font-title); font-weight: 600; font-size: var(--soft-subtitle-size); line-height: var(--soft-title-lh); }
 .perform-label { display: none; }
 :root[data-design="soft"] #songPerformanceBtn { background: var(--acc); color: var(--on); width: auto; padding-inline: 12px 14px; gap: 7px; }
 /* The Perform button carries its word next to the icon wherever there is room (not on a very narrow phone). */
@@ -7366,7 +7383,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"][data-color-mode="dark"] .lyric-sheet .song-document .cp-chord { background: transparent; color: var(--accT); }
 
 /* The reading popover. */
-:root[data-design="soft"] .appearance-popover__title { font-family: var(--soft-font-title); font-weight: 400; font-size: 22px; color: var(--fg); }
+:root[data-design="soft"] .appearance-popover__title { font-family: var(--soft-font-title); font-weight: 600; font-size: 18px; color: var(--fg); }
 :root[data-design="soft"] .lyr-row { border-bottom: 1px solid var(--panel2); color: var(--fg); }
 :root[data-design="soft"] .lyr-row:last-child { border-bottom: 0; }
 :root[data-design="soft"] .lyr-row__label { color: var(--fg); }
@@ -7480,7 +7497,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] #app[data-home-page="folders"] #songLibraryContent > section:has(> #rootFolderList) > .slp-section-label-row,
 :root[data-design="soft"] #app[data-home-page="lists"] #songLibraryContent > section:has(> #rootListList) > .slp-section-label-row { display: none; }
 :root[data-design="soft"] #songLibraryContent > .home-page-header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); min-height: 48px; }
-:root[data-design="soft"] #songLibraryContent > .home-page-header .slp-header__title { flex: 1; min-width: 0; font: 400 var(--soft-subtitle-size) var(--soft-font-title); margin: 0; }
+:root[data-design="soft"] #songLibraryContent > .home-page-header .slp-header__title { flex: 1; min-width: 0; font: 600 var(--soft-subtitle-size) var(--soft-font-title); margin: 0; }
 :root[data-design="soft"] #songLibraryContent > .home-page-header .slp-header__actions { display: flex; align-items: center; gap: var(--space-2); margin-inline-start: auto; }
 :root[data-design="soft"] #songLibraryContent > .home-page-header .home-page-edit { min-height: 44px; min-width: 44px; padding: 0 var(--space-3); color: var(--accT); font: 600 16px var(--soft-font-ui); background: transparent; border: 0; }
 :root[data-design="soft"] #songLibraryContent > .home-page-header .home-page-back,
@@ -7550,10 +7567,10 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .tools-hub-live { display: grid; gap: var(--space-5); margin-bottom: var(--space-6); }
 :root[data-design="soft"] .tools-live { display: grid; gap: var(--space-4); padding: var(--space-6); border: 0; box-shadow: none; background: var(--panel); border-radius: var(--soft-radius-panel); }
 :root[data-design="soft"] .tools-live__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
-:root[data-design="soft"] .tools-live__title { margin: 0; font: 400 22px var(--soft-font-title); color: var(--fg); }
+:root[data-design="soft"] .tools-live__title { margin: 0; font: 600 18px var(--soft-font-title); color: var(--fg); }
 :root[data-design="soft"] .tools-live__more { min-height: 44px; min-width: 44px; padding: 0 var(--space-3); border: 0; background: transparent; color: var(--accT); font: 600 15px var(--soft-font-ui); }
 :root[data-design="soft"] .tools-live__readout { display: flex; align-items: baseline; gap: var(--space-3); }
-:root[data-design="soft"] .tools-live__readout strong { font: 400 40px var(--soft-font-title); color: var(--fg); }
+:root[data-design="soft"] .tools-live__readout strong { font-family: var(--soft-font-readout); font-weight: var(--soft-readout-weight); font-size: 32px; color: var(--fg); }
 :root[data-design="soft"] .tools-live__readout small { font: 400 14px var(--soft-font-ui); color: var(--mute); }
 /* Note, frequency and tempo read as one left-to-right unit ("C4  261.6 Hz", "96 BPM") in a Hebrew screen too, kept against the right edge; the number and its unit were swapped ("Hz 261.6"). */
 :root[data-design="soft"][dir="rtl"] .tools-live__readout { direction: ltr; justify-content: flex-end; }
@@ -7589,7 +7606,7 @@ input[type="date"]::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-
 :root[data-design="soft"] .paste-chips i { font-style: normal; padding: 4px 10px; border-radius: 999px; background: var(--panel2); }
 :root[data-design="soft"] .paste-section { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 18px 0 6px; padding: 6px 8px; border-radius: var(--soft-radius-panel); background: var(--panel2); }
 :root[data-design="soft"] .paste-section.is-off { opacity: 0.55; }
-:root[data-design="soft"] .paste-name { flex: 1 1 140px; min-width: 0; min-height: 44px; padding: 0 12px; border: 0; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); font: 400 20px var(--soft-font-title); }
+:root[data-design="soft"] .paste-name { flex: 1 1 140px; min-width: 0; min-height: 44px; padding: 0 12px; border: 0; border-radius: var(--soft-radius-control); background: var(--panel); color: var(--fg); font: 600 16px var(--soft-font-title); }
 :root[data-design="soft"] .paste-check { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex: none; }
 :root[data-design="soft"] .paste-check input, :root[data-design="soft"] .paste-remember input { width: 22px; height: 22px; accent-color: var(--acc); }
 :root[data-design="soft"] .paste-badge { padding: 3px 10px; border-radius: 999px; background: var(--panel); color: var(--mute); font: 600 12px var(--soft-font-ui); }
@@ -7672,6 +7689,17 @@ html:has(.scrim:not(.hidden)) .slp-edit-dock, body.gig-cue-open .slp-edit-dock {
 body.practice-editing .slp-edit-dock, body.practice-editing .slp-selection-popover, body.practice-editing .section-picker, body.practice-editing #textFormatMenu { z-index: 95; }
 #practiceScroll.practice-edit-host { padding: 8px 16px; }
 #practiceScroll.practice-edit-host #lyricSheet { margin: 0 auto; max-width: 900px; padding-bottom: calc(var(--writing-toolbar-inset, 0px) + var(--writing-dock-height, 52px) + 24px); }
+
+/* Event rows (soft look): a played row is dimmed with a check in place of its number (no strike-through); a text line (cue) is quiet: muted text, a small "Cue" label, no number, no key, 44px tall. */
+:root[data-design="soft"] .gig-song-reference.is-played { opacity: 0.55; background: transparent; }
+:root[data-design="soft"] .gig-song-reference.is-played .slp-row__title, :root[data-design="soft"] .gig-song-reference.is-played .t-en, :root[data-design="soft"] .gig-song-reference.is-played .t-he, :root[data-design="soft"] .gig-song-reference.is-played .t-one { text-decoration: none; }
+:root[data-design="soft"] .gig-song-reference .gig-played-tick { width: 16px; height: 16px; color: var(--acc); }
+:root[data-design="soft"] .gig-song-reference.gig-cue-reference { min-height: 44px; grid-template-rows: auto auto; padding-block: 4px; }
+:root[data-design="soft"] .gig-song-reference.gig-cue-reference .gig-cue-label { grid-area: n; justify-self: center; font: 600 10.5px var(--soft-font-ui); letter-spacing: 0.04em; text-transform: uppercase; color: var(--mute); }
+:root[data-design="soft"] .gig-song-reference.gig-cue-reference .t-one { grid-area: p; grid-column: 2 / -1; font: 400 15px var(--soft-font-ui); line-height: 20px; color: var(--mute); text-align: start; }
+:root[data-design="soft"][dir="rtl"] .gig-song-reference.gig-cue-reference .t-one { text-align: right; }
+:root[data-design="soft"] .gig-song-reference.gig-cue-reference .gig-row-note { grid-area: m; grid-column: 2 / -1; }
+:root[data-design="soft"] .gig-song-reference.gig-cue-reference:has(.gig-row-note) { min-height: 52px; }
 
 }
 
@@ -9686,7 +9714,7 @@ const REVIEW_LISTS = [REVIEW_IMPORTS, REVIEW_NO_KEY, REVIEW_ODD_KEY, REVIEW_TITL
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "53644c9a · 3aaaec1";
+const APP_BUILD = "3003fec3 · 3248b28";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -11530,6 +11558,12 @@ Object.assign(HEBREW_UI, {
 Object.assign(HEBREW_UI, {
   "Edit the lyrics": "עריכת המילים"
 });
+
+// Soft look rows: the small label on a text line.
+Object.assign(HEBREW_UI, { "Cue": "טקסט" });
+
+// Song rows: the spoken label of a row.
+Object.assign(HEBREW_UI, { "Open": "פתיחה" });
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -13178,6 +13212,30 @@ function songChartFlag(song) {
   return (song.notePictures || []).length ? `<span class="song-chart-flag" role="img" aria-label="Has a chart" title="Has a chart"><i data-lucide="file-music"></i></span>` : "";
 }
 
+// Soft look: a search result is the same row as in All Songs (title, artist, the key tag in its slot), a tap opens the song, press and hold selects.
+function softSearchSongRow(song) {
+  const item = document.createElement("article");
+  item.className = `song-item ${selectMode.active ? "selecting" : ""}`;
+  item.dataset.songId = song.id;
+  const visibleTitle = songListTitle(song);
+  item.innerHTML = `<div class="slp-row" data-sides="${songTitleSides(song)}" role="button" tabindex="0" aria-label="${escapeAttribute(t("Open"))} ${escapeAttribute(visibleTitle)}">
+    ${selectMode.active ? selectCheckMarkup() : ""}
+    <div class="slp-row__body">
+      <button class="song-title-button" type="button"><span class="slp-row__title">${songTitleMarkup(song)}</span></button>
+      ${(song.artists || []).length ? `<span class="slp-row__artists" dir="${/[\u0590-\u05FF]/.test(song.artists[0]) ? "rtl" : "ltr"}">${song.artists.map((name) => `<button class="slp-row__artist-link" type="button" dir="auto" data-artist="${escapeAttribute(name)}">${escapeHtml(name)}</button>`).join('<span class="slp-row__artist-sep">, </span>')}</span>` : ""}
+    </div>
+    ${songRowMeta(song)}
+  </div>`;
+  const row = item.querySelector(".slp-row");
+  item.querySelector(".song-title-button").addEventListener("click", (event) => { event.stopPropagation(); openSongFromSearch(song.id); });
+  item.querySelector("[data-song-key]")?.addEventListener("click", (event) => { event.stopPropagation(); openSongsByKey(songDisplayKey(song)); });
+  item.querySelectorAll("[data-artist]").forEach((link) => link.addEventListener("click", (event) => { event.stopPropagation(); openArtistSongs(link.dataset.artist); }));
+  row.addEventListener("click", () => openSongFromSearch(song.id));
+  row.addEventListener("keydown", (event) => { if (event.target === row && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); openSongFromSearch(song.id); } });
+  wireSelectableRow(item, song.id, searchSelectContext);
+  return item;
+}
+
 function renderLibrarySearchResults(rawQuery, scope = "all") {
   const query = rawQuery.toLocaleLowerCase();
   els.librarySearchResults.classList.toggle("hidden", !query);
@@ -13194,6 +13252,7 @@ function renderLibrarySearchResults(rawQuery, scope = "all") {
     return;
   }
   matches.slice(0, 50).forEach((song) => {
+    if (isSoftDesign()) { els.librarySearchSongList.append(softSearchSongRow(song)); return; }
     const button = document.createElement("button");
     button.type = "button";
     button.className = `slp-row ${selectMode.active ? "selecting" : ""}`;
@@ -13522,13 +13581,14 @@ function renderSongList(sourceSongs, isArtistView = false) {
       return;
     }
 
-    const expanded = expandedSongs.has(song.id);
+    const soft = isSoftDesign();
+    const expanded = !soft && expandedSongs.has(song.id);   // the soft look has no expanding drawer: a tap opens the song
     const folders = song.folderIds.map((id) => folderById(id)?.name).filter(Boolean).join(", ");
     const secondaryTitle = alternateDisplayTitle(song, visibleTitle);
     // The list of title-only songs also shows when each was last changed (a song has no stored "added" date).
     const reviewDate = currentFolderId === REVIEW_TITLE_ONLY ? t("Changed {date}", { date: new Date(song.updatedAt).toLocaleDateString(appLanguage === "he" ? "he-IL" : undefined, { day: "numeric", month: "short", year: "numeric" }) }) : "";
     item.innerHTML = `
-      <div class="slp-row ${selectedSongId === song.id ? "selected" : ""} ${songReorderMode ? "slp-row--editable" : ""}" data-sides="${songTitleSides(song)}" ${songReorderMode ? "" : `role="button" tabindex="0" aria-expanded="${expanded}" aria-label="${expanded ? "Hide" : "Show"} song details"`}>
+      <div class="slp-row ${selectedSongId === song.id ? "selected" : ""} ${songReorderMode ? "slp-row--editable" : ""}" data-sides="${songTitleSides(song)}" ${songReorderMode ? "" : soft ? `role="button" tabindex="0" aria-label="${escapeAttribute(t("Open"))} ${escapeAttribute(visibleTitle)}"` : `role="button" tabindex="0" aria-expanded="${expanded}" aria-label="${expanded ? "Hide" : "Show"} song details"`}>
         ${selectMode.active ? selectCheckMarkup() : ""}
         ${songReorderMode ? `<button class="slp-row__drag-handle song-grip" type="button" aria-label="Move ${escapeAttribute(song.title)}"><i data-lucide="grip-vertical"></i></button>` : ""}
         <div class="slp-row__body">
@@ -13557,10 +13617,11 @@ function renderSongList(sourceSongs, isArtistView = false) {
         renderFolder();
         refreshIcons();
       };
-      row.addEventListener("click", togglePreview);
+      const activate = soft ? () => openSong(song.id) : togglePreview;
+      row.addEventListener("click", activate);
       row.addEventListener("keydown", (event) => {
         if (event.target !== row) return;
-        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); togglePreview(); }
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); activate(); }
       });
       if (!selectMode.active) wireSwipeAction(item, row, { label: t("Add to"), icon: "folder-plus", onTrigger: () => openSongAddTo(song.id) });
       wireSelectableRow(item, song.id, folderSelectContext);
@@ -24270,10 +24331,10 @@ function gigQuickAddMarkup(attribute, name) {
 function gigCueReferenceMarkup(item, isDirect) {
   const dragHandle = (gigReorderMode || gigStructureEditMode) ? gigDragHandleMarkup("item", item.id, item.setId, `Move ${item.text}`) : "";
   const noteText = [item.gigNote, item.transitionNote && `→ ${item.transitionNote}`].filter((text) => String(text || "").trim()).join("  ");
-  const edit = selectMode.active ? "" : `<button class="slp-badge--key empty quiet gig-cue-edit" type="button" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(t("Edit this line"))}"><i data-lucide="pencil"></i></button>`;
+  const edit = selectMode.active || isSoftDesign() ? "" : `<button class="slp-badge--key empty quiet gig-cue-edit" type="button" data-gig-item-edit="${item.id}" aria-label="${escapeAttribute(t("Edit this line"))}"><i data-lucide="pencil"></i></button>`;
   const row = `<div class="slp-row gig-song-reference gig-cue-reference is-cue ${item.id === gigReadItemId ? "is-reading" : ""} ${item.performanceStatus === "played" ? "is-played" : ""} ${isDirect ? "direct" : ""} ${(gigReorderMode || gigStructureEditMode) ? "slp-row--editable" : ""} ${selectMode.active ? "selecting" : ""}" style="padding-inline-start:${isDirect ? "16px" : "28px"};" data-gig-drag-type="item" data-gig-drag-id="${item.id}" data-gig-parent-id="${item.setId}" data-gig-song-row="${item.id}" data-sides="one">
     ${selectMode.active ? selectCheckMarkup() : ""}
-    ${item.performanceStatus === "played" ? `<i class="gig-played-tick" data-lucide="check" aria-label="Played"></i>` : `<span class="gig-song-number" aria-hidden="true">•</span>`}
+    ${item.performanceStatus === "played" ? `<i class="gig-played-tick" data-lucide="check" aria-label="Played"></i>` : isSoftDesign() ? `<span class="gig-cue-label">${t("Cue")}</span>` : `<span class="gig-song-number" aria-hidden="true">•</span>`}
     <button class="gig-song-reference-main slp-row__body" type="button" data-open-gig-cue="${item.id}">
       <span class="slp-row__title"><span class="song-title-lines"><span class="t-one" dir="auto">${escapeHtml(item.text)}</span></span></span>
       ${noteText ? `<span class="gig-row-note" dir="auto"><i data-lucide="sticky-note"></i><span>${escapeHtml(noteText)}</span></span>` : ""}

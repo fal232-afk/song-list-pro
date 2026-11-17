@@ -8,7 +8,7 @@
  * keeps the app's code and icons so it can start offline. */
 "use strict";
 
-const VERSION = "2a466ec5d4ad";
+const VERSION = "bb1c677676a8";
 const SHELL_CACHE = `slp-shell-${VERSION}`;
 const RUNTIME_CACHE = "slp-runtime-v1";
 // The PDF reader (vendor/pdf*) is not precached: it is fetched the first time a PDF import needs it and kept for offline use.
@@ -21,9 +21,9 @@ const PRECACHE = [
   "./vendor/fonts/assistant-hebrew.woff2",
   "./vendor/fonts/assistant-latin-ext.woff2",
   "./vendor/fonts/assistant-latin.woff2",
-  "./vendor/fonts/bellefair-hebrew.woff2",
-  "./vendor/fonts/bellefair-latin-ext.woff2",
-  "./vendor/fonts/bellefair-latin.woff2",
+  "./vendor/fonts/playpen-hebrew.woff2",
+  "./vendor/fonts/playpen-latin-ext.woff2",
+  "./vendor/fonts/playpen-latin.woff2",
   "./icons/apple-touch-icon.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
