@@ -7656,7 +7656,22 @@ html:has(.scrim:not(.hidden)) .slp-edit-dock, body.gig-cue-open .slp-edit-dock {
 
 /* Performance on a wide screen (soft look): a centred reading column with a sensible maximum width (it grows with the type size, within limits); every line is aligned to its own direction inside it,
    and the chorus panel is as wide as the column, not the screen. On a phone the column is the whole width, as before. */
-:root[data-design="soft"] #performanceView #perfDoc { max-width: clamp(560px, 24em, 1100px); margin-inline: auto; }
+/* The song title block is in the same column, aligned with the lyrics (same width rule, from the lyric size, so the two always match). */
+:root[data-design="soft"] #performanceView #perfDoc, :root[data-design="soft"] #performanceView #perfTitle { max-width: clamp(560px, calc(var(--lyric-size, 32px) * 24), 1100px); margin-inline: auto; box-sizing: border-box; }
+
+/* Review and fix > Empty songs used only in events: the song, the events that use it, and the one action on the row. */
+:root[data-design="soft"] .review-event-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding-block: 10px; height: auto; min-height: 64px; }
+:root[data-design="soft"] .review-event-row .slp-row__body { flex: 1 1 200px; min-width: 0; }
+:root[data-design="soft"] .review-event-row .review-event-list { white-space: normal; overflow: visible; text-overflow: clip; }
+:root[data-design="soft"] .review-event-turn { flex: none; min-height: 44px; padding: 0 16px; margin-inline-start: auto; background: var(--acc); color: var(--on); border: 0; border-radius: var(--soft-radius-control); font: 600 15px var(--soft-font-ui); cursor: pointer; }
+
+/* Edit in Practice (soft look): the lyrics area of the Practice page becomes the editor, under the player, which stays on screen and running. The docked bar and its popovers sit above the page. */
+:root[data-design="soft"] .practice-edit-btn { display: inline-flex; align-items: center; justify-content: center; text-align: center; min-width: 64px; min-height: 44px; padding: 0 16px; }
+:root[data-design="soft"] .practice-edit-btn span { font: 600 14px var(--soft-font-ui); }
+.practice-edit-btn[hidden], :root[data-design="soft"] .practice-edit-btn[hidden] { display: none; }
+body.practice-editing .slp-edit-dock, body.practice-editing .slp-selection-popover, body.practice-editing .section-picker, body.practice-editing #textFormatMenu { z-index: 95; }
+#practiceScroll.practice-edit-host { padding: 8px 16px; }
+#practiceScroll.practice-edit-host #lyricSheet { margin: 0 auto; max-width: 900px; padding-bottom: calc(var(--writing-toolbar-inset, 0px) + var(--writing-dock-height, 52px) + 24px); }
 
 }
 
@@ -9671,7 +9686,7 @@ const REVIEW_LISTS = [REVIEW_IMPORTS, REVIEW_NO_KEY, REVIEW_ODD_KEY, REVIEW_TITL
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "f8e31d3e · 7a7e6f6";
+const APP_BUILD = "53644c9a · 3aaaec1";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -11496,6 +11511,24 @@ Object.assign(HEBREW_UI, {
   "Hide empty": "הסתרת הריקים",
   "Empty songs not in any event": "שירים ריקים שלא באירוע",
   "Nothing to clean up": "אין מה לנקות"
+});
+
+// Review and fix: empty songs used only in events (turn into text lines).
+Object.assign(HEBREW_UI, {
+  "Empty songs used only in events": "שירים ריקים שמופיעים רק באירועים",
+  "Turn into text line": "להפוך לשורת טקסט",
+  "Turn into text line?": "להפוך לשורת טקסט?",
+  "In {events}": "מופיע ב: {events}",
+  "“{song}” is in: {events}. In each of them the entry becomes a text line with the same title, note, place and played mark. The song stays in your library, in no event, and you can undo this.": "״{song}״ מופיע ב: {events}. בכל אחד מהם הרשומה הופכת לשורת טקסט עם אותה כותרת, הערה, מקום וסימון ביצוע. השיר עצמו נשאר בספרייה, בלי אירוע, אפשר לבטל.",
+  "No empty song is used only in events.": "אין שירים ריקים שמופיעים רק באירועים.",
+  "1 entry turned into a text line": "רשומה אחת הפכה לשורת טקסט",
+  "{n} entries turned into text lines": "{n} רשומות הפכו לשורות טקסט",
+  "Undone": "בוטל"
+});
+
+// Edit in Practice.
+Object.assign(HEBREW_UI, {
+  "Edit the lyrics": "עריכת המילים"
 });
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
@@ -16319,7 +16352,7 @@ function setSongEditMode(editing) {
   updateWritingToolbarPosition();
   if (editing) refreshIcons();
   // Back to viewing: draw the chords above the words again (edit mode shows the raw [Am] text).
-  if (wasEditing && !editing) rerenderSongDocument();
+  if (wasEditing && !editing) { rerenderSongDocument(); if (typeof endPracticeEditing === "function") endPracticeEditing(); }
 }
 
 function beginSongEdit(event) {
@@ -16552,6 +16585,7 @@ function updateWritingToolbarPosition() {
     ? Math.max(0, layoutHeight - viewport.height - viewport.offsetTop)
     : 0;
   els.app.style.setProperty("--writing-toolbar-inset", `${Math.round(keyboardInset)}px`);
+  els.practiceView?.style?.setProperty?.("--writing-toolbar-inset", `${Math.round(keyboardInset)}px`);   // the lyrics editor can sit inside the Practice page (outside the app)
   placeEditDockInPane(keyboardInset);
   syncSoftDock(keyboardInset);
 }
@@ -16591,6 +16625,7 @@ function syncSoftDock(keyboardInset = null) {
   dock.classList.toggle("kb-open", keyboardInset > 100);
   dock.dataset.mode = menu.hidden ? "tools" : "format";
   els.app.style.setProperty("--writing-dock-height", dock.classList.contains("hidden") ? "0px" : `${Math.round(dock.getBoundingClientRect().height)}px`);
+  els.practiceView?.style?.setProperty?.("--writing-dock-height", dock.classList.contains("hidden") ? "0px" : `${Math.round(dock.getBoundingClientRect().height)}px`);
 }
 
 function showSoftDockFormat() {
@@ -16612,7 +16647,7 @@ function keepCaretAboveDock() {
   if (!rect.height) { const node = selection.anchorNode.nodeType === 1 ? selection.anchorNode : selection.anchorNode.parentElement; rect = node?.getBoundingClientRect?.() || rect; }
   const viewport = globalThis.visualViewport;
   const bottomEdge = Math.min(els.writingToolbar.getBoundingClientRect().top, viewport ? viewport.offsetTop + viewport.height : Infinity) - 12;
-  if (rect.bottom > bottomEdge) (document.getElementById("songPane") || els.lyricSheet).scrollTop += rect.bottom - bottomEdge;
+  if (rect.bottom > bottomEdge) (els.lyricSheet.closest(".practice-edit-host") || document.getElementById("songPane") || els.lyricSheet).scrollTop += rect.bottom - bottomEdge;
 }
 
 // On tablets and desktops the lyrics sit in a column beside the lists, so the pencil is placed against
@@ -16621,9 +16656,9 @@ function placeEditDockInPane(keyboardInset) {
   const dock = els.writingToolbar;
   const sheet = els.lyricSheet.getBoundingClientRect();
   const nav = els.primaryNav?.getBoundingClientRect();
-  const navShown = nav && nav.height > 0 && getComputedStyle(els.primaryNav).display !== "none";
+  const navShown = !practiceEditing && nav && nav.height > 0 && getComputedStyle(els.primaryNav).display !== "none";
   // Beside the lists (a tablet, or a foldable opened flat) the lyrics are a column, not the whole screen.
-  const wide = sheet.width > 0 && (globalThis.innerWidth > 900 || sheet.left > 8);
+  const wide = sheet.width > 0 && (globalThis.innerWidth > 900 || (sheet.left > 8 && !practiceEditing));   // on a phone the bar is full width, also over Practice
   const edge = isSoftDesign() ? 0 : 16;   // the soft bar is flush with the column, no gap around it
   dock.style.setProperty("--dock-left", wide ? `${Math.round(sheet.left + edge)}px` : "");
   dock.style.setProperty("--dock-right", wide ? `${Math.round(globalThis.innerWidth - sheet.right + edge)}px` : "");
@@ -21962,6 +21997,7 @@ function switchPracticeSource(kind) {
 
 function closePractice() {
   if (!practiceActive) return;
+  if (practiceEditing) { hideWritingToolbar(); endPracticeEditing(); }
   stopPracticeEngine();
   closePracticeKey();                       // the microphone and the Key sheet go with the page
   practiceActive = false;
@@ -22002,6 +22038,65 @@ function renderPracticeView() {
   fitPracticeTitle();
   const youtube = practiceSources(song).find((source) => source.kind === "youtube");
   if (youtube) els.practiceOpenExternal.href = youtube.url;
+  syncPracticeEditButton();
+}
+
+// ---------- Edit in Practice (soft look) ----------
+// An Edit button on the Practice page turns the lyrics area into the lyric and chord editor (the same editor, with its docked bar), right under the player. The player stays where it is, on screen and running
+// (the video, the transport, the position and the loop are never touched), so lyrics can be fixed or typed while listening, and a song that has a track but no lyrics yet can be written there.
+// Done puts the editor back in the song page and shows the saved lyrics under the player again. Nothing is stored: the editor saves the song as it always does.
+let practiceEditing = null;      // { songId, home } while the editor is open inside Practice
+let practiceEditHome = null;
+
+function syncPracticeEditButton() {
+  let button = document.getElementById("practiceEditBtn");
+  if (!isSoftDesign()) { button?.remove(); return; }
+  if (!button) {
+    button = document.createElement("button");
+    button.id = "practiceEditBtn";
+    button.className = "perf-btn practice-edit-btn";
+    button.type = "button";
+    button.innerHTML = "<span></span>";   // text only, centred
+    button.addEventListener("click", editInPractice);
+    els.practiceFindBtn.after(button);
+  }
+  button.querySelector("span").textContent = t("Edit");
+  button.setAttribute("aria-label", t("Edit the lyrics"));
+  button.hidden = Boolean(practiceEditing);      // while editing, the docked bar's Done is the way back
+}
+
+function editInPractice() {
+  if (!practiceActive || practiceEditing) return;
+  const song = state.songs.find((item) => item.id === practiceSongId);
+  if (!song) return;
+  if (songIsLocked(song)) { notifyViewOnly(); return; }
+  if (selectedSongId !== song.id) selectedSongId = song.id;
+  practiceEditing = { songId: song.id };
+  // The editor's sheet moves into the lyrics area of this page, in place of the read-only lyrics.
+  practiceEditHome = { parent: els.lyricSheet.parentElement, next: els.lyricSheet.nextSibling };
+  els.practiceDoc.style.display = "none";
+  els.practiceScroll.classList.add("practice-edit-host");
+  els.practiceScroll.append(els.lyricSheet);
+  document.body.classList.add("practice-editing");
+  els.practiceView.classList.add("is-editing");
+  syncPracticeEditButton();
+  beginSongEdit();
+  placeEditDock();
+  els.practiceScroll.scrollTop = 0;
+}
+
+// Back from the editor (Done, or any other way out of editing): the sheet goes home, Practice shows the saved lyrics. The player was never touched.
+function endPracticeEditing() {
+  if (!practiceEditing) return;
+  practiceEditing = null;
+  if (practiceEditHome) { practiceEditHome.parent.insertBefore(els.lyricSheet, practiceEditHome.next); practiceEditHome = null; }
+  els.practiceScroll.classList.remove("practice-edit-host");
+  els.practiceDoc.style.display = "";
+  document.body.classList.remove("practice-editing");
+  els.practiceView.classList.remove("is-editing");
+  if (!practiceActive) return;
+  renderPracticeView();
+  refreshIcons();
 }
 
 function initPracticeUi() {
@@ -22638,7 +22733,8 @@ const REVIEW_ROWS = [
   ["reviewImportsBtn", "clipboard-check", "Imports to review"],
   ["reviewNoKeyBtn", "music", "Songs without a key"],
   ["reviewOddKeyBtn", "key-round", "Songs with an unusual key"],
-  ["reviewTitleOnlyBtn", "file-text", "Empty songs not in any event"]
+  ["reviewTitleOnlyBtn", "file-text", "Empty songs not in any event"],
+  ["reviewInEventsBtn", "calendar-days", "Empty songs used only in events"]
 ];
 let reviewShowAll = false;
 
@@ -22646,12 +22742,12 @@ function reviewCounts() {
   const n = (test) => state.songs.filter(test).length;
   return {
     reviewUnfiledBtn: n(songIsUnfiled), reviewDuplicatesBtn: duplicateCount(), reviewImportsBtn: n(REVIEW_TESTS[REVIEW_IMPORTS]), reviewNoKeyBtn: n(REVIEW_TESTS[REVIEW_NO_KEY]),
-    reviewOddKeyBtn: n(REVIEW_TESTS[REVIEW_ODD_KEY]), reviewTitleOnlyBtn: titleOnlyUnusedSongs().length
+    reviewOddKeyBtn: n(REVIEW_TESTS[REVIEW_ODD_KEY]), reviewTitleOnlyBtn: titleOnlyUnusedSongs().length, reviewInEventsBtn: titleOnlySongsSplit().inEvents.length
   };
 }
 
 function reviewGo(id) {
-  const go = { reviewUnfiledBtn: () => openReviewList(UNFILED), reviewDuplicatesBtn: () => document.getElementById("openDuplicatesBtn").click(), reviewImportsBtn: () => openReviewList(REVIEW_IMPORTS), reviewNoKeyBtn: () => openReviewList(REVIEW_NO_KEY), reviewOddKeyBtn: () => openReviewList(REVIEW_ODD_KEY), reviewTitleOnlyBtn: () => openReviewList(REVIEW_TITLE_ONLY) };
+  const go = { reviewUnfiledBtn: () => openReviewList(UNFILED), reviewDuplicatesBtn: () => document.getElementById("openDuplicatesBtn").click(), reviewImportsBtn: () => openReviewList(REVIEW_IMPORTS), reviewNoKeyBtn: () => openReviewList(REVIEW_NO_KEY), reviewOddKeyBtn: () => openReviewList(REVIEW_ODD_KEY), reviewTitleOnlyBtn: () => openReviewList(REVIEW_TITLE_ONLY), reviewInEventsBtn: () => openEmptyInEventsPage() };
   go[id]?.();
 }
 
@@ -23051,6 +23147,142 @@ async function refreshBackupStatus() {
   els.storageStatusText.textContent = persisted === true
     ? t("Your browser has agreed to keep this app's storage. Backups are still the best protection.")
     : t("Your songs are saved on this device. If you clear this site's data or delete the app, they are gone, so keep a backup.");
+}
+// Settings > Review and fix > "Empty songs used only in events" (soft look). A song that is only a title (no lyrics, key, link, picture, note ...) and is used by events and nothing else.
+// Each row shows the song and the events that use it. "Turn into text line" replaces each of its event entries with a text line (same title, note, place and played mark); the song is then in no event, so it
+// shows in "Empty songs not in any event" and can be deleted from there. Nothing is pre-selected, there is no bulk action, one confirm names the events that change, and Undo puts back the entries and the song.
+// No new stored field: a text line is the optional `text` of an event entry.
+
+let emptyInEventsUndo = null;
+let emptyInEventsUndoTimer = null;
+
+// Where a song is used: [{ gig, sections: [names] }] in event order.
+function gigsUsingSong(songId) {
+  const out = new Map();
+  state.gigSetItems.filter((item) => item.songId === songId).forEach((item) => {
+    const set = state.gigSets.find((candidate) => candidate.id === item.setId);
+    const section = set && state.gigSections.find((candidate) => candidate.id === set.sectionId);
+    const gig = section && state.gigs.find((candidate) => candidate.id === section.gigId);
+    if (!gig) return;
+    if (!out.has(gig.id)) out.set(gig.id, { gig, sections: [] });
+    if (!out.get(gig.id).sections.includes(section.name)) out.get(gig.id).sections.push(section.name);
+  });
+  return [...out.values()];
+}
+
+function emptyInEventsText(songId) {
+  return gigsUsingSong(songId).map(({ gig, sections }) => `${gigDisplayName(gig)}${sections.length ? ` (${sections.join(", ")})` : ""}`).join("; ");
+}
+
+function openEmptyInEventsPage() {
+  ensureEmptyInEventsPage();
+  renderEmptyInEventsPage();
+  showSettingsPage("reviewEmptyEventsView");
+}
+
+function ensureEmptyInEventsPage() {
+  if (document.getElementById("reviewEmptyEventsView")) return;
+  const page = document.createElement("div");
+  page.id = "reviewEmptyEventsView";
+  page.className = "settings-page hidden";
+  page.innerHTML = `<header class="slp-header"><button id="backFromEmptyEventsBtn" class="slp-btn slp-btn--icon" type="button"><svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="slp-header__titles"><h2 class="slp-header__title"></h2><p class="slp-subtitle"></p></div></header><div id="emptyEventsBody" class="settings-page__body"></div>`;
+  (document.getElementById("reviewFixView") || els.settingsMainView).after(page);
+  document.getElementById("backFromEmptyEventsBtn").addEventListener("click", () => { renderReviewFixPage(); showSettingsPage("reviewFixView"); });
+  document.getElementById("emptyEventsBody").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-turn-song]");
+    if (button) requestTurnIntoTextLines(button.dataset.turnSong);
+  });
+}
+
+function renderEmptyInEventsPage() {
+  const page = document.getElementById("reviewEmptyEventsView");
+  if (!page) return;
+  const songs = titleOnlySongsSplit().inEvents;
+  page.querySelector(".slp-header__back").closest("button").setAttribute("aria-label", t("Back"));
+  page.querySelector(".slp-header__title").textContent = t("Empty songs used only in events");
+  page.querySelector(".slp-subtitle").textContent = songs.length ? `${songs.length} ${t(songs.length === 1 ? "song" : "songs")}` : t("None");
+  document.getElementById("emptyEventsBody").innerHTML = songs.length
+    ? `<section class="slp-card">${songs.map((song) => `<div class="slp-row review-event-row" data-song-row="${escapeAttribute(song.id)}"><span class="slp-row__body"><span class="slp-row__title" dir="auto">${escapeHtml(song.title)}</span>${song.artist ? `<span class="slp-row__subtitle" dir="auto">${escapeHtml(song.artist)}</span>` : ""}<span class="slp-row__subtitle review-event-list" dir="auto">${escapeHtml(t("In {events}", { events: emptyInEventsText(song.id) }))}</span></span><button type="button" class="slp-btn review-event-turn" data-turn-song="${escapeAttribute(song.id)}">${escapeHtml(t("Turn into text line"))}</button></div>`).join("")}</section>`
+    : `<p class="review-fix-clear">${escapeHtml(t("No empty song is used only in events."))}</p>`;
+}
+
+function requestTurnIntoTextLines(songId) {
+  const song = titleOnlySongsSplit().inEvents.find((candidate) => candidate.id === songId);   // only a song that is still empty and used only by events
+  if (!song) { renderEmptyInEventsPage(); return; }
+  const backToPage = () => { showOverlay(els.settingsSheet); renderReviewFixPage(); renderEmptyInEventsPage(); showSettingsPage("reviewEmptyEventsView"); };
+  // Cancelling the confirm returns to this page (the confirm closes Settings behind it): the listener belongs to this confirm only.
+  const onCancel = () => { els.confirmCancelBtn.removeEventListener("click", onCancel); if (els.confirmTitle.textContent === t("Turn into text line?")) setTimeout(backToPage, 0); };
+  els.confirmCancelBtn.addEventListener("click", onCancel);
+  openConfirm("Turn into text line?", t("“{song}” is in: {events}. In each of them the entry becomes a text line with the same title, note, place and played mark. The song stays in your library, in no event, and you can undo this.", { song: song.title, events: emptyInEventsText(song.id) }), "Turn into text line", () => {
+    els.confirmCancelBtn.removeEventListener("click", onCancel);
+    turnSongIntoTextLines(song.id);
+    closeOverlays();
+    backToPage();
+  });
+}
+
+function turnSongIntoTextLines(songId) {
+  const song = state.songs.find((candidate) => candidate.id === songId);
+  if (!song) return 0;
+  const clone = (value) => JSON.parse(JSON.stringify(value));
+  const items = state.gigSetItems.filter((item) => item.songId === songId);
+  emptyInEventsUndo = { song: clone(song), items: items.map(clone), orders: clone(state.songOrder) };
+  const now = new Date().toISOString();
+  items.forEach((item) => {
+    // A key chosen for this event is kept in the text, so nothing is lost.
+    item.text = item.keyOverride ? `${song.title} (${item.keyOverride})` : song.title;
+    item.songId = "";
+    item.keyOverride = "";
+    item.updatedAt = now;
+  });
+  persist();
+  render();
+  showEmptyInEventsUndoBar(items.length);
+  return items.length;
+}
+
+function showEmptyInEventsUndoBar(count) {
+  let bar = document.getElementById("emptyEventsUndoBar");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "emptyEventsUndoBar"; bar.className = "paste-undo-bar"; bar.setAttribute("role", "status");
+    bar.innerHTML = `<span id="emptyEventsUndoText"></span><button id="emptyEventsUndoBtn" class="slp-btn paste-btn" type="button"></button>`;
+    document.body.append(bar);
+    bar.querySelector("button").addEventListener("click", undoTurnIntoTextLines);
+  }
+  document.getElementById("emptyEventsUndoText").textContent = count === 1 ? t("1 entry turned into a text line") : t("{n} entries turned into text lines", { n: count });
+  document.getElementById("emptyEventsUndoBtn").textContent = t("Undo");
+  bar.hidden = false;
+  clearTimeout(emptyInEventsUndoTimer);
+  emptyInEventsUndoTimer = setTimeout(hideEmptyInEventsUndoBar, 15000);
+}
+
+function hideEmptyInEventsUndoBar() {
+  clearTimeout(emptyInEventsUndoTimer);
+  const bar = document.getElementById("emptyEventsUndoBar");
+  if (bar) bar.hidden = true;
+}
+
+// Puts back exactly the entries that were turned into text lines, and the song itself if it was deleted since.
+function undoTurnIntoTextLines() {
+  const record = emptyInEventsUndo;
+  hideEmptyInEventsUndoBar();
+  if (!record) return;
+  emptyInEventsUndo = null;
+  if (!state.songs.some((song) => song.id === record.song.id)) {
+    state.songs.unshift(record.song);
+    Object.keys(record.orders).forEach((key) => { if (Array.isArray(state.songOrder[key]) && !state.songOrder[key].includes(record.song.id) && record.orders[key].includes(record.song.id)) state.songOrder[key].unshift(record.song.id); });
+    ensureOrder(state.songOrder, ALL_SONGS, state.songs.map((song) => song.id));
+  }
+  record.items.forEach((original) => {
+    const index = state.gigSetItems.findIndex((item) => item.id === original.id);
+    if (index >= 0) state.gigSetItems[index] = original;
+    else if (state.gigSets.some((set) => set.id === original.setId)) state.gigSetItems.push(original);
+  });
+  persist();
+  render();
+  showToast("Undone");
+  if (document.getElementById("reviewEmptyEventsView") && !document.getElementById("reviewEmptyEventsView").classList.contains("hidden")) renderEmptyInEventsPage();
 }
 // Safe restore and safe start.
 //   * Before a restore replaces the library, the current one is saved as an undo copy
@@ -32413,14 +32645,18 @@ function songHasAnyContent(song) {
     || (song.blocks || []).some((block) => block.type === "image" && block.src);
 }
 
+// The title-only songs (see songHasAnyContent) that are in no set template and no board column, split by whether an event uses them.
+function titleOnlySongsSplit() {
+  const inEvent = new Set(), blocked = new Set();
+  state.gigSetItems.forEach((item) => { if (item.songId) inEvent.add(item.songId); });
+  state.setTemplateItems.forEach((item) => blocked.add(item.songId));
+  (state.boards || []).forEach((board) => (board.columns || []).forEach((column) => { if (column.type !== "needs") boardSongsForColumn(column).forEach((song) => blocked.add(song.id)); }));
+  const empty = state.songs.filter((song) => songNeedsLyrics(song) && !blocked.has(song.id) && !songHasAnyContent(song)).sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+  return { unused: empty.filter((song) => !inEvent.has(song.id)), inEvents: empty.filter((song) => inEvent.has(song.id)) };
+}
+
 function titleOnlyUnusedSongs() {
-  const used = new Set();
-  state.gigSetItems.forEach((item) => { if (item.songId) used.add(item.songId); });
-  state.setTemplateItems.forEach((item) => used.add(item.songId));
-  (state.boards || []).forEach((board) => (board.columns || []).forEach((column) => { if (column.type !== "needs") boardSongsForColumn(column).forEach((song) => used.add(song.id)); }));
-  return state.songs
-    .filter((song) => songNeedsLyrics(song) && !used.has(song.id) && !songHasAnyContent(song))
-    .sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+  return titleOnlySongsSplit().unused;
 }
 
 function songNeedsLyrics(song) {

@@ -8,7 +8,7 @@
  * keeps the app's code and icons so it can start offline. */
 "use strict";
 
-const VERSION = "14e16a7c5c02";
+const VERSION = "2a466ec5d4ad";
 const SHELL_CACHE = `slp-shell-${VERSION}`;
 const RUNTIME_CACHE = "slp-runtime-v1";
 // The PDF reader (vendor/pdf*) is not precached: it is fetched the first time a PDF import needs it and kept for offline use.
