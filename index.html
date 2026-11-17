@@ -7701,6 +7701,69 @@ body.practice-editing .slp-edit-dock, body.practice-editing .slp-selection-popov
 :root[data-design="soft"] .gig-song-reference.gig-cue-reference .gig-row-note { grid-area: m; grid-column: 2 / -1; }
 :root[data-design="soft"] .gig-song-reference.gig-cue-reference:has(.gig-row-note) { min-height: 52px; }
 
+/* Find on YouTube / Paste YouTube link (soft look): a labelled chip on the song page and a labelled button on the Practice page, both 44px tall. */
+:root[data-design="soft"] .song-chip-row > .song-find-youtube { min-height: 44px; padding-inline: 14px; display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+:root[data-design="soft"] .song-chip-row > .song-find-youtube[hidden] { display: none; }
+:root[data-design="soft"] #practiceView .practice-find-labeled { display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 0 0 auto; width: auto; max-width: none; min-width: 44px; min-height: 44px; padding: 0 12px; overflow: visible; }
+:root[data-design="soft"] #practiceView .practice-find-labeled[hidden] { display: none; }
+:root[data-design="soft"] .practice-find-labeled span { font: 600 14px var(--soft-font-ui); white-space: nowrap; }
+
+/* YouTube search settings (soft look): the key page and the how-to page. */
+:root[data-design="soft"] .yt-settings-body, :root[data-design="soft"] .yt-howto-body { gap: 16px; }
+:root[data-design="soft"] .yt-settings-info { margin: 0; color: var(--mute); font: 400 14px/1.45 var(--soft-font-ui); }
+:root[data-design="soft"] .yt-key-card { padding: 12px 16px 14px; display: grid; gap: 8px; }
+:root[data-design="soft"] .yt-key-label { font: 700 13px var(--soft-font-ui); color: var(--mute); }
+:root[data-design="soft"] .yt-key-line { display: flex; gap: 8px; align-items: center; }
+:root[data-design="soft"] .yt-key-line .slp-input { flex: 1; min-width: 0; min-height: 44px; }
+:root[data-design="soft"] .yt-key-save { min-height: 44px; flex: none; }
+:root[data-design="soft"] .yt-key-status { margin: 0; color: var(--mute); font: 400 13px var(--soft-font-ui); }
+:root[data-design="soft"] .yt-key-result { margin: 0; min-height: 20px; font: 600 14px/1.45 var(--soft-font-ui); color: var(--fg); overflow-wrap: anywhere; }
+:root[data-design="soft"] .yt-steps { margin: 0; padding-inline-start: 22px; display: grid; gap: 14px; }
+:root[data-design="soft"] .yt-steps li { font: 400 15px/1.45 var(--soft-font-ui); }
+:root[data-design="soft"] .yt-steps li strong { display: block; font-weight: 700; margin-bottom: 2px; }
+:root[data-design="soft"] .yt-steps li span { color: var(--mute); overflow-wrap: anywhere; }
+:root[data-design="soft"] .yt-notes { margin: 0; padding-inline-start: 20px; display: grid; gap: 8px; color: var(--mute); font: 400 14px/1.45 var(--soft-font-ui); }
+
+/* Find on YouTube search sheet (soft look): full height over the song page or the Practice page. The player (Use this / Back to results) sits under the query line. */
+body.yt-sheet-open { overflow: hidden; }
+#ytSearchSheet { display: none; }
+:root[data-design="soft"] #ytSearchSheet:not([hidden]):not(.hidden) { display: flex; flex-direction: column; position: fixed; inset: 0; z-index: 120; background: var(--bg); color: var(--fg); font-family: var(--soft-font-ui); }
+:root[data-design="soft"] .yt-sheet__bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 8px 0 16px; padding-top: max(8px, env(safe-area-inset-top)); }
+:root[data-design="soft"] .yt-sheet__title { margin: 0; font: 700 20px/1.2 var(--soft-font-ui); }
+:root[data-design="soft"] .yt-sheet__close { flex: none; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent; color: var(--fg); border-radius: 50%; cursor: pointer; }
+:root[data-design="soft"] .yt-sheet__query { display: flex; gap: 8px; padding: 8px 16px; }
+:root[data-design="soft"] .yt-sheet__query .slp-input { flex: 1; min-width: 0; min-height: 44px; }
+:root[data-design="soft"] .yt-sheet__query .slp-btn { flex: none; min-height: 44px; min-width: 44px; padding: 0 16px; }
+:root[data-design="soft"] .yt-sheet__meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 4px 16px 8px; color: var(--mute); font: 600 13px var(--soft-font-ui); }
+:root[data-design="soft"] .yt-sheet__body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 0 16px calc(24px + env(safe-area-inset-bottom)); display: grid; align-content: start; gap: 12px; }
+:root[data-design="soft"] .yt-result { display: flex; align-items: flex-start; gap: 12px; min-height: 64px; padding: 6px 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; width: 100%; }
+:root[data-design="soft"] .yt-result__thumb { position: relative; flex: none; width: 128px; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: var(--panel); }
+:root[data-design="soft"] .yt-result__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+:root[data-design="soft"] .yt-result__time { position: absolute; inset-inline-end: 4px; bottom: 4px; padding: 1px 5px; border-radius: 4px; background: rgba(0, 0, 0, 0.78); color: #fff; font: 600 12px var(--soft-font-ui); }
+:root[data-design="soft"] .yt-result__text { flex: 1; min-width: 0; display: grid; gap: 2px; }
+:root[data-design="soft"] .yt-result__title { font: 600 15px/1.3 var(--soft-font-ui); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+:root[data-design="soft"] .yt-result__channel { font: 400 13px/1.3 var(--soft-font-ui); color: var(--mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-design="soft"] .yt-sheet__more { justify-self: center; min-height: 44px; margin-top: 8px; padding: 0 20px; }
+:root[data-design="soft"] .yt-sheet__note { margin: 16px 0; color: var(--mute); font: 400 15px var(--soft-font-ui); text-align: center; }
+:root[data-design="soft"] .yt-sheet__message { display: grid; gap: 10px; padding: 12px 0; font: 400 15px/1.45 var(--soft-font-ui); }
+:root[data-design="soft"] .yt-sheet__message p { margin: 0; }
+:root[data-design="soft"] .yt-sheet__detail { color: var(--mute); font-size: 13px; overflow-wrap: anywhere; }
+:root[data-design="soft"] .yt-sheet__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+:root[data-design="soft"] .yt-sheet__actions .slp-btn { min-height: 44px; padding: 0 16px; }
+
+/* The preview in the search sheet: YouTube's own player at the top, then Use this and Back to results; the other results stay listed below. */
+:root[data-design="soft"] .yt-sheet__player { display: grid; gap: 8px; padding: 4px 16px 8px; justify-items: center; }
+:root[data-design="soft"] .yt-sheet__player[hidden] { display: none; }
+:root[data-design="soft"] .yt-sheet__video { width: min(100%, calc(36vh * 16 / 9)); aspect-ratio: 16 / 9; background: #000; border-radius: 8px; overflow: hidden; }
+:root[data-design="soft"] .yt-sheet__video iframe { width: 100%; height: 100%; border: 0; display: block; }
+:root[data-design="soft"] .yt-sheet__player .yt-sheet__detail { margin: 0; min-height: 0; }
+:root[data-design="soft"] .yt-sheet__player .yt-sheet__detail:empty { display: none; }
+:root[data-design="soft"] .yt-sheet__playeractions { justify-content: center; width: 100%; }
+:root[data-design="soft"] .yt-sheet__playeractions .slp-btn { flex: 1 1 140px; max-width: 240px; }
+:root[data-design="soft"] .yt-result.is-previewing { background: var(--accent-soft); border-radius: 10px; }
+:root[data-design="soft"] #ytSearchSheet > * { width: 100%; max-width: 900px; margin-inline: auto; box-sizing: border-box; }
+:root[data-design="soft"] .yt-addr { white-space: nowrap; }
+
 }
 
 </style>
@@ -9661,10 +9724,10 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 //# sourceMappingURL=tesseract.min.js.map
 </script>
     <script>
-/* Song List Pro icons: 166 lucide icons (ISC license, https://lucide.dev), generated by build-icons.cjs. */
+/* Song List Pro icons: 167 lucide icons (ISC license, https://lucide.dev), generated by build-icons.cjs. */
 (function () {
   "use strict";
-  var ICONS = {"album":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["polyline",{"points":"11 3 11 11 14 8 17 11 17 3"}]],"align-center":[["path",{"d":"M21 5H3"}],["path",{"d":"M17 12H7"}],["path",{"d":"M19 19H5"}]],"align-left":[["path",{"d":"M21 5H3"}],["path",{"d":"M15 12H3"}],["path",{"d":"M17 19H3"}]],"align-right":[["path",{"d":"M21 5H3"}],["path",{"d":"M21 12H9"}],["path",{"d":"M21 19H7"}]],"archive":[["rect",{"width":"20","height":"5","x":"2","y":"3","rx":"1"}],["path",{"d":"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"}],["path",{"d":"M10 12h4"}]],"archive-restore":[["rect",{"width":"20","height":"5","x":"2","y":"3","rx":"1"}],["path",{"d":"M4 8v11a2 2 0 0 0 2 2h2"}],["path",{"d":"M20 8v11a2 2 0 0 1-2 2h-2"}],["path",{"d":"m9 15 3-3 3 3"}],["path",{"d":"M12 12v9"}]],"arrow-down-a-z":[["path",{"d":"m3 16 4 4 4-4"}],["path",{"d":"M7 20V4"}],["path",{"d":"M20 8h-5"}],["path",{"d":"M15 10V6.5a2.5 2.5 0 0 1 5 0V10"}],["path",{"d":"M15 14h5l-5 6h5"}]],"arrow-down-up":[["path",{"d":"m3 16 4 4 4-4"}],["path",{"d":"M7 20V4"}],["path",{"d":"m21 8-4-4-4 4"}],["path",{"d":"M17 4v16"}]],"arrow-left":[["path",{"d":"m12 19-7-7 7-7"}],["path",{"d":"M19 12H5"}]],"arrow-up-down":[["path",{"d":"m21 16-4 4-4-4"}],["path",{"d":"M17 20V4"}],["path",{"d":"m3 8 4-4 4 4"}],["path",{"d":"M7 4v16"}]],"audio-lines":[["path",{"d":"M2 10v3"}],["path",{"d":"M6 6v11"}],["path",{"d":"M10 3v18"}],["path",{"d":"M14 8v7"}],["path",{"d":"M18 5v13"}],["path",{"d":"M22 10v3"}]],"badge-check":[["path",{"d":"M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"}],["path",{"d":"m9 12 2 2 4-4"}]],"bold":[["path",{"d":"M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"}]],"bookmark":[["path",{"d":"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"}]],"bookmark-plus":[["path",{"d":"M12 7v6"}],["path",{"d":"M15 10H9"}],["path",{"d":"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"}]],"box":[["path",{"d":"M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"}],["path",{"d":"m3.3 7 8.7 5 8.7-5"}],["path",{"d":"M12 22V12"}]],"calendar":[["path",{"d":"M8 2v4"}],["path",{"d":"M16 2v4"}],["rect",{"width":"18","height":"18","x":"3","y":"4","rx":"2"}],["path",{"d":"M3 10h18"}]],"calendar-days":[["path",{"d":"M8 2v4"}],["path",{"d":"M16 2v4"}],["rect",{"width":"18","height":"18","x":"3","y":"4","rx":"2"}],["path",{"d":"M3 10h18"}],["path",{"d":"M8 14h.01"}],["path",{"d":"M12 14h.01"}],["path",{"d":"M16 14h.01"}],["path",{"d":"M8 18h.01"}],["path",{"d":"M12 18h.01"}],["path",{"d":"M16 18h.01"}]],"calendar-plus":[["path",{"d":"M16 19h6"}],["path",{"d":"M16 2v4"}],["path",{"d":"M19 16v6"}],["path",{"d":"M21 12.598V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8.5"}],["path",{"d":"M3 10h18"}],["path",{"d":"M8 2v4"}]],"camera":[["path",{"d":"M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"}],["circle",{"cx":"12","cy":"13","r":"3"}]],"check":[["path",{"d":"M20 6 9 17l-5-5"}]],"check-circle-2":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"m9 12 2 2 4-4"}]],"chevron-down":[["path",{"d":"m6 9 6 6 6-6"}]],"chevron-left":[["path",{"d":"m15 18-6-6 6-6"}]],"chevron-right":[["path",{"d":"m9 18 6-6-6-6"}]],"chevron-up":[["path",{"d":"m18 15-6-6-6 6"}]],"circle-play":[["path",{"d":"M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"}],["circle",{"cx":"12","cy":"12","r":"10"}]],"clipboard-check":[["rect",{"width":"8","height":"4","x":"8","y":"2","rx":"1","ry":"1"}],["path",{"d":"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"}],["path",{"d":"m9 14 2 2 4-4"}]],"clipboard-paste":[["path",{"d":"M11 14h10"}],["path",{"d":"M16 4h2a2 2 0 0 1 2 2v1.344"}],["path",{"d":"m17 18 4-4-4-4"}],["path",{"d":"M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113"}],["rect",{"x":"8","y":"2","width":"8","height":"4","rx":"1"}]],"clock-3":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 6v6h4"}]],"cloud-upload":[["path",{"d":"M12 13v8"}],["path",{"d":"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"}],["path",{"d":"m8 17 4-4 4 4"}]],"columns-3":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"columns-4":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M7.5 3v18"}],["path",{"d":"M12 3v18"}],["path",{"d":"M16.5 3v18"}]],"copy":[["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"copy-check":[["path",{"d":"m12 15 2 2 4-4"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"copy-plus":[["line",{"x1":"15","x2":"15","y1":"12","y2":"18"}],["line",{"x1":"12","x2":"18","y1":"15","y2":"15"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"crop":[["path",{"d":"M6 2v14a2 2 0 0 0 2 2h14"}],["path",{"d":"M18 22V8a2 2 0 0 0-2-2H2"}]],"delete":[["path",{"d":"M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"}],["path",{"d":"m12 9 6 6"}],["path",{"d":"m18 9-6 6"}]],"download":[["path",{"d":"M12 15V3"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["path",{"d":"m7 10 5 5 5-5"}]],"edit":[["path",{"d":"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{"d":"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]],"eraser":[["path",{"d":"M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21"}],["path",{"d":"m5.082 11.09 8.828 8.828"}]],"expand":[["path",{"d":"m15 15 6 6"}],["path",{"d":"m15 9 6-6"}],["path",{"d":"M21 16v5h-5"}],["path",{"d":"M21 8V3h-5"}],["path",{"d":"M3 16v5h5"}],["path",{"d":"m3 21 6-6"}],["path",{"d":"M3 8V3h5"}],["path",{"d":"M9 9 3 3"}]],"external-link":[["path",{"d":"M15 3h6v6"}],["path",{"d":"M10 14 21 3"}],["path",{"d":"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}]],"eye-off":[["path",{"d":"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}],["path",{"d":"M14.084 14.158a3 3 0 0 1-4.242-4.242"}],["path",{"d":"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}],["path",{"d":"m2 2 20 20"}]],"file":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}]],"file-down":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M12 18v-6"}],["path",{"d":"m9 15 3 3 3-3"}]],"file-music":[["path",{"d":"M11.65 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v10.35"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M8 20v-7l3 1.474"}],["circle",{"cx":"6","cy":"20","r":"2"}]],"file-pen-line":[["path",{"d":"M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"}],["path",{"d":"M14.487 7.858A1 1 0 0 1 14 7V2"}],["path",{"d":"M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"}],["path",{"d":"M8 18h1"}]],"file-plus-2":[["path",{"d":"M11.35 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v5.35"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M14 19h6"}],["path",{"d":"M17 16v6"}]],"file-text":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M10 9H8"}],["path",{"d":"M16 13H8"}],["path",{"d":"M16 17H8"}]],"file-warning":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M12 9v4"}],["path",{"d":"M12 17h.01"}]],"files":[["path",{"d":"M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"}],["path",{"d":"M16.706 2.706A2.4 2.4 0 0 0 15 2v5a1 1 0 0 0 1 1h5a2.4 2.4 0 0 0-.706-1.706z"}],["path",{"d":"M5 7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 1.732-1"}]],"focus":[["circle",{"cx":"12","cy":"12","r":"3"}],["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}]],"folder":[["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folder-input":[["path",{"d":"M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1"}],["path",{"d":"M2 13h10"}],["path",{"d":"m9 16 3-3-3-3"}]],"folder-minus":[["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folder-open":[["path",{"d":"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"}]],"folder-plus":[["path",{"d":"M12 10v6"}],["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folders":[["path",{"d":"M20 5a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2.5a1.5 1.5 0 0 1 1.2.6l.6.8a1.5 1.5 0 0 0 1.2.6z"}],["path",{"d":"M3 8.268a2 2 0 0 0-1 1.738V19a2 2 0 0 0 2 2h11a2 2 0 0 0 1.732-1"}]],"footprints":[["path",{"d":"M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"}],["path",{"d":"M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"}],["path",{"d":"M16 17h4"}],["path",{"d":"M4 13h4"}]],"git-fork":[["circle",{"cx":"12","cy":"18","r":"3"}],["circle",{"cx":"6","cy":"6","r":"3"}],["circle",{"cx":"18","cy":"6","r":"3"}],["path",{"d":"M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"}],["path",{"d":"M12 12v3"}]],"globe":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{"d":"M2 12h20"}]],"grid":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"grip-vertical":[["circle",{"cx":"9","cy":"12","r":"1"}],["circle",{"cx":"9","cy":"5","r":"1"}],["circle",{"cx":"9","cy":"19","r":"1"}],["circle",{"cx":"15","cy":"12","r":"1"}],["circle",{"cx":"15","cy":"5","r":"1"}],["circle",{"cx":"15","cy":"19","r":"1"}]],"group":[["path",{"d":"M3 7V5c0-1.1.9-2 2-2h2"}],["path",{"d":"M17 3h2c1.1 0 2 .9 2 2v2"}],["path",{"d":"M21 17v2c0 1.1-.9 2-2 2h-2"}],["path",{"d":"M7 21H5c-1.1 0-2-.9-2-2v-2"}],["rect",{"width":"7","height":"5","x":"7","y":"7","rx":"1"}],["rect",{"width":"7","height":"5","x":"10","y":"12","rx":"1"}]],"guitar":[["path",{"d":"m11.9 12.1 4.514-4.514"}],["path",{"d":"M20.1 2.3a1 1 0 0 0-1.4 0l-1.114 1.114A2 2 0 0 0 17 4.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 17.828 7h1.344a2 2 0 0 0 1.414-.586L21.7 5.3a1 1 0 0 0 0-1.4z"}],["path",{"d":"m6 16 2 2"}],["path",{"d":"M8.23 9.85A3 3 0 0 1 11 8a5 5 0 0 1 5 5 3 3 0 0 1-1.85 2.77l-.92.38A2 2 0 0 0 12 18a4 4 0 0 1-4 4 6 6 0 0 1-6-6 4 4 0 0 1 4-4 2 2 0 0 0 1.85-1.23z"}]],"hard-drive":[["path",{"d":"M10 16h.01"}],["path",{"d":"M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}],["path",{"d":"M21.946 12.013H2.054"}],["path",{"d":"M6 16h.01"}]],"heading":[["path",{"d":"M6 12h12"}],["path",{"d":"M6 20V4"}],["path",{"d":"M18 20V4"}]],"headphones":[["path",{"d":"M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"}]],"image":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["circle",{"cx":"9","cy":"9","r":"2"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}]],"image-plus":[["path",{"d":"M16 5h6"}],["path",{"d":"M19 2v6"}],["path",{"d":"M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}],["circle",{"cx":"9","cy":"9","r":"2"}]],"images":[["path",{"d":"m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16"}],["path",{"d":"M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2"}],["circle",{"cx":"13","cy":"7","r":"1","fill":"currentColor"}],["rect",{"x":"8","y":"2","width":"14","height":"14","rx":"2"}]],"import":[["path",{"d":"M12 3v12"}],["path",{"d":"m8 11 4 4 4-4"}],["path",{"d":"M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"}]],"inbox":[["polyline",{"points":"22 12 16 12 14 15 10 15 8 12 2 12"}],["path",{"d":"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}]],"info":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 16v-4"}],["path",{"d":"M12 8h.01"}]],"italic":[["line",{"x1":"19","x2":"10","y1":"4","y2":"4"}],["line",{"x1":"14","x2":"5","y1":"20","y2":"20"}],["line",{"x1":"15","x2":"9","y1":"4","y2":"20"}]],"key":[["path",{"d":"m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"}],["path",{"d":"m21 2-9.6 9.6"}],["circle",{"cx":"7.5","cy":"15.5","r":"5.5"}]],"key-round":[["path",{"d":"M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"}],["circle",{"cx":"16.5","cy":"7.5","r":".5","fill":"currentColor"}]],"languages":[["path",{"d":"m5 8 6 6"}],["path",{"d":"m4 14 6-6 2-3"}],["path",{"d":"M2 5h12"}],["path",{"d":"M7 2h1"}],["path",{"d":"m22 22-5-10-5 10"}],["path",{"d":"M14 18h6"}]],"layout-template":[["rect",{"width":"18","height":"7","x":"3","y":"3","rx":"1"}],["rect",{"width":"9","height":"7","x":"3","y":"14","rx":"1"}],["rect",{"width":"5","height":"7","x":"16","y":"14","rx":"1"}]],"library":[["path",{"d":"m16 6 4 14"}],["path",{"d":"M12 6v14"}],["path",{"d":"M8 8v12"}],["path",{"d":"M4 4v16"}]],"link":[["path",{"d":"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"}],["path",{"d":"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"}]],"list":[["path",{"d":"M3 5h.01"}],["path",{"d":"M3 12h.01"}],["path",{"d":"M3 19h.01"}],["path",{"d":"M8 5h13"}],["path",{"d":"M8 12h13"}],["path",{"d":"M8 19h13"}]],"list-checks":[["path",{"d":"M13 5h8"}],["path",{"d":"M13 12h8"}],["path",{"d":"M13 19h8"}],["path",{"d":"m3 17 2 2 4-4"}],["path",{"d":"m3 7 2 2 4-4"}]],"list-collapse":[["path",{"d":"M10 5h11"}],["path",{"d":"M10 12h11"}],["path",{"d":"M10 19h11"}],["path",{"d":"m3 10 3-3-3-3"}],["path",{"d":"m3 20 3-3-3-3"}]],"list-filter":[["path",{"d":"M2 5h20"}],["path",{"d":"M6 12h12"}],["path",{"d":"M9 19h6"}]],"list-music":[["path",{"d":"M16 5H3"}],["path",{"d":"M11 12H3"}],["path",{"d":"M11 19H3"}],["path",{"d":"M21 16V5"}],["circle",{"cx":"18","cy":"16","r":"3"}]],"list-plus":[["path",{"d":"M16 5H3"}],["path",{"d":"M11 12H3"}],["path",{"d":"M16 19H3"}],["path",{"d":"M18 9v6"}],["path",{"d":"M21 12h-6"}]],"lock":[["rect",{"width":"18","height":"11","x":"3","y":"11","rx":"2","ry":"2"}],["path",{"d":"M7 11V7a5 5 0 0 1 10 0v4"}]],"mail":[["path",{"d":"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"}],["rect",{"x":"2","y":"4","width":"20","height":"16","rx":"2"}]],"map-pin":[["path",{"d":"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"}],["circle",{"cx":"12","cy":"10","r":"3"}]],"maximize-2":[["path",{"d":"M15 3h6v6"}],["path",{"d":"m21 3-7 7"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M9 21H3v-6"}]],"menu":[["path",{"d":"M4 5h16"}],["path",{"d":"M4 12h16"}],["path",{"d":"M4 19h16"}]],"merge":[["path",{"d":"m8 6 4-4 4 4"}],["path",{"d":"M12 2v10.3a4 4 0 0 1-1.172 2.872L4 22"}],["path",{"d":"m20 22-5-5"}]],"metronome":[["path",{"d":"M12 11.4V9.1"}],["path",{"d":"m12 17 6.59-6.59"}],["path",{"d":"m15.05 5.7-.218-.691a3 3 0 0 0-5.663 0L4.418 19.695A1 1 0 0 0 5.37 21h13.253a1 1 0 0 0 .951-1.31L18.45 16.2"}],["circle",{"cx":"20","cy":"9","r":"2"}]],"mic":[["path",{"d":"M12 19v3"}],["path",{"d":"M19 10v2a7 7 0 0 1-14 0v-2"}],["rect",{"x":"9","y":"2","width":"6","height":"13","rx":"3"}]],"mic-vocal":[["path",{"d":"m11 7.601-5.994 8.19a1 1 0 0 0 .1 1.298l.817.818a1 1 0 0 0 1.314.087L15.09 12"}],["path",{"d":"M16.5 21.174C15.5 20.5 14.372 20 13 20c-2.058 0-3.928 2.356-6 2-2.072-.356-2.775-3.369-1.5-4.5"}],["circle",{"cx":"16","cy":"7","r":"5"}]],"minimize-2":[["path",{"d":"m14 10 7-7"}],["path",{"d":"M20 10h-6V4"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M4 14h6v6"}]],"minus":[["path",{"d":"M5 12h14"}]],"moon-star":[["path",{"d":"M18 5h4"}],["path",{"d":"M20 3v4"}],["path",{"d":"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"}]],"more-horizontal":[["circle",{"cx":"12","cy":"12","r":"1"}],["circle",{"cx":"19","cy":"12","r":"1"}],["circle",{"cx":"5","cy":"12","r":"1"}]],"mouse":[["rect",{"x":"5","y":"2","width":"14","height":"20","rx":"7"}],["path",{"d":"M12 6v4"}]],"move":[["path",{"d":"M12 2v20"}],["path",{"d":"m15 19-3 3-3-3"}],["path",{"d":"m19 9 3 3-3 3"}],["path",{"d":"M2 12h20"}],["path",{"d":"m5 9-3 3 3 3"}],["path",{"d":"m9 5 3-3 3 3"}]],"move-down":[["path",{"d":"M8 18L12 22L16 18"}],["path",{"d":"M12 2V22"}]],"music":[["path",{"d":"M9 18V5l12-2v13"}],["circle",{"cx":"6","cy":"18","r":"3"}],["circle",{"cx":"18","cy":"16","r":"3"}]],"music-2":[["circle",{"cx":"8","cy":"18","r":"4"}],["path",{"d":"M12 18V2l7 4"}]],"notebook-pen":[["path",{"d":"M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"}],["path",{"d":"M2 6h4"}],["path",{"d":"M2 10h4"}],["path",{"d":"M2 14h4"}],["path",{"d":"M2 18h4"}],["path",{"d":"M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"}]],"notebook-tabs":[["path",{"d":"M2 6h4"}],["path",{"d":"M2 10h4"}],["path",{"d":"M2 14h4"}],["path",{"d":"M2 18h4"}],["rect",{"width":"16","height":"20","x":"4","y":"2","rx":"2"}],["path",{"d":"M15 2v20"}],["path",{"d":"M15 7h5"}],["path",{"d":"M15 12h5"}],["path",{"d":"M15 17h5"}]],"option":[["path",{"d":"M3 3h6l6 18h6"}],["path",{"d":"M14 3h7"}]],"panel-left-close":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"m16 15-3-3 3-3"}]],"panel-left-open":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"m14 9 3 3-3 3"}]],"pause":[["rect",{"x":"14","y":"3","width":"5","height":"18","rx":"1"}],["rect",{"x":"5","y":"3","width":"5","height":"18","rx":"1"}]],"pencil":[["path",{"d":"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{"d":"m15 5 4 4"}]],"phone":[["path",{"d":"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"}]],"piano":[["path",{"d":"M18.5 8c-1.4 0-2.6-.8-3.2-2A6.87 6.87 0 0 0 2 9v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8.5C22 9.6 20.4 8 18.5 8"}],["path",{"d":"M2 14h20"}],["path",{"d":"M6 14v4"}],["path",{"d":"M10 14v4"}],["path",{"d":"M14 14v4"}],["path",{"d":"M18 14v4"}]],"pin":[["path",{"d":"M12 17v5"}],["path",{"d":"M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"}]],"play":[["path",{"d":"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]],"plus":[["path",{"d":"M5 12h14"}],["path",{"d":"M12 5v14"}]],"printer":[["path",{"d":"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}],["path",{"d":"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"}],["rect",{"x":"6","y":"14","width":"12","height":"8","rx":"1"}]],"radio":[["path",{"d":"M16.247 7.761a6 6 0 0 1 0 8.478"}],["path",{"d":"M19.075 4.933a10 10 0 0 1 0 14.134"}],["path",{"d":"M4.925 19.067a10 10 0 0 1 0-14.134"}],["path",{"d":"M7.753 16.239a6 6 0 0 1 0-8.478"}],["circle",{"cx":"12","cy":"12","r":"2"}]],"redo-2":[["path",{"d":"m15 14 5-5-5-5"}],["path",{"d":"M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"}]],"repeat":[["path",{"d":"m17 2 4 4-4 4"}],["path",{"d":"M3 11v-1a4 4 0 0 1 4-4h14"}],["path",{"d":"m7 22-4-4 4-4"}],["path",{"d":"M21 13v1a4 4 0 0 1-4 4H3"}]],"replace":[["path",{"d":"M14 4a1 1 0 0 1 1-1"}],["path",{"d":"M15 10a1 1 0 0 1-1-1"}],["path",{"d":"M21 4a1 1 0 0 0-1-1"}],["path",{"d":"M21 9a1 1 0 0 1-1 1"}],["path",{"d":"m3 7 3 3 3-3"}],["path",{"d":"M6 10V5a2 2 0 0 1 2-2h2"}],["rect",{"x":"3","y":"14","width":"7","height":"7","rx":"1"}]],"rose":[["path",{"d":"M17 10h-1a4 4 0 1 1 4-4v.534"}],["path",{"d":"M17 6h1a4 4 0 0 1 1.42 7.74l-2.29.87a6 6 0 0 1-5.339-10.68l2.069-1.31"}],["path",{"d":"M4.5 17c2.8-.5 4.4 0 5.5.8s1.8 2.2 2.3 3.7c-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2"}],["path",{"d":"M9.77 12C4 15 2 22 2 22"}],["circle",{"cx":"17","cy":"8","r":"2"}]],"rotate-ccw":[["path",{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{"d":"M3 3v5h5"}]],"rotate-cw":[["path",{"d":"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}],["path",{"d":"M21 3v5h-5"}]],"save":[["path",{"d":"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{"d":"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{"d":"M7 3v4a1 1 0 0 0 1 1h7"}]],"scan-text":[["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}],["path",{"d":"M7 8h8"}],["path",{"d":"M7 12h10"}],["path",{"d":"M7 16h6"}]],"scroll":[["path",{"d":"M19 17V5a2 2 0 0 0-2-2H4"}],["path",{"d":"M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"}]],"search":[["path",{"d":"m21 21-4.34-4.34"}],["circle",{"cx":"11","cy":"11","r":"8"}]],"search-x":[["path",{"d":"m13.5 8.5-5 5"}],["path",{"d":"m8.5 8.5 5 5"}],["circle",{"cx":"11","cy":"11","r":"8"}],["path",{"d":"m21 21-4.3-4.3"}]],"section":[["path",{"d":"M16 5a4 3 0 0 0-8 0c0 4 8 3 8 7a4 3 0 0 1-8 0"}],["path",{"d":"M8 19a4 3 0 0 0 8 0c0-4-8-3-8-7a4 3 0 0 1 8 0"}]],"settings":[["path",{"d":"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"}],["circle",{"cx":"12","cy":"12","r":"3"}]],"settings-2":[["path",{"d":"M14 17H5"}],["path",{"d":"M19 7h-9"}],["circle",{"cx":"17","cy":"17","r":"3"}],["circle",{"cx":"7","cy":"7","r":"3"}]],"share-2":[["circle",{"cx":"18","cy":"5","r":"3"}],["circle",{"cx":"6","cy":"12","r":"3"}],["circle",{"cx":"18","cy":"19","r":"3"}],["line",{"x1":"8.59","x2":"15.42","y1":"13.51","y2":"17.49"}],["line",{"x1":"15.41","x2":"8.59","y1":"6.51","y2":"10.49"}]],"shield-alert":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"M12 8v4"}],["path",{"d":"M12 16h.01"}]],"shield-check":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"m9 12 2 2 4-4"}]],"sliders-horizontal":[["path",{"d":"M10 5H3"}],["path",{"d":"M12 19H3"}],["path",{"d":"M14 3v4"}],["path",{"d":"M16 17v4"}],["path",{"d":"M21 12h-9"}],["path",{"d":"M21 19h-5"}],["path",{"d":"M21 5h-7"}],["path",{"d":"M8 10v4"}],["path",{"d":"M8 12H3"}]],"split":[["path",{"d":"M16 3h5v5"}],["path",{"d":"M8 3H3v5"}],["path",{"d":"M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"}],["path",{"d":"m15 9 6-6"}]],"square":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}]],"square-pen":[["path",{"d":"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{"d":"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]],"square-play":[["rect",{"x":"3","y":"3","width":"18","height":"18","rx":"2"}],["path",{"d":"M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"}]],"sticky-note":[["path",{"d":"M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"}],["path",{"d":"M15 3v5a1 1 0 0 0 1 1h5"}]],"sun":[["circle",{"cx":"12","cy":"12","r":"4"}],["path",{"d":"M12 2v2"}],["path",{"d":"M12 20v2"}],["path",{"d":"m4.93 4.93 1.41 1.41"}],["path",{"d":"m17.66 17.66 1.41 1.41"}],["path",{"d":"M2 12h2"}],["path",{"d":"M20 12h2"}],["path",{"d":"m6.34 17.66-1.41 1.41"}],["path",{"d":"m19.07 4.93-1.41 1.41"}]],"table":[["path",{"d":"M12 3v18"}],["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}]],"tags":[["path",{"d":"M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"}],["path",{"d":"M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"}],["circle",{"cx":"10.5","cy":"6.5","r":".5","fill":"currentColor"}]],"text":[["path",{"d":"M21 5H3"}],["path",{"d":"M15 12H3"}],["path",{"d":"M17 19H3"}]],"timer":[["line",{"x1":"10","x2":"14","y1":"2","y2":"2"}],["line",{"x1":"12","x2":"15","y1":"14","y2":"11"}],["circle",{"cx":"12","cy":"14","r":"8"}]],"trash-2":[["path",{"d":"M10 11v6"}],["path",{"d":"M14 11v6"}],["path",{"d":"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{"d":"M3 6h18"}],["path",{"d":"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]],"triangle":[["path",{"d":"M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"}]],"underline":[["path",{"d":"M6 4v6a6 6 0 0 0 12 0V4"}],["line",{"x1":"4","x2":"20","y1":"20","y2":"20"}]],"undo":[["path",{"d":"M3 7v6h6"}],["path",{"d":"M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"}]],"undo-2":[["path",{"d":"M9 14 4 9l5-5"}],["path",{"d":"M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"}]],"upload":[["path",{"d":"M12 3v12"}],["path",{"d":"m17 8-5-5-5 5"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}]],"user":[["path",{"d":"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{"cx":"12","cy":"7","r":"4"}]],"users":[["path",{"d":"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["path",{"d":"M16 3.128a4 4 0 0 1 0 7.744"}],["path",{"d":"M22 21v-2a4 4 0 0 0-3-3.87"}],["circle",{"cx":"9","cy":"7","r":"4"}]],"users-round":[["path",{"d":"M18 21a8 8 0 0 0-16 0"}],["circle",{"cx":"10","cy":"8","r":"5"}],["path",{"d":"M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"}]],"video":[["path",{"d":"m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"}],["rect",{"x":"2","y":"6","width":"14","height":"12","rx":"2"}]],"wallet":[["path",{"d":"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"}],["path",{"d":"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"}]],"wand-2":[["path",{"d":"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{"d":"m14 7 3 3"}],["path",{"d":"M5 6v4"}],["path",{"d":"M19 14v4"}],["path",{"d":"M10 2v2"}],["path",{"d":"M7 8H3"}],["path",{"d":"M21 16h-4"}],["path",{"d":"M11 3H9"}]],"wind":[["path",{"d":"M12.8 19.6A2 2 0 1 0 14 16H2"}],["path",{"d":"M17.5 8a2.5 2.5 0 1 1 2 4H2"}],["path",{"d":"M9.8 4.4A2 2 0 1 1 11 8H2"}]],"wrench":[["path",{"d":"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"}]],"x":[["path",{"d":"M18 6 6 18"}],["path",{"d":"m6 6 12 12"}]],"zap":[["path",{"d":"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]],"zoom-in":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"11","x2":"11","y1":"8","y2":"14"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]],"zoom-out":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]]};
+  var ICONS = {"album":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["polyline",{"points":"11 3 11 11 14 8 17 11 17 3"}]],"align-center":[["path",{"d":"M21 5H3"}],["path",{"d":"M17 12H7"}],["path",{"d":"M19 19H5"}]],"align-left":[["path",{"d":"M21 5H3"}],["path",{"d":"M15 12H3"}],["path",{"d":"M17 19H3"}]],"align-right":[["path",{"d":"M21 5H3"}],["path",{"d":"M21 12H9"}],["path",{"d":"M21 19H7"}]],"archive":[["rect",{"width":"20","height":"5","x":"2","y":"3","rx":"1"}],["path",{"d":"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"}],["path",{"d":"M10 12h4"}]],"archive-restore":[["rect",{"width":"20","height":"5","x":"2","y":"3","rx":"1"}],["path",{"d":"M4 8v11a2 2 0 0 0 2 2h2"}],["path",{"d":"M20 8v11a2 2 0 0 1-2 2h-2"}],["path",{"d":"m9 15 3-3 3 3"}],["path",{"d":"M12 12v9"}]],"arrow-down-a-z":[["path",{"d":"m3 16 4 4 4-4"}],["path",{"d":"M7 20V4"}],["path",{"d":"M20 8h-5"}],["path",{"d":"M15 10V6.5a2.5 2.5 0 0 1 5 0V10"}],["path",{"d":"M15 14h5l-5 6h5"}]],"arrow-down-up":[["path",{"d":"m3 16 4 4 4-4"}],["path",{"d":"M7 20V4"}],["path",{"d":"m21 8-4-4-4 4"}],["path",{"d":"M17 4v16"}]],"arrow-left":[["path",{"d":"m12 19-7-7 7-7"}],["path",{"d":"M19 12H5"}]],"arrow-up-down":[["path",{"d":"m21 16-4 4-4-4"}],["path",{"d":"M17 20V4"}],["path",{"d":"m3 8 4-4 4 4"}],["path",{"d":"M7 4v16"}]],"audio-lines":[["path",{"d":"M2 10v3"}],["path",{"d":"M6 6v11"}],["path",{"d":"M10 3v18"}],["path",{"d":"M14 8v7"}],["path",{"d":"M18 5v13"}],["path",{"d":"M22 10v3"}]],"badge-check":[["path",{"d":"M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"}],["path",{"d":"m9 12 2 2 4-4"}]],"bold":[["path",{"d":"M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"}]],"bookmark":[["path",{"d":"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"}]],"bookmark-plus":[["path",{"d":"M12 7v6"}],["path",{"d":"M15 10H9"}],["path",{"d":"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"}]],"box":[["path",{"d":"M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"}],["path",{"d":"m3.3 7 8.7 5 8.7-5"}],["path",{"d":"M12 22V12"}]],"calendar":[["path",{"d":"M8 2v4"}],["path",{"d":"M16 2v4"}],["rect",{"width":"18","height":"18","x":"3","y":"4","rx":"2"}],["path",{"d":"M3 10h18"}]],"calendar-days":[["path",{"d":"M8 2v4"}],["path",{"d":"M16 2v4"}],["rect",{"width":"18","height":"18","x":"3","y":"4","rx":"2"}],["path",{"d":"M3 10h18"}],["path",{"d":"M8 14h.01"}],["path",{"d":"M12 14h.01"}],["path",{"d":"M16 14h.01"}],["path",{"d":"M8 18h.01"}],["path",{"d":"M12 18h.01"}],["path",{"d":"M16 18h.01"}]],"calendar-plus":[["path",{"d":"M16 19h6"}],["path",{"d":"M16 2v4"}],["path",{"d":"M19 16v6"}],["path",{"d":"M21 12.598V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8.5"}],["path",{"d":"M3 10h18"}],["path",{"d":"M8 2v4"}]],"camera":[["path",{"d":"M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"}],["circle",{"cx":"12","cy":"13","r":"3"}]],"check":[["path",{"d":"M20 6 9 17l-5-5"}]],"check-circle-2":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"m9 12 2 2 4-4"}]],"chevron-down":[["path",{"d":"m6 9 6 6 6-6"}]],"chevron-left":[["path",{"d":"m15 18-6-6 6-6"}]],"chevron-right":[["path",{"d":"m9 18 6-6-6-6"}]],"chevron-up":[["path",{"d":"m18 15-6-6-6 6"}]],"circle-play":[["path",{"d":"M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"}],["circle",{"cx":"12","cy":"12","r":"10"}]],"clipboard-check":[["rect",{"width":"8","height":"4","x":"8","y":"2","rx":"1","ry":"1"}],["path",{"d":"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"}],["path",{"d":"m9 14 2 2 4-4"}]],"clipboard-paste":[["path",{"d":"M11 14h10"}],["path",{"d":"M16 4h2a2 2 0 0 1 2 2v1.344"}],["path",{"d":"m17 18 4-4-4-4"}],["path",{"d":"M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113"}],["rect",{"x":"8","y":"2","width":"8","height":"4","rx":"1"}]],"clock-3":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 6v6h4"}]],"cloud-upload":[["path",{"d":"M12 13v8"}],["path",{"d":"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"}],["path",{"d":"m8 17 4-4 4 4"}]],"columns-3":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"columns-4":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M7.5 3v18"}],["path",{"d":"M12 3v18"}],["path",{"d":"M16.5 3v18"}]],"copy":[["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"copy-check":[["path",{"d":"m12 15 2 2 4-4"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"copy-plus":[["line",{"x1":"15","x2":"15","y1":"12","y2":"18"}],["line",{"x1":"12","x2":"18","y1":"15","y2":"15"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"crop":[["path",{"d":"M6 2v14a2 2 0 0 0 2 2h14"}],["path",{"d":"M18 22V8a2 2 0 0 0-2-2H2"}]],"delete":[["path",{"d":"M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"}],["path",{"d":"m12 9 6 6"}],["path",{"d":"m18 9-6 6"}]],"download":[["path",{"d":"M12 15V3"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["path",{"d":"m7 10 5 5 5-5"}]],"edit":[["path",{"d":"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{"d":"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]],"eraser":[["path",{"d":"M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21"}],["path",{"d":"m5.082 11.09 8.828 8.828"}]],"expand":[["path",{"d":"m15 15 6 6"}],["path",{"d":"m15 9 6-6"}],["path",{"d":"M21 16v5h-5"}],["path",{"d":"M21 8V3h-5"}],["path",{"d":"M3 16v5h5"}],["path",{"d":"m3 21 6-6"}],["path",{"d":"M3 8V3h5"}],["path",{"d":"M9 9 3 3"}]],"external-link":[["path",{"d":"M15 3h6v6"}],["path",{"d":"M10 14 21 3"}],["path",{"d":"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}]],"eye-off":[["path",{"d":"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}],["path",{"d":"M14.084 14.158a3 3 0 0 1-4.242-4.242"}],["path",{"d":"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}],["path",{"d":"m2 2 20 20"}]],"file":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}]],"file-down":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M12 18v-6"}],["path",{"d":"m9 15 3 3 3-3"}]],"file-music":[["path",{"d":"M11.65 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v10.35"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M8 20v-7l3 1.474"}],["circle",{"cx":"6","cy":"20","r":"2"}]],"file-pen-line":[["path",{"d":"M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"}],["path",{"d":"M14.487 7.858A1 1 0 0 1 14 7V2"}],["path",{"d":"M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"}],["path",{"d":"M8 18h1"}]],"file-plus-2":[["path",{"d":"M11.35 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v5.35"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M14 19h6"}],["path",{"d":"M17 16v6"}]],"file-text":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M10 9H8"}],["path",{"d":"M16 13H8"}],["path",{"d":"M16 17H8"}]],"file-warning":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M12 9v4"}],["path",{"d":"M12 17h.01"}]],"files":[["path",{"d":"M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"}],["path",{"d":"M16.706 2.706A2.4 2.4 0 0 0 15 2v5a1 1 0 0 0 1 1h5a2.4 2.4 0 0 0-.706-1.706z"}],["path",{"d":"M5 7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 1.732-1"}]],"focus":[["circle",{"cx":"12","cy":"12","r":"3"}],["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}]],"folder":[["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folder-input":[["path",{"d":"M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1"}],["path",{"d":"M2 13h10"}],["path",{"d":"m9 16 3-3-3-3"}]],"folder-minus":[["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folder-open":[["path",{"d":"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"}]],"folder-plus":[["path",{"d":"M12 10v6"}],["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"folders":[["path",{"d":"M20 5a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2.5a1.5 1.5 0 0 1 1.2.6l.6.8a1.5 1.5 0 0 0 1.2.6z"}],["path",{"d":"M3 8.268a2 2 0 0 0-1 1.738V19a2 2 0 0 0 2 2h11a2 2 0 0 0 1.732-1"}]],"footprints":[["path",{"d":"M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"}],["path",{"d":"M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"}],["path",{"d":"M16 17h4"}],["path",{"d":"M4 13h4"}]],"git-fork":[["circle",{"cx":"12","cy":"18","r":"3"}],["circle",{"cx":"6","cy":"6","r":"3"}],["circle",{"cx":"18","cy":"6","r":"3"}],["path",{"d":"M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"}],["path",{"d":"M12 12v3"}]],"globe":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{"d":"M2 12h20"}]],"grid":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"grip-vertical":[["circle",{"cx":"9","cy":"12","r":"1"}],["circle",{"cx":"9","cy":"5","r":"1"}],["circle",{"cx":"9","cy":"19","r":"1"}],["circle",{"cx":"15","cy":"12","r":"1"}],["circle",{"cx":"15","cy":"5","r":"1"}],["circle",{"cx":"15","cy":"19","r":"1"}]],"group":[["path",{"d":"M3 7V5c0-1.1.9-2 2-2h2"}],["path",{"d":"M17 3h2c1.1 0 2 .9 2 2v2"}],["path",{"d":"M21 17v2c0 1.1-.9 2-2 2h-2"}],["path",{"d":"M7 21H5c-1.1 0-2-.9-2-2v-2"}],["rect",{"width":"7","height":"5","x":"7","y":"7","rx":"1"}],["rect",{"width":"7","height":"5","x":"10","y":"12","rx":"1"}]],"guitar":[["path",{"d":"m11.9 12.1 4.514-4.514"}],["path",{"d":"M20.1 2.3a1 1 0 0 0-1.4 0l-1.114 1.114A2 2 0 0 0 17 4.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 17.828 7h1.344a2 2 0 0 0 1.414-.586L21.7 5.3a1 1 0 0 0 0-1.4z"}],["path",{"d":"m6 16 2 2"}],["path",{"d":"M8.23 9.85A3 3 0 0 1 11 8a5 5 0 0 1 5 5 3 3 0 0 1-1.85 2.77l-.92.38A2 2 0 0 0 12 18a4 4 0 0 1-4 4 6 6 0 0 1-6-6 4 4 0 0 1 4-4 2 2 0 0 0 1.85-1.23z"}]],"hard-drive":[["path",{"d":"M10 16h.01"}],["path",{"d":"M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}],["path",{"d":"M21.946 12.013H2.054"}],["path",{"d":"M6 16h.01"}]],"heading":[["path",{"d":"M6 12h12"}],["path",{"d":"M6 20V4"}],["path",{"d":"M18 20V4"}]],"headphones":[["path",{"d":"M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"}]],"image":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["circle",{"cx":"9","cy":"9","r":"2"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}]],"image-plus":[["path",{"d":"M16 5h6"}],["path",{"d":"M19 2v6"}],["path",{"d":"M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}],["circle",{"cx":"9","cy":"9","r":"2"}]],"images":[["path",{"d":"m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16"}],["path",{"d":"M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2"}],["circle",{"cx":"13","cy":"7","r":"1","fill":"currentColor"}],["rect",{"x":"8","y":"2","width":"14","height":"14","rx":"2"}]],"import":[["path",{"d":"M12 3v12"}],["path",{"d":"m8 11 4 4 4-4"}],["path",{"d":"M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"}]],"inbox":[["polyline",{"points":"22 12 16 12 14 15 10 15 8 12 2 12"}],["path",{"d":"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}]],"info":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 16v-4"}],["path",{"d":"M12 8h.01"}]],"italic":[["line",{"x1":"19","x2":"10","y1":"4","y2":"4"}],["line",{"x1":"14","x2":"5","y1":"20","y2":"20"}],["line",{"x1":"15","x2":"9","y1":"4","y2":"20"}]],"key":[["path",{"d":"m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"}],["path",{"d":"m21 2-9.6 9.6"}],["circle",{"cx":"7.5","cy":"15.5","r":"5.5"}]],"key-round":[["path",{"d":"M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"}],["circle",{"cx":"16.5","cy":"7.5","r":".5","fill":"currentColor"}]],"languages":[["path",{"d":"m5 8 6 6"}],["path",{"d":"m4 14 6-6 2-3"}],["path",{"d":"M2 5h12"}],["path",{"d":"M7 2h1"}],["path",{"d":"m22 22-5-10-5 10"}],["path",{"d":"M14 18h6"}]],"layout-template":[["rect",{"width":"18","height":"7","x":"3","y":"3","rx":"1"}],["rect",{"width":"9","height":"7","x":"3","y":"14","rx":"1"}],["rect",{"width":"5","height":"7","x":"16","y":"14","rx":"1"}]],"library":[["path",{"d":"m16 6 4 14"}],["path",{"d":"M12 6v14"}],["path",{"d":"M8 8v12"}],["path",{"d":"M4 4v16"}]],"link":[["path",{"d":"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"}],["path",{"d":"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"}]],"list":[["path",{"d":"M3 5h.01"}],["path",{"d":"M3 12h.01"}],["path",{"d":"M3 19h.01"}],["path",{"d":"M8 5h13"}],["path",{"d":"M8 12h13"}],["path",{"d":"M8 19h13"}]],"list-checks":[["path",{"d":"M13 5h8"}],["path",{"d":"M13 12h8"}],["path",{"d":"M13 19h8"}],["path",{"d":"m3 17 2 2 4-4"}],["path",{"d":"m3 7 2 2 4-4"}]],"list-collapse":[["path",{"d":"M10 5h11"}],["path",{"d":"M10 12h11"}],["path",{"d":"M10 19h11"}],["path",{"d":"m3 10 3-3-3-3"}],["path",{"d":"m3 20 3-3-3-3"}]],"list-filter":[["path",{"d":"M2 5h20"}],["path",{"d":"M6 12h12"}],["path",{"d":"M9 19h6"}]],"list-music":[["path",{"d":"M16 5H3"}],["path",{"d":"M11 12H3"}],["path",{"d":"M11 19H3"}],["path",{"d":"M21 16V5"}],["circle",{"cx":"18","cy":"16","r":"3"}]],"list-plus":[["path",{"d":"M16 5H3"}],["path",{"d":"M11 12H3"}],["path",{"d":"M16 19H3"}],["path",{"d":"M18 9v6"}],["path",{"d":"M21 12h-6"}]],"lock":[["rect",{"width":"18","height":"11","x":"3","y":"11","rx":"2","ry":"2"}],["path",{"d":"M7 11V7a5 5 0 0 1 10 0v4"}]],"mail":[["path",{"d":"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"}],["rect",{"x":"2","y":"4","width":"20","height":"16","rx":"2"}]],"map-pin":[["path",{"d":"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"}],["circle",{"cx":"12","cy":"10","r":"3"}]],"maximize-2":[["path",{"d":"M15 3h6v6"}],["path",{"d":"m21 3-7 7"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M9 21H3v-6"}]],"menu":[["path",{"d":"M4 5h16"}],["path",{"d":"M4 12h16"}],["path",{"d":"M4 19h16"}]],"merge":[["path",{"d":"m8 6 4-4 4 4"}],["path",{"d":"M12 2v10.3a4 4 0 0 1-1.172 2.872L4 22"}],["path",{"d":"m20 22-5-5"}]],"metronome":[["path",{"d":"M12 11.4V9.1"}],["path",{"d":"m12 17 6.59-6.59"}],["path",{"d":"m15.05 5.7-.218-.691a3 3 0 0 0-5.663 0L4.418 19.695A1 1 0 0 0 5.37 21h13.253a1 1 0 0 0 .951-1.31L18.45 16.2"}],["circle",{"cx":"20","cy":"9","r":"2"}]],"mic":[["path",{"d":"M12 19v3"}],["path",{"d":"M19 10v2a7 7 0 0 1-14 0v-2"}],["rect",{"x":"9","y":"2","width":"6","height":"13","rx":"3"}]],"mic-vocal":[["path",{"d":"m11 7.601-5.994 8.19a1 1 0 0 0 .1 1.298l.817.818a1 1 0 0 0 1.314.087L15.09 12"}],["path",{"d":"M16.5 21.174C15.5 20.5 14.372 20 13 20c-2.058 0-3.928 2.356-6 2-2.072-.356-2.775-3.369-1.5-4.5"}],["circle",{"cx":"16","cy":"7","r":"5"}]],"minimize-2":[["path",{"d":"m14 10 7-7"}],["path",{"d":"M20 10h-6V4"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M4 14h6v6"}]],"minus":[["path",{"d":"M5 12h14"}]],"moon-star":[["path",{"d":"M18 5h4"}],["path",{"d":"M20 3v4"}],["path",{"d":"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"}]],"more-horizontal":[["circle",{"cx":"12","cy":"12","r":"1"}],["circle",{"cx":"19","cy":"12","r":"1"}],["circle",{"cx":"5","cy":"12","r":"1"}]],"mouse":[["rect",{"x":"5","y":"2","width":"14","height":"20","rx":"7"}],["path",{"d":"M12 6v4"}]],"move":[["path",{"d":"M12 2v20"}],["path",{"d":"m15 19-3 3-3-3"}],["path",{"d":"m19 9 3 3-3 3"}],["path",{"d":"M2 12h20"}],["path",{"d":"m5 9-3 3 3 3"}],["path",{"d":"m9 5 3-3 3 3"}]],"move-down":[["path",{"d":"M8 18L12 22L16 18"}],["path",{"d":"M12 2V22"}]],"music":[["path",{"d":"M9 18V5l12-2v13"}],["circle",{"cx":"6","cy":"18","r":"3"}],["circle",{"cx":"18","cy":"16","r":"3"}]],"music-2":[["circle",{"cx":"8","cy":"18","r":"4"}],["path",{"d":"M12 18V2l7 4"}]],"network":[["rect",{"x":"16","y":"16","width":"6","height":"6","rx":"1"}],["rect",{"x":"2","y":"16","width":"6","height":"6","rx":"1"}],["rect",{"x":"9","y":"2","width":"6","height":"6","rx":"1"}],["path",{"d":"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"}],["path",{"d":"M12 12V8"}]],"notebook-pen":[["path",{"d":"M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"}],["path",{"d":"M2 6h4"}],["path",{"d":"M2 10h4"}],["path",{"d":"M2 14h4"}],["path",{"d":"M2 18h4"}],["path",{"d":"M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"}]],"notebook-tabs":[["path",{"d":"M2 6h4"}],["path",{"d":"M2 10h4"}],["path",{"d":"M2 14h4"}],["path",{"d":"M2 18h4"}],["rect",{"width":"16","height":"20","x":"4","y":"2","rx":"2"}],["path",{"d":"M15 2v20"}],["path",{"d":"M15 7h5"}],["path",{"d":"M15 12h5"}],["path",{"d":"M15 17h5"}]],"option":[["path",{"d":"M3 3h6l6 18h6"}],["path",{"d":"M14 3h7"}]],"panel-left-close":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"m16 15-3-3 3-3"}]],"panel-left-open":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 3v18"}],["path",{"d":"m14 9 3 3-3 3"}]],"pause":[["rect",{"x":"14","y":"3","width":"5","height":"18","rx":"1"}],["rect",{"x":"5","y":"3","width":"5","height":"18","rx":"1"}]],"pencil":[["path",{"d":"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{"d":"m15 5 4 4"}]],"phone":[["path",{"d":"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"}]],"piano":[["path",{"d":"M18.5 8c-1.4 0-2.6-.8-3.2-2A6.87 6.87 0 0 0 2 9v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8.5C22 9.6 20.4 8 18.5 8"}],["path",{"d":"M2 14h20"}],["path",{"d":"M6 14v4"}],["path",{"d":"M10 14v4"}],["path",{"d":"M14 14v4"}],["path",{"d":"M18 14v4"}]],"pin":[["path",{"d":"M12 17v5"}],["path",{"d":"M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"}]],"play":[["path",{"d":"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]],"plus":[["path",{"d":"M5 12h14"}],["path",{"d":"M12 5v14"}]],"printer":[["path",{"d":"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}],["path",{"d":"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"}],["rect",{"x":"6","y":"14","width":"12","height":"8","rx":"1"}]],"radio":[["path",{"d":"M16.247 7.761a6 6 0 0 1 0 8.478"}],["path",{"d":"M19.075 4.933a10 10 0 0 1 0 14.134"}],["path",{"d":"M4.925 19.067a10 10 0 0 1 0-14.134"}],["path",{"d":"M7.753 16.239a6 6 0 0 1 0-8.478"}],["circle",{"cx":"12","cy":"12","r":"2"}]],"redo-2":[["path",{"d":"m15 14 5-5-5-5"}],["path",{"d":"M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"}]],"repeat":[["path",{"d":"m17 2 4 4-4 4"}],["path",{"d":"M3 11v-1a4 4 0 0 1 4-4h14"}],["path",{"d":"m7 22-4-4 4-4"}],["path",{"d":"M21 13v1a4 4 0 0 1-4 4H3"}]],"replace":[["path",{"d":"M14 4a1 1 0 0 1 1-1"}],["path",{"d":"M15 10a1 1 0 0 1-1-1"}],["path",{"d":"M21 4a1 1 0 0 0-1-1"}],["path",{"d":"M21 9a1 1 0 0 1-1 1"}],["path",{"d":"m3 7 3 3 3-3"}],["path",{"d":"M6 10V5a2 2 0 0 1 2-2h2"}],["rect",{"x":"3","y":"14","width":"7","height":"7","rx":"1"}]],"rose":[["path",{"d":"M17 10h-1a4 4 0 1 1 4-4v.534"}],["path",{"d":"M17 6h1a4 4 0 0 1 1.42 7.74l-2.29.87a6 6 0 0 1-5.339-10.68l2.069-1.31"}],["path",{"d":"M4.5 17c2.8-.5 4.4 0 5.5.8s1.8 2.2 2.3 3.7c-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2"}],["path",{"d":"M9.77 12C4 15 2 22 2 22"}],["circle",{"cx":"17","cy":"8","r":"2"}]],"rotate-ccw":[["path",{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{"d":"M3 3v5h5"}]],"rotate-cw":[["path",{"d":"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}],["path",{"d":"M21 3v5h-5"}]],"save":[["path",{"d":"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{"d":"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{"d":"M7 3v4a1 1 0 0 0 1 1h7"}]],"scan-text":[["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}],["path",{"d":"M7 8h8"}],["path",{"d":"M7 12h10"}],["path",{"d":"M7 16h6"}]],"scroll":[["path",{"d":"M19 17V5a2 2 0 0 0-2-2H4"}],["path",{"d":"M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"}]],"search":[["path",{"d":"m21 21-4.34-4.34"}],["circle",{"cx":"11","cy":"11","r":"8"}]],"search-x":[["path",{"d":"m13.5 8.5-5 5"}],["path",{"d":"m8.5 8.5 5 5"}],["circle",{"cx":"11","cy":"11","r":"8"}],["path",{"d":"m21 21-4.3-4.3"}]],"section":[["path",{"d":"M16 5a4 3 0 0 0-8 0c0 4 8 3 8 7a4 3 0 0 1-8 0"}],["path",{"d":"M8 19a4 3 0 0 0 8 0c0-4-8-3-8-7a4 3 0 0 1 8 0"}]],"settings":[["path",{"d":"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"}],["circle",{"cx":"12","cy":"12","r":"3"}]],"settings-2":[["path",{"d":"M14 17H5"}],["path",{"d":"M19 7h-9"}],["circle",{"cx":"17","cy":"17","r":"3"}],["circle",{"cx":"7","cy":"7","r":"3"}]],"share-2":[["circle",{"cx":"18","cy":"5","r":"3"}],["circle",{"cx":"6","cy":"12","r":"3"}],["circle",{"cx":"18","cy":"19","r":"3"}],["line",{"x1":"8.59","x2":"15.42","y1":"13.51","y2":"17.49"}],["line",{"x1":"15.41","x2":"8.59","y1":"6.51","y2":"10.49"}]],"shield-alert":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"M12 8v4"}],["path",{"d":"M12 16h.01"}]],"shield-check":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"m9 12 2 2 4-4"}]],"sliders-horizontal":[["path",{"d":"M10 5H3"}],["path",{"d":"M12 19H3"}],["path",{"d":"M14 3v4"}],["path",{"d":"M16 17v4"}],["path",{"d":"M21 12h-9"}],["path",{"d":"M21 19h-5"}],["path",{"d":"M21 5h-7"}],["path",{"d":"M8 10v4"}],["path",{"d":"M8 12H3"}]],"split":[["path",{"d":"M16 3h5v5"}],["path",{"d":"M8 3H3v5"}],["path",{"d":"M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"}],["path",{"d":"m15 9 6-6"}]],"square":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}]],"square-pen":[["path",{"d":"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{"d":"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]],"square-play":[["rect",{"x":"3","y":"3","width":"18","height":"18","rx":"2"}],["path",{"d":"M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"}]],"sticky-note":[["path",{"d":"M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"}],["path",{"d":"M15 3v5a1 1 0 0 0 1 1h5"}]],"sun":[["circle",{"cx":"12","cy":"12","r":"4"}],["path",{"d":"M12 2v2"}],["path",{"d":"M12 20v2"}],["path",{"d":"m4.93 4.93 1.41 1.41"}],["path",{"d":"m17.66 17.66 1.41 1.41"}],["path",{"d":"M2 12h2"}],["path",{"d":"M20 12h2"}],["path",{"d":"m6.34 17.66-1.41 1.41"}],["path",{"d":"m19.07 4.93-1.41 1.41"}]],"table":[["path",{"d":"M12 3v18"}],["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}]],"tags":[["path",{"d":"M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"}],["path",{"d":"M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"}],["circle",{"cx":"10.5","cy":"6.5","r":".5","fill":"currentColor"}]],"text":[["path",{"d":"M21 5H3"}],["path",{"d":"M15 12H3"}],["path",{"d":"M17 19H3"}]],"timer":[["line",{"x1":"10","x2":"14","y1":"2","y2":"2"}],["line",{"x1":"12","x2":"15","y1":"14","y2":"11"}],["circle",{"cx":"12","cy":"14","r":"8"}]],"trash-2":[["path",{"d":"M10 11v6"}],["path",{"d":"M14 11v6"}],["path",{"d":"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{"d":"M3 6h18"}],["path",{"d":"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]],"triangle":[["path",{"d":"M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"}]],"underline":[["path",{"d":"M6 4v6a6 6 0 0 0 12 0V4"}],["line",{"x1":"4","x2":"20","y1":"20","y2":"20"}]],"undo":[["path",{"d":"M3 7v6h6"}],["path",{"d":"M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"}]],"undo-2":[["path",{"d":"M9 14 4 9l5-5"}],["path",{"d":"M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"}]],"upload":[["path",{"d":"M12 3v12"}],["path",{"d":"m17 8-5-5-5 5"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}]],"user":[["path",{"d":"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{"cx":"12","cy":"7","r":"4"}]],"users":[["path",{"d":"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["path",{"d":"M16 3.128a4 4 0 0 1 0 7.744"}],["path",{"d":"M22 21v-2a4 4 0 0 0-3-3.87"}],["circle",{"cx":"9","cy":"7","r":"4"}]],"users-round":[["path",{"d":"M18 21a8 8 0 0 0-16 0"}],["circle",{"cx":"10","cy":"8","r":"5"}],["path",{"d":"M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"}]],"video":[["path",{"d":"m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"}],["rect",{"x":"2","y":"6","width":"14","height":"12","rx":"2"}]],"wallet":[["path",{"d":"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"}],["path",{"d":"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"}]],"wand-2":[["path",{"d":"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{"d":"m14 7 3 3"}],["path",{"d":"M5 6v4"}],["path",{"d":"M19 14v4"}],["path",{"d":"M10 2v2"}],["path",{"d":"M7 8H3"}],["path",{"d":"M21 16h-4"}],["path",{"d":"M11 3H9"}]],"wind":[["path",{"d":"M12.8 19.6A2 2 0 1 0 14 16H2"}],["path",{"d":"M17.5 8a2.5 2.5 0 1 1 2 4H2"}],["path",{"d":"M9.8 4.4A2 2 0 1 1 11 8H2"}]],"wrench":[["path",{"d":"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"}]],"x":[["path",{"d":"M18 6 6 18"}],["path",{"d":"m6 6 12 12"}]],"zap":[["path",{"d":"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]],"zoom-in":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"11","x2":"11","y1":"8","y2":"14"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]],"zoom-out":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]]};
   var NS = "http://www.w3.org/2000/svg";
   var DEFAULTS = { xmlns: NS, width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": 2, "stroke-linecap": "round", "stroke-linejoin": "round" };
   function node(spec) {
@@ -9714,7 +9777,7 @@ const REVIEW_LISTS = [REVIEW_IMPORTS, REVIEW_NO_KEY, REVIEW_ODD_KEY, REVIEW_TITL
 const CATEGORY_ROOT_NAMES = new Set(["Languages", "Style & Tempo", "Performance Lists", "Events"]);
 const IMPORT_METADATA_FIELDS = ["title", "alternateTitles", "artist", "featuredArtist", "composer", "lyricist", "album", "style", "timeSignature", "bpm", "key", "capo", "lyrics", "language", "sourceUrl"];
 const AUTOSAVE_DELAY = 450;
-const APP_BUILD = "3003fec3 · 3248b28";
+const APP_BUILD = "9deeb122 · e2b2759";
 
 const COLORS = ["blue", "green", "rose", "gold", "teal", "violet", "coral", "olive"];
 const COLOR_VALUES = {
@@ -11564,6 +11627,75 @@ Object.assign(HEBREW_UI, { "Cue": "טקסט" });
 
 // Song rows: the spoken label of a row.
 Object.assign(HEBREW_UI, { "Open": "פתיחה" });
+
+// Find on YouTube (soft look): the button before and after the search, the menu tile, the messages.
+Object.assign(HEBREW_UI, {
+  "Paste YouTube link": "הדבקת קישור יוטיוב",
+  "Find another version": "חיפוש גרסה אחרת",
+  "That is not a YouTube link. Nothing was saved. Copy the video's link on YouTube, then tap Paste YouTube link again.": "זה לא קישור ליוטיוב. לא נשמר דבר. אפשר להעתיק את הקישור של הסרטון ביוטיוב וללחוץ שוב על ״הדבקת קישור יוטיוב״.",
+  "No YouTube link was found on the clipboard. Nothing was saved. Copy the video's link on YouTube, then tap Paste YouTube link again.": "לא נמצא קישור יוטיוב בלוח. לא נשמר דבר. אפשר להעתיק את הקישור של הסרטון ביוטיוב וללחוץ שוב על ״הדבקת קישור יוטיוב״."
+});
+
+// YouTube search (soft look): Settings, the key, the setup steps.
+Object.assign(HEBREW_UI, {
+ "YouTube search": "חיפוש יוטיוב",
+ "Not set up": "לא הוגדר",
+ "Key saved": "המפתח שמור",
+ "about {n} searches left today": "נותרו בערך {n} חיפושים להיום",
+ "Search YouTube inside the app with a free key of your own. The key stays on this device: it is not in your library or your backups.": "אפשר לחפש ביוטיוב מתוך האפליקציה, עם מפתח חינמי משלך. המפתח נשאר במכשיר הזה בלבד: הוא לא נמצא בספרייה ולא בגיבויים.",
+ "YouTube API key": "מפתח API של יוטיוב",
+ "Paste the key here": "הדבקת המפתח כאן",
+ "Save key": "שמירת המפתח",
+ "Key saved on this device": "המפתח שמור במכשיר הזה",
+ "No key saved": "לא נשמר מפתח",
+ "Test key": "בדיקת המפתח",
+ "How to get a key": "איך משיגים מפתח",
+ "Paste the key first.": "יש להדביק קודם את המפתח.",
+ "A key has no spaces. Check that you pasted only the key.": "במפתח אין רווחים. כדאי לוודא שהודבק המפתח בלבד.",
+ "Key saved on this device. Tap Test key to check it.": "המפתח נשמר במכשיר הזה. אפשר ללחוץ על ״בדיקת המפתח״ כדי לבדוק אותו.",
+ "The key was removed from this device.": "המפתח הוסר מהמכשיר הזה.",
+ "Testing the key…": "בודק את המפתח…",
+ "OK. The key works.": "תקין. המפתח עובד.",
+ "Google says": "גוגל מדווחת",
+ "Search inside the app needs a free YouTube key. You can set one up in Settings.": "חיפוש מתוך האפליקציה דורש מפתח יוטיוב חינמי. אפשר להגדיר אחד בהגדרות.",
+ "The key is not valid. Check that you pasted all of it.": "המפתח אינו תקין. כדאי לוודא שהודבק במלואו.",
+ "Today's search limit is used up. It starts again tomorrow.": "מכסת החיפושים להיום נוצלה. היא מתחדשת מחר.",
+ "This key is restricted to another website. In Google Cloud, add this site's address to the key's allowed websites.": "המפתח מוגבל לאתר אחר. ב-Google Cloud יש להוסיף את כתובת האתר הזה לאתרים המורשים של המפתח.",
+ "YouTube Data API v3 is not turned on for the project this key belongs to.": "YouTube Data API v3 אינו מופעל בפרויקט שאליו שייך המפתח.",
+ "Could not reach YouTube. Check your connection.": "אין חיבור ליוטיוב. כדאי לבדוק את החיבור לאינטרנט.",
+ "The search did not work.": "החיפוש לא הצליח.",
+ "About ten minutes, once": "כעשר דקות, פעם אחת",
+ "Sign in to Google Cloud": "כניסה ל-Google Cloud",
+ "Open console.cloud.google.com in a browser and sign in with your Google account. It is free, and no card is needed for this.": "יש לפתוח בדפדפן את console.cloud.google.com ולהיכנס עם חשבון הגוגל. זה חינם, ואין צורך בכרטיס אשראי לצורך זה.",
+ "Make a project": "יצירת פרויקט",
+ "At the top of the page, tap the project name, then New project. Call it Song List Pro and tap Create. Wait a moment, then make sure it is the project that is selected.": "בראש העמוד לוחצים על שם הפרויקט, ואז על New project. נותנים לו את השם Song List Pro ולוחצים על Create. ממתינים רגע ומוודאים שזה הפרויקט שנבחר.",
+ "Turn on the YouTube API": "הפעלת ה-API של יוטיוב",
+ "Open the menu (the three lines at the top left), then APIs & Services, then Library. Search for YouTube Data API v3, open it and tap Enable.": "פותחים את התפריט (שלושת הקווים בפינה העליונה), ואז APIs & Services ואז Library. מחפשים YouTube Data API v3, פותחים אותו ולוחצים על Enable.",
+ "Create the key": "יצירת המפתח",
+ "Go to APIs & Services, then Credentials. Tap Create credentials, then API key. A box shows your new key: a long line of letters and numbers that starts with AIza. Copy it.": "עוברים ל-APIs & Services ואז Credentials. לוחצים על Create credentials ואז על API key. בחלון יופיע המפתח החדש: שורה ארוכה של אותיות ומספרים שמתחילה ב-AIza. מעתיקים אותה.",
+ "Lock the key to this app (important)": "נעילת המפתח לאפליקציה הזאת (חשוב)",
+ "In the box, tap Edit API key (or open the key from the list). Under Application restrictions choose Websites and add these two addresses: https://fal232-afk.github.io/* and http://localhost:4177/* . Under API restrictions choose Restrict key, pick YouTube Data API v3, and tap Save. It can take a few minutes before the lock is active.": "בחלון לוחצים על Edit API key (או פותחים את המפתח מהרשימה). תחת Application restrictions בוחרים Websites ומוסיפים את שתי הכתובות: https://fal232-afk.github.io/* ו-http://localhost:4177/* . תחת API restrictions בוחרים Restrict key, בוחרים YouTube Data API v3 ולוחצים על Save. ייתכן שיעברו כמה דקות עד שהנעילה תיכנס לתוקף.",
+ "Give the key to Song List Pro": "מסירת המפתח ל-Song List Pro",
+ "Come back here: Settings, YouTube search. Paste the key, tap Save key, then Test key. It should say OK.": "חוזרים לכאן: הגדרות, חיפוש יוטיוב. מדביקים את המפתח, לוחצים על ״שמירת המפתח״ ואז על ״בדיקת המפתח״. אמור להופיע ״תקין״.",
+ "Searching is free. Google allows about 100 searches a day with a key like this, and the app shows how many are left today.": "החיפוש חינמי. גוגל מאפשרת כ-100 חיפושים ביום עם מפתח כזה, והאפליקציה מציגה כמה נשארו להיום.",
+ "The key stays on this device only. It is not in your songs or your backups, so on another device you paste it again.": "המפתח נשאר במכשיר הזה בלבד. הוא לא נמצא בשירים ולא בגיבויים, ולכן במכשיר אחר מדביקים אותו שוב.",
+ "If you ever think someone else has seen the key, delete it in Google Cloud and make a new one.": "אם יש חשש שמישהו אחר ראה את המפתח, יש למחוק אותו ב-Google Cloud וליצור חדש."
+});
+
+Object.assign(HEBREW_UI, {
+ "Search YouTube": "חיפוש ביוטיוב",
+ "Results from YouTube": "תוצאות מיוטיוב",
+ "Searching…": "מחפש…",
+ "No videos found. Try different words.": "לא נמצאו סרטונים. כדאי לנסות מילים אחרות.",
+ "Set up search": "הגדרת החיפוש",
+ "More results": "עוד תוצאות"
+});
+
+Object.assign(HEBREW_UI, {
+ "Use this": "שימוש בסרטון הזה",
+ "Back to results": "חזרה לתוצאות",
+ "This video cannot be played here. Choose another one.": "אי אפשר לנגן את הסרטון הזה כאן. כדאי לבחור אחר."
+});
 // Hebrew for sentences that carry numbers and names ("5 songs added", "Delete “Title”?").
 // Each pattern matches the finished English sentence; the Hebrew builder gets the captured parts.
 // Names and titles inside the sentence are copied as typed.
@@ -13671,6 +13803,7 @@ function renderSong() {
   // The import source address is kept as hidden metadata (song.importSourceUrl); it is not shown.
   // Practice shows only for a song with something to play (a YouTube link or an attached file).
   els.songPracticeBtn.classList.toggle("hidden", !practiceSources(song).length);
+  syncYoutubeFindControls();
   renderSongCategoryButton(song);
   renderSongLocations(song);
   renderSongLinks(song);
@@ -17382,6 +17515,16 @@ function toggleSongSortDirection() {
   refreshIcons();
 }
 
+// Soft look, the song's "..." menu: a song with a YouTube track opens it and can search for another version; a pending search offers "Paste YouTube link". (A song with no track has the Find button on its page instead.)
+function youtubeMenuTiles(song) {
+  const st = youtubeFindStateFor(song);
+  const tiles = [];
+  if (st.hasTrack) tiles.push({ icon: "circle-play", label: t("Open on YouTube"), action: () => { closeOverlays(); window.open(song.youtubeUrl, "_blank", "noopener"); } });
+  if (st.hasTrack || st.pending) tiles.push({ icon: "search", label: t("Find another version"), action: () => { closeOverlays(); youtubeFindEntry(song); } });
+  if (st.pending) tiles.push({ icon: "clipboard-paste", label: t("Paste YouTube link"), action: () => { closeOverlays(); useCopiedYoutubeLink(); } });
+  return tiles;
+}
+
 function showSongMenu() {
   const song = currentSong();
   if (!song) return;
@@ -17394,7 +17537,7 @@ function showSongMenu() {
     { icon: "folder-plus", label: t("Add to folder or event"), action: openSongAddTo },
     ...(locked ? [] : [{ icon: "music", label: songHasChords(song) ? t("Edit chords") : t("Add chords"), action: openChordEditor }]),
     { icon: "file-music", label: (song.notePictures || []).length ? t("Sheet music") : t("Add sheet music"), action: openSongNotes },
-    { icon: "circle-play", label: t(song.youtubeUrl ? "Open on YouTube" : "Find on YouTube"), action: () => { closeOverlays(); if (song.youtubeUrl) window.open(song.youtubeUrl, "_blank", "noopener"); else openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id }); } },
+    ...(isSoftDesign() ? youtubeMenuTiles(song) : [{ icon: "circle-play", label: t(song.youtubeUrl ? "Open on YouTube" : "Find on YouTube"), action: () => { closeOverlays(); if (song.youtubeUrl) window.open(song.youtubeUrl, "_blank", "noopener"); else openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id }); } }]),
     { icon: "maximize-2", label: t("Performance mode"), action: openPerformanceMode },
     ...(songTextRestricted(song) ? [] : [{ icon: "share-2", label: t("Share lyrics"), action: shareCurrentSong }]),
     { icon: "printer", label: t("Print"), action: () => { closeOverlays(); window.print(); } }
@@ -21395,7 +21538,7 @@ const YOUTUBE_NOT_EMBEDDABLE = [101, 150];
 
 // An engine is { play, pause, seek, time, duration, isPlaying, destroy } (more are added for speed).
 // Every engine calls handlers.onState(playing) and handlers.onError(code) as things happen.
-async function createYouTubeEngine(videoId, handlers) {
+async function createYouTubeEngine(videoId, handlers, host = els.practiceVideo) {
   await loadYouTubeApi();
   // The frame is built here (not by the API) so it can send the page address to YouTube. Without that
   // referrer YouTube refuses with "Error 153, video player configuration error".
@@ -21410,7 +21553,7 @@ async function createYouTubeEngine(videoId, handlers) {
   frame.allow = "encrypted-media; picture-in-picture; fullscreen";
   frame.allowFullscreen = true;
   frame.title = "YouTube video player";
-  els.practiceVideo.replaceChildren(frame);
+  host.replaceChildren(frame);
   let playing = false;
   const player = await new Promise((resolve, reject) => {
     const instance = new globalThis.YT.Player(frame, {
@@ -21436,7 +21579,7 @@ async function createYouTubeEngine(videoId, handlers) {
     setRate: (rate) => { try { player.setPlaybackRate(rate); } catch { /* keeps the current speed */ } },
     getRate: () => { try { return Number(player.getPlaybackRate?.()); } catch { return NaN; } },
     availableRates: () => { try { return player.getAvailablePlaybackRates?.() || []; } catch { return []; } },
-    destroy: () => { try { player.destroy(); } catch { /* already gone */ } els.practiceVideo.innerHTML = ""; }
+    destroy: () => { try { player.destroy(); } catch { /* already gone */ } host.innerHTML = ""; }
   };
 }
 
@@ -22100,6 +22243,7 @@ function renderPracticeView() {
   const youtube = practiceSources(song).find((source) => source.kind === "youtube");
   if (youtube) els.practiceOpenExternal.href = youtube.url;
   syncPracticeEditButton();
+  syncYoutubeFindControls();
 }
 
 // ---------- Edit in Practice (soft look) ----------
@@ -22226,6 +22370,8 @@ function youtubeSearchQuery({ en, he, title, artist }) {
 
 function youtubeQueryForSong(song) {
   const parts = songTitleParts(song);
+  // The soft look searches for the Hebrew title when the song has one, else the English one, plus the artist ("משכיל לדוד Isaac Honig").
+  if (isSoftDesign()) return [(parts.he || parts.en || parts.one || song.title || "").trim(), ((song.artists || [])[0] || song.artist || "").trim()].filter(Boolean).join(" ");
   return youtubeSearchQuery({ en: parts.en, he: parts.he || parts.one, title: song.title, artist: (song.artists || [])[0] || song.artist });
 }
 
@@ -22233,6 +22379,7 @@ function youtubeQueryFromForm() {
   const en = els.songTitleEnglishInput.value.trim();
   const he = els.songTitleHebrewInput.value.trim();
   const artist = splitArtistCredits(els.songArtistInput.value)[0] || "";
+  if (isSoftDesign()) return [he || en, artist].filter(Boolean).join(" ");
   return youtubeSearchQuery({ en, he, title: en || he, artist });
 }
 
@@ -22241,6 +22388,7 @@ function openYoutubeSearch(query, { songId = null, form = false } = {}) {
   youtubeFindPending = { songId, at: Date.now(), form };
   const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
   window.open(url, "_blank", "noopener");
+  syncYoutubeFindControls();
 }
 
 function youtubeLinkFromText(text) {
@@ -22250,6 +22398,7 @@ function youtubeLinkFromText(text) {
 }
 
 function showYoutubeLinkBar() {
+  if (isSoftDesign()) { syncYoutubeFindControls(); return; }   // the soft look has no bar: the Find button turns into "Paste YouTube link" in the same place
   if (!youtubeFindPending || Date.now() - youtubeFindPending.at > 30 * 60 * 1000) { youtubeFindPending = null; return; }
   const song = youtubeFindPending.form ? songInfoDraft?.song : state.songs.find((item) => item.id === youtubeFindPending.songId);
   if (!song) { youtubeFindPending = null; return; }
@@ -22263,36 +22412,429 @@ function hideYoutubeLinkBar() {
 
 async function useCopiedYoutubeLink() {
   const pending = youtubeFindPending;
-  if (!pending) { hideYoutubeLinkBar(); return; }
+  if (!pending) { hideYoutubeLinkBar(); return false; }
   let text = "";
   try { text = await navigator.clipboard.readText(); } catch { text = ""; }
   const url = youtubeLinkFromText(text);
-  if (!url) { showToast("No YouTube link was copied. Copy the video's link on YouTube, then tap again."); return; }
+  if (!url) {
+    if (isSoftDesign()) { showToast(text.trim() ? "That is not a YouTube link. Nothing was saved. Copy the video's link on YouTube, then tap Paste YouTube link again." : "No YouTube link was found on the clipboard. Nothing was saved. Copy the video's link on YouTube, then tap Paste YouTube link again."); return false; }
+    showToast("No YouTube link was copied. Copy the video's link on YouTube, then tap again.");
+    return false;
+  }
   hideYoutubeLinkBar();
   youtubeFindPending = null;
   if (pending.form && songInfoDraft) {
     els.songYoutubeInput.value = url;
     showToast("Link added. Save the song to keep it.");
-    return;
+    return true;
   }
   const song = state.songs.find((item) => item.id === pending.songId);
-  if (!song) return;
+  if (!song) return false;
+  saveYoutubeTrack(song, url);
+  return true;
+}
+
+// The one thing a YouTube search can store: the chosen video's address, in the song's existing youtubeUrl field.
+function saveYoutubeTrack(song, url) {
   song.youtubeUrl = url;
   song.updatedAt = new Date().toISOString();
   persist();
   selectedSongId = song.id;
   render();
   showToast("YouTube link saved");
+  if (isSoftDesign() && practiceActive) closePractice();   // the page that asked is reopened with the new track
   if (practiceSources(song).length) openPractice();
+  syncYoutubeFindControls();
+}
+
+// ---- Soft look: "Find on YouTube" on the song page and the Practice page (a song with no YouTube track), in the song's "..." menu otherwise ----
+// After the search the same button reads "Paste YouTube link": tapping it reads the clipboard (only then), and a YouTube link there is saved as the song's track (the existing youtubeUrl field).
+// Nothing about the search or the video is kept: the only thing that can be stored is that one existing field.
+function youtubeFindStateFor(song) {
+  const pending = Boolean(youtubeFindPending && !youtubeFindPending.form && youtubeFindPending.songId === song?.id && Date.now() - youtubeFindPending.at <= 30 * 60 * 1000);
+  return { hasTrack: Boolean(song?.youtubeUrl), pending };
+}
+
+function youtubeFindAction(song) {
+  if (youtubeFindStateFor(song).pending) useCopiedYoutubeLink();
+  else youtubeFindEntry(song);
+}
+
+function syncYoutubeFindControls() {
+  const soft = isSoftDesign();
+  const song = soft ? (practiceActive ? state.songs.find((item) => item.id === practiceSongId) : currentSong()) : null;
+  // the song page chip
+  let chip = document.getElementById("songFindYoutubeBtn");
+  const pageSong = soft ? currentSong() : null;
+  const pageState = pageSong ? youtubeFindStateFor(pageSong) : null;
+  if (!soft || !pageSong || pageState.hasTrack) { chip?.remove(); chip = null; }
+  else {
+    if (!chip) {
+      chip = document.createElement("button");
+      chip.id = "songFindYoutubeBtn";
+      chip.type = "button";
+      chip.className = "slp-chip song-chip song-find-youtube";
+      chip.innerHTML = `<i data-lucide="search"></i><span></span>`;
+      chip.addEventListener("click", () => { const s = currentSong(); if (s) youtubeFindAction(s); });
+      els.songPracticeBtn.before(chip);
+      refreshIcons();
+    }
+    chip.querySelector("span").textContent = t(pageState.pending ? "Paste YouTube link" : "Find on YouTube");
+    chip.hidden = Boolean(practiceActive);
+  }
+  // the Practice page button (the existing search icon becomes a labelled button; it is not shown when the song has a track)
+  const btn = els.practiceFindBtn;
+  const practiceSong = soft && practiceActive ? state.songs.find((item) => item.id === practiceSongId) : null;
+  if (!soft) {
+    if (btn.classList.contains("practice-find-labeled")) { btn.classList.remove("practice-find-labeled"); btn.innerHTML = '<i data-lucide="search"></i>'; btn.hidden = false; btn.setAttribute("aria-label", "Find another video on YouTube"); refreshIcons(); }
+  } else if (practiceSong) {
+    const st = youtubeFindStateFor(practiceSong);
+    btn.classList.add("practice-find-labeled");
+    btn.hidden = st.hasTrack;
+    btn.innerHTML = `<i data-lucide="${st.pending ? "clipboard-paste" : "search"}"></i><span>${escapeHtml(t(st.pending ? "Paste YouTube link" : "Find on YouTube"))}</span>`;
+    btn.setAttribute("aria-label", t(st.pending ? "Paste YouTube link" : "Find on YouTube"));
+    refreshIcons();
+  }
 }
 
 function initYoutubeFind() {
   els.songYoutubeFindBtn.addEventListener("click", () => openYoutubeSearch(youtubeQueryFromForm(), { form: true }));
-  els.practiceFindBtn.addEventListener("click", () => { const song = currentSong(); if (song) openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id }); });
+  els.practiceFindBtn.addEventListener("click", () => {
+    const song = isSoftDesign() && practiceActive ? state.songs.find((item) => item.id === practiceSongId) : currentSong();
+    if (!song) return;
+    if (isSoftDesign()) youtubeFindAction(song);
+    else openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id });
+  });
   els.youtubeLinkUseBtn.addEventListener("click", useCopiedYoutubeLink);
   els.youtubeLinkDismissBtn.addEventListener("click", () => { hideYoutubeLinkBar(); youtubeFindPending = null; });
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && youtubeFindPending) showYoutubeLinkBar(); });
   window.addEventListener?.("pageshow", () => { if (youtubeFindPending) showYoutubeLinkBar(); });
+}
+// In-app YouTube search (soft look): the official YouTube Data API v3, called straight from the app with the person's own browser API key. No server.
+//
+// The key is typed into Settings and kept on this device only (localStorage, its own entry): never in the code or the repository, never in the library, never in a backup. The count of searches made today is kept the
+// same way. Nothing a search returns (results, thumbnails, channels) is stored; the only thing that can ever be saved is the one chosen video's address in the song's existing youtubeUrl field.
+//
+// Google's default quota is 10,000 units a day: a search costs 100 units, looking up the durations of its results 1 more. The day changes at midnight Pacific time, which is when the quota resets.
+
+const YT_KEY_STORAGE = "slp-youtube-key";
+const YT_QUOTA_STORAGE = "slp-youtube-quota";
+const YT_DAILY_UNITS = 10000;
+const YT_SEARCH_COST = 100;
+const YT_LIST_COST = 1;
+const YT_PAGE_SIZE = 15;
+
+function youtubeKeyGet() {
+  try { return String(localStorage.getItem(YT_KEY_STORAGE) || "").trim(); } catch { return ""; }
+}
+
+function youtubeKeySet(value) {
+  const key = String(value || "").trim();
+  try { if (key) localStorage.setItem(YT_KEY_STORAGE, key); else localStorage.removeItem(YT_KEY_STORAGE); } catch { return false; }
+  return true;
+}
+
+// "AIza…wxyz": enough to recognise the key, never the whole of it.
+function youtubeKeyMasked(key = youtubeKeyGet()) {
+  return key.length > 8 ? `${key.slice(0, 4)}…${key.slice(-4)}` : key ? "…" : "";
+}
+
+// ---- searches made today on this device ----
+function youtubeQuotaDay() {
+  try { return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); } catch { return new Date().toISOString().slice(0, 10); }
+}
+
+function youtubeQuotaRead() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(YT_QUOTA_STORAGE) || "null"); } catch { saved = null; }
+  const day = youtubeQuotaDay();
+  return saved && saved.day === day ? { day, searches: Number(saved.searches) || 0, units: Number(saved.units) || 0, exhausted: saved.exhausted === true } : { day, searches: 0, units: 0, exhausted: false };
+}
+
+function youtubeQuotaWrite(quota) {
+  try { localStorage.setItem(YT_QUOTA_STORAGE, JSON.stringify(quota)); } catch { /* the count is only a convenience */ }
+}
+
+function youtubeQuotaAdd(units, search = false) {
+  const q = youtubeQuotaRead();
+  q.units += units;
+  if (search) q.searches += 1;
+  youtubeQuotaWrite(q);
+  return q;
+}
+
+function youtubeQuotaMarkUsedUp() {
+  const q = youtubeQuotaRead();
+  q.exhausted = true;
+  youtubeQuotaWrite(q);
+}
+
+// "about N searches left today" (Google's default 10,000 units, 100 per search)
+function youtubeSearchesLeft() {
+  const q = youtubeQuotaRead();
+  return q.exhausted ? 0 : Math.max(0, Math.round((YT_DAILY_UNITS - q.units) / YT_SEARCH_COST));
+}
+
+// ---- the API ----
+class YoutubeApiError extends Error {
+  constructor(kind, message, detail = "") { super(message); this.kind = kind; this.detail = detail; }
+}
+
+// Turns Google's error answer into one of: "key" (not valid), "quota" (used up), "referer" (the key is restricted to another website), "notEnabled" (the API is not turned on), "other".
+function youtubeApiErrorFrom(status, body) {
+  const e = body && body.error ? body.error : {};
+  const reason = String((e.errors && e.errors[0] && e.errors[0].reason) || e.status || "");
+  const message = String(e.message || "");
+  const text = `${reason} ${message}`;
+  let kind = "other";
+  if (/quota|dailyLimit|rateLimit/i.test(text)) kind = "quota";
+  else if (/referer|ipRefererBlocked|are blocked|not authorized to use this API key|API_KEY_HTTP_REFERRER_BLOCKED/i.test(text)) kind = "referer";
+  else if (/keyInvalid|API key not valid|API_KEY_INVALID|API key expired|keyExpired/i.test(text) || (status === 400 && /key/i.test(message))) kind = "key";
+  else if (/accessNotConfigured|has not been used|is disabled|SERVICE_DISABLED/i.test(text)) kind = "notEnabled";
+  return new YoutubeApiError(kind, message || `HTTP ${status}`, `${status}${reason ? ` ${reason}` : ""}`);
+}
+
+async function youtubeApiGet(path, params) {
+  const key = youtubeKeyGet();
+  if (!key) throw new YoutubeApiError("nokey", "No key");
+  const url = `https://www.googleapis.com/youtube/v3/${path}?${new URLSearchParams({ ...params, key })}`;
+  let response;
+  try { response = await fetch(url); } catch { throw new YoutubeApiError("network", "Could not reach YouTube"); }
+  let body = null;
+  try { body = await response.json(); } catch { body = null; }
+  if (!response.ok) throw youtubeApiErrorFrom(response.status, body);
+  return body;
+}
+
+function youtubeDecode(text) {
+  const box = document.createElement("textarea");
+  box.innerHTML = String(text || "");
+  return box.value;
+}
+
+// "PT1H2M3S" -> "1:02:03", "PT4M5S" -> "4:05"
+function youtubeDuration(iso) {
+  const m = String(iso || "").match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/);
+  if (!m) return "";
+  const h = Number(m[1] || 0), min = Number(m[2] || 0), sec = Number(m[3] || 0);
+  const two = (n) => String(n).padStart(2, "0");
+  return h ? `${h}:${two(min)}:${two(sec)}` : `${min}:${two(sec)}`;
+}
+
+// One search (100 units) and one look-up of the durations (1 unit). Returns { items: [{ id, title, channel, thumb, duration }], next }.
+async function youtubeSearchVideos(query, pageToken = "", pageSize = YT_PAGE_SIZE) {
+  if (youtubeQuotaRead().exhausted) throw new YoutubeApiError("quota", "Today's search limit is used up");
+  let body;
+  try {
+    body = await youtubeApiGet("search", { part: "snippet", type: "video", maxResults: String(pageSize), q: query, ...(pageToken ? { pageToken } : {}) });
+  } catch (error) {
+    if (error.kind === "quota") youtubeQuotaMarkUsedUp();
+    throw error;
+  }
+  youtubeQuotaAdd(YT_SEARCH_COST, true);
+  const found = (body.items || []).filter((item) => item.id && item.id.videoId).map((item) => ({
+    id: item.id.videoId,
+    title: youtubeDecode(item.snippet?.title),
+    channel: youtubeDecode(item.snippet?.channelTitle),
+    thumb: item.snippet?.thumbnails?.medium?.url || item.snippet?.thumbnails?.default?.url || "",
+    duration: ""
+  }));
+  if (found.length) {
+    try {
+      const details = await youtubeApiGet("videos", { part: "contentDetails", id: found.map((x) => x.id).join(",") });
+      youtubeQuotaAdd(YT_LIST_COST);
+      const byId = new Map((details.items || []).map((x) => [x.id, youtubeDuration(x.contentDetails?.duration)]));
+      found.forEach((x) => { x.duration = byId.get(x.id) || ""; });
+    } catch { /* the durations are a nicety: the results are still shown without them */ }
+  }
+  return { items: found, next: body.nextPageToken || "" };
+}
+
+// The plain-words message for an error (the exact answer from Google is added under it)
+function youtubeErrorText(error) {
+  const kinds = {
+    nokey: "Search inside the app needs a free YouTube key. You can set one up in Settings.",
+    key: "The key is not valid. Check that you pasted all of it.",
+    quota: "Today's search limit is used up. It starts again tomorrow.",
+    referer: "This key is restricted to another website. In Google Cloud, add this site's address to the key's allowed websites.",
+    notEnabled: "YouTube Data API v3 is not turned on for the project this key belongs to.",
+    network: "Could not reach YouTube. Check your connection."
+  };
+  return t(kinds[error?.kind] || "The search did not work.");
+}
+// "Find on YouTube" search sheet (soft look): a full-height sheet over the song page or the Practice page. It searches YouTube with the person's own key (youtube-search.js) and lists up to 15 results at a time.
+// Nothing it shows is kept: no results, no thumbnails, no channel names. The only thing that can ever be saved is the one chosen video's address, in the song's existing youtubeUrl field.
+// Without a key the Find button keeps using YouTube's own search page (youtube-find.js); this sheet's message state covers a used-up day or a key that stopped working.
+
+let ytSheet = null;   // { songId, query, items, next, loading, message, seen } while the sheet is open
+
+function youtubeSheetSong() {
+  return ytSheet ? state.songs.find((item) => item.id === ytSheet.songId) : null;
+}
+
+// Find on YouTube / Find another version: the search sheet when a key is saved, else YouTube's own search page.
+function youtubeFindEntry(song) {
+  if (isSoftDesign() && youtubeKeyGet()) openYoutubeSheet(song);
+  else openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id });
+}
+
+function ensureYoutubeSheet() {
+  let sheet = document.getElementById("ytSearchSheet");
+  if (sheet) return sheet;
+  sheet = document.createElement("section");
+  sheet.id = "ytSearchSheet";
+  sheet.className = "yt-sheet hidden";
+  sheet.hidden = true;
+  sheet.setAttribute("role", "dialog");
+  sheet.setAttribute("aria-modal", "true");
+  sheet.setAttribute("aria-labelledby", "ytSheetTitle");
+  sheet.innerHTML = `<header class="yt-sheet__bar"><h2 id="ytSheetTitle" class="yt-sheet__title"></h2><button id="ytSheetClose" class="yt-sheet__close" type="button"><i data-lucide="x"></i></button></header>
+    <div id="ytSheetPlayer" class="yt-sheet__player" hidden><div id="ytSheetVideo" class="yt-sheet__video"></div><p id="ytSheetPlayerNote" class="yt-sheet__detail" role="status"></p><div class="yt-sheet__actions yt-sheet__playeractions"><button id="ytSheetUse" class="slp-btn slp-btn--primary" type="button" data-yt-act="use"></button><button id="ytSheetBack" class="slp-btn" type="button" data-yt-act="back"></button></div></div>
+    <form id="ytSheetForm" class="yt-sheet__query" role="search"><input id="ytSheetInput" class="slp-input" type="search" dir="auto" enterkeyhint="search" autocomplete="off"><button id="ytSheetGo" class="slp-btn slp-btn--primary" type="submit"></button></form>
+    <div class="yt-sheet__meta"><span id="ytSheetCredit" class="yt-sheet__credit"></span><span id="ytSheetLeft" class="yt-sheet__left"></span></div>
+    <div id="ytSheetBody" class="yt-sheet__body" data-sheet-scroll></div>`;
+  document.body.append(sheet);
+  document.getElementById("ytSheetClose").addEventListener("click", closeYoutubeSheet);
+  document.getElementById("ytSheetForm").addEventListener("submit", (event) => { event.preventDefault(); youtubeSheetSearch(); });
+  sheet.addEventListener("keydown", (event) => { if (event.key === "Escape") { event.stopPropagation(); closeYoutubeSheet(); } });
+  sheet.addEventListener("click", youtubeSheetClick);
+  return sheet;
+}
+
+function openYoutubeSheet(song) {
+  if (!song) return;
+  const sheet = ensureYoutubeSheet();
+  ytSheet = { previewId: "", preview: null, songId: song.id, query: youtubeQueryForSong(song), items: [], next: "", loading: false, message: null, seen: new Set(), token: 0 };
+  document.getElementById("ytSheetInput").value = ytSheet.query;
+  setElementVisible(sheet, true);
+  document.body.classList.add("yt-sheet-open");
+  setSheetScrollLock(true);
+  youtubeSheetRender();
+  if (ytSheet.query) youtubeSheetSearch(); else document.getElementById("ytSheetInput").focus();
+}
+
+function closeYoutubeSheet() {
+  if (!ytSheet) return;
+  youtubeSheetStopPreview();
+  ytSheet = null;
+  setElementVisible(document.getElementById("ytSearchSheet"), false);
+  document.body.classList.remove("yt-sheet-open");
+  setSheetScrollLock(false);
+}
+
+// A new search from the query box (the first page), or the next page of the same one.
+async function youtubeSheetSearch(more = false) {
+  const sheet = ytSheet;
+  if (!sheet || sheet.loading) return;
+  const query = more ? sheet.query : document.getElementById("ytSheetInput").value.trim();
+  if (!query) { sheet.message = null; sheet.items = []; sheet.next = ""; youtubeSheetRender(); return; }
+  if (!more) { sheet.query = query; sheet.items = []; sheet.next = ""; sheet.seen = new Set(); }
+  sheet.message = null;
+  sheet.loading = true;
+  youtubeSheetRender();
+  try {
+    const page = await youtubeSearchVideos(sheet.query, more ? sheet.next : "");
+    if (ytSheet !== sheet) return;
+    page.items.forEach((item) => { if (!sheet.seen.has(item.id)) { sheet.seen.add(item.id); sheet.items.push(item); } });
+    sheet.next = page.next;
+    sheet.empty = !sheet.items.length;
+  } catch (error) {
+    if (ytSheet !== sheet) return;
+    sheet.message = { kind: error.kind || "other", text: youtubeErrorText(error), detail: error.kind === "other" ? error.message : "" };
+  }
+  sheet.loading = false;
+  youtubeSheetRender();
+}
+
+function youtubeSheetRender() {
+  const sheet = ytSheet;
+  if (!sheet) return;
+  document.getElementById("ytSheetTitle").textContent = t("Find on YouTube");
+  const close = document.getElementById("ytSheetClose");
+  close.setAttribute("aria-label", t("Close"));
+  document.getElementById("ytSheetInput").setAttribute("aria-label", t("Search YouTube"));
+  document.getElementById("ytSheetGo").textContent = t("Search");
+  document.getElementById("ytSheetCredit").textContent = t("Results from YouTube");
+  const left = youtubeSearchesLeft();
+  document.getElementById("ytSheetLeft").textContent = t("about {n} searches left today", { n: left });
+  document.getElementById("ytSheetUse").textContent = t("Use this");
+  document.getElementById("ytSheetBack").textContent = t("Back to results");
+  const body = document.getElementById("ytSheetBody");
+  const rows = sheet.items.map((item) => `<button class="yt-result${item.id === sheet.previewId ? " is-previewing" : ""}" type="button" data-yt-act="preview" data-video-id="${escapeHtml(item.id)}"${item.id === sheet.previewId ? ' aria-current="true"' : ""}>
+      <span class="yt-result__thumb">${item.thumb ? `<img src="${escapeHtml(item.thumb)}" alt="" loading="lazy">` : ""}${item.duration ? `<span class="yt-result__time" dir="ltr">${escapeHtml(item.duration)}</span>` : ""}</span>
+      <span class="yt-result__text"><span class="yt-result__title" dir="auto">${escapeHtml(item.title)}</span><span class="yt-result__channel" dir="auto">${escapeHtml(item.channel)}</span></span></button>`).join("");
+  let extra = "";
+  if (sheet.loading) extra = `<p class="yt-sheet__note" role="status">${escapeHtml(t("Searching…"))}</p>`;
+  else if (sheet.message) {
+    const m = sheet.message;
+    extra = `<div class="yt-sheet__message" role="alert"><p>${escapeHtml(m.text)}</p>${m.detail ? `<p class="yt-sheet__detail" dir="auto">${escapeHtml(t("Google says"))}: ${escapeHtml(m.detail)}</p>` : ""}
+      <div class="yt-sheet__actions"><button class="slp-btn" type="button" data-yt-act="open">${escapeHtml(t("Open in YouTube"))}</button><button class="slp-btn" type="button" data-yt-act="paste">${escapeHtml(t("Paste YouTube link"))}</button><button class="slp-btn slp-btn--primary" type="button" data-yt-act="setup">${escapeHtml(t("Set up search"))}</button></div></div>`;
+  } else if (sheet.empty && !sheet.items.length) extra = `<p class="yt-sheet__note">${escapeHtml(t("No videos found. Try different words."))}</p>`;
+  const more = sheet.next && !sheet.loading && !sheet.message ? `<button class="slp-btn yt-sheet__more" type="button" data-yt-act="more">${escapeHtml(t("More results"))}</button>` : "";
+  body.innerHTML = rows + extra + more;
+}
+
+// The preview is YouTube's own embedded player, in the same engine the Practice page uses, left exactly as YouTube serves it (its controls and any ads stay).
+async function youtubeSheetPreview(id) {
+  const sheet = ytSheet;
+  if (!sheet || !id) return;
+  youtubeSheetStopPreview();
+  sheet.previewId = id;
+  const token = ++sheet.token;
+  const player = document.getElementById("ytSheetPlayer");
+  player.hidden = false;
+  const note = document.getElementById("ytSheetPlayerNote");
+  note.textContent = "";
+  document.getElementById("ytSheetUse").disabled = false;
+  try { if (practiceActive && practiceEngine?.isPlaying?.()) practiceEngine.pause(); } catch { /* the page underneath keeps whatever it was doing */ }
+  youtubeSheetRender();
+  document.getElementById("ytSheetBody").querySelector(".is-previewing")?.scrollIntoView?.({ block: "nearest" });
+  try {
+    const engine = await createYouTubeEngine(id, { onState() {}, onError() { if (ytSheet === sheet && sheet.token === token) { note.textContent = t("This video cannot be played here. Choose another one."); document.getElementById("ytSheetUse").disabled = true; } } }, document.getElementById("ytSheetVideo"));
+    if (ytSheet !== sheet || sheet.token !== token) { engine?.destroy?.(); return; }
+    sheet.preview = engine;
+  } catch {
+    if (ytSheet === sheet && sheet.token === token) { note.textContent = t("This video cannot be played here. Choose another one."); document.getElementById("ytSheetUse").disabled = true; }
+  }
+}
+
+function youtubeSheetStopPreview() {
+  if (!ytSheet) return;
+  ytSheet.token++;
+  try { ytSheet.preview?.destroy?.(); } catch { /* already gone */ }
+  ytSheet.preview = null;
+  ytSheet.previewId = "";
+  const player = document.getElementById("ytSheetPlayer");
+  if (player) { player.hidden = true; document.getElementById("ytSheetVideo").innerHTML = ""; }
+}
+
+function youtubeSheetClick(event) {
+  const act = event.target.closest("[data-yt-act]")?.dataset.ytAct;
+  const song = youtubeSheetSong();
+  if (act === "preview") { youtubeSheetPreview(event.target.closest("[data-video-id]")?.dataset.videoId); return; }
+  if (act === "back") { youtubeSheetStopPreview(); youtubeSheetRender(); return; }
+  if (act === "use") {
+    const id = ytSheet?.previewId;
+    if (!song || !id) return;
+    closeYoutubeSheet();
+    saveYoutubeTrack(song, `https://www.youtube.com/watch?v=${id}`);
+    return;
+  }
+  if (act === "more") { youtubeSheetSearch(true); return; }
+  if (!song) return;
+  if (act === "open") { closeYoutubeSheet(); openYoutubeSearch(youtubeQueryForSong(song), { songId: song.id }); return; }
+  if (act === "paste") {
+    youtubeFindPending = { songId: song.id, at: Date.now(), form: false };
+    useCopiedYoutubeLink().then((saved) => { if (saved) closeYoutubeSheet(); });
+    return;
+  }
+  if (act === "setup") {
+    closeYoutubeSheet();
+    if (practiceActive) closePractice();
+    showSettingsMain();
+    showOverlay(els.settingsSheet);
+    openYoutubeSettingsPage();
+  }
 }
 // ---------- Practice: Listen for key (step 1 of 2: listening only, no chord tab yet) ----------
 // The Key chip in Practice opens a bottom sheet. The phone's microphone is listened to for 10 seconds, the notes are
@@ -22780,6 +23322,7 @@ function showSettingsMain(title = t("Settings & Backup")) {
   refreshFixArtistsRow();
   refreshDuplicatesRow();
   refreshReviewRows();
+  ensureYoutubeSettings();
   refreshTidyStylesRow();
   refreshSplitArtistsRow();
   els.appVersionText.textContent = APP_BUILD;
@@ -22888,6 +23431,7 @@ function refreshSettingsLanguage() {
   refreshFixArtistsRow();
   refreshDuplicatesRow();
   refreshReviewRows();
+  ensureYoutubeSettings();
   refreshTidyStylesRow();
   refreshSplitArtistsRow();
 }
@@ -23344,6 +23888,166 @@ function undoTurnIntoTextLines() {
   render();
   showToast("Undone");
   if (document.getElementById("reviewEmptyEventsView") && !document.getElementById("reviewEmptyEventsView").classList.contains("hidden")) renderEmptyInEventsPage();
+}
+// Settings > YouTube search (soft look): paste a YouTube Data API key (kept on this device only), test it, remove it, and read how to get one.
+// The key and the day's search count live in their own localStorage entries (see youtube-search.js): not in the library, not in the code, not in a backup.
+
+// The setup steps, in plain words. design/YOUTUBE-KEY-SETUP.md has the same steps.
+const YOUTUBE_KEY_STEPS = [
+  ["Sign in to Google Cloud", "Open console.cloud.google.com in a browser and sign in with your Google account. It is free, and no card is needed for this."],
+  ["Make a project", "At the top of the page, tap the project name, then New project. Call it Song List Pro and tap Create. Wait a moment, then make sure it is the project that is selected."],
+  ["Turn on the YouTube API", "Open the menu (the three lines at the top left), then APIs & Services, then Library. Search for YouTube Data API v3, open it and tap Enable."],
+  ["Create the key", "Go to APIs & Services, then Credentials. Tap Create credentials, then API key. A box shows your new key: a long line of letters and numbers that starts with AIza. Copy it."],
+  ["Lock the key to this app (important)", "In the box, tap Edit API key (or open the key from the list). Under Application restrictions choose Websites and add these two addresses: https://fal232-afk.github.io/* and http://localhost:4177/* . Under API restrictions choose Restrict key, pick YouTube Data API v3, and tap Save. It can take a few minutes before the lock is active."],
+  ["Give the key to Song List Pro", "Come back here: Settings, YouTube search. Paste the key, tap Save key, then Test key. It should say OK."]
+];
+const YOUTUBE_KEY_NOTES = [
+  "Searching is free. Google allows about 100 searches a day with a key like this, and the app shows how many are left today.",
+  "The key stays on this device only. It is not in your songs or your backups, so on another device you paste it again.",
+  "If you ever think someone else has seen the key, delete it in Google Cloud and make a new one."
+];
+
+function youtubeSettingsSubtitle() {
+  const key = youtubeKeyGet();
+  if (!key) return t("Not set up");
+  return `${t("Key saved")} · ${t("about {n} searches left today", { n: youtubeSearchesLeft() })}`;
+}
+
+function ensureYoutubeSettings() {
+  const soft = isSoftDesign();
+  let row = document.getElementById("youtubeSearchBtn");
+  if (!soft) { row?.remove(); document.getElementById("youtubeSearchSettingsView")?.remove(); document.getElementById("youtubeKeyHowToView")?.remove(); return; }
+  if (!row) {
+    const anchor = document.getElementById("printLibraryBtn");
+    if (!anchor) return;
+    row = document.createElement("button");
+    row.id = "youtubeSearchBtn";
+    row.className = "slp-row";
+    row.type = "button";
+    row.innerHTML = `<span class="slp-row__icon-tile"><i data-lucide="search"></i></span><span class="slp-row__body"><span class="slp-row__title"></span><span id="youtubeSearchSubtitle" class="slp-row__subtitle"></span></span><i data-lucide="chevron-right" class="slp-row__chevron"></i>`;
+    anchor.after(row);
+    row.addEventListener("click", openYoutubeSettingsPage);
+    refreshIcons();
+  }
+  row.querySelector(".slp-row__title").textContent = t("YouTube search");
+  document.getElementById("youtubeSearchSubtitle").textContent = youtubeSettingsSubtitle();
+}
+
+function settingsPageHeader(backId, title, subtitle = "") {
+  return `<header class="slp-header"><button id="${backId}" class="slp-btn slp-btn--icon" type="button"><svg class="slp-header__back" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="slp-header__titles"><h2 class="slp-header__title"></h2><p class="slp-subtitle"></p></div></header>`;
+}
+
+function ensureYoutubeSettingsPages() {
+  const after = document.getElementById("reviewFixView") || document.getElementById("duplicatesSettingsView") || els.settingsMainView;
+  if (!document.getElementById("youtubeSearchSettingsView")) {
+    const page = document.createElement("div");
+    page.id = "youtubeSearchSettingsView";
+    page.className = "settings-page hidden";
+    page.innerHTML = `${settingsPageHeader("backFromYoutubeSearchBtn")}<div class="settings-page__body yt-settings-body">
+      <p class="yt-settings-info"></p>
+      <section class="slp-card yt-key-card"><label class="yt-key-label" for="ytKeyInput"></label><div class="yt-key-line"><input id="ytKeyInput" class="slp-input" type="text" dir="ltr" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="text"><button id="ytKeySaveBtn" class="slp-btn slp-btn--soft yt-key-save" type="button"></button></div><p id="ytKeyStatus" class="yt-key-status"></p></section>
+      <section class="slp-card">
+        <button id="ytKeyTestBtn" class="slp-row" type="button"><span class="slp-row__body"><span class="slp-row__title"></span></span></button>
+        <button id="ytKeyRemoveBtn" class="slp-row" type="button"><span class="slp-row__body"><span class="slp-row__title"></span></span></button>
+        <button id="ytKeyHowToBtn" class="slp-row" type="button"><span class="slp-row__body"><span class="slp-row__title"></span></span><i data-lucide="chevron-right" class="slp-row__chevron"></i></button>
+      </section>
+      <p id="ytKeyResult" class="yt-key-result" role="status" aria-live="polite"></p></div>`;
+    after.after(page);
+    document.getElementById("backFromYoutubeSearchBtn").addEventListener("click", () => showSettingsMain());
+    document.getElementById("ytKeySaveBtn").addEventListener("click", saveYoutubeKeyFromInput);
+    document.getElementById("ytKeyInput").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); saveYoutubeKeyFromInput(); } });
+    document.getElementById("ytKeyTestBtn").addEventListener("click", testYoutubeKey);
+    document.getElementById("ytKeyRemoveBtn").addEventListener("click", removeYoutubeKey);
+    document.getElementById("ytKeyHowToBtn").addEventListener("click", openYoutubeHowTo);
+  }
+  if (!document.getElementById("youtubeKeyHowToView")) {
+    const page = document.createElement("div");
+    page.id = "youtubeKeyHowToView";
+    page.className = "settings-page hidden";
+    page.innerHTML = `${settingsPageHeader("backFromYoutubeHowToBtn")}<div id="youtubeKeyHowToBody" class="settings-page__body yt-howto-body"></div>`;
+    document.getElementById("youtubeSearchSettingsView").after(page);
+    document.getElementById("backFromYoutubeHowToBtn").addEventListener("click", openYoutubeSettingsPage);
+  }
+}
+
+function renderYoutubeSettingsPage() {
+  const page = document.getElementById("youtubeSearchSettingsView");
+  if (!page) return;
+  page.querySelector(".slp-header__back").closest("button").setAttribute("aria-label", t("Back"));
+  page.querySelector(".slp-header__title").textContent = t("YouTube search");
+  page.querySelector(".slp-subtitle").textContent = youtubeSettingsSubtitle();
+  page.querySelector(".yt-settings-info").textContent = t("Search YouTube inside the app with a free key of your own. The key stays on this device: it is not in your library or your backups.");
+  page.querySelector(".yt-key-label").textContent = t("YouTube API key");
+  document.getElementById("ytKeyInput").placeholder = t("Paste the key here");
+  document.getElementById("ytKeySaveBtn").textContent = t("Save key");
+  const key = youtubeKeyGet();
+  document.getElementById("ytKeyStatus").textContent = key ? `${t("Key saved on this device")}: ${youtubeKeyMasked(key)}` : t("No key saved");
+  const test = document.getElementById("ytKeyTestBtn"), remove = document.getElementById("ytKeyRemoveBtn");
+  test.querySelector(".slp-row__title").textContent = t("Test key");
+  remove.querySelector(".slp-row__title").textContent = t("Remove");
+  document.getElementById("ytKeyHowToBtn").querySelector(".slp-row__title").textContent = t("How to get a key");
+  test.disabled = !key; remove.disabled = !key;
+  refreshIcons();
+}
+
+function openYoutubeSettingsPage() {
+  ensureYoutubeSettingsPages();
+  renderYoutubeSettingsPage();
+  document.getElementById("ytKeyResult").textContent = "";
+  showSettingsPage("youtubeSearchSettingsView");
+}
+
+function saveYoutubeKeyFromInput() {
+  const input = document.getElementById("ytKeyInput");
+  const value = input.value.trim();
+  if (!value) { document.getElementById("ytKeyResult").textContent = t("Paste the key first."); return false; }
+  if (/\s/.test(value)) { document.getElementById("ytKeyResult").textContent = t("A key has no spaces. Check that you pasted only the key."); return false; }
+  youtubeKeySet(value);
+  input.value = "";
+  document.getElementById("ytKeyResult").textContent = t("Key saved on this device. Tap Test key to check it.");
+  renderYoutubeSettingsPage();
+  ensureYoutubeSettings();
+  return true;
+}
+
+function removeYoutubeKey() {
+  youtubeKeySet("");
+  document.getElementById("ytKeyResult").textContent = t("The key was removed from this device.");
+  renderYoutubeSettingsPage();
+  ensureYoutubeSettings();
+}
+
+// One search with the saved key: OK, or the exact error Google gave.
+async function testYoutubeKey() {
+  const result = document.getElementById("ytKeyResult");
+  if (!youtubeKeyGet()) { result.textContent = t("No key saved"); return; }
+  const button = document.getElementById("ytKeyTestBtn");
+  button.disabled = true;
+  result.textContent = t("Testing the key…");
+  try {
+    await youtubeSearchVideos("test", "", 1);
+    result.textContent = `${t("OK. The key works.")} ${t("about {n} searches left today", { n: youtubeSearchesLeft() })}`;
+  } catch (error) {
+    result.textContent = `${youtubeErrorText(error)}${error.message && error.kind !== "network" && error.kind !== "nokey" ? ` ${t("Google says")}: ${error.message}` : ""}`;
+  }
+  button.disabled = !youtubeKeyGet();
+  renderYoutubeSettingsPage();
+  ensureYoutubeSettings();
+}
+
+// Web addresses inside a Hebrew sentence keep their own left-to-right order.
+function youtubeIsolateAddresses(html) {
+  return html.replace(/(https?:\/\/[^\s]+|console\.cloud\.google\.com)/g, '<bdi dir="ltr" class="yt-addr">$1</bdi>');
+}
+
+function openYoutubeHowTo() {
+  ensureYoutubeSettingsPages();
+  const page = document.getElementById("youtubeKeyHowToView");
+  page.querySelector(".slp-header__back").closest("button").setAttribute("aria-label", t("Back"));
+  page.querySelector(".slp-header__title").textContent = t("How to get a key");
+  page.querySelector(".slp-subtitle").textContent = t("About ten minutes, once");
+  document.getElementById("youtubeKeyHowToBody").innerHTML = `<ol class="yt-steps">${YOUTUBE_KEY_STEPS.map(([title, text]) => `<li><strong>${escapeHtml(t(title))}</strong><span dir="auto">${youtubeIsolateAddresses(escapeHtml(t(text)))}</span></li>`).join("")}</ol><ul class="yt-notes">${YOUTUBE_KEY_NOTES.map((note) => `<li dir="auto">${escapeHtml(t(note))}</li>`).join("")}</ul>`;
+  showSettingsPage("youtubeKeyHowToView");
 }
 // Safe restore and safe start.
 //   * Before a restore replaces the library, the current one is saved as an undo copy
